@@ -45,22 +45,28 @@ agency_metadata_tables <- function(agency_df, title_as_string) {
   # Create lists of unique values in columns
   region_code <- 
     list(unique(agency_df$regioncode)) %>% 
-    lapply(function(cell){ cell[!is.na(cell) & cell != ""]})
+    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>% 
+    unlist()
   region_description <- 
     list(unique(agency_df$regiondescription)) %>% 
-    lapply(function(cell){ cell[!is.na(cell) & cell != ""]})
+    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>% 
+    unlist()
   parent_location <- 
     list(unique(agency_df$parentlocation)) %>% 
-    lapply(function(cell){ cell[!is.na(cell) & cell != ""]})
+    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>% 
+    unlist()
   inventory_type <- 
     list(unique(agency_df$inventorytype)) %>% 
-    lapply(function(cell){ cell[!is.na(cell) & cell != ""]})
+    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>% 
+    unlist()
   site_type <- 
     list(unique(agency_df$sitetype)) %>% 
-    lapply(function(cell){ cell[!is.na(cell) & cell != ""]})
+    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>% 
+    unlist()
   facility_state <- 
     list(unique(agency_df$facilitystate)) %>% 
-    lapply(function(cell){ cell[!is.na(cell) & cell != ""]})
+    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>% 
+    unlist()
   
   # calculate length of longest column
   table_length <- max(length(region_code), length(region_description),
