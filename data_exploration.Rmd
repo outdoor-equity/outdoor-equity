@@ -42,49 +42,60 @@ for (i in unique(raw_data$agency)) {
 # Create CSV table of unique column values for agency called in function
 
 agency_metadata_tables <- function(agency_df, title_as_string) {
-  # Create lists of unique values in columns
+  # Create vectors of unique values in columns
   region_code <- 
-    list(unique(agency_df$regioncode)) %>% 
-    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>% 
-    unlist()
+    list(unique(agency_df$regioncode)) %>%                        # create list of unique values
+    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>%  # remove NA values
+    unlist() %>%                                                  # turn list into vector for adding to df
+    sort(decreasing = FALSE)                                      # sort alphabetically
   region_description <- 
-    list(unique(agency_df$regiondescription)) %>% 
-    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>% 
-    unlist()
+    list(unique(agency_df$region_description)) %>%                # create list of unique values
+    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>%  # remove NA values
+    unlist() %>%                                                  # turn list into vector for adding to df
+    sort(decreasing = FALSE)                                      # sort alphabetically 
   parent_location <- 
-    list(unique(agency_df$parentlocation)) %>% 
-    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>% 
-    unlist()
+    list(unique(agency_df$parent_location)) %>%                   # create list of unique values
+    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>%  # remove NA values
+    unlist() %>%                                                  # turn list into vector for adding to df
+    sort(decreasing = FALSE)                                      # sort alphabetically 
   inventory_type <- 
-    list(unique(agency_df$inventorytype)) %>% 
-    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>% 
-    unlist()
+    list(unique(agency_df$inventory_type)) %>%                    # create list of unique values
+    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>%  # remove NA values
+    unlist() %>%                                                  # turn list into vector for adding to df
+    sort(decreasing = FALSE)                                      # sort alphabetically
   site_type <- 
-    list(unique(agency_df$sitetype)) %>% 
-    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>% 
-    unlist()
+    list(unique(agency_df$site_type)) %>%                         # create list of unique values
+    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>%  # remove NA values
+    unlist() %>%                                                  # turn list into vector for adding to df
+    sort(decreasing = FALSE)                                      # sort alphabetically
   facility_state <- 
-    list(unique(agency_df$facilitystate)) %>% 
-    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>% 
-    unlist()
+    list(unique(agency_df$facility_state)) %>%                    # create list of unique values
+    lapply(function(cell){ cell[!is.na(cell) & cell != ""]}) %>%  # remove NA values
+    unlist() %>%                                                  # turn list into vector for adding to df
+    sort(decreasing = FALSE)                                      # sort alphabetically
   
   # calculate length of longest column
   table_length <- max(length(region_code), length(region_description),
                       length(parent_location), length(inventory_type),
-                      length(site_type), length(facility_state)#,
-                      #length(customer_state)
-                      )
+                      length(site_type), length(facility_state))
   
-  # create data frame of columns
+  # create data frame (length of longest vector)
   df <- data.frame(matrix(nrow = table_length))
-  df$region_code <- c(region_code, rep("", nrow(df)-length(region_code)))
-  df$region_description <- c(region_description, rep("", nrow(df)-length(region_description)))
-  df$parent_location <- c(parent_location, rep("", nrow(df)-length(parent_location)))
-  df$facility_state <- c(facility_state, rep("", nrow(df)-length(facility_state)))
-  df$site_type <- c(site_type, rep("", nrow(df)-length(site_type)))
-  df$inventory_type <- c(inventory_type, rep("", nrow(df)-length(inventory_type)))
-  #df$customer_state <- c(customer_state, rep("", nrow(df)-length(customer_state)))
-  df <- df[-c(1)] %>% apply(2, as.character)
+  
+  # add vectors to df as columns
+  df$region_code <- c(region_code, 
+                      rep("", nrow(df) - length(region_code))) # add black cells to fill df
+  df$region_description <- c(region_description, 
+                             rep("", nrow(df) - length(region_description)))
+  df$parent_location <- c(parent_location, 
+                          rep("", nrow(df) - length(parent_location)))
+  df$facility_state <- c(facility_state, 
+                         rep("", nrow(df) - length(facility_state)))
+  df$site_type <- c(site_type, 
+                    rep("", nrow(df) - length(site_type)))
+  df$inventory_type <- c(inventory_type, 
+                         rep("", nrow(df) - length(inventory_type)))
+  df <- df[-c(1)]
   
   #write df to csv
   write.csv(df, paste0("agency_metadata_tables/", title_as_string, "_metadata.csv"), 
@@ -107,11 +118,21 @@ agency_metadata_tables(USFS, "USFS")
 
 ## Explore data
 
-#### BLM
-Bureau of Land Management
+#### BLM (Bureau of Land Management)
 
 ```{r}
 BLM_metadata <- read.csv("agency_metadata_tables/BLM_metadata.csv")
+```
+
+- no. of regions: 9
+- no. facilitly states: 11
+- no. parks (parent locations): 45
+- site types:
+  - cabin
+  - campsite
+  - tour
+
+```{r}
 BLM_metadata %>% gt() %>% tab_header(title = "BLM")
 ```
 
