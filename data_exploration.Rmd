@@ -14,13 +14,12 @@ library(tidyverse)
 library(janitor)
 library(gt)
 
-dir.create(here::here("data")) # download data from RIDB for year to look at
+dir.create(here::here("data")) # download data from RIDB and put at this file
 dir.create(here::here("agency_metadata_tables"))
 ```
 
-## Load Data
 
-```{r, eval=FALSE}
+```{r Load and split data, eval=FALSE}
 # Load raw data and choose columns to keep
 raw_data <- read.csv("data/FY20_historical_reservations_full_raw.csv") %>% 
   select(agency, regioncode, regiondescription, parentlocation, park, sitetype, usetype, 
@@ -29,7 +28,7 @@ raw_data <- read.csv("data/FY20_historical_reservations_full_raw.csv") %>%
          totalpaid, startdate, enddate, orderdate, nights, numberofpeople, 
          equipmentdescription)
 
-# Split raw data by agency: create df for each unique agency
+# Split raw data by agency: creates df for each unique agency
 for (i in unique(raw_data$agency)) {
   assign(i, 
          raw_data %>% 
@@ -38,41 +37,41 @@ for (i in unique(raw_data$agency)) {
 }
 ```
 
-```{r, eval=FALSE}
+```{r Create function, eval=FALSE}
 # Create CSV table of unique column values for agency called in function
 
-agency_metadata_tables <- function(agency_df, title_as_string) {
+agency_metadata_tables <- function(agency_df_name, agency_df_name_as_string) {
   # Create vectors of unique values in columns
   region_code <- 
-    list(unique(agency_df$regioncode)) %>%                  # create list of unique values
+    list(unique(agency_df_name$regioncode)) %>%             # create list of unique values
     lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
     unlist()                                                # turn list into vector for adding to df
   region_description <- 
-    list(unique(agency_df$regiondescription)) %>%          # create list of unique values
+    list(unique(agency_df_name$regiondescription)) %>%      # create list of unique values
     lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
     unlist()                                                # turn list into vector for adding to df
   # parent_location <- 
-  #   list(unique(agency_df$parentlocation)) %>%             # create list of unique values
+  #   list(unique(agency_df_name$parentlocation)) %>%         # create list of unique values
   #   lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
   #   unlist() %>%                                            # turn list into vector for adding to df
   #   sort(decreasing = FALSE)                                # sort alphabetically 
   facility_state <- 
-    list(unique(agency_df$facilitystate)) %>%              # create list of unique values
+    list(unique(agency_df_name$facilitystate)) %>%          # create list of unique values
     lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
     unlist() %>%                                            # turn list into vector for adding to df
     sort(decreasing = FALSE)                                # sort alphabetically
   site_type <- 
-    list(unique(agency_df$sitetype)) %>%                   # create list of unique values
+    list(unique(agency_df_name$sitetype)) %>%               # create list of unique values
     lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
     unlist() %>%                                            # turn list into vector for adding to df
     sort(decreasing = FALSE)                                # sort alphabetically
   inventory_type <- 
-    list(unique(agency_df$inventorytype)) %>%              # create list of unique values
+    list(unique(agency_df_name$inventorytype)) %>%          # create list of unique values
     lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
     unlist() %>%                                            # turn list into vector for adding to df
     sort(decreasing = FALSE)                                # sort alphabetically
   use_type <- 
-    list(unique(agency_df$usetype)) %>%              # create list of unique values
+    list(unique(agency_df_name$usetype)) %>%                # create list of unique values
     lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
     unlist() %>%                                            # turn list into vector for adding to df
     sort(decreasing = FALSE)                                # sort alphabetically
@@ -101,11 +100,11 @@ agency_metadata_tables <- function(agency_df, title_as_string) {
   df <- df[-c(1)] # remove first row created with df (empty)
   
   #write df to csv
-  write.csv(df, paste0("agency_metadata_tables/", title_as_string, "_metadata.csv"))
+  write.csv(df, paste0("agency_metadata_tables/", agency_df_name_as_string, "_metadata.csv"))
 }
 ```
 
-```{r, eval=FALSE}
+```{r Run function for all agencies, eval=FALSE}
 # Run function for all agencies
 
 agency_metadata_tables(BLM, "BLM")

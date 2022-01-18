@@ -1,0 +1,78 @@
+---
+title: "Data Exploration - CA only"
+author: "Clarissa Boyajian"
+date: "1/17/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(janitor)
+library(gt)
+library(sf)
+
+dir.create(here::here("data")) # download data from RIDB and put in this file
+dir.create(here::here("data/california_data"))
+```
+
+```{r Load and split data, eval=FALSE}
+# Load raw data for CA and choose columns to keep
+raw_data <- read.csv("data/FY20_historical_reservations_full_raw.csv") %>% 
+  filter(facilitystate == "California") %>% 
+  select(agency, regioncode, regiondescription, parentlocation, park, sitetype, usetype, 
+         inventorytype, facilityzip, facilitystate, facilitylongitude, 
+         facilitylatitude, customerzip, customerstate, customercountry, 
+         totalpaid, startdate, enddate, orderdate, nights, numberofpeople, 
+         equipmentdescription)
+```
+
+
+```{r}
+# Filter just rows with customer zip code
+subset_customer_zip <- raw_data %>% filter(customerzip != "") %>% 
+  mutate(latitude = as.numeric(facilitylatitude),
+         longitude = as.numeric(facilitylongitude)) %>% 
+  st_as_sf(coords = c("longitude", "latitude"),
+           crs = 4326)
+
+## Subset down for data exploration ##
+
+# Filter out funky zip codes
+subset_customer_zip_good <- 
+  subset_customer_zip[nchar(as.character(subset_customer_zip$customerzip)) == 5, ]
+
+# summarize by park
+park_summary_df <- subset_customer_zip_good %>% 
+  group_by(park) %>% 
+  summarise(average_visitors = mean(numberofpeople),
+            total_visitors = sum(numberofpeople),
+            total_paid = mean(totalpaid))
+
+# park lat/lon
+park_locations_df <- subset_customer_zip_good %>% 
+  group_by(park) %>% 
+  summarise(latitute = mode(facilitylatitude),
+            longitude = mode(facilitylongitude)) %>% 
+  extract(geometry, into = c('lat', 'lon'), '\\((.*),(.*)\\)', conv = T) %>% 
+  select(park, lat, lon) %>% 
+  rename(latitute = lat,
+         longitude = lon)
+
+
+# Write to CSV
+write.csv(subset_customer_zip_good, "data/california_data/california_customers_with_zipcode.csv")
+
+write.csv(park_summary_df, "data/california_data/california_parks_summary.csv")
+
+write.csv(park_locations_df, "data/california_data/california_park_locations.csv")
+```
+
+
+
+
+
+
+
