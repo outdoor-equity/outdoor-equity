@@ -13,6 +13,7 @@ library(tidyverse)
 library(janitor)
 library(gt)
 library(sf)
+library(tmap)
 
 dir.create(here::here("data")) # download data from RIDB and put in this file
 dir.create(here::here("data/california_data"))
@@ -30,7 +31,7 @@ raw_data <- read.csv("data/FY20_historical_reservations_full_raw.csv") %>%
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 # Filter just rows with customer zip code
 subset_customer_zip <- raw_data %>% filter(customerzip != "") %>% 
   mutate(latitude = as.numeric(facilitylatitude),
@@ -54,16 +55,22 @@ park_summary_df <- subset_customer_zip_good %>%
 # park lat/lon
 park_locations_df <- subset_customer_zip_good %>% 
   group_by(park) %>% 
-  summarise(latitute = mode(facilitylatitude),
+  summarise(latitude = mode(facilitylatitude),
             longitude = mode(facilitylongitude)) %>% 
-  extract(geometry, into = c('lat', 'lon'), '\\((.*),(.*)\\)', conv = T) %>% 
+  extract(geometry, into = c('lon', 'lat'), '\\((.*),(.*)\\)', conv = T) %>% 
   select(park, lat, lon) %>% 
-  rename(latitute = lat,
+  rename(latitude = lat,
          longitude = lon)
 
 
 # Write to CSV
-write.csv(subset_customer_zip_good, "data/california_data/california_customers_with_zipcode.csv")
+subset_customer_zip_good %>% 
+  extract(geometry, into = c('lon', 'lat'), '\\((.*),(.*)\\)', conv = T) %>% 
+  as.data.frame() %>% 
+  select(!c(geometry)) %>% 
+  rename(latitude = lat,
+         longitude = lon) %>% 
+  write.csv("data/california_data/california_customers_with_zipcode.csv")
 
 write.csv(park_summary_df, "data/california_data/california_parks_summary.csv")
 
@@ -71,8 +78,39 @@ write.csv(park_locations_df, "data/california_data/california_park_locations.csv
 ```
 
 
+```{r}
+subset_valid_customerzip <- read.csv("data/california_data/california_customers_with_zipcode.csv") %>% 
+  mutate(latitude = as.numeric(latitude),
+         longitude = as.numeric(longitude)) %>% 
+  select(!c(X)) %>% 
+  st_as_sf(coords = c("longitude", "latitude"),
+           crs = 4326) %>% 
+  mutate(agency = as.factor(agency))
+
+# park_summary_df <- read.csv("data/california_data/california_parks_summary.csv")
+# names(park_summary_df)[1:ncol(park_summary_df) - 1] <- names(park_summary_df)[2:ncol(park_summary_df)]
+# 
+# park_locations_df <- read.csv("data/california_data/california_park_locations.csv")
+# names(park_locations_df)[1:ncol(park_locations_df) - 1] <- names(park_locations_df)[2:ncol(park_locations_df)]
+```
 
 
+```{r}
+ggplot(subset_valid_customerzip) +
+  geom_histogram(aes(x = agency), stat = "count")
+```
+
+```{r}
+ca_county_geom <- st_read("data/map_data/counties.shp") %>% 
+  clean_names() %>% 
+  rename(county_name = name)
+
+tm_shape(ca_county_geom) + 
+  tm_fill(col = "white") +
+  tm_borders(col = "black", alpha = 0.5) +
+tm_shape(subset_valid_customerzip) + 
+  tm_dots()
+```
 
 
 
