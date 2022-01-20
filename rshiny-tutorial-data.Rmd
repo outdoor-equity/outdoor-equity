@@ -1,5 +1,5 @@
 ---
-title: "Exploring RIDB Data"
+title: "R Shiny Tutorial with RIDB Data"
 author: "Halina Do-Linh"
 date: "1/16/2022"
 output: html_document
@@ -12,6 +12,7 @@ library(tidyverse)
 library(here)
 library(janitor)
 ```
+
 # Quick import and clean data 
 
 ```{r}
@@ -43,7 +44,7 @@ ridb_06_clean <- ridb_06 %>%
          "number_of_people")
 ```
 
-# R Shiny App tutorial with Allison
 
-
-
+```{r}
+write_csv(ridb_06_clean, here("data", "ridb-06-clean.csv"))
+```
