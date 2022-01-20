@@ -19,6 +19,7 @@ library(patchwork)
 
 dir.create(here::here("data")) # download data from RIDB and put in this file
 dir.create(here::here("data/california_data"))
+dir.create(here::here("figs"))
 ```
 
 ```{r Load raw data}
@@ -85,18 +86,21 @@ length_plot <- ggplot(agency_summary) +
                y = average_length_stay_days, 
                fill = agency),
            show.legend = FALSE) +
-  scale_fill_viridis_d() +
-  labs(x = "",
-       y = "Average Length of \nReservation (days)") +
+  scale_fill_discrete(type = "viridis") +
+  labs(title = "Average Length of Reservation",
+       x = "",
+       y = "Days") +
   theme_classic()
 
 average_visitors_plot <- ggplot(agency_summary) +
   geom_col(aes(x = agency, 
                y = average_visitors_per_reservation, 
-               fill = agency)) +
-  scale_fill_viridis_d() +
-  labs(x = "",
-       y = "Average Visitors \nper Reservation",
+               fill = agency),
+           show.legend = FALSE) +
+  scale_fill_discrete(type = "viridis") +
+  labs(title = "Average Visitors per Reservation",
+       x = "",
+       y = "Individuals",
        fill = "Agency") +
   theme_classic()
 
@@ -105,9 +109,10 @@ average_cost_plot <- ggplot(agency_summary) +
                y = average_paid, 
                fill = agency),
            show.legend = FALSE) +
-  scale_fill_viridis_d() +
-  labs(x = "Federal Public Land Agency",
-       y = "Average Cost \nper Reservation") +
+  scale_fill_discrete(type = "viridis") +
+  labs(title = "Average Cost per Reservation",
+       x = "",
+       y = "US Dollars") +
   theme_classic()
 
 annual_visitors_plot <- ggplot(agency_summary) +
@@ -115,17 +120,24 @@ annual_visitors_plot <- ggplot(agency_summary) +
                y = (total_annual_visitors / 1000), 
                fill = agency),
            show.legend = FALSE) +
-  scale_fill_viridis_d() +
-  labs(x = "Federal Public Land Agency",
-       y = "Total Visitors \nper Year (1,000)") +
+  scale_fill_discrete(type = "viridis") +
+  labs(title = "Total Visitors per Year",
+       x = "",
+       y = "1,000 Visitors") +
   theme_classic()
 
 agency_plots <- 
-  ((length_plot + average_visitors_plot) / (average_cost_plot + annual_visitors_plot)) + 
-  plot_annotation(title = "Federal Public Agencies")
+  (length_plot + average_visitors_plot) / (average_cost_plot + annual_visitors_plot) + 
+  plot_annotation(title = "Comparing Reservations for Califoria Federal Public Lands in 2020",
+                  caption = "Federal public agencies include: Bureau of Land Management, Bureau of Reclamation, \nNational Park Service, US Army Corps of Engineers, and US Forest Service.")
 
 agency_plots
 ```
+```{r}
+ggsave("figs/CA_agency_plots.jpg")
+```
+
+
 
 ```{r}
 tm_shape(ca_county_geom) + 
