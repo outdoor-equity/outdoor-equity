@@ -14,12 +14,14 @@ library(janitor)
 library(gt)
 library(sf)
 library(tmap)
+library(lubridate)
+library(patchwork)
 
 dir.create(here::here("data")) # download data from RIDB and put in this file
 dir.create(here::here("data/california_data"))
 ```
 
-```{r Load and split data, eval=FALSE}
+```{r Load raw data}
 # Load raw data for CA and choose columns to keep
 raw_data <- read.csv("data/FY20_historical_reservations_full_raw.csv") %>% 
   filter(facilitystate == "California") %>% 
@@ -28,88 +30,109 @@ raw_data <- read.csv("data/FY20_historical_reservations_full_raw.csv") %>%
          facilitylatitude, customerzip, customerstate, customercountry, 
          totalpaid, startdate, enddate, orderdate, nights, numberofpeople, 
          equipmentdescription)
-```
 
-
-```{r, eval=FALSE}
 # Filter just rows with customer zip code
 subset_customer_zip <- raw_data %>% filter(customerzip != "") %>% 
-  mutate(latitude = as.numeric(facilitylatitude),
-         longitude = as.numeric(facilitylongitude)) %>% 
-  st_as_sf(coords = c("longitude", "latitude"),
+  mutate(facilitylatitude = as.numeric(facilitylatitude),
+         facilitylongitude = as.numeric(facilitylongitude),
+         startdate = ymd_hms(startdate),
+         enddate = ymd_hms(enddate),
+         orderdate = ymd_hms(orderdate)) %>% 
+  st_as_sf(coords = c("facilitylongitude", "facilitylatitude"),
            crs = 4326)
 
-## Subset down for data exploration ##
-
-# Filter out funky zip codes
-subset_customer_zip_good <- 
-  subset_customer_zip[nchar(as.character(subset_customer_zip$customerzip)) == 5, ]
-
-# summarize by park
-park_summary_df <- subset_customer_zip_good %>% 
-  group_by(park) %>% 
-  summarise(average_visitors = mean(numberofpeople),
-            total_visitors = sum(numberofpeople),
-            total_paid = mean(totalpaid))
-
-# park lat/lon
-park_locations_df <- subset_customer_zip_good %>% 
-  group_by(park) %>% 
-  summarise(latitude = mode(facilitylatitude),
-            longitude = mode(facilitylongitude)) %>% 
-  extract(geometry, into = c('lon', 'lat'), '\\((.*),(.*)\\)', conv = T) %>% 
-  select(park, lat, lon) %>% 
-  rename(latitude = lat,
-         longitude = lon)
-
-
-# Write to CSV
-subset_customer_zip_good %>% 
-  extract(geometry, into = c('lon', 'lat'), '\\((.*),(.*)\\)', conv = T) %>% 
-  as.data.frame() %>% 
-  select(!c(geometry)) %>% 
-  rename(latitude = lat,
-         longitude = lon) %>% 
-  write.csv("data/california_data/california_customers_with_zipcode.csv")
-
-write.csv(park_summary_df, "data/california_data/california_parks_summary.csv")
-
-write.csv(park_locations_df, "data/california_data/california_park_locations.csv")
-```
-
-
-```{r}
-subset_valid_customerzip <- read.csv("data/california_data/california_customers_with_zipcode.csv") %>% 
-  mutate(latitude = as.numeric(latitude),
-         longitude = as.numeric(longitude)) %>% 
-  select(!c(X)) %>% 
-  st_as_sf(coords = c("longitude", "latitude"),
-           crs = 4326) %>% 
-  mutate(agency = as.factor(agency))
-
-# park_summary_df <- read.csv("data/california_data/california_parks_summary.csv")
-# names(park_summary_df)[1:ncol(park_summary_df) - 1] <- names(park_summary_df)[2:ncol(park_summary_df)]
-# 
-# park_locations_df <- read.csv("data/california_data/california_park_locations.csv")
-# names(park_locations_df)[1:ncol(park_locations_df) - 1] <- names(park_locations_df)[2:ncol(park_locations_df)]
-```
-
-
-```{r}
-ggplot(subset_valid_customerzip) +
-  geom_histogram(aes(x = agency), stat = "count")
-```
-
-```{r}
+# CA county geometries
 ca_county_geom <- st_read("data/map_data/counties.shp") %>% 
   clean_names() %>% 
   rename(county_name = name)
+st_crs(ca_county_geom) <- 4326
+```
 
+```{r}
+## Subset and summarize for data exploration ##
+
+# Filter out funky zip codes
+subset_valid_customer_zip <- 
+  subset_customer_zip[nchar(as.character(subset_customer_zip$customerzip)) == 5, ]
+
+# summarize by park
+park_summary <- subset_valid_customer_zip %>% 
+  group_by(park) %>% 
+  summarise(average_visitors_per_reservation = mean(numberofpeople, na.rm = TRUE),
+            total_annual_visitors = sum(numberofpeople, na.rm = TRUE),
+            average_paid = mean(totalpaid, na.rm = TRUE),
+            total_paid = mean(totalpaid, na.rm = TRUE),
+            average_length_stay_days = mean(interval(startdate, enddate) / 60 / 60 / 24, na.rm = TRUE),
+            average_length_stay_days = mean(interval(orderdate, startdate) / 60 / 60 / 24, na.rm = TRUE))
+
+agency_summary <- subset_valid_customer_zip %>% 
+  group_by(agency) %>% 
+  summarise(average_visitors_per_reservation = mean(numberofpeople, na.rm = TRUE),
+            total_annual_visitors = sum(numberofpeople, na.rm = TRUE),
+            average_paid = mean(totalpaid, na.rm = TRUE),
+            total_paid = mean(totalpaid, na.rm = TRUE),
+            average_length_stay_days = mean(interval(startdate, enddate) / 60 / 60 / 24, na.rm = TRUE),
+            average_length_stay_days = mean(interval(orderdate, startdate) / 60 / 60 / 24, na.rm = TRUE))
+
+# agency_park_table <- subset_valid_customer_zip %>% 
+#   group_by(agency) %>% 
+#   summarise(park)
+```
+
+```{r}
+length_plot <- ggplot(agency_summary) +
+  geom_col(aes(x = agency, 
+               y = average_length_stay_days, 
+               fill = agency),
+           show.legend = FALSE) +
+  scale_fill_viridis_d() +
+  labs(x = "",
+       y = "Average Length of \nReservation (days)") +
+  theme_classic()
+
+average_visitors_plot <- ggplot(agency_summary) +
+  geom_col(aes(x = agency, 
+               y = average_visitors_per_reservation, 
+               fill = agency)) +
+  scale_fill_viridis_d() +
+  labs(x = "",
+       y = "Average Visitors \nper Reservation",
+       fill = "Agency") +
+  theme_classic()
+
+average_cost_plot <- ggplot(agency_summary) +
+  geom_col(aes(x = agency, 
+               y = average_paid, 
+               fill = agency),
+           show.legend = FALSE) +
+  scale_fill_viridis_d() +
+  labs(x = "Federal Public Land Agency",
+       y = "Average Cost \nper Reservation") +
+  theme_classic()
+
+annual_visitors_plot <- ggplot(agency_summary) +
+  geom_col(aes(x = agency, 
+               y = (total_annual_visitors / 1000), 
+               fill = agency),
+           show.legend = FALSE) +
+  scale_fill_viridis_d() +
+  labs(x = "Federal Public Land Agency",
+       y = "Total Visitors \nper Year (1,000)") +
+  theme_classic()
+
+agency_plots <- 
+  ((length_plot + average_visitors_plot) / (average_cost_plot + annual_visitors_plot)) + 
+  plot_annotation(title = "Federal Public Agencies")
+
+agency_plots
+```
+
+```{r}
 tm_shape(ca_county_geom) + 
   tm_fill(col = "white") +
   tm_borders(col = "black", alpha = 0.5) +
-tm_shape(subset_valid_customerzip) + 
-  tm_dots()
+tm_shape(park_summary) + 
+  tm_dots(col = "park")
 ```
 
 
