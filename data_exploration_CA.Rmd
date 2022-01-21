@@ -144,7 +144,7 @@ tm_shape(ca_county_geom) +
   tm_fill(col = "white") +
   tm_borders(col = "black", alpha = 0.5) +
 tm_shape(park_summary) + 
-  tm_dots(col = "park")
+  tm_dots(col = "total_annual_visitors")
 ```
 
 
