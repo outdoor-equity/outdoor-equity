@@ -2,7 +2,6 @@
 
 # QUESTIONS
 # how should I name apps specifically? other than app.R? 
-# how to stop running the app? what do you mean hit stop? We'll see a STOP sign in console
 
 # google R Shiny widgets gallery to see the different widget options
 
@@ -35,7 +34,7 @@ server <- function(input, output) {
   # created reactive data frame that depends on selection from widget state
   state_select <- reactive({
     ridb_06 %>% 
-      filter(sp_short == input$state)
+      filter(customer_state == input$state)
   })
   
   output$state_plot <- renderPlot({
