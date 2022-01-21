@@ -128,8 +128,8 @@ annual_visitors_plot <- ggplot(agency_summary) +
 
 agency_plots <- 
   (length_plot + average_visitors_plot) / (average_cost_plot + annual_visitors_plot) + 
-  plot_annotation(title = "Comparing Reservations for Califoria Federal Public Lands in 2020",
-                  caption = "Federal public agencies include: Bureau of Land Management, Bureau of Reclamation, \nNational Park Service, US Army Corps of Engineers, and US Forest Service.")
+  plot_annotation(title = "Comparing Reservations in Califoria for Federal Public Lands in 2020",
+                  caption = "Federal public agencies include: Bureau of Land Management (BLM), Bureau of Reclamation (BOR), \nNational Park Service (NPS), US Army Corps of Engineers (USACEO, and US Forest Service (USFS.")
 
 agency_plots
 ```
