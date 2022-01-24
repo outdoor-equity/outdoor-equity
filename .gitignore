@@ -3,4 +3,8 @@
 .RData
 .Ruserdata
 
+#RIDB data folder
 data/
+
+#API keys
+census_api_key.R

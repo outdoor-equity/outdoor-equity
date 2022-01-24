@@ -16,10 +16,15 @@ library(sf)
 library(tmap)
 library(lubridate)
 library(patchwork)
+library(tidycensus)
 
 dir.create(here::here("data")) # download data from RIDB and put in this file
 dir.create(here::here("data/california_data"))
 dir.create(here::here("figs"))
+
+# connect to census API
+my_api_key <- source("census_api_key.R")
+census_api_key(my_api_key[1], install = TRUE, overwrite = TRUE)
 ```
 
 ```{r Load raw data}
@@ -41,12 +46,24 @@ subset_customer_zip <- raw_data %>% filter(customerzip != "") %>%
          orderdate = ymd_hms(orderdate)) %>% 
   st_as_sf(coords = c("facilitylongitude", "facilitylatitude"),
            crs = 4326)
+```
 
+```{r Load census data}
 # CA county geometries
 ca_county_geom <- st_read("data/map_data/counties.shp") %>% 
   clean_names() %>% 
   rename(county_name = name)
 st_crs(ca_county_geom) <- 4326
+
+# Santa Barbara county only
+santabarbara_county_geom <- ca_county_geom %>% filter(county_name == "Santa Barbara")
+
+# Santa Barbara county zip codes
+santa_barbara_zip_codes = c("93001", "93001", "93013", "93013", "93013", "93067", "93101", "93103", "93103", "93103", "93105", "93105", "93108", "93108", "93108", "93108", "93109", "93110", "93111", "93117", "93117", "93117", "93117", "93252", "93252", "93254", "93254", "93427", "93429", "93434", "93436", "93436", "93436", "93436", "93437", "93440", "93441", "93454", "93454", "93454", "93455", "93455", "93455", "93455", "93458", "93460", "93463", "93463", "93463", "93463", "93463")
+
+
+# load list of all possible census variables
+# test_census <- load_variables(2019, dataset = "acs5")
 ```
 
 ```{r}
@@ -66,6 +83,7 @@ park_summary <- subset_valid_customer_zip %>%
             average_length_stay_days = mean(interval(startdate, enddate) / 60 / 60 / 24, na.rm = TRUE),
             average_length_stay_days = mean(interval(orderdate, startdate) / 60 / 60 / 24, na.rm = TRUE))
 
+# summarize by agency
 agency_summary <- subset_valid_customer_zip %>% 
   group_by(agency) %>% 
   summarise(average_visitors_per_reservation = mean(numberofpeople, na.rm = TRUE),
@@ -75,12 +93,21 @@ agency_summary <- subset_valid_customer_zip %>%
             average_length_stay_days = mean(interval(startdate, enddate) / 60 / 60 / 24, na.rm = TRUE),
             average_length_stay_days = mean(interval(orderdate, startdate) / 60 / 60 / 24, na.rm = TRUE))
 
-# agency_park_table <- subset_valid_customer_zip %>% 
-#   group_by(agency) %>% 
-#   summarise(park)
+# Santa Barbara subset
+subset_santabarbara_valid_customer_zip <- subset_valid_customer_zip %>% 
+  filter(facilityzip %in% santa_barbara_zip_codes)
+
+santabarbara_park_summary <- subset_santabarbara_valid_customer_zip %>% 
+  group_by(park) %>% 
+  summarize(average_visitors_per_reservation = mean(numberofpeople, na.rm = TRUE),
+            total_annual_visitors = sum(numberofpeople, na.rm = TRUE),
+            average_paid = mean(totalpaid, na.rm = TRUE),
+            total_paid = mean(totalpaid, na.rm = TRUE),
+            average_length_stay_days = mean(interval(startdate, enddate) / 60 / 60 / 24, na.rm = TRUE),
+            average_length_stay_days = mean(interval(orderdate, startdate) / 60 / 60 / 24, na.rm = TRUE))
 ```
 
-```{r}
+```{r Overview Graphs}
 length_plot <- ggplot(agency_summary) +
   geom_col(aes(x = agency, 
                y = average_length_stay_days, 
@@ -133,19 +160,30 @@ agency_plots <-
 
 agency_plots
 ```
+
 ```{r}
 ggsave("figs/CA_agency_plots.jpg")
 ```
 
 
 
-```{r}
+```{r CA map of parks}
 tm_shape(ca_county_geom) + 
   tm_fill(col = "white") +
   tm_borders(col = "black", alpha = 0.5) +
 tm_shape(park_summary) + 
   tm_dots(col = "total_annual_visitors")
 ```
+
+```{r Santa Barbara map of parks}
+tm_shape(santabarbara_county_geom) + 
+  tm_fill(col = "white") +
+  tm_borders(col = "black") +
+tm_shape(santabarbara_park_summary) + 
+  tm_bubbles(col = "total_annual_visitors", size = 0.25, style = "order")
+```
+
+
 
 
 
