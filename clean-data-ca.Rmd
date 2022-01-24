@@ -1,5 +1,5 @@
 ---
-title: "Clean Agency Metadata"
+title: "Clean Data CA"
 author: "Halina Do-Linh"
 date: "1/23/2022"
 output: html_document
@@ -17,19 +17,40 @@ library(here)
 # Read in agency datasets
 
 ```{r}
-blm <- read_csv(here("agency-metadata", "BLM_metadata.csv"))
-bor <- read_csv(here("agency-metadata", "BOR_metadata.csv"))
-fws <- read_csv(here("agency-metadata", "FWS_metadata.csv"))
-nps <- read_csv(here("agency-metadata", "NPS_metadata.csv"))
-usace <- read_csv(here("agency-metadata", "USACE_metadata.csv"))
-usfs <- read_csv(here("agency-metadata", "USFS_metadata.csv"))
+ridb_2020 <- read_csv(here("data", "FY20-historical-reservations-full.csv"))
 ```
 
 # Tidy
 
 ```{r}
-blm_clean <- blm %>% 
+ridb_2020_clean <- ridb_2020 %>% 
   janitor::clean_names() %>% 
-  mutate(site_type = tolower(site_type))
+  select("historicalreservationid",
+         "ordernumber",
+         "agency",
+         "orgid",
+         "regioncode", "regiondescription",
+         "parentlocationid", "parentlocation",
+         "sitetype", "usetype",
+         "productid", "inventorytype", 
+         "facilityid", "facilityzip", "facilitystate", "facilitylongitude", "facilitylatitude",
+         "customerzip", 
+         "totalbeforetax",
+         "discount", "totalpaid",
+         "startdate", "enddate", "orderdate",
+         "nights",
+         "numberofpeople",
+         "equipmentdescription", "equipmentlength") %>% 
+  filter(facilitystate == "California") %>% 
+  mutate(sitetype = tolower(sitetype)) %>% 
+  filter(sitetype != c("historic tour",
+                      "hiking zone",
+                      "group picnic area",
+                      "cave tour",
+                      "management",
+                      "anchorage",
+                      "picnic",
+                      "entry point",
+                      "trailhead"))
 ```
 
