@@ -266,15 +266,16 @@ ridb_2020_clean <- ridb_2020 %>%
 - used `get_dupes()` to confirm that there are no duplicate rows within `historicalreservationid`
 - 2020 clean data has no dupes!
 - 2019 clean data has potentially 299,247 dupes...
+- 2018 clean data has potentially 17,749 dupes...
 
 ```{r}
 janitor::get_dupes(ridb_2019_clean, historicalreservationid)
 ```
 
 ```{r}
-ridb_2019_dupes <- ridb_2019_clean %>% 
-  filter(historicalreservationid == "000103ba-6b5a-5a30-a17e-0bf8ada0dbdf")
+janitor::get_dupes(ridb_2018_clean, historical_reservation_id)
 ```
+
 
 
 # At this point:
