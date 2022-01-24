@@ -23,8 +23,8 @@ dir.create(here::here("data/california_data"))
 dir.create(here::here("figs"))
 
 # connect to census API
-my_api_key <- source("census_api_key.R")
-census_api_key(my_api_key[1], install = TRUE, overwrite = TRUE)
+# my_api_key <- source("census_api_key.R")
+# census_api_key(my_api_key[1], install = TRUE, overwrite = TRUE)
 ```
 
 ```{r Load raw data}
@@ -103,9 +103,17 @@ santabarbara_park_summary <- subset_santabarbara_valid_customer_zip %>%
             total_annual_visitors = sum(numberofpeople, na.rm = TRUE),
             average_paid = mean(totalpaid, na.rm = TRUE),
             total_paid = mean(totalpaid, na.rm = TRUE),
-            average_length_stay_days = mean(interval(startdate, enddate) / 60 / 60 / 24, na.rm = TRUE),
-            average_length_stay_days = mean(interval(orderdate, startdate) / 60 / 60 / 24, na.rm = TRUE))
+            average_length_stay_days = mean(interval(startdate, enddate) / 60 / 60 / 24, 
+                                            na.rm = TRUE),
+            average_length_stay_days = mean(interval(orderdate, startdate) / 60 / 60 / 24, 
+                                            na.rm = TRUE))
 ```
+
+```{r, eval=FALSE}
+# save SB subset to drive
+write_csv(as.data.frame(subset_santabarbara_valid_customer_zip), "data/santa_barbara_subset_valid_customer_zip.csv")
+```
+
 
 ```{r Overview Graphs}
 length_plot <- ggplot(agency_summary) +
