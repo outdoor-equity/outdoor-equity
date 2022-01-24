@@ -18,9 +18,46 @@ library(here)
 
 ```{r}
 ridb_2020 <- read_csv(here("data", "FY20-historical-reservations-full.csv"))
+ridb_2019 <- read_csv(here("data", "reservations2019.csv"))
 ```
 
-# Tidy
+# Tidy 2019 Data
+
+```{r}
+ridb_2019_clean <- ridb_2019 %>% 
+  janitor::clean_names() %>% 
+  select("historicalreservationid",
+         "ordernumber",
+         "agency",
+         "orgid",
+         "regioncode", "regiondescription",
+         "parentlocationid", "parentlocation",
+         "sitetype", "usetype",
+         "productid", "inventorytype", 
+         "facilityid", "facilityzip", "facilitystate", "facilitylongitude", "facilitylatitude",
+         "customerzip", 
+         "totalbeforetax",
+         "discount", "totalpaid",
+         "startdate", "enddate", "orderdate",
+         "numberofpeople") %>% 
+  filter(facilitystate == "California") %>% 
+  mutate(sitetype = tolower(sitetype)) %>% 
+  filter(sitetype != c("historic tour",
+                      "hiking zone",
+                      "group picnic area",
+                      "cave tour",
+                      "management",
+                      "anchorage",
+                      "picnic",
+                      "entry point",
+                      "trailhead")) %>% 
+  filter(usetype == "Overnight") %>%
+  filter(customerzip == str_extract_all(customerzip,"[[:digit:]]{5}"))
+```
+
+- 2019 ridb clean had to remove `nights` column does not exist
+
+# Tidy 2020 Data
 
 ```{r}
 ridb_2020_clean <- ridb_2020 %>% 
