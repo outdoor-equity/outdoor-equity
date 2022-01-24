@@ -39,8 +39,7 @@ ridb_2020_clean <- ridb_2020 %>%
          "discount", "totalpaid",
          "startdate", "enddate", "orderdate",
          "nights",
-         "numberofpeople",
-         "equipmentdescription", "equipmentlength") %>% 
+         "numberofpeople") %>% 
   filter(facilitystate == "California") %>% 
   mutate(sitetype = tolower(sitetype)) %>% 
   filter(sitetype != c("historic tour",
@@ -54,7 +53,8 @@ ridb_2020_clean <- ridb_2020 %>%
                       "trailhead")) %>% 
   filter(usetype == "Overnight") %>% 
   mutate(nights = gsub(" days", "", nights)) %>% # used tidyverse gsub to remove day and days
-  mutate(nights = as.numeric(gsub(" day", "", nights))) # make the column numeric instead of chr
+  mutate(nights = as.numeric(gsub(" day", "", nights))) %>% # make the column numeric instead of chr
+  filter(customerzip == str_extract_all(customerzip,"[[:digit:]]{5}"))
 
 ```
 At this point:
@@ -88,4 +88,6 @@ At this point:
 - `usetype` is only "Overnight"
 - `inventorytype` is only "CAMPING"
 - `nights` is numeric and removed " day" and " days". When changed to numeric NAs were introduced by coercion. I think this came up because there were some 00:00:00 values and these can't numeric.
+- `startdate`, `enddate`, `orderdate` classes are "POSIXct" or "POSIXt" 
+- `customerzip` now only contains zip codes with 5 digit numbers; class is character
 
