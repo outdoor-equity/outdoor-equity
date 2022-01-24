@@ -57,4 +57,35 @@ ridb_2020_clean <- ridb_2020 %>%
   mutate(nights = as.numeric(gsub(" day", "", nights))) # make the column numeric instead of chr
 
 ```
+At this point:
+
+- `sitetype`: 
+"standard nonelectric"
+"group walk to"                   
+"walk to"                         
+"group standard area nonelectric"  
+"group standard nonelectric"      
+"tent only nonelectric"            
+"group tent only area nonelectric"
+”group shelter nonelectric"       
+"rv nonelectric"                                        
+"tent only electric"                                       
+"standard electric"                
+"cabin nonelectric"               
+"group equestrian"                 
+"boat in"                         
+"group hike to"                    
+"hike to"                         
+"rv electric"                      
+"cabin electric"                  
+"equestrian nonelectric"          
+"group standard electric"          
+"group standard area electric"    
+"yurt"                            
+"group rv area nonelectric"        
+"shelter nonelectric"
+- `sitetype` removed: "group shelter electric", "destination zone", NAs
+- `usetype` is only "Overnight"
+- `inventorytype` is only "CAMPING"
+- `nights` is numeric and removed " day" and " days". When changed to numeric NAs were introduced by coercion. I think this came up because there were some 00:00:00 values and these can't numeric.
 
