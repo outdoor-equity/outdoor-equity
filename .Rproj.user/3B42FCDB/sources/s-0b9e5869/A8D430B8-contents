@@ -5,6 +5,7 @@
 
 #RIDB data folder
 data/
+**/**/data
 
 #API keys
 census_api_key.R

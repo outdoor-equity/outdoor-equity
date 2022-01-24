@@ -1,0 +1,1 @@
+{"frames":[{"func":"blm %>% janitor::clean_names() %>% tolower(blm$site_type)","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0}],"message":"Error in tolower(., blm$site_type) : unused argument (blm$site_type)\n"}

@@ -1,0 +1,235 @@
+---
+title: "Data Exploration"
+author: "Clarissa Boyajian"
+date: "1/12/2022"
+output: 
+html_document:
+  df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(janitor)
+library(gt)
+
+dir.create(here::here("data")) # download data from RIDB and put at this file
+dir.create(here::here("agency_metadata_tables"))
+```
+
+
+```{r Load and split data, eval=FALSE}
+# Load raw data and choose columns to keep
+raw_data <- read.csv("data/FY20_historical_reservations_full_raw.csv") %>% 
+  select(agency, regioncode, regiondescription, parentlocation, park, sitetype, usetype, 
+         inventorytype, facilityzip, facilitystate, facilitylongitude, 
+         facilitylatitude, customerzip, customerstate, customercountry, 
+         totalpaid, startdate, enddate, orderdate, nights, numberofpeople, 
+         equipmentdescription)
+
+# Split raw data by agency: creates df for each unique agency
+for (i in unique(raw_data$agency)) {
+  assign(i, 
+         raw_data %>% 
+           filter(agency == i), 
+         envir = .GlobalEnv)
+}
+```
+
+```{r Create function, eval=FALSE}
+# Create CSV table of unique column values for agency called in function
+
+agency_metadata_tables <- function(agency_df_name, agency_df_name_as_string) {
+  # Create vectors of unique values in columns
+  region_code <- 
+    list(unique(agency_df_name$regioncode)) %>%             # create list of unique values
+    lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
+    unlist()                                                # turn list into vector for adding to df
+  region_description <- 
+    list(unique(agency_df_name$regiondescription)) %>%      # create list of unique values
+    lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
+    unlist()                                                # turn list into vector for adding to df
+  # parent_location <- 
+  #   list(unique(agency_df_name$parentlocation)) %>%         # create list of unique values
+  #   lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
+  #   unlist() %>%                                            # turn list into vector for adding to df
+  #   sort(decreasing = FALSE)                                # sort alphabetically 
+  facility_state <- 
+    list(unique(agency_df_name$facilitystate)) %>%          # create list of unique values
+    lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
+    unlist() %>%                                            # turn list into vector for adding to df
+    sort(decreasing = FALSE)                                # sort alphabetically
+  site_type <- 
+    list(unique(agency_df_name$sitetype)) %>%               # create list of unique values
+    lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
+    unlist() %>%                                            # turn list into vector for adding to df
+    sort(decreasing = FALSE)                                # sort alphabetically
+  inventory_type <- 
+    list(unique(agency_df_name$inventorytype)) %>%          # create list of unique values
+    lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
+    unlist() %>%                                            # turn list into vector for adding to df
+    sort(decreasing = FALSE)                                # sort alphabetically
+  use_type <- 
+    list(unique(agency_df_name$usetype)) %>%                # create list of unique values
+    lapply(function(s){ s[s != ""]}) %>%                    # remove NA values
+    unlist() %>%                                            # turn list into vector for adding to df
+    sort(decreasing = FALSE)                                # sort alphabetically
+  
+  # calculate length of longest column
+  table_length <- max(length(region_code), length(region_description),
+                      length(use_type), length(inventory_type),
+                      length(site_type), length(facility_state))
+  
+  # create data frame (length of longest vector)
+  df <- data.frame(matrix(nrow = table_length))
+  
+  # add vectors to df as columns
+  df$region_code <- c(region_code, 
+                      rep("", nrow(df) - length(region_code))) # add blank cells to fill df
+  df$region_description <- c(region_description, 
+                             rep("", nrow(df) - length(region_description))) # add blank cells to fill df
+  df$facility_state <- c(facility_state, 
+                         rep("", nrow(df) - length(facility_state))) # add blank cells to fill df
+  df$site_type <- c(site_type, 
+                    rep("", nrow(df) - length(site_type))) # add blank cells to fill df
+  df$inventory_type <- c(inventory_type,  
+                         rep("", nrow(df) - length(inventory_type))) # add blank cells to fill df
+  df$use_type <- c(use_type, 
+                   rep("", nrow(df) - length(use_type))) # add blank cells to fill df
+  df <- df[-c(1)] # remove first row created with df (empty)
+  
+  #write df to csv
+  write.csv(df, paste0("agency_metadata_tables/", agency_df_name_as_string, "_metadata.csv"))
+}
+```
+
+```{r Run function for all agencies, eval=FALSE}
+# Run function for all agencies
+
+agency_metadata_tables(BLM, "BLM")
+agency_metadata_tables(BOR, "BOR")
+agency_metadata_tables(FWS, "FWS")
+agency_metadata_tables(NARA, "NARA")
+agency_metadata_tables(NPS, "NPS")
+agency_metadata_tables(USACE, "USACE")
+agency_metadata_tables(USFS, "USFS")
+```
+
+
+## Explore data
+
+#### BLM (Bureau of Land Management)
+
+- no. of regions: 9
+- no. facility states: 11
+- no. parks (parent locations): 45
+- facility states missing from region: Utah, Washington
+
+```{r}
+BLM_metadata <- read.csv("agency_metadata_tables/BLM_metadata.csv")
+BLM_metadata %>% gt() %>% tab_header(title = "BLM")
+```
+
+#### BOR (Bureau of Reclamation)
+
+- no. of regions: 3
+  - Great Plains = Montana, North Dakota
+  - Mid Pacific = California
+  - Pacific Northwest = Oregon
+- no. facility states: 4
+- no. parks (parent locations): 6
+
+```{r}
+BOR_metadata <- read.csv("agency_metadata_tables/BOR_metadata.csv")
+BOR_metadata %>% gt() %>% tab_header(title = "BOR")
+```
+
+#### FWS (Fish and Wildlife Services)
+
+- no. of regions: 2
+  - Region 4 Southeast = Georgia, Maryland, Oklahoma
+  - Region 7 Alaska = Alaska
+- no. facility states: 4
+- no. parks (parent locations): 7
+
+```{r}
+FWS_metadata <- read.csv("agency_metadata_tables/FWS_metadata.csv")
+FWS_metadata %>% gt() %>% tab_header(title = "FWS")
+```
+
+#### NARA (National Archives and Records Administration)
+
+- historic tickets only 
+
+```{r}
+NARA_metadata <- read.csv("agency_metadata_tables/NARA_metadata.csv")
+NARA_metadata %>% gt() %>% tab_header(title = "NARA")
+```
+
+#### NPS (National Park Service)
+
+- no. of regions: 9
+  - Alaska Region = Alaska
+  - Imr = ?
+  - Midwest REgion = ?
+  - National Capitol Region = District of Columbia
+  - Northeast Region = ?
+  - Pwr = ?
+  - Intermountain Region = ?
+  - Southest Region = ?
+  - Pacific West Region = ?
+- no. facility states: 39
+- no. parks (parent locations): 108
+
+```{r}
+NPS_metadata <- read.csv("agency_metadata_tables/NPS_metadata.csv")
+NPS_metadata %>% gt() %>% tab_header(title = "NPS")
+```
+
+#### USACE (US Army Corps of Engineers)
+
+- no. of regions: 7
+  - Mississippi Valley
+  - North Atlantic Div
+  - NOrthwestern Div
+  - Great Lakes / Ohio R
+  - South Atlantic Div
+  - South Pacific Div
+  - Southwestern Div
+- no. facility states: 36
+- no. parks (parent locations): 213
+
+```{r}
+USACE_metadata <- read.csv("agency_metadata_tables/USACE_metadata.csv")
+USACE_metadata %>% gt() %>% tab_header(title = "USACE")
+```
+
+#### USFS (US Forest Service)
+
+- no. of regions: 9
+  - Alaska Region 
+  - Northern Region
+  - Rocky Moutain RE
+  - Southwest Reg.
+  - Intermountain Reg.
+  - Pacific Southwest
+  - Pacific Northwest
+  - Southern Region
+  - Eastern Region
+- no. facility states: 39
+- no. parks (parent locations): 111
+
+```{r}
+USFS_metadata <- read.csv("agency_metadata_tables/USFS_metadata.csv")
+USFS_metadata %>% gt() %>% tab_header(title = "USFS")
+```
+
+
+
+
+
+
+
+
+

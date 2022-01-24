@@ -1,0 +1,35 @@
+---
+title: "Clean Agency Metadata"
+author: "Halina Do-Linh"
+date: "1/23/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# attached packages
+library(tidyverse)
+library(janitor)
+library(here)
+```
+
+# Read in agency datasets
+
+```{r}
+blm <- read_csv(here("agency-metadata", "BLM_metadata.csv"))
+bor <- read_csv(here("agency-metadata", "BOR_metadata.csv"))
+fws <- read_csv(here("agency-metadata", "FWS_metadata.csv"))
+nps <- read_csv(here("agency-metadata", "NPS_metadata.csv"))
+usace <- read_csv(here("agency-metadata", "USACE_metadata.csv"))
+usfs <- read_csv(here("agency-metadata", "USFS_metadata.csv"))
+```
+
+# Tidy
+
+```{r}
+blm_clean <- blm %>% 
+  janitor::clean_names() %>% 
+  mutate(site_type = tolower(site_type))
+```
+

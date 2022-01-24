@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+#RIDB data folder
+data/
+**/**/data
+halina/
+
+#API keys
+census_api_key.R

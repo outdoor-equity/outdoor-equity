@@ -1,0 +1,6 @@
+"0","blm_clean <- blm %>% 
+  janitor::clean_names() %>% 
+  tolower(blm$site_type)
+"
+"2","Error in tolower(., blm$site_type) : unused argument (blm$site_type)
+"
