@@ -51,6 +51,10 @@ ridb_2020_clean <- ridb_2020 %>%
                       "anchorage",
                       "picnic",
                       "entry point",
-                      "trailhead"))
+                      "trailhead")) %>% 
+  filter(usetype == "Overnight") %>% 
+  mutate(nights = gsub(" days", "", nights)) %>% # used tidyverse gsub to remove day and days
+  mutate(nights = as.numeric(gsub(" day", "", nights))) # make the column numeric instead of chr
+
 ```
 
