@@ -23,8 +23,8 @@ dir.create(here::here("data/california_data"))
 dir.create(here::here("figs"))
 
 # connect to census API
-# my_api_key <- source("census_api_key.R")
-# census_api_key(my_api_key[1], install = TRUE, overwrite = TRUE)
+my_api_key <- source("census_api_key.R")
+census_api_key(my_api_key[1], install = TRUE, overwrite = TRUE)
 ```
 
 ```{r Load raw data}
@@ -63,7 +63,9 @@ santa_barbara_zip_codes = c("93001", "93001", "93013", "93013", "93013", "93067"
 
 
 # load list of all possible census variables
-# test_census <- load_variables(2019, dataset = "acs5")
+census_variables <- load_variables(2019, dataset = "acs5")
+
+# pull in census data
 ```
 
 ```{r}
@@ -180,7 +182,7 @@ tm_shape(ca_county_geom) +
   tm_fill(col = "white") +
   tm_borders(col = "black", alpha = 0.5) +
 tm_shape(park_summary) + 
-  tm_dots(col = "total_annual_visitors")
+  tm_bubbles(col = "total_annual_visitors", size = 0.25, style = "order")
 ```
 
 ```{r Santa Barbara map of parks}
