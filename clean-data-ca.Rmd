@@ -1,0 +1,320 @@
+---
+title: "Clean Data CA"
+author: "Halina Do-Linh"
+date: "1/23/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# attached packages
+library(tidyverse)
+library(janitor)
+library(here)
+```
+
+# Read in yearly reservation datasets
+
+```{r}
+ridb_2020 <- read_csv(here("data", "FY20-historical-reservations-full.csv"))
+ridb_2019 <- read_csv(here("data", "reservations2019.csv"))
+ridb_2018 <- read_csv(here("data", "reservations2018.csv"))
+ridb_2017 <- read_csv(here("data", "2017.csv"))
+ridb_2016 <- read_csv(here("data", "2016.csv"))
+ridb_2015 <- read_csv(here("data", "2015.csv"))
+ridb_2014 <- read_csv(here("data", "2014.csv"))
+ridb_2013 <- read_csv(here("data", "2013.csv"))
+ridb_2012 <- read_csv(here("data", "2012.csv"))
+ridb_2011 <- read_csv(here("data", "2011.csv"))
+ridb_2010 <- read_csv(here("data", "2010.csv"))
+```
+
+# Tidy variables for 2019 year
+
+```{r}
+select_columns <- c("historicalreservationid",
+         "ordernumber",
+         "agency",
+         "orgid",
+         "regioncode", "regiondescription",
+         "parentlocationid", "parentlocation",
+         "sitetype", "usetype",
+         "productid", 
+         "inventorytype", 
+         "facilityid", "facilityzip", "facilitystate", "facilitylongitude", "facilitylatitude",
+         "customerzip", 
+         "totalbeforetax", "discount", "totalpaid",
+         "startdate", "enddate", "orderdate",
+         "numberofpeople")
+
+rm_sitetype <- c("historic tour",
+                 "hiking zone",
+                 "group picnic area",
+                 "cave tour",
+                 "management",
+                 "anchorage",
+                 "picnic",
+                 "entry point",
+                 "trailhead")
+```
+
+
+# Tidy variables for 2018-2010 years
+
+```{r}
+# inventory_type and discount columns don't exist
+
+select_columns_18 <- c("historical_reservation_id",
+         "order_number",
+         "agency",
+         "org_id",
+         "region_code", "region_description",
+         "parent_location_id", "parent_location",
+         "site_type", "use_type",
+         "product_id", 
+         "facility_id", "facility_zip", "facility_state", "facility_longitude", "facility_latitude",
+         "customer_zip", 
+         "total_before_tax", "total_paid",
+         "start_date", "end_date", "order_date",
+         "number_of_people")
+```
+
+# Tidy 2010 Data
+
+```{r}
+# column names with underscores
+ridb_2010_clean <- ridb_2010 %>% 
+  janitor::clean_names() %>% 
+  select(select_columns_18) %>% 
+  filter(facility_state == "CA") %>% 
+  mutate(site_type = tolower(site_type)) %>% 
+  filter(site_type != rm_sitetype) %>% 
+  filter(use_type == "Overnight") %>%
+  filter(customer_zip == str_extract_all(customer_zip,"[[:digit:]]{5}"))
+```
+
+# Tidy 2011 Data
+
+```{r}
+# column names with underscores
+ridb_2011_clean <- ridb_2011 %>% 
+  janitor::clean_names() %>% 
+  select(select_columns_18) %>% 
+  filter(facility_state == "CA") %>% 
+  mutate(site_type = tolower(site_type)) %>% 
+  filter(site_type != rm_sitetype) %>% 
+  filter(use_type == "Overnight") %>%
+  filter(customer_zip == str_extract_all(customer_zip,"[[:digit:]]{5}"))
+```
+
+# Tidy 2012 Data
+
+```{r}
+# column names with underscores
+ridb_2012_clean <- ridb_2012 %>% 
+  janitor::clean_names() %>% 
+  select(select_columns_18) %>% 
+  filter(facility_state == "CA") %>% 
+  mutate(site_type = tolower(site_type)) %>% 
+  filter(site_type != rm_sitetype) %>% 
+  filter(use_type == "Overnight") %>%
+  filter(customer_zip == str_extract_all(customer_zip,"[[:digit:]]{5}"))
+```
+
+# Tidy 2013 Data
+
+```{r}
+# column names with underscores
+ridb_2013_clean <- ridb_2013 %>% 
+  janitor::clean_names() %>% 
+  select(select_columns_18) %>% 
+  filter(facility_state == "CA") %>% 
+  mutate(site_type = tolower(site_type)) %>% 
+  filter(site_type != rm_sitetype) %>% 
+  filter(use_type == "Overnight") %>%
+  filter(customer_zip == str_extract_all(customer_zip,"[[:digit:]]{5}"))
+```
+
+# Tidy 2014 Data
+
+```{r}
+# column names with underscores
+ridb_2014_clean <- ridb_2014 %>% 
+  janitor::clean_names() %>% 
+  select(select_columns_18) %>% 
+  filter(facility_state == "CA") %>% 
+  mutate(site_type = tolower(site_type)) %>% 
+  filter(site_type != rm_sitetype) %>% 
+  filter(use_type == "Overnight") %>%
+  filter(customer_zip == str_extract_all(customer_zip,"[[:digit:]]{5}"))
+```
+
+
+# Tidy 2015 Data
+
+```{r}
+# column names with underscores
+ridb_2015_clean <- ridb_2015 %>% 
+  janitor::clean_names() %>% 
+  select(select_columns_18) %>% 
+  filter(facility_state == "CA") %>% 
+  mutate(site_type = tolower(site_type)) %>% 
+  filter(site_type != rm_sitetype) %>% 
+  filter(use_type == "Overnight") %>%
+  filter(customer_zip == str_extract_all(customer_zip,"[[:digit:]]{5}"))
+```
+
+# Tidy 2016 Data
+
+```{r}
+# column names with underscores
+ridb_2016_clean <- ridb_2016 %>% 
+  janitor::clean_names() %>% 
+  select(select_columns_18) %>% 
+  filter(facility_state == "CA") %>% 
+  mutate(site_type = tolower(site_type)) %>% 
+  filter(site_type != rm_sitetype) %>% 
+  filter(use_type == "Overnight") %>%
+  filter(customer_zip == str_extract_all(customer_zip,"[[:digit:]]{5}"))
+```
+
+# Tidy 2017 Data
+
+```{r}
+# column names with underscores
+ridb_2017_clean <- ridb_2017 %>% 
+  janitor::clean_names() %>% 
+  select(select_columns_18) %>% 
+  filter(facility_state == "CA") %>% 
+  mutate(site_type = tolower(site_type)) %>% 
+  filter(site_type != rm_sitetype) %>% 
+  filter(use_type == "Overnight") %>%
+  filter(customer_zip == str_extract_all(customer_zip,"[[:digit:]]{5}"))
+```
+
+# Tidy 2018 Data
+
+```{r}
+# column names with underscores
+ridb_2018_clean <- ridb_2018 %>% 
+  janitor::clean_names() %>% 
+  select(select_columns_18) %>% 
+  filter(facility_state == "CA") %>% 
+  mutate(site_type = tolower(site_type)) %>% 
+  filter(site_type != rm_sitetype) %>% 
+  filter(use_type == "Overnight") %>%
+  filter(customer_zip == str_extract_all(customer_zip,"[[:digit:]]{5}"))
+```
+
+
+# Tidy 2019 Data
+
+```{r}
+ridb_2019_clean <- ridb_2019 %>% 
+  janitor::clean_names() %>% 
+  select(select_columns) %>% 
+  filter(facilitystate == "California") %>% 
+  mutate(sitetype = tolower(sitetype)) %>% 
+  filter(sitetype != rm_sitetype) %>% 
+  filter(usetype == "Overnight") %>%
+  filter(customerzip == str_extract_all(customerzip,"[[:digit:]]{5}"))
+```
+
+- 2019 ridb clean had to remove `nights` column does not exist
+
+# Tidy 2020 Data (OG Cleaning)
+
+```{r}
+ridb_2020_clean <- ridb_2020 %>% 
+  janitor::clean_names() %>% 
+  select("historicalreservationid",
+         "ordernumber",
+         "agency",
+         "orgid",
+         "regioncode", "regiondescription",
+         "parentlocationid", "parentlocation",
+         "sitetype", "usetype",
+         "productid", "inventorytype", 
+         "facilityid", "facilityzip", "facilitystate", "facilitylongitude", "facilitylatitude",
+         "customerzip", 
+         "totalbeforetax",
+         "discount", "totalpaid",
+         "startdate", "enddate", "orderdate",
+         "nights",
+         "numberofpeople") %>% 
+  filter(facilitystate == "California") %>% 
+  mutate(sitetype = tolower(sitetype)) %>% 
+  filter(sitetype != c("historic tour",
+                      "hiking zone",
+                      "group picnic area",
+                      "cave tour",
+                      "management",
+                      "anchorage",
+                      "picnic",
+                      "entry point",
+                      "trailhead")) %>% 
+  filter(usetype == "Overnight") %>% 
+  mutate(nights = gsub(" days", "", nights)) %>% # used tidyverse gsub to remove day and days
+  mutate(nights = as.numeric(gsub(" day", "", nights))) %>% # make the column numeric instead of chr
+  filter(customerzip == str_extract_all(customerzip,"[[:digit:]]{5}"))
+
+```
+
+# Other cleaning functions
+
+- used `get_dupes()` to confirm that there are no duplicate rows within `historicalreservationid`
+- 2020 clean data has no dupes!
+- 2019 clean data has potentially 299,247 dupes...
+- 2018 clean data has potentially 17,749 dupes...
+
+```{r}
+janitor::get_dupes(ridb_2019_clean, historicalreservationid)
+```
+
+```{r}
+janitor::get_dupes(ridb_2018_clean, historical_reservation_id)
+```
+
+
+
+# At this point:
+
+- `sitetype`: 
+"standard nonelectric"
+"group walk to"                   
+"walk to"                         
+"group standard area nonelectric"  
+"group standard nonelectric"      
+"tent only nonelectric"            
+"group tent only area nonelectric"
+”group shelter nonelectric"       
+"rv nonelectric"                                        
+"tent only electric"                                       
+"standard electric"                
+"cabin nonelectric"               
+"group equestrian"                 
+"boat in"                         
+"group hike to"                    
+"hike to"                         
+"rv electric"                      
+"cabin electric"                  
+"equestrian nonelectric"          
+"group standard electric"          
+"group standard area electric"    
+"yurt"                            
+"group rv area nonelectric"        
+"shelter nonelectric"
+- `sitetype` removed: "group shelter electric", "destination zone", NAs
+- `usetype` is only "Overnight"
+- `inventorytype` is only "CAMPING"
+- `nights` is numeric and removed " day" and " days". When changed to numeric NAs were introduced by coercion. I think this came up because there were some 00:00:00 values and these can't numeric.
+- `startdate`, `enddate`, `orderdate` classes are "POSIXct" or "POSIXt" 
+- `customerzip` now only contains zip codes with 5 digit numbers; class is character
+
+# Cleaning for data 2018-2010:
+
+- because of how the raw column names are we are getting two versions of clean names: one with and one without underscores.
+- `facility_state` is not "California" (which it is for 2019 and 2020); datasets 2018-2010 use "CA". We should ask which convention will be used moving forward...
+- just from the number of rows/ observations you can see that there is an obvious increasing trend in number of reservations over time.
+
