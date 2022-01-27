@@ -45,6 +45,6 @@ RIDB_cleaning_post2019 <- function(full_file_path, state_full_name, df_name) {
 # library(janitor)
 # library(here)
 # 
-# RIDB_cleaning_pre2018(full_file_path = "../../../capstone/outdoorequity/data/2017.csv", state = "California",
-#                       df_name = "RIDB_CA_2017")
+# RIDB_cleaning_post2019(full_file_path = "../../../capstone/outdoorequity/data/reservations2019.csv", state = "California",
+#                       df_name = "RIDB_CA_2019")
 
