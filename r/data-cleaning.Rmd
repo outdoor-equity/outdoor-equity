@@ -1,12 +1,64 @@
 ---
 title: "Data Cleaning"
-author: "Halina Do-Linh"
+author: "Clarissa Boyajian and Halina Do-Linh"
 date: "1/24/2022"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+
+# file path from .Rproj to outdoorequity shared folder
+outdoorequity_folder_file_path <- here::here("../../../../capstone/outdoorequity/")
 ```
 
 # Cleaning Function
+
+read in functions created in R script
+```{r}
+source("../r/functions/function_data-cleaning-pre2018.R")
+source("../r/functions/function_data-cleaning-post2019.R")
+```
+
+Run functions for all years 2011 - 2020 (10 year period)
+```{r}
+## -- pre-2018 data -- ##
+# 2011
+RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2011.csv"), 
+                      state_2letter = "CA", df_name = "ridb_2011")
+# 2012
+RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2012.csv"), 
+                      state_2letter = "CA", df_name = "ridb_2012")
+# 2013
+RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2013.csv"), 
+                      state_2letter = "CA", df_name = "ridb_2013")
+# 2014
+RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2014.csv"), 
+                      state_2letter = "CA", df_name = "ridb_2014")
+# 2015
+RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2015.csv"), 
+                      state_2letter = "CA", df_name = "ridb_2015")
+# 2016
+RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2016.csv"), 
+                      state_2letter = "CA", df_name = "ridb_2016")
+# 2017
+RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2017.csv"), 
+                      state_2letter = "CA", df_name = "ridb_2017")
+# 2018
+RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/reservations2018.csv"), 
+                      state_2letter = "CA", df_name = "ridb_2018")
+
+
+## -- post-2019 data -- ##
+# 2019 data
+RIDB_cleaning_post2019(full_file_path = paste0(outdoorequity_folder_file_path, "data/reservations2019.csv"), 
+                       state_full_name = "California", df_name = "ridb_2019")
+# 2020 data
+RIDB_cleaning_post2019(full_file_path = paste0(outdoorequity_folder_file_path, "data/FY20-historical-reservations-full.csv"), 
+                       state_full_name = "California", df_name = "ridb_2020")
+```
+
