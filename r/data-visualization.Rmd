@@ -11,20 +11,114 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)
 library(janitor)
+library(tmap)
+library(patchwork)
+library(lubridate)
+library(sf)
 
 # file path from .Rproj to outdoorequity shared folder
 outdoorequity_folder_file_path <- here::here("../../../../capstone/outdoorequity/")
 ```
 
-# Read in clean data
+# Read in RIDB data
 
-read in functions created in R script
 ```{r}
-source("../r/functions/function_data-cleaning-pre2018.R")
+# read in function from R script
+#source("../r/functions/function_data-cleaning-pre2018.R")
 source("../r/functions/function_data-cleaning-post2019.R")
 
-# 2020 data
-RIDB_cleaning_post2019(full_file_path = paste0(outdoorequity_folder_file_path, "data/FY20-historical-reservations-full.csv"), 
-                       state_full_name = "California", df_name = "ridb_2020")
+# read in 2019 data
+RIDB_cleaning_post2019(full_file_path = paste0(outdoorequity_folder_file_path, "data/reservations2019.csv"), 
+                       state_full_name = "California", df_name = "ridb_2019")
 ```
+# Load CA county geometry data
+
+```{r}
+# CA county geometries
+ca_county_geom <- st_read(paste0(outdoorequity_folder_file_path, "data/ca_county_geometries/counties.shp")) %>% 
+  clean_names() %>% 
+  rename(county_name = name)
+st_crs(ca_county_geom) <- 4326
+
+# Santa Barbara county zip codes
+santa_barbara_zip_codes = c("93001", "93001", "93013", "93013", "93013", "93067", "93101", "93103", "93103", "93103", "93105", "93105", "93108", "93108", "93108", "93108", "93109", "93110", "93111", "93117", "93117", "93117", "93117", "93252", "93252", "93254", "93254", "93427", "93429", "93434", "93436", "93436", "93436", "93436", "93437", "93440", "93441", "93454", "93454", "93454", "93455", "93455", "93455", "93455", "93458", "93460", "93463", "93463", "93463", "93463", "93463")
+```
+
+# Filter and summarize data
+
+```{r Create subsets}
+# add geometries to ridb data
+ridb_2019_geom <- ridb_2019 %>% 
+  st_as_sf(coords = c("facilitylongitude", "facilitylatitude"),
+           crs = 4326)
+
+# Santa Barbara county  
+santabarbara_county_geom <- ca_county_geom %>% filter(county_name == "Santa Barbara")
+
+# subset RIDB data to SB campgrounds only
+ridb_2019_subset_santabarbara <- ridb_2019_geom %>% 
+  filter(facilityzip %in% santa_barbara_zip_codes)
+```
+
+```{r Create summary dataframes}
+facility_summary_ca <- ridb_2019_geom %>% 
+  group_by(parentlocation) %>% 
+  summarise(average_people_per_visit = round(mean(numberofpeople, na.rm=TRUE), 0),
+            total_annual_visits = sum(n = n()),
+            total_annual_visitors = round(sum(numberofpeople, na.rm=TRUE), 0),
+            average_cost_per_visitor = round(mean((totalpaid / numberofpeople), na.rm=TRUE), 2),
+            average_discount = round(mean(discount, na.rm=TRUE), 2)
+            )
+
+facility_summary_santa_barbara <- ridb_2019_subset_santabarbara %>% 
+  group_by(parentlocation) %>% 
+  summarise(average_people_per_visit = round(mean(numberofpeople, na.rm=TRUE), 0),
+            total_annual_visits = sum(n = n()),
+            total_annual_visitors = round(sum(numberofpeople, na.rm=TRUE), 0),
+            average_cost_per_visitor = round(mean((totalpaid / numberofpeople), na.rm=TRUE), 2),
+            average_discount = round(mean(discount, na.rm=TRUE), 2)
+            )
+```
+
+
+
+# Create Maps
+
+```{r CA map}
+ca_map <- 
+  tm_shape(ca_county_geom) + 
+  tm_fill(col = "white") +
+  tm_borders(col = "black", alpha = 0.5)
+ca_map
+
+tmap_save(ca_map, "../figs/ca_base_map.png")
+```
+
+```{r SB map}
+santa_barbara_map <- 
+  tm_shape(santabarbara_county_geom) + 
+  tm_fill(col = "white") +
+  tm_borders(col = "black") +
+  tm_shape(facility_summary_santa_barbara) +
+  tm_bubbles(col = "parentlocation", size = 0.25)
+santa_barbara_map
+
+tmap_save(santa_barbara_map, "../figs/santa_barbara_base_map.png")
+```
+
+# Graphs
+
+```{r}
+base_graph <- ggplot(facility_summary_ca) +
+  geom_point(aes(x = average_cost_per_visitor,
+                 y = average_people_per_visit),
+             col = "darkgrey") +
+  theme_minimal() +
+  labs(x = "Average Cost per Visitor ($)",
+       y = "Average Number of People per Visit")
+base_graph
+```
+
+
+
 
