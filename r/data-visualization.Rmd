@@ -1,0 +1,30 @@
+---
+title: "Data Visualizations"
+author: "Clarissa Boyajian"
+date: "1/27/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+
+# file path from .Rproj to outdoorequity shared folder
+outdoorequity_folder_file_path <- here::here("../../../../capstone/outdoorequity/")
+```
+
+# Read in clean data
+
+read in functions created in R script
+```{r}
+source("../r/functions/function_data-cleaning-pre2018.R")
+source("../r/functions/function_data-cleaning-post2019.R")
+
+# 2020 data
+RIDB_cleaning_post2019(full_file_path = paste0(outdoorequity_folder_file_path, "data/FY20-historical-reservations-full.csv"), 
+                       state_full_name = "California", df_name = "ridb_2020")
+```
+
