@@ -33,9 +33,13 @@ write_csv(RIDB_CA_2020, here("data/clean/RIDB_CA_2020.csv"))
 ```{r}
 summary(RIDB_CA_2020)
 ```
+
+
 ```{r}
-unique(RIDB_CA_2020$parentlocationid)
+unique(RIDB_CA_2020$parentlocation)
 ```
+
+459 unique `park` values in CA but only 44 unique `parentlocationid` and 44 unique `parentlocation` so these id's and locations repeat for `park` sites?
 
 # Checking for NA's 
 
@@ -47,6 +51,7 @@ NO NAs's
 - orgid
 - parentlocationid
 - parentlocation
+- park
 - sitetype
 - usetype
 - productid
