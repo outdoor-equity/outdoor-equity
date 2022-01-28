@@ -7,11 +7,18 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
 ```
 
 # Read in data
 
 ```{r}
+fp = here("~/../capstone/outdoorequity/data/FY20-historical-reservations-full.csv")
 
+RIDB_cleaning_post2019(full_file_path = fp, 
+                       state = "California", 
+                       df_name = "RIDB_CA_2020")
 ```
 
