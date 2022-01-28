@@ -7,11 +7,80 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
 ```
 
 # Read in data
 
 ```{r}
+fp = here::here("data/FY20-historical-reservations-full.csv")
 
+RIDB_cleaning_post2019(full_file_path = fp, 
+                       state = "California", 
+                       df_name = "RIDB_CA_2020")
 ```
+
+# Save clean data 
+
+```{r}
+write_csv(RIDB_CA_2020, here("data/clean/RIDB_CA_2020.csv"))
+```
+
+# Metadata
+
+```{r}
+summary(RIDB_CA_2020)
+```
+
+
+```{r}
+unique(RIDB_CA_2020$parentlocation)
+```
+
+459 unique `park` values in CA but only 44 unique `parentlocationid` and 44 unique `parentlocation` so these id's and locations repeat for `park` sites?
+
+# Checking for NA's 
+
+NO NAs's
+
+- historicalreservationid
+- ordernumber
+- agency
+- orgid
+- parentlocationid
+- parentlocation
+- park
+- sitetype
+- usetype
+- productid
+- inventorytype
+- facilityid
+- facilityzip
+- facilitystate
+- facilitylongitude
+- facilitylatitude
+- customerzip
+- totalbeforetax
+- discount
+- totalpaid
+- startdate
+- enddate
+- orderdate
+- numberofpeople
+
+YES NA's
+
+- regioncode (653)
+- regiondescription (653)
+
+```{r}
+# for(i in 1:ncol(RIDB_CA_2020)) {
+#   sum(is.na(RIDB_CA_2020$i)) 
+# }
+```
+
+
+
 

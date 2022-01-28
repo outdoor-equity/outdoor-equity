@@ -7,6 +7,7 @@ RIDB_cleaning_post2019 <- function(full_file_path, state_full_name, df_name) {
                       "orgid",
                       "regioncode", "regiondescription",
                       "parentlocationid", "parentlocation",
+                      "park",
                       "sitetype", "usetype",
                       "productid", 
                       "inventorytype", 
