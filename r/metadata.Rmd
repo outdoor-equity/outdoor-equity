@@ -31,8 +31,51 @@ write_csv(RIDB_CA_2020, here("data/clean/RIDB_CA_2020.csv"))
 # Metadata
 
 ```{r}
-
+summary(RIDB_CA_2020)
 ```
+```{r}
+unique(RIDB_CA_2020$parentlocationid)
+```
+
+# Checking for NA's 
+
+NO NAs's
+
+- historicalreservationid
+- ordernumber
+- agency
+- orgid
+- parentlocationid
+- parentlocation
+- sitetype
+- usetype
+- productid
+- inventorytype
+- facilityid
+- facilityzip
+- facilitystate
+- facilitylongitude
+- facilitylatitude
+- customerzip
+- totalbeforetax
+- discount
+- totalpaid
+- startdate
+- enddate
+- orderdate
+- numberofpeople
+
+YES NA's
+
+- regioncode (653)
+- regiondescription (653)
+
+```{r}
+# for(i in 1:ncol(RIDB_CA_2020)) {
+#   sum(is.na(RIDB_CA_2020$i)) 
+# }
+```
+
 
 
 
