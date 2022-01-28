@@ -15,10 +15,24 @@ library(here)
 # Read in data
 
 ```{r}
-fp = here("~/../capstone/outdoorequity/data/FY20-historical-reservations-full.csv")
+fp = here::here("data/FY20-historical-reservations-full.csv")
 
 RIDB_cleaning_post2019(full_file_path = fp, 
                        state = "California", 
                        df_name = "RIDB_CA_2020")
 ```
+
+# Save clean data 
+
+```{r}
+write_csv(RIDB_CA_2020, here("data/clean/RIDB_CA_2020.csv"))
+```
+
+# Metadata
+
+```{r}
+
+```
+
+
 
