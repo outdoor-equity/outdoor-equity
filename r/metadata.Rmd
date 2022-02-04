@@ -10,9 +10,122 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(here)
+library(janitor)
+library(lubridate)
 ```
 
-# Read in data
+# Read in data and clean
+- variables discount and inventory_type doesn't exist in older datasets
+
+```{r}
+ridb_2010 <- read_csv(here("data/2010.csv")) %>% 
+  clean_names() %>% 
+  select(c("agency",
+           "parent_location",
+           "park",
+           "site_type",
+           "use_type",
+           "facility_state",
+           "facility_latitude",
+           "facility_longitude",
+           "customer_zip",
+           "total_paid",
+           "start_date",
+           "end_date",
+           "order_date",
+           "number_of_people"))
+```
+
+
+
+```{r}
+ridb_2020 <- read_csv(here("data/FY20-historical-reservations-full.csv")) %>% 
+  clean_names() %>% 
+  select(c("agency", 
+           "regiondescription",
+           "parentlocation",
+           "park",
+           "sitetype",
+           "usetype",
+           "inventorytype",
+           "facilitystate",
+           "facilitylatitude",
+           "facilitylongitude",
+           "customerzip",
+           "totalpaid",
+           "discount",
+           "startdate",
+           "enddate",
+           "orderdate",
+           "numberofpeople"))
+  
+```
+
+# Exploring metadata
+
+```{r}
+sum(is.na(ridb_2020$park))
+
+class(ridb_2020$park)
+
+length(unique(ridb_2020$park))
+
+unique(ridb_2020$park)
+
+max(ridb_2020$totalpaid)
+```
+
+```{r}
+ridb_2020_explore <- ridb_2020 %>% 
+  filter(facilitystate == "Delaware")
+```
+
+
+```{r}
+ridb_2018_explore <- ridb_2018 %>%
+  select(c(order_date, number_of_people)) %>% 
+  replace_na(list(number_of_people = "unknown")) %>% 
+  filter(number_of_people == "unknown") %>% 
+  mutate(month = lubridate::month(order_date)) %>% 
+  #filter(year %in% c(2019, 2020)) %>% 
+  group_by(month) %>% 
+  summarize(n())
+```
+
+
+```{r}
+ridb_2020_explore <- ridb_2020 %>%
+  select(c(orderdate, numberofpeople)) %>% 
+  replace_na(list(numberofpeople = "unknown")) %>% 
+  filter(numberofpeople == "unknown") %>% 
+  mutate(month = lubridate::month(orderdate)) %>% 
+  #filter(year %in% c(2019, 2020)) %>% 
+  group_by(month) %>% 
+  summarize(n())
+
+class(ridb_2020_explore$year)
+```
+
+
+```{r}
+ridb_2020_explore <- ridb_2020 %>% 
+  select("sitetype") %>% 
+  group_by(sitetype) %>% 
+  summarize()
+
+```
+
+
+```{r}
+ridb_2020_explore <- ridb_2020 %>% 
+  replace_na(list(usetype = "unknown")) %>% 
+  filter(usetype == "unknown")
+  # group_by(park) %>% 
+  # summarize(n = n())
+
+unique(ridb_2020_explore$inventorytype)
+```
+
 
 ```{r}
 fp = here::here("data/FY20-historical-reservations-full.csv")
@@ -22,64 +135,6 @@ RIDB_cleaning_post2019(full_file_path = fp,
                        df_name = "RIDB_CA_2020")
 ```
 
-# Save clean data 
-
-```{r}
-write_csv(RIDB_CA_2020, here("data/clean/RIDB_CA_2020.csv"))
-```
-
-# Metadata
-
-```{r}
-summary(RIDB_CA_2020)
-```
-
-
-```{r}
-unique(RIDB_CA_2020$parentlocation)
-```
-
-459 unique `park` values in CA but only 44 unique `parentlocationid` and 44 unique `parentlocation` so these id's and locations repeat for `park` sites?
-
-# Checking for NA's 
-
-NO NAs's
-
-- historicalreservationid
-- ordernumber
-- agency
-- orgid
-- parentlocationid
-- parentlocation
-- park
-- sitetype
-- usetype
-- productid
-- inventorytype
-- facilityid
-- facilityzip
-- facilitystate
-- facilitylongitude
-- facilitylatitude
-- customerzip
-- totalbeforetax
-- discount
-- totalpaid
-- startdate
-- enddate
-- orderdate
-- numberofpeople
-
-YES NA's
-
-- regioncode (653)
-- regiondescription (653)
-
-```{r}
-# for(i in 1:ncol(RIDB_CA_2020)) {
-#   sum(is.na(RIDB_CA_2020$i)) 
-# }
-```
 
 
 
