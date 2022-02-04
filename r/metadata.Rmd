@@ -128,6 +128,14 @@ unique(ridb_2020_explore$inventorytype)
 
 
 ```{r}
+ridb_2020_explore <- ridb_2020 %>%
+  mutate(year = lubridate::year(orderdate)) %>% 
+  select(c(orderdate, startdate, enddate)) %>% 
+  filter(year %in% 2019)
+```
+
+
+```{r}
 fp = here::here("data/FY20-historical-reservations-full.csv")
 
 RIDB_cleaning_post2019(full_file_path = fp, 
