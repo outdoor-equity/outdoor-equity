@@ -16,49 +16,82 @@ library(janitor)
 outdoorequity_folder_file_path <- here::here("../../../../capstone/outdoorequity/")
 ```
 
-# Cleaning Function
+# Subsetting Function
 
 read in functions created in R script
 ```{r}
-source("../r/functions/function_data-cleaning-pre2018.R")
-source("../r/functions/function_data-cleaning-post2019.R")
+source("../r/functions/function_data-subsetting-pre2018.R")
+source("../r/functions/function_data-subsetting-post2019.R")
 ```
 
 Run functions for all years 2011 - 2020 (10 year period)
 ```{r}
 ## -- pre-2018 data -- ##
 # 2011
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2011.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2011")
-# 2012
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2012.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2012")
-# 2013
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2013.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2013")
-# 2014
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2014.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2014")
-# 2015
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2015.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2015")
-# 2016
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2016.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2016")
-# 2017
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2017.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2017")
+# RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2011.csv"), 
+#                       state_2letter = "CA", df_name = "ridb_2011")
+# # 2012
+# RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2012.csv"), 
+#                       state_2letter = "CA", df_name = "ridb_2012")
+# # 2013
+# RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2013.csv"), 
+#                       state_2letter = "CA", df_name = "ridb_2013")
+# # 2014
+# RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2014.csv"), 
+#                       state_2letter = "CA", df_name = "ridb_2014")
+# # 2015
+# RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2015.csv"), 
+#                       state_2letter = "CA", df_name = "ridb_2015")
+# # 2016
+# RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2016.csv"), 
+#                       state_2letter = "CA", df_name = "ridb_2016")
+# # 2017
+# RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2017.csv"), 
+#                       state_2letter = "CA", df_name = "ridb_2017")
 # 2018
 RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/reservations2018.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2018")
+                      state_abbrev = "CA", df_name = "ridb_2018")
 
 
 ## -- post-2019 data -- ##
 # 2019 data
-RIDB_cleaning_post2019(full_file_path = paste0(outdoorequity_folder_file_path, "data/reservations2019.csv"), 
-                       state_full_name = "California", df_name = "ridb_2019")
-# 2020 data
-RIDB_cleaning_post2019(full_file_path = paste0(outdoorequity_folder_file_path, "data/FY20-historical-reservations-full.csv"), 
-                       state_full_name = "California", df_name = "ridb_2020")
+# RIDB_cleaning_post2019(full_file_path = paste0(outdoorequity_folder_file_path, "data/reservations2019.csv"), 
+#                        state_full_name = "California", df_name = "ridb_2019")
+# # 2020 data
+# RIDB_cleaning_post2019(full_file_path = paste0(outdoorequity_folder_file_path, "data/FY20-historical-reservations-full.csv"), 
+#                        state_full_name = "California", df_name = "ridb_2020")
 ```
+
+# Standardizing values (listing NAs)
+
+Notes on standardizations to consider:
+- region description: 
+    - change "-FS" and "- FS" to "Forest Service"
+    - add indicator to regions without (i.e. not USFS or NPS)
+- parent location:
+    - change "-FS" and "- FS" to "Forest Service"
+    - change "NF" to "National Forest"
+    - change "PWR" to "Pacific West Region"
+- park:
+    - remove "--- #idcodehere#", and " (CA)" from ends of park names
+    - fix anomolies that don't follow pattern (i.e. "region / campground name" or "campground name, region")
+    - remove all uppercase
+- facility zip:
+    - remove everything after 5th digit
+- start date:
+    - min: 2017-06-19
+    - max: 2019-09-30
+- end date:
+    - min: 2017-06-22
+    - max: 2019-10-14
+- order date: **the data is split by fiscal year of order date!!**
+    - min: 2017-10-01
+    - max: 2018-09-30
+
+```{r}
+
+```
+
+
+
 
