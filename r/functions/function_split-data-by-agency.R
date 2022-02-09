@@ -2,7 +2,7 @@
 
 
 # split_data_by_agency <- function(clean_data_df) {
-#   for (i in unique(clean_data_df$agency)) {
+#   for (i in seq_along(unique(clean_data_df$agency)) {
 #     i_agency <- clean_data_df %>% filter(agency == i)
 #     assign(x = paste0(clean_data_df, "_", i), 
 #            value = data.frame(i_agency), 
