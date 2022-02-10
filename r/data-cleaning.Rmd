@@ -19,12 +19,12 @@ outdoorequity_folder_file_path <- here::here("../../../../capstone/outdoorequity
 
 # Bring in RIDB Data
 
-## RIDB Subsetting Function
+## Set up
 
-read in functions created in R script
 ```{r}
-source("../r/functions/function_data-subsetting-pre2018.R")
-source("../r/functions/function_data-subsetting-post2019.R")
+# read in functions created in R script
+source("functions/function_data-subsetting-pre2018.R")
+source("functions/function_data-subsetting-post2019.R")
 ```
 
 ```{r}
@@ -67,11 +67,31 @@ Notes on standardizations to consider:
 
 # Bring in Census Data
 
-```{r}
+## Set up
 
-census_api_key()
+```{r}
+census_api <- source("api_keys/census_api_key.R")
+census_api_key(key = census_api, install = TRUE)
 ```
 
+```{r}
+acs5_variables <- load_variables(year = 2019, dataset = "acs5")
+
+acs_2019 <- get_acs(geography = "zip code tabulation are",
+                    year = "2019",
+                    variables = c("B01003_001", #TOTAL POPULATION - Estimate!!Total
+                                  "B02001_002", #RACE - Estimate!!Total:!!White alone
+                                  "B02001_003", #RACE - Estimate!!Total:!!Black or African American alone
+                                  "B02001_004", #RACE - Estimate!!Total:!!American Indian and Alaska Native alone
+                                  "B02001_005", #RACE - Estimate!!Total:!!Asian alone
+                                  "B02001_006", #RACE - Estimate!!Total:!!Native Hawaiian and Other Pacific Islander alone
+                                  "B02001_007", #RACE - Estimate!!Total:!!Some other race alone
+                                  "B02001_008", #RACE - Estimate!!Total:!!Two or more races
+                                  "B02001_009", #RACE - Estimate!!Total:!!Two or more races:!!Two races including Some other race
+                                  "B02001_010", #RACE - Estimate!!Total:!!Two or more races:!!Two races excluding Some other race,                                                         and three or more races
+                                  ""
+                                  ))
+```
 
 
 
