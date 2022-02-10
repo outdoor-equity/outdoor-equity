@@ -79,19 +79,42 @@ acs5_variables <- load_variables(year = 2019, dataset = "acs5")
 
 acs_2019 <- get_acs(geography = "zip code tabulation are",
                     year = "2019",
-                    variables = c("B01003_001", #TOTAL POPULATION - Estimate!!Total
-                                  "B02001_002", #RACE - Estimate!!Total:!!White alone
-                                  "B02001_003", #RACE - Estimate!!Total:!!Black or African American alone
-                                  "B02001_004", #RACE - Estimate!!Total:!!American Indian and Alaska Native alone
-                                  "B02001_005", #RACE - Estimate!!Total:!!Asian alone
-                                  "B02001_006", #RACE - Estimate!!Total:!!Native Hawaiian and Other Pacific Islander alone
-                                  "B02001_007", #RACE - Estimate!!Total:!!Some other race alone
-                                  "B02001_008", #RACE - Estimate!!Total:!!Two or more races
-                                  "B02001_009", #RACE - Estimate!!Total:!!Two or more races:!!Two races including Some other race
-                                  "B02001_010", #RACE - Estimate!!Total:!!Two or more races:!!Two races excluding Some other race,                                                         and three or more races
-                                  ""
+                    variables = c(
+                        ## RACE ##
+                        "B02001_001", #Estimate!!Total:
+                        "B02001_002", # Estimate!!Total:!!White alone
+                        "B02001_003", # Estimate!!Total:!!Black or African American alone
+                        "B02001_004", # Estimate!!Total:!!American Indian and Alaska Native alone
+                        "B02001_005", # Estimate!!Total:!!Asian alone
+                        "B02001_006", # Estimate!!Total:!!Native Hawaiian and Other Pacific Islander alone
+                        "B02001_007", # Estimate!!Total:!!Some other race alone
+                        "B02001_008", # Estimate!!Total:!!Two or more races
+                        ## MEANS OF TRANSPORTATION TO WORK BY VEHICLES AVAILABLE ##
+                        "B08141_001", #Estimate!!Total:
+                        "B08141_002", # Estimate!!Total:!!No vehicle available
+                        ## EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER ##
+                        "B15003_002", # Estimate!!Total:
+                        "B15003_002", "B15003_003",  "B15003_004", "B15003_005", 
+                        "B15003_006", "B15003_007", "B15003_008", "B15003_009",
+                        "B15003_010", "B15003_011", "B15003_012", "B15003_013",
+                        "B15003_014", "B15003_015", "B15003_016", "B15003_017",
+                        "B15003_018", # Estimate!!Total:!!GED or alternative credential or below
+                        "B15003_019", "B15003_020", # Estimate!!Total:!!Some college
+                        "B15003_021", "B15003_022", # Estimate!!Total:!!Associates or bachelors degree
+                        "B15003_023", "B15003_024", "B15003_025", # Estimate!!Total:!!Masters degree and above
+                        ## HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
+                        "B19001_001", # Estimate!!Total:
+                        "B19001_002", # Estimate!!Total:!!Less than $10,00 (spread of ranges change from -002 to -0017)
+                        "B19001_017", # Estimate!!Total:!!$200,000 or more
+                        ## MEDIAN HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
+                        "B19013_001", # Estimate!!Median household income in the past 12 months (in 2019 inflation-adjusted dollars)
+                        ## PER CAPITA INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
+                        "B19301_001", # Estimate!!Per capita income in the past 12 months (in 2019 inflation-adjusted dollars)
+                        ## LANGUAGE SPOKEN AT HOME BY ABILITY TO SPEAK ENGLISH FOR THE POPULATION 5 YEARS AND OVER ##
+                        # long list found here (https://data.census.gov/cedsci/table?d=ACS%205-Year%20Estimates%20Detailed%20Tables&tid=ACSDT5Y2019.B16001)
                                   ))
 ```
+
 
 
 
