@@ -93,7 +93,7 @@ acs_2019 <- get_acs(geography = "zip code tabulation are",
                         "B08141_001", #Estimate!!Total:
                         "B08141_002", # Estimate!!Total:!!No vehicle available
                         ## EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER ##
-                        "B15003_002", # Estimate!!Total:
+                        "B15003_001", # Estimate!!Total:
                         "B15003_002", "B15003_003",  "B15003_004", "B15003_005", 
                         "B15003_006", "B15003_007", "B15003_008", "B15003_009",
                         "B15003_010", "B15003_011", "B15003_012", "B15003_013",
