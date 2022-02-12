@@ -11,54 +11,205 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)
 library(janitor)
+library(tidycensus)
+library(sf)
+library(lubridate)
+
+options(scipen = 999)
 
 # file path from .Rproj to outdoorequity shared folder
 outdoorequity_folder_file_path <- here::here("../../../../capstone/outdoorequity/")
 ```
 
-# Cleaning Function
+# Bring in RIDB Data
 
-read in functions created in R script
+## Set up
+
 ```{r}
-source("../r/functions/function_data-cleaning-pre2018.R")
-source("../r/functions/function_data-cleaning-post2019.R")
+# read in functions created in R script
+source("functions/function_data-subsetting-pre2018.R")
+source("functions/function_data-subsetting-post2019.R")
 ```
 
-Run functions for all years 2011 - 2020 (10 year period)
 ```{r}
-## -- pre-2018 data -- ##
-# 2011
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2011.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2011")
-# 2012
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2012.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2012")
-# 2013
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2013.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2013")
-# 2014
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2014.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2014")
-# 2015
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2015.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2015")
-# 2016
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2016.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2016")
-# 2017
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/2017.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2017")
 # 2018
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, "data/reservations2018.csv"), 
-                      state_2letter = "CA", df_name = "ridb_2018")
+RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, 
+                                              "data/reservations2018.csv"), 
+                      state_abbrev = "CA", df_name = "ridb_2018")
 
-
-## -- post-2019 data -- ##
-# 2019 data
-RIDB_cleaning_post2019(full_file_path = paste0(outdoorequity_folder_file_path, "data/reservations2019.csv"), 
-                       state_full_name = "California", df_name = "ridb_2019")
-# 2020 data
-RIDB_cleaning_post2019(full_file_path = paste0(outdoorequity_folder_file_path, "data/FY20-historical-reservations-full.csv"), 
-                       state_full_name = "California", df_name = "ridb_2020")
+ridb_2018 <- ridb_2018 %>% 
+    mutate(start_date = as.Date(start_date),
+           end_date = as.Date(end_date),
+           order_date = as.Date(order_date))
 ```
+
+## Standardizing values
+
+Notes on standardizations to consider:
+- region description: 
+    - change "-FS" and "- FS" to "Forest Service"
+    - add indicator to regions without (i.e. not USFS or NPS)
+- parent location:
+    - change "-FS" and "- FS" to "Forest Service"
+    - change "NF" to "National Forest"
+    - change "PWR" to "Pacific West Region"
+- park:
+    - remove "--- #idcodehere#", and " (CA)" from ends of park names
+    - fix anomolies that don't follow pattern (i.e. "region / campground name" or "campground name, region")
+    - remove all uppercase
+- facility zip:
+    - remove everything after 5th digit
+- start date:
+    - min: 2017-06-19
+    - max: 2019-09-30
+- end date:
+    - min: 2017-06-22
+    - max: 2019-10-14
+- order date: **the data is split by fiscal year of order date!!**
+    - min: 2017-10-01
+    - max: 2018-09-30
+
+NAs:
+    - facility zip: 108309
+
+```{r}
+
+```
+
+
+## Calculated Variables
+
+Issues to consider: 
+
+
+```{r}
+ridb_2018 <- ridb_2018 %>% 
+    st_as_sf(coords = c("facility_longitude", "facility_latitude"),
+             crs = 4326) %>% 
+    mutate(length_of_stay = as.numeric(difftime(end_date, start_date), units = "days"), # range: 1 - 22
+           booking_window = as.numeric(difftime(start_date, order_date), units = "days"), # range: -126 - 662
+           cost_per_visitor_per_day = (total_paid / number_of_people) / length_of_stay # range: $0 - $279, (48 rows are Inf because # people = 0)
+           )
+
+
+```
+
+
+## Visualize
+
+```{r}
+ggplot(data = ridb_2018) +
+    geom_histogram(aes(x = length_of_stay))
+```
+
+
+# Bring in Census Data
+
+## Set up
+
+```{r message=FALSE}
+census_api <- source("api_keys/census_api_key.R")
+census_api_key(key = census_api[[1]], install = TRUE, overwrite = TRUE)
+readRenviron("~/.Renviron")
+
+# acs5_variables <- load_variables(year = 2019, dataset = "acs5")
+
+# set up what to load
+acs_geography <- "zcta"
+acs_year <- 2018
+```
+
+```{r}
+## RACE ##
+acs_2018_race <- 
+    get_acs(geography = acs_geography,
+            year = acs_year,
+            state = "CA",
+            summary_var = "B02001_001", #Estimate!!Total:
+            variables = c(
+                white = "B02001_002", # Estimate!!Total:!!White alone
+                black = "B02001_003", # Estimate!!Total:!!Black or African American alone
+                native_american = "B02001_004", # Estimate!!Total:!!American Indian and Alaska Native alone
+                asian = "B02001_005", # Estimate!!Total:!!Asian alone
+                pacific_islander = "B02001_006", # Estimate!!Total:!!Native Hawaiian and Other Pacific Islander alone
+                other = "B02001_007", # Estimate!!Total:!!Some other race alone
+                multiracial = "B02001_008" # Estimate!!Total:!!Two or more races
+            )) %>% 
+    clean_names() %>% 
+    mutate(zip_code = str_sub(name, start = -5, end = -1)) %>% 
+    rename(race = variable)
+```
+
+```{r}
+## MEANS OF TRANSPORTATION TO WORK BY VEHICLES AVAILABLE ##
+acs_2018_transportation <- get_acs(geography = acs_geography,
+                                   year = acs_year,
+                                   state = "CA",
+                                   summary_var = "B08141_001", #Estimate!!Total:
+                                   variables = c(
+                                       no_vehicle = "B08141_002" # Estimate!!Total:!!No vehicle available
+                                   ))
+
+## EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER ##
+acs_2018_education <- get_acs(geography = acs_geography,
+                              year = acs_year,
+                              state = "CA",
+                              summary_var = "B15003_001", # Estimate!!Total:
+                              variables = c(
+                                  "B15003_002", "B15003_003",  "B15003_004", "B15003_005", 
+                                  "B15003_006", "B15003_007", "B15003_008", "B15003_009",
+                                  "B15003_010", "B15003_011", "B15003_012", "B15003_013",
+                                  "B15003_014", "B15003_015", "B15003_016", "B15003_017",
+                                  "B15003_018", # Estimate!!Total:!!GED or alternative credential or below (including above)
+                                  "B15003_019", "B15003_020", # Estimate!!Total:!!Some college
+                                  "B15003_021", "B15003_022", # Estimate!!Total:!!Associates or bachelors degree
+                                  "B15003_023", "B15003_024", "B15003_025" # Estimate!!Total:!!Masters degree and above
+                              ))
+## HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
+acs_2018_total_income <- get_acs(geography = "zcta",
+                                 year = acs_year,
+                                 state = "CA",
+                                 summary_var = "B19001_001", # Estimate!!Total:
+                                 variables = c(
+                                     "B19001_002", # Estimate!!Total:!!Less than $10,00 (spread of ranges change from -002 to -0017)
+                                     "B19001_017" # Estimate!!Total:!!$200,000 or more
+                                   ))
+## MEDIAN HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
+acs_2018_median_income <- get_acs(geography = acs_geography,
+                                  year = acs_year,
+                                  state = "CA",
+                                  variables = c(
+                                      median_income = "B19013_001" # Estimate!!Median household income in the past 12 months (in 2019 inflation-adjusted dollars)
+                                  ))
+## PER CAPITA INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
+acs_2018_percapita_income <- get_acs(geography = acs_geography,
+                                     year = acs_year,
+                                     state = "CA",
+                                     variables = c(                        
+                                         "B19301_001" # Estimate!!Per capita income in the past 12 months (in 2019 inflation-adjusted dollars)
+                                     ))
+## LANGUAGE SPOKEN AT HOME BY ABILITY TO SPEAK ENGLISH FOR THE POPULATION 5 YEARS AND OVER ##
+                        # long list found here (https://data.census.gov/cedsci/table?d=ACS%205-Year%20Estimates%20Detailed%20Tables&tid=ACSDT5Y2019.B16001)
+##THINK ABOUT ADDING:
+#B05001 # citizenship status
+
+## use "geometry = TRUE" within `get_acs()` function to get geometries for areas
+```
+
+
+## Calculating socioeconomic demographics
+
+```{r}
+acs_2018_race_stats <- 
+    acs_2018_race %>% 
+    group_by(zip_code, race) %>% 
+    summarise(percent = estimate / summary_est)
+```
+
+## Visualize
+
+```{r}
+
+```
+
 
