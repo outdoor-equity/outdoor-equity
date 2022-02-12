@@ -12,6 +12,8 @@ library(tidyverse)
 library(here)
 library(janitor)
 library(tidycensus)
+library(sf)
+library(lubridate)
 
 options(scipen = 999)
 
@@ -34,6 +36,11 @@ source("functions/function_data-subsetting-post2019.R")
 RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, 
                                               "data/reservations2018.csv"), 
                       state_abbrev = "CA", df_name = "ridb_2018")
+
+ridb_2018 <- ridb_2018 %>% 
+    mutate(start_date = as.Date(start_date),
+           end_date = as.Date(end_date),
+           order_date = as.Date(order_date))
 ```
 
 ## Standardizing values
@@ -52,7 +59,6 @@ Notes on standardizations to consider:
     - remove all uppercase
 - facility zip:
     - remove everything after 5th digit
-    - 108309 NAs
 - start date:
     - min: 2017-06-19
     - max: 2019-09-30
@@ -63,12 +69,37 @@ Notes on standardizations to consider:
     - min: 2017-10-01
     - max: 2018-09-30
 
+NAs:
+    - facility zip: 108309
+
+```{r}
+
+```
+
 
 ## Calculated Variables
 
+Issues to consider: 
+
+
 ```{r}
 ridb_2018 <- ridb_2018 %>% 
-    
+    st_as_sf(coords = c("facility_longitude", "facility_latitude"),
+             crs = 4326) %>% 
+    mutate(length_of_stay = as.numeric(difftime(end_date, start_date), units = "days"), # range: 1 - 22
+           booking_window = as.numeric(difftime(start_date, order_date), units = "days"), # range: -126 - 662
+           cost_per_visitor_per_day = (total_paid / number_of_people) / length_of_stay # range: $0 - $279, (48 rows are Inf because # people = 0)
+           )
+
+
+```
+
+
+## Visualize
+
+```{r}
+ggplot(data = ridb_2018) +
+    geom_histogram(aes(x = length_of_stay))
 ```
 
 
