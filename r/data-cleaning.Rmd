@@ -22,6 +22,17 @@ options(scipen = 999)
 outdoorequity_folder_file_path <- here::here("../../../../capstone/outdoorequity/")
 ```
 
+# Bring in geometries
+
+```{r}
+# CA county geometries
+ca_county_geom <- st_read(paste0(outdoorequity_folder_file_path, "../../../../capstone/outdoorequity/data/ca_county_geometries/counties.shp")) %>% 
+  clean_names() %>% 
+  rename(county_name = name)
+st_crs(ca_county_geom) <- 4326
+```
+
+
 # Bring in RIDB Data
 
 ## Set up
@@ -144,63 +155,6 @@ ridb_2018_agency_summary <-
               count = n())
 ```
 
-## Visualize
-
-### Reservation viz
-
-```{r}
-ggplot(data = ridb_2018) +
-    geom_histogram(aes(x = length_of_stay), fill = "goldenrod") +
-    labs(x = "Lenth of stay (days)",
-         y = "Individual Reservations") +
-    theme_minimal()
-```
-
-NOTES for graph below: 
-- `r `nrow(ridb_2018 %>% filter(booking_window < 0)) / nrow(ridb_2018)`% of data > 0 (~1%)
-```{r}
-plot_histogram_booking_window <- 
-    ggplot(data = ridb_2018, 
-           aes(x = booking_window)) +
-    geom_histogram(fill = "goldenrod", binwidth = 10) +
-    labs(y = "Count of Individual Visits",
-         x = "Days elapsed from order to visit",
-         title = "Booking Windows for Reservable Overnight Sites in California (2018) ") +
-    theme_minimal() +
-    theme(panel.grid.minor.x = element_blank()) +
-    scale_x_continuous(limits = c(0, 510), breaks = seq(0, 510, by = 30)) +
-    scale_y_continuous(limits = c(0, 100000), breaks = seq(0, 100000, by = 20000)) +
-    geom_vline(xintercept = 180, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 210, y = 90900, label = "6 months") +
-    geom_vline(xintercept = 360, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 380, y = 90900, label = "1 year")
-
-plot_histogram_booking_window
-```
-
-```{r, eval=FALSE}
-ggsave(plot = plot_histogram_booking_window, filename = "../figs/histogram_booking_window.png")
-```
-
-
-### Reservable Site viz
-
-
-
-
-
-### Agency viz
-
-```{r}
-# reservations per agency
-ggplot(data = ridb_2018) +
-    geom_histogram(aes(x = agency), stat = "count")
-```
-
-```{r}
-tm_shape()
-```
-
 
 # Bring in Census Data
 
@@ -305,10 +259,81 @@ acs_2018_race_stats <-
     summarise(percent = estimate / summary_est)
 ```
 
-## Visualize
+
+# Visualization
+
+### Reservation viz
+
+```{r}
+ggplot(data = ridb_2018) +
+    geom_histogram(aes(x = length_of_stay), fill = "goldenrod") +
+    labs(x = "Lenth of stay (days)",
+         y = "Individual Reservations") +
+    theme_minimal()
+```
+
+NOTES for graph below: 
+- `r `nrow(ridb_2018 %>% filter(booking_window < 0)) / nrow(ridb_2018)`% of data > 0 (~1%)
+```{r}
+plot_histogram_booking_window <- 
+    ggplot(data = ridb_2018, 
+           aes(x = booking_window)) +
+    geom_histogram(fill = "goldenrod", binwidth = 10) +
+    labs(y = "Count of Individual Visits",
+         x = "Days elapsed from order to visit",
+         title = "Booking Windows for Reservable Overnight Sites in California (2018) ") +
+    theme_minimal() +
+    theme(panel.grid.minor.x = element_blank()) +
+    scale_x_continuous(limits = c(0, 510), breaks = seq(0, 510, by = 30)) +
+    scale_y_continuous(limits = c(0, 100000), breaks = seq(0, 100000, by = 20000)) +
+    geom_vline(xintercept = 180, linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", x = 210, y = 90900, label = "6 months") +
+    geom_vline(xintercept = 360, linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", x = 380, y = 90900, label = "1 year")
+
+plot_histogram_booking_window
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_histogram_booking_window, filename = "../figs/histogram_booking_window.png")
+```
+
+
+### Reservable Site viz
 
 ```{r}
 
 ```
+
+
+
+
+### Agency viz
+
+```{r}
+# reservations per agency
+ggplot(data = ridb_2018) +
+    geom_histogram(aes(x = agency), stat = "count")
+```
+
+```{r}
+plot_jitter_violin_agency_length_of_stay <- 
+    ggplot(data = ridb_2018) +
+    geom_jitter(aes(x = agency,
+                    y = length_of_stay,
+                    col = agency)) +
+    geom_violin(aes(x = agency,
+                    y = length_of_stay),
+                alpha = .5)
+
+plot_jitter_violin_agency_length_of_stay
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_jitter_violin_agency_length_of_stay,
+       filename = "../figs/jitter_violin_length_of_stay.png")
+```
+
+
 
 
