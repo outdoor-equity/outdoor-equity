@@ -80,7 +80,8 @@ NAs:
 ## Calculated Variables
 
 Issues to consider: 
-
+- length of stay goes to -126
+- highest price / person is $279 for a group campsite
 
 ```{r}
 ridb_2018 <- ridb_2018 %>% 
@@ -90,16 +91,58 @@ ridb_2018 <- ridb_2018 %>%
            booking_window = as.numeric(difftime(start_date, order_date), units = "days"), # range: -126 - 662
            cost_per_visitor_per_day = (total_paid / number_of_people) / length_of_stay # range: $0 - $279, (48 rows are Inf because # people = 0)
            )
-
-
 ```
 
 
 ## Visualize
 
+### Reservation viz
+
 ```{r}
 ggplot(data = ridb_2018) +
-    geom_histogram(aes(x = length_of_stay))
+    geom_histogram(aes(x = length_of_stay), fill = "goldenrod") +
+    labs(x = "Lenth of stay (days)",
+         y = "Individual Reservations") +
+    theme_minimal()
+```
+
+NOTES for graph below: 
+- `r `nrow(ridb_2018 %>% filter(booking_window < 0)) / nrow(ridb_2018)`% of data > 0 (~1%)
+```{r}
+plot_histogram_booking_window <- 
+    ggplot(data = ridb_2018, 
+           aes(x = booking_window)) +
+    geom_histogram(fill = "goldendrod") +
+    geom_histogram(fill = "goldenrod", binwidth = 10) +
+    geom_density() +
+    xlim(0, 500) +
+    ylim(0, 100000) +
+    labs(y = "Individual Visits",
+         x = "Days elapsed from order to visit (booking window in days)",
+         title = "Booking Window for Reservable Overnight Sites in California for 2018 ") +
+    theme_minimal() +
+    geom_vline(xintercept = 0, size = .25) +
+    geom_vline(xintercept = 30, linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", x = 40, y = 90900, label = "1") +
+    geom_vline(xintercept = 60, linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", x = 70, y = 90900, label = "2") +
+    geom_vline(xintercept = 90, linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", x = 100, y = 90900, label = "3") +
+    geom_vline(xintercept = 120, linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", x = 130, y = 90900, label = "4") +
+    geom_vline(xintercept = 150, linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", x = 160, y = 90900, label = "5") +
+    geom_vline(xintercept = 180, linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", x = 224, y = 90900, label = "6 months") +
+    geom_vline(xintercept = 360, linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", x = 388, y = 90900, label = "1 year")
+```
+### Agency viz
+
+```{r}
+# reservations per agency
+ggplot(data = ridb_2018) +
+    geom_histogram(aes(x = agency), stat = "count")
 ```
 
 
