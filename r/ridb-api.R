@@ -18,7 +18,7 @@ response <- httr::GET("https://ridb.recreation.gov/api/v1/activities",
 # save body of the json string in a variable
 activity_body <- content(response, "text")
 
-# convert json to a list and then a csv
+# convert json to a list and then a data frame
 activity_parsed_data <- fromJSON(activity_body, flatten=TRUE, simplifyDataFrame=TRUE)
 activity_df <- data.frame(activity_parsed_data)
 
