@@ -17,6 +17,7 @@ response <- httr::GET("https://ridb.recreation.gov/api/v1/activities",
 # confirmed it's in json format
 content(response, "text")
 
+# convert json to csv
 fromJSON()
 
 
