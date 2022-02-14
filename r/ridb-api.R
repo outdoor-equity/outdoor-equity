@@ -14,11 +14,12 @@ response <- httr::GET("https://ridb.recreation.gov/api/v1/activities",
                                    apikey = ridb_api_key))
 
 # check content of the response
-# confirmed it's in json format
-content(response, "text")
+# confirmed it's in json string
+# save body of the json string in a variable
+activity_body <- content(response, "text")
 
-# convert json to csv
-fromJSON()
+# convert json to a list
+activity_parsed_data <- fromJSON(activity_body, flatten=TRUE)
 
 
 
