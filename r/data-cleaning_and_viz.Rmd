@@ -15,6 +15,7 @@ library(tidycensus)
 library(sf)
 library(lubridate)
 library(tmap)
+library(patchwork)
 
 options(scipen = 999)
 
@@ -84,9 +85,6 @@ Notes on standardizations to consider:
 NAs:
     - facility zip: 108309
 
-```{r}
-
-```
 
 
 ## Calculated Variables
@@ -165,7 +163,7 @@ census_api <- source("api_keys/census_api_key.R")
 census_api_key(key = census_api[[1]], install = TRUE, overwrite = TRUE)
 readRenviron("~/.Renviron")
 
-# acs5_variables <- load_variables(year = 2019, dataset = "acs5")
+# acs5_variables <- load_variables(year = 2018, dataset = "acs5")
 
 # set up what to load
 acs_geography <- "zcta"
@@ -177,10 +175,9 @@ acs_year <- 2018
 acs_2018_race <- 
     get_acs(geography = acs_geography,
             year = acs_year,
-            state = "CA",
             summary_var = "B02001_001", #Estimate!!Total:
             variables = c(
-                white = "B02001_002", # Estimate!!Total:!!White alone
+                white = "B02001_002", # Estimate!!Total:!!White alone (INCLUDING HISPANIC OR LATINO)
                 black = "B02001_003", # Estimate!!Total:!!Black or African American alone
                 native_american = "B02001_004", # Estimate!!Total:!!American Indian and Alaska Native alone
                 asian = "B02001_005", # Estimate!!Total:!!Asian alone
@@ -259,6 +256,27 @@ acs_2018_race_stats <-
     summarise(percent = estimate / summary_est)
 ```
 
+```{r}
+acs_2018_race_zip_percent <- 
+    acs_2018_race_stats %>% 
+    pivot_wider(names_from = "race",
+                values_from = "percent")
+    
+```
+
+
+# Combine RIDB and Census
+
+```{r}
+combined_data_2018_ridb_acs <- 
+    left_join(x = ridb_2018,
+              y = acs_2018_race_zip_percent,
+              by = c("customer_zip" = "zip_code")) %>% 
+    mutate(non_white = 1 - white, .before = geometry)
+```
+
+
+
 
 # Visualization
 
@@ -273,7 +291,7 @@ ggplot(data = ridb_2018) +
 ```
 
 NOTES for graph below: 
-- `r `nrow(ridb_2018 %>% filter(booking_window < 0)) / nrow(ridb_2018)`% of data > 0 (~1%)
+- `r `nrow(ridb_2018 %>% filter(booking_window < 0)) / nrow(ridb_2018)` of data > 0 (~1%)
 ```{r}
 plot_histogram_booking_window <- 
     ggplot(data = ridb_2018, 
@@ -281,7 +299,7 @@ plot_histogram_booking_window <-
     geom_histogram(fill = "goldenrod", binwidth = 10) +
     labs(y = "Count of Individual Visits",
          x = "Days elapsed from order to visit",
-         title = "Booking Windows for Reservable Overnight Sites in California (2018) ") +
+         title = "Booking Window Length \nfor Reservable Overnight Sites in California in 2018") +
     theme_minimal() +
     theme(panel.grid.minor.x = element_blank()) +
     scale_x_continuous(limits = c(0, 510), breaks = seq(0, 510, by = 30)) +
@@ -295,14 +313,68 @@ plot_histogram_booking_window
 ```
 
 ```{r, eval=FALSE}
-ggsave(plot = plot_histogram_booking_window, filename = "../figs/histogram_booking_window.png")
+ggsave(plot = plot_histogram_booking_window, filename = "../figs2018_histogram_booking_window.png")
 ```
 
 
 ### Reservable Site viz
 
+NOTES for graph below: 
+- Removed `r 16661 / nrow(combined_data_2018_ridb_acs)` (~3%)
 ```{r}
+plot1 <- 
+    ggplot(combined_data_2018_ridb_acs) +
+    geom_point(aes(x = cost_per_visitor_per_day,
+                   y = asian), col = "darkgreen") +
+    scale_y_continuous(limits = c(0, 1)) +
+    labs(x = "Daily cost per visitor (US $)", 
+         y = "Proportion",
+         title = "Asian") +
+    geom_violin(aes(x = cost_per_visitor_per_day,
+                   y = asian),
+                alpha = .5)
 
+plot2 <- 
+    ggplot(combined_data_2018_ridb_acs) +
+    geom_point(aes(x = cost_per_visitor_per_day,
+                   y = black), col = "darkblue") +
+    geom_violin(aes(x = cost_per_visitor_per_day,
+                   y = black),
+                alpha = .5) +
+    labs(x = "Daily cost per visitor (US $)", 
+         y = "Proportion",
+         title = "Black")
+
+plot3 <- 
+    ggplot(combined_data_2018_ridb_acs) +
+    geom_point(aes(x = cost_per_visitor_per_day,
+                   y = multiracial), col = "darkred") +
+    geom_violin(aes(x = cost_per_visitor_per_day,
+                   y = multiracial),
+                alpha = .5) +
+    labs(x = "Daily cost per visitor (US $)", 
+         y = "Proportion",
+         title = "Multiracial")
+
+plot4 <- 
+    ggplot(combined_data_2018_ridb_acs) +
+    geom_point(aes(x = cost_per_visitor_per_day,
+                   y = white), col = "goldenrod") +
+    geom_violin(aes(x = cost_per_visitor_per_day,
+                   y = white),
+                alpha = .5) +
+    labs(x = "Daily cost per visitor (US $)", 
+         y = "Proportion",
+         title = "White and Hispanic/Latinx")
+
+plots_race_cost_pervisitor_perday <- (plot1 + plot2 ) / (plot3 + plot4) + plot_annotation(title = "Daily Cost per Visitor Compared to Racial Breakdown of Home ZIP Code \nfor Reservable Overnight Sites in California in 2018")
+
+plots_race_cost_pervisitor_perday
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plots_race_cost_pervisitor_perday, 
+       filename = "../figs/2018_scatter_race_cost_pervisitor_perday.png")
 ```
 
 
@@ -328,7 +400,8 @@ plot_jitter_violin_agency_length_of_stay <-
     theme_minimal() +
     labs(x = "Federal Public Land Management Agencies",
          y = "Length of Stay (days)",
-         color = "Agency") +
+         color = "Agency",
+         title = "Length of Stay by Agency \nfor Reservable Overnight Sites in California in 2018") +
     scale_color_discrete(labels = c("Bureau of Reclamation", "National Park Service", "US Army Corps of Engineers", "US Foreset Service"))
 
 plot_jitter_violin_agency_length_of_stay
@@ -336,7 +409,7 @@ plot_jitter_violin_agency_length_of_stay
 
 ```{r, eval=FALSE}
 ggsave(plot = plot_jitter_violin_agency_length_of_stay,
-       filename = "../figs/jitter_violin_length_of_stay.png")
+       filename = "../figs/2018_jitter_violin_length_of_stay.png")
 ```
 
 
