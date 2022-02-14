@@ -14,6 +14,7 @@ library(janitor)
 library(tidycensus)
 library(sf)
 library(lubridate)
+library(tmap)
 
 options(scipen = 999)
 
@@ -93,6 +94,55 @@ ridb_2018 <- ridb_2018 %>%
            )
 ```
 
+## Summarized variables
+
+Aggregate (mean) to reservable site level
+```{r}
+ridb_2018_site_summary <- 
+    ridb_2018 %>% 
+    filter(cost_per_visitor_per_day != "Inf") %>% #drop 48 rows with "Inf" for cost/visitor/day
+    group_by(park) %>% 
+    summarize(average_paid = mean(total_paid),
+              max_paid = max(total_paid),
+              min_paid = min(total_paid),
+              average_number_of_people = mean(number_of_people),
+              max_number_of_people = max(number_of_people),
+              min_number_of_people = min(number_of_people),
+              average_length_of_stay = mean(length_of_stay),
+              max_length_of_stay = max(length_of_stay),
+              min_length_of_stay = min(length_of_stay),
+              average_booking_window = mean(booking_window),
+              max_booking_window = max(booking_window),
+              min_booking_window = min(booking_window),
+              average_cost_per_visitor_per_dady = mean(cost_per_visitor_per_day),
+              max_cost_per_visitor_per_day = max(cost_per_visitor_per_day),
+              min_cost_per_visitor_per_day = min(cost_per_visitor_per_day),
+              count = n())
+```
+
+Aggregate (mean) to agency level
+```{r}
+ridb_2018_agency_summary <- 
+    ridb_2018 %>% 
+    filter(cost_per_visitor_per_day != "Inf") %>% #drop 48 rows with "Inf" for cost/visitor/day
+    group_by(agency) %>% 
+    summarize(average_paid = mean(total_paid),
+              max_paid = max(total_paid),
+              min_paid = min(total_paid),
+              average_number_of_people = mean(number_of_people),
+              max_number_of_people = max(number_of_people),
+              min_number_of_people = min(number_of_people),
+              average_length_of_stay = mean(length_of_stay),
+              max_length_of_stay = max(length_of_stay),
+              min_length_of_stay = min(length_of_stay),
+              average_booking_window = mean(booking_window),
+              max_booking_window = max(booking_window),
+              min_booking_window = min(booking_window),
+              average_cost_per_visitor_per_day = mean(cost_per_visitor_per_day),
+              max_cost_per_visitor_per_day = max(cost_per_visitor_per_day),
+              min_cost_per_visitor_per_day = min(cost_per_visitor_per_day),
+              count = n())
+```
 
 ## Visualize
 
@@ -133,12 +183,22 @@ ggsave(plot = plot_histogram_booking_window, filename = "../figs/histogram_booki
 ```
 
 
+### Reservable Site viz
+
+
+
+
+
 ### Agency viz
 
 ```{r}
 # reservations per agency
 ggplot(data = ridb_2018) +
     geom_histogram(aes(x = agency), stat = "count")
+```
+
+```{r}
+tm_shape()
 ```
 
 
