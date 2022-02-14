@@ -324,7 +324,12 @@ plot_jitter_violin_agency_length_of_stay <-
                     col = agency)) +
     geom_violin(aes(x = agency,
                     y = length_of_stay),
-                alpha = .5)
+                alpha = .5) +
+    theme_minimal() +
+    labs(x = "Federal Public Land Management Agencies",
+         y = "Length of Stay (days)",
+         color = "Agency") +
+    scale_color_discrete(labels = c("Bureau of Reclamation", "National Park Service", "US Army Corps of Engineers", "US Foreset Service"))
 
 plot_jitter_violin_agency_length_of_stay
 ```
