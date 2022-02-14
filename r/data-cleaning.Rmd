@@ -112,31 +112,27 @@ NOTES for graph below:
 plot_histogram_booking_window <- 
     ggplot(data = ridb_2018, 
            aes(x = booking_window)) +
-    geom_histogram(fill = "goldendrod") +
     geom_histogram(fill = "goldenrod", binwidth = 10) +
-    geom_density() +
-    xlim(0, 500) +
-    ylim(0, 100000) +
-    labs(y = "Individual Visits",
-         x = "Days elapsed from order to visit (booking window in days)",
-         title = "Booking Window for Reservable Overnight Sites in California for 2018 ") +
+    labs(y = "Count of Individual Visits",
+         x = "Days elapsed from order to visit",
+         title = "Booking Windows for Reservable Overnight Sites in California (2018) ") +
     theme_minimal() +
-    geom_vline(xintercept = 0, size = .25) +
-    geom_vline(xintercept = 30, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 40, y = 90900, label = "1") +
-    geom_vline(xintercept = 60, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 70, y = 90900, label = "2") +
-    geom_vline(xintercept = 90, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 100, y = 90900, label = "3") +
-    geom_vline(xintercept = 120, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 130, y = 90900, label = "4") +
-    geom_vline(xintercept = 150, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 160, y = 90900, label = "5") +
+    theme(panel.grid.minor.x = element_blank()) +
+    scale_x_continuous(limits = c(0, 510), breaks = seq(0, 510, by = 30)) +
+    scale_y_continuous(limits = c(0, 100000), breaks = seq(0, 100000, by = 20000)) +
     geom_vline(xintercept = 180, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 224, y = 90900, label = "6 months") +
+    annotate("text", x = 210, y = 90900, label = "6 months") +
     geom_vline(xintercept = 360, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 388, y = 90900, label = "1 year")
+    annotate("text", x = 380, y = 90900, label = "1 year")
+
+plot_histogram_booking_window
 ```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_histogram_booking_window, filename = "../figs/histogram_booking_window.png")
+```
+
+
 ### Agency viz
 
 ```{r}
