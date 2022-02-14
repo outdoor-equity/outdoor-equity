@@ -313,7 +313,10 @@ plot_histogram_booking_window
 ```
 
 ```{r, eval=FALSE}
-ggsave(plot = plot_histogram_booking_window, filename = "../figs/2018_histogram_booking_window.png")
+ggsave(plot = plot_histogram_booking_window, 
+       filename = "../figs/2018_histogram_booking_window.png",
+       width = 14,
+       height = 7)
 ```
 
 
