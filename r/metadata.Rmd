@@ -64,6 +64,18 @@ ridb_2020 <- read_csv(here("data/FY20-historical-reservations-full.csv")) %>%
 # Exploring metadata
 
 ```{r}
+usfs_campsite <- read_csv(here("agency-metadata/USFS_metadata.csv"))
+```
+
+
+```{r}
+ridb_2020_motor <- ridb_2020 %>% 
+  filter(agency == "BLM") %>% 
+  filter(sitetype == "Campsite")
+```
+
+
+```{r}
 sum(is.na(ridb_2020$park))
 
 class(ridb_2020$park)
