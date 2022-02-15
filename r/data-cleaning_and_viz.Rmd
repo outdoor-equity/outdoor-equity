@@ -160,7 +160,7 @@ ridb_2018_agency_summary <-
 
 ```{r message=FALSE}
 # #ONLY HAVE TO RUN THE FIRST TIME USING THIS RMD
-# census_api <- source("api_keys/census_api_key.R")
+# census_api <- source("private/census_api.R")
 # census_api_key(key = census_api[[1]], install = TRUE, overwrite = TRUE)
 # readRenviron("~/.Renviron")
 
