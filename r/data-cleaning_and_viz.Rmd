@@ -20,14 +20,14 @@ library(patchwork)
 options(scipen = 999)
 
 # file path from .Rproj to outdoorequity shared folder
-outdoorequity_folder_file_path <- here::here("../../../../capstone/outdoorequity/")
+raw_data_file_path <- here::here("../../../data_raw/")
 ```
 
 # Bring in geometries
 
 ```{r}
 # CA county geometries
-ca_county_geom <- st_read(paste0(outdoorequity_folder_file_path, "../../../../capstone/outdoorequity/data/ca_county_geometries/counties.shp")) %>% 
+ca_county_geom <- st_read(paste0(raw_data_file_path, "ca_county_geometries/counties.shp")) %>% 
   clean_names() %>% 
   rename(county_name = name)
 st_crs(ca_county_geom) <- 4326
