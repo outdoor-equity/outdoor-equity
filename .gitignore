@@ -4,7 +4,6 @@
 .Ruserdata
 
 data*/
-agency-metadata
-census_api_key.R
-RIDB_API_key.R
-private
+agency-metadata/
+private/
+api_keys/
