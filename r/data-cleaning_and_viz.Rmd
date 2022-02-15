@@ -193,52 +193,68 @@ acs_2018_race <-
 
 ```{r}
 ## MEANS OF TRANSPORTATION TO WORK BY VEHICLES AVAILABLE ##
-acs_2018_transportation <- get_acs(geography = acs_geography,
-                                   year = acs_year,
-                                   state = "CA",
-                                   summary_var = "B08141_001", #Estimate!!Total:
-                                   variables = c(
-                                       no_vehicle = "B08141_002" # Estimate!!Total:!!No vehicle available
-                                   ))
+acs_2018_transportation <- 
+  get_acs(geography = acs_geography,
+          year = acs_year,
+          summary_var = "B08141_001", #Estimate!!Total:
+          variables = c(
+            no_vehicle = "B08141_002" # Estimate!!Total:!!No vehicle available
+          )) %>% 
+  clean_names()
 
 ## EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER ##
-acs_2018_education <- get_acs(geography = acs_geography,
-                              year = acs_year,
-                              state = "CA",
-                              summary_var = "B15003_001", # Estimate!!Total:
-                              variables = c(
-                                  "B15003_002", "B15003_003",  "B15003_004", "B15003_005", 
-                                  "B15003_006", "B15003_007", "B15003_008", "B15003_009",
-                                  "B15003_010", "B15003_011", "B15003_012", "B15003_013",
-                                  "B15003_014", "B15003_015", "B15003_016", "B15003_017",
-                                  "B15003_018", # Estimate!!Total:!!GED or alternative credential or below (including above)
-                                  "B15003_019", "B15003_020", # Estimate!!Total:!!Some college
-                                  "B15003_021", "B15003_022", # Estimate!!Total:!!Associates or bachelors degree
-                                  "B15003_023", "B15003_024", "B15003_025" # Estimate!!Total:!!Masters degree and above
-                              ))
+acs_2018_education <- 
+  get_acs(geography = acs_geography,
+          year = acs_year,
+          summary_var = "B15003_001", # Estimate!!Total:
+          variables = c(
+            "B15003_002", "B15003_003",  "B15003_004", "B15003_005", 
+            "B15003_006", "B15003_007", "B15003_008", "B15003_009",
+            "B15003_010", "B15003_011", "B15003_012", "B15003_013",
+            "B15003_014", "B15003_015", "B15003_016", "B15003_017",
+            "B15003_018", # Estimate!!Total:!!GED or alternative credential or below (including above)
+            "B15003_019", "B15003_020", # Estimate!!Total:!!Some college
+            "B15003_021", "B15003_022", # Estimate!!Total:!!Associates or bachelors degree
+            "B15003_023", "B15003_024", "B15003_025" # Estimate!!Total:!!Masters degree and above
+          )) %>% 
+  clean_names()
+
 ## HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
-acs_2018_total_income <- get_acs(geography = "zcta",
-                                 year = acs_year,
-                                 state = "CA",
-                                 summary_var = "B19001_001", # Estimate!!Total:
-                                 variables = c(
-                                     "B19001_002", # Estimate!!Total:!!Less than $10,00 (spread of ranges change from -002 to -0017)
-                                     "B19001_017" # Estimate!!Total:!!$200,000 or more
-                                   ))
+acs_2018_total_income <- 
+  get_acs(geography = "zcta",
+          year = acs_year,
+          summary_var = "B19001_001", # Estimate!!Total:
+          variables = c(
+            "B19001_002", # Estimate!!Total:!!Less than $10,00 (spread of ranges change from -002 to -0017)
+            "B19001_017" # Estimate!!Total:!!$200,000 or more
+          )) %>% 
+  clean_names()
+```
+
+```{r}
 ## MEDIAN HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
-acs_2018_median_income <- get_acs(geography = acs_geography,
-                                  year = acs_year,
-                                  state = "CA",
-                                  variables = c(
-                                      median_income = "B19013_001" # Estimate!!Median household income in the past 12 months (in 2019 inflation-adjusted dollars)
-                                  ))
+acs_2018_median_income <- 
+  get_acs(geography = acs_geography,
+          year = acs_year,
+          variables = c(
+            median_income = "B19013_001" # Estimate!!Median household income in the past 12 months (in 2019 inflation-adjusted dollars)
+          )) %>% 
+  clean_names() %>% 
+  mutate(zip_code = str_sub(name, start = -5, end = -1)) %>% 
+  rename(median_income = estimate) %>% 
+  select(median_income, zip_code)
+  
+```
+
+```{r}
 ## PER CAPITA INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
-acs_2018_percapita_income <- get_acs(geography = acs_geography,
-                                     year = acs_year,
-                                     state = "CA",
-                                     variables = c(                        
-                                         "B19301_001" # Estimate!!Per capita income in the past 12 months (in 2019 inflation-adjusted dollars)
-                                     ))
+acs_2018_percapita_income <- 
+  get_acs(geography = acs_geography,
+          year = acs_year,
+          variables = c(                        
+            "B19301_001" # Estimate!!Per capita income in the past 12 months (in 2019 inflation-adjusted dollars)
+          )) %>% 
+  clean_names()
 ## LANGUAGE SPOKEN AT HOME BY ABILITY TO SPEAK ENGLISH FOR THE POPULATION 5 YEARS AND OVER ##
                         # long list found here (https://data.census.gov/cedsci/table?d=ACS%205-Year%20Estimates%20Detailed%20Tables&tid=ACSDT5Y2019.B16001)
 ##THINK ABOUT ADDING:
@@ -251,13 +267,13 @@ acs_2018_percapita_income <- get_acs(geography = acs_geography,
 ## Calculating socioeconomic demographics
 
 ```{r}
+# calculate percentage
 acs_2018_race_stats <- 
     acs_2018_race %>% 
     group_by(zip_code, race) %>% 
     summarise(percent = estimate / summary_est)
-```
 
-```{r}
+# create columnn for each group
 acs_2018_race_zip_percent <- 
     acs_2018_race_stats %>% 
     pivot_wider(names_from = "race",
@@ -270,10 +286,12 @@ acs_2018_race_zip_percent <-
 
 ```{r}
 combined_data_2018_ridb_acs <- 
-    left_join(x = ridb_2018,
-              y = acs_2018_race_zip_percent,
-              by = c("customer_zip" = "zip_code")) %>% 
-    mutate(non_white = 1 - white, .before = geometry)
+  left_join(x = ridb_2018,
+            y = acs_2018_race_zip_percent,
+            by = c("customer_zip" = "zip_code")) %>% 
+  mutate(non_white = 1 - white, .before = geometry) %>% 
+  left_join(y = acs_2018_median_income,
+            by = c("customer_zip" = "zip_code"))
 ```
 
 
@@ -326,55 +344,77 @@ ggsave(plot = plot_histogram_booking_window,
 NOTES for graph below: 
 - Removed `r 16661 / nrow(combined_data_2018_ridb_acs)` (~3%)
 ```{r}
-plot1 <- 
-    ggplot(combined_data_2018_ridb_acs) +
-    geom_point(aes(x = cost_per_visitor_per_day,
-                   y = asian), col = "darkgreen") +
-    scale_y_continuous(limits = c(0, 1)) +
-    labs(x = "Daily cost per visitor (US $)", 
-         y = "Proportion",
-         title = "Asian") +
-    geom_violin(aes(x = cost_per_visitor_per_day,
-                   y = asian),
-                alpha = .5)
+plot_asian <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(asian > .1)) +
+  geom_histogram(aes(x = asian), fill = "darkgreen") +
+  scale_y_continuous(limits = c(0, 50000)) +
+  labs(x = "Proportion of Home ZIP",
+       y = "Number of Reservations",
+       title = "Asian")
 
-plot2 <- 
-    ggplot(combined_data_2018_ridb_acs) +
-    geom_point(aes(x = cost_per_visitor_per_day,
-                   y = black), col = "darkblue") +
-    geom_violin(aes(x = cost_per_visitor_per_day,
-                   y = black),
-                alpha = .5) +
-    labs(x = "Daily cost per visitor (US $)", 
-         y = "Proportion",
-         title = "Black")
+plot_black <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(black > .1)) +
+  geom_histogram(aes(x = black), fill = "darkblue") +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Proportion of Home ZIP",
+       y = "Number of Reservations",
+       title = "Black")
 
-plot3 <- 
-    ggplot(combined_data_2018_ridb_acs) +
-    geom_point(aes(x = cost_per_visitor_per_day,
-                   y = multiracial), col = "darkred") +
-    geom_violin(aes(x = cost_per_visitor_per_day,
-                   y = multiracial),
-                alpha = .5) +
-    labs(x = "Daily cost per visitor (US $)", 
-         y = "Proportion",
-         title = "Multiracial")
+plot_multiracial <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(multiracial > .1)) +
+  geom_histogram(aes(x = multiracial), fill = "darkred") +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Proportion of Home ZIP",
+       y = "Number of Reservations",
+       title = "Multiracial")
 
-plot4 <- 
-    ggplot(combined_data_2018_ridb_acs) +
-    geom_point(aes(x = cost_per_visitor_per_day,
-                   y = white), col = "goldenrod") +
-    geom_violin(aes(x = cost_per_visitor_per_day,
-                   y = white),
-                alpha = .5) +
-    labs(x = "Daily cost per visitor (US $)", 
-         y = "Proportion",
-         title = "White and Hispanic/Latinx")
+plot_native_american <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(native_american > .1)) +
+  geom_histogram(aes(x = native_american), fill = "darkblue") +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Proportion of Home ZIP",
+       y = "Number of Reservations",
+       title = "Native American")
 
-plots_race_cost_pervisitor_perday <- (plot1 + plot2 ) / (plot3 + plot4) + plot_annotation(title = "Daily Cost per Visitor Compared to Racial Breakdown of Home ZIP Code \nfor Reservable Overnight Sites in California in 2018")
+plot_pacific_islander <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(pacific_islander > .1)) +
+  geom_histogram(aes(x = pacific_islander), fill = "darkblue") +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Proportion of Home ZIP",
+       y = "Number of Reservations",
+       title = "Hawaiian and Other Pacific Islander")
+
+plot_other <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(other > .1)) +
+  geom_histogram(aes(x = other), fill = "darkblue") +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Proportion of Home ZIP",
+       y = "Number of Reservations",
+       title = "Other")
+
+plot_white_hispanic_latinx <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(white > .1)) +
+  geom_histogram(aes(x = white), fill = "goldenrod") +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Proportion of Home ZIP",
+       y = "Number of Reservations",
+       title = "White and Hispanic/Latinx")
+
+
+plots_race_cost_pervisitor_perday <- (plot_asian + plot_black + plot_white_hispanic_latinx) / 
+  (plot_native_american + plot_other + plot_multiracial) #+ 
+  #plot_annotation(title = "Daily Cost per Visitor Compared to Racial Breakdown of Home ZIP Code \nfor Reservable Overnight Sites in California in 2018")
 
 plots_race_cost_pervisitor_perday
 ```
+
+
+```{r}
+ggplot(combined_data_2018_ridb_acs %>% filter(agency == "BOR")) +
+  geom_bar(aes(x = length_of_stay), fill = "darkblue")
+```
+
+
 
 ```{r, eval=FALSE}
 ggsave(plot = plots_race_cost_pervisitor_perday, 
@@ -391,27 +431,20 @@ ggsave(plot = plots_race_cost_pervisitor_perday,
 ```{r}
 # reservations per agency
 ggplot(data = ridb_2018) +
-    geom_histogram(aes(x = agency), stat = "count")
+  geom_histogram(aes(x = agency, fill = agency), stat = "count") +
+  scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
+                                 "US Army Corps of Engineers", "US Foreset Service")) +
+  theme_minimal() +
+  labs(x = "Agency",
+       y = "Number of Reservations",
+       fill = "Agency",
+       title = "Total Reservations at Federal Public Land Management Agency \nfor Reservable Overnight Sites in California in 2018")
 ```
 
 ```{r}
-plot_jitter_violin_agency_length_of_stay <- 
-    ggplot(data = ridb_2018) +
-    geom_jitter(aes(y = agency,
-                    x = length_of_stay,
-                    col = agency)) +
-    geom_violin(aes(y = agency,
-                    x = length_of_stay),
-                alpha = .5) +
-    theme_minimal() +
-    labs(y = "",
-         x = "Length of Stay (days)",
-         color = "Agency",
-         title = "Length of Stay by Federal Public Land Management Agency \nfor Reservable Overnight Sites in California in 2018") +
-    scale_color_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
-                                    "US Army Corps of Engineers", "US Foreset Service"))
-
-plot_jitter_violin_agency_length_of_stay
+plot_bar_length_of_stay <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "BOR")) +
+  geom_bar(aes(x = length_of_stay), fill = "darkblue")
 ```
 
 ```{r, eval=FALSE}
