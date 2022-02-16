@@ -18,16 +18,13 @@ library(tmap)
 library(patchwork)
 
 options(scipen = 999)
-
-# file path from .Rproj to outdoorequity shared folder
-raw_data_file_path <- here::here("../../../data_raw/")
 ```
 
 # Bring in geometries
 
 ```{r}
 # CA county geometries
-ca_county_geom <- st_read(paste0(raw_data_file_path, "ca_county_geometries/counties.shp")) %>% 
+ca_county_geom <- st_read(here::here("../../data_raw/ca_county_geometries/counties.shp")) %>% 
   clean_names() %>% 
   rename(county_name = name)
 st_crs(ca_county_geom) <- 4326
@@ -46,8 +43,7 @@ source("functions/function_data-subsetting-post2019.R")
 
 ```{r}
 # 2018
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, 
-                                              "data/reservations2018.csv"), 
+RIDB_cleaning_pre2018(full_file_path = "../../data_raw/reservations2018.csv", 
                       state_abbrev = "CA", df_name = "ridb_2018")
 
 ridb_2018 <- ridb_2018 %>% 

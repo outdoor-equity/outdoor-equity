@@ -7,7 +7,6 @@ RIDB_cleaning_pre2018 <- function(full_file_path, state_abbrev, df_name) {
                       "park",
                       "site_type", 
                       "use_type",
-                      "facility_zip", 
                       "facility_state", 
                       "facility_longitude", 
                       "facility_latitude",
