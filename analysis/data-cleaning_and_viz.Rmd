@@ -313,11 +313,11 @@ plot_histogram_booking_window <-
     ggplot(data = ridb_2018, 
            aes(x = booking_window)) +
     geom_histogram(fill = "goldenrod", binwidth = 10) +
-    labs(y = "Count of Individual Visits",
-         x = "Days elapsed from order to visit",
-         title = "Booking Window Length \nfor Reservable Overnight Sites in California in 2018") +
+    labs(y = "Count of Individual Reservation",
+         x = "Days elapsed from order to visit") +
     theme_minimal() +
-    theme(panel.grid.minor.x = element_blank()) +
+    theme(panel.grid.minor.x = element_blank(),
+          plot.background = element_rect("white")) +
     scale_x_continuous(limits = c(0, 510), breaks = seq(0, 510, by = 30)) +
     scale_y_continuous(limits = c(0, 100000), breaks = seq(0, 100000, by = 20000)) +
     geom_vline(xintercept = 180, linetype = "dashed", size = .3, alpha = .5) +
@@ -325,7 +325,8 @@ plot_histogram_booking_window <-
     geom_vline(xintercept = 360, linetype = "dashed", size = .3, alpha = .5) +
     annotate("text", x = 380, y = 90900, label = "1 year")
 
-plot_histogram_booking_window
+plot_histogram_booking_window + 
+  plot_annotation(title = "Booking Window Length \nfor Reservable Overnight Sites in California in 2018")
 ```
 
 ```{r, eval=FALSE}
