@@ -188,6 +188,21 @@ acs_2018_race <-
 ```
 
 ```{r}
+## MEDIAN HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
+acs_2018_median_income <- 
+  get_acs(geography = acs_geography,
+          year = acs_year,
+          variables = c(
+            median_income = "B19013_001" # Estimate!!Median household income in the past 12 months (in 2019 inflation-adjusted dollars)
+          )) %>% 
+  clean_names() %>% 
+  mutate(zip_code = str_sub(name, start = -5, end = -1)) %>% 
+  rename(median_income = estimate) %>% 
+  select(median_income, zip_code)
+  
+```
+
+```{r}
 ## MEANS OF TRANSPORTATION TO WORK BY VEHICLES AVAILABLE ##
 acs_2018_transportation <- 
   get_acs(geography = acs_geography,
@@ -228,21 +243,6 @@ acs_2018_total_income <-
 ```
 
 ```{r}
-## MEDIAN HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
-acs_2018_median_income <- 
-  get_acs(geography = acs_geography,
-          year = acs_year,
-          variables = c(
-            median_income = "B19013_001" # Estimate!!Median household income in the past 12 months (in 2019 inflation-adjusted dollars)
-          )) %>% 
-  clean_names() %>% 
-  mutate(zip_code = str_sub(name, start = -5, end = -1)) %>% 
-  rename(median_income = estimate) %>% 
-  select(median_income, zip_code)
-  
-```
-
-```{r}
 ## PER CAPITA INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
 acs_2018_percapita_income <- 
   get_acs(geography = acs_geography,
@@ -263,6 +263,7 @@ acs_2018_percapita_income <-
 ## Calculating socioeconomic demographics
 
 ```{r}
+# RACE
 # calculate percentage
 acs_2018_race_stats <- 
     acs_2018_race %>% 
@@ -278,7 +279,7 @@ acs_2018_race_zip_percent <-
 ```
 
 
-# Combine RIDB and Census
+# Join RIDB and Census
 
 ```{r}
 combined_data_2018_ridb_acs <- 
