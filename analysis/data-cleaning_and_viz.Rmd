@@ -432,29 +432,6 @@ plots_histogram_race <-
 plots_histogram_race
 ```
 
-
-```{r}
-plot_bor <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "BOR")) +
-  geom_bar(aes(x = length_of_stay), fill = "darkblue")
-
-plot_nps <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "NPS")) +
-  geom_bar(aes(x = length_of_stay), fill = "darkgreen")
-
-plot_usfs <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USFS")) +
-  geom_bar(aes(x = length_of_stay), fill = "darkred")
-
-plot_usace <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USACE")) +
-  geom_bar(aes(x = length_of_stay), fill = "goldenrod")
-
-(plot_nps + plot_bor) / (plot_usfs + plot_usace)
-```
-
-
-
 ```{r, eval=FALSE}
 ggsave(plot = plots_histogram_race, 
        filename = "../figs/2018_histogram_race.png",
@@ -462,6 +439,30 @@ ggsave(plot = plots_histogram_race,
        height = 7)
 ```
 
+```{r}
+plot_bor <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "BOR")) +
+  geom_col(aes(x = median_income, y = agency), fill = "darkblue")
+
+plot_nps <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "NPS")) +
+  geom_col(aes(x = median_income), fill = "darkgreen")
+
+plot_usfs <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USFS")) +
+  geom_col(aes(x = median_income), fill = "darkred")
+
+plot_usace <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USACE")) +
+  geom_col(aes(x = median_income), fill = "goldenrod")
+
+(plot_nps + plot_bor) / (plot_usfs + plot_usace)
+```
+
+```{r}
+ggplot(combined_data_2018_ridb_acs) +
+  geom_point(aes(x = median_income, y = agency), fill = "darkblue")
+```
 
 
 
