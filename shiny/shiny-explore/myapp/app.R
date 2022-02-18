@@ -10,7 +10,8 @@
 librarian::shelf(shiny,
                  tidyverse,
                  palmerpenguins,
-                 DT)
+                 DT,
+                 rsconnect)
 
 # create UI ----
 # fluidPage creates the UI we are going to see
@@ -20,22 +21,38 @@ librarian::shelf(shiny,
 # most input functions take a label
 ui <- fluidPage(
   
+  # layout
+  navbarPage(
+  "Title here",
   # app title ----
   tags$h1("Halina's App"),
   
   # app subtitle ----
   p(strong("I am so excited!")),
   
-  # body mass slider input ----
-  sliderInput(inputId = "body_mass",
-              label = "Select a range of body masses (g):",
-              min = 2700, max = 6300, value = c(3000, 4000)), # range of slider
+  tabPanel("Background",
+           "penguin photos go here"),
   
-  # body mass output ----
-  plotOutput(outputId = "bodyMass_scatterPlot"),
+  tabPanel("Penguin Plots",
+           tabsetPanel(
+             tabPanel("Scatterplot",
+                      # body mass slider input ----
+                      sliderInput(inputId = "body_mass",
+                                  label = "Select a range of body masses (g):",
+                                  min = 2700, max = 6300, value = c(3000, 4000)), # range of slider
+                      
+                      # body mass output ----
+                      plotOutput(outputId = "bodyMass_scatterPlot")),
+             tabPanel("Histogram")),
+           "penguin plots go here"),
   
-  # DT data table output (does not need input) ----
-  DT::dataTableOutput(outputId = "penguins_dt")
+  tabPanel("Weather Plots",
+           "weather plots go here"),
+  
+  tabPanel("Explore the Data",
+           # DT data table output (does not need input) ----
+           DT::dataTableOutput(outputId = "penguins_dt"),
+           "put DT tables here")),
   
 ) 
 
@@ -77,8 +94,9 @@ server <- function(input, output){
     
   })
   
-  # render data table ----
+  # render data table
   output$penguins_dt <- renderDataTable({
+    colnames = c("Species", "Island", "Bill Length (mm)", "Bill Depth (mm)", "Flipper Length (mm)", "Body Mass (g)", "Sex", "Year")
     DT::datatable(data = penguins,
                   caption = htmltools::tags$caption(
                     style = "caption-side: top; text-align: left",
@@ -87,6 +105,7 @@ server <- function(input, output){
                   class = "cell-border stripe",
                   colnames = colnames)
   })
+
     
 }
 

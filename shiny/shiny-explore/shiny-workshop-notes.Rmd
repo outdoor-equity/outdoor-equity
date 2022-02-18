@@ -29,5 +29,12 @@ knitr::opts_chunk$set(echo = TRUE)
 [Outputs and render functions](https://ucsb-meds.github.io/shiny-workshop/#44)
 - these sister functions are what makes the webpage elements reactive 
 
+[Layouts](https://ucsb-meds.github.io/shiny-workshop/#81)
+- side bar layout is most popular 
+- `navbarPage` is probably what we want to use 
+- can nest layout functions within each other, but this needs to be done with the right function pairing 
+
+Software updates will likely break Shiny apps
+- need to create a maintenance plan for our clients
 
 
