@@ -445,7 +445,8 @@ plot_native_american <-
 plots_histogram_race <- 
   (plot_asian + plot_black + plot_white_hispanic_latinx) / 
   (plot_other + plot_multiracial + plot_native_american) + 
-  plot_annotation(title = "Racial Breakdown of Visitors' Home ZIP Code \nfor Reservable Overnight Sites in California in 2018")
+  plot_annotation(title = "Racial Breakdown of Visitors' Home ZIP Code
+                  \nfor Reservable Overnight Sites in California in 2018")
 
 plots_histogram_race
 ```
@@ -519,10 +520,31 @@ ggsave(plot = plot_histogram_agency_race_black,
 
 
 ```{r}
-ggplot(combined_data_2018_ridb_acs_site_summary) +
+plot_scatter_park_medianincome <- 
+  ggplot(combined_data_2018_ridb_acs_site_summary) +
   geom_point(aes(x = park,
                  y = median_median_income,
-                 col = agency)) 
+                 col = agency)) +
+  theme(axis.text.x = element_blank()) +
+  labs(x = "Individual Reservable Sites",
+       y = "Median income of visitor home ZIP code ($)",
+       col = "Agency") +
+  scale_color_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
+                                 "US Army Corps of Engineers", "US Foreset Service"))
+
+plot_scatter_park_medianincome <- 
+  plot_scatter_park_medianincome +
+  plot_annotation(title = "Median Income of Visitors' Home ZIP Code
+                  \nfor Reservable Overnight Sites in California in 2018")
+
+plot_scatter_park_medianincome
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_scatter_park_medianincome, 
+       filename = "../figs/2018_scatter_park_median_income.png",
+       width = 12,
+       height = 7)
 ```
 
 
@@ -572,8 +594,13 @@ plot_bar_agency_visits
 
 
 ```{r, eval=FALSE}
-ggsave(plot = plot_jitter_violin_agency_length_of_stay,
-       filename = "../figs/2018_jitter_violin_length_of_stay.png",
+ggsave(plot = plot_bar_agency_park,
+       filename = "../figs/2018_bar_agency_park.png",
+       width = 14,
+       height = 7)
+
+ggsave(plot = plot_bar_agency_visits,
+       filename = "../figs/2018_bar_agency_visits.png",
        width = 14,
        height = 7)
 ```
@@ -581,19 +608,22 @@ ggsave(plot = plot_jitter_violin_agency_length_of_stay,
 
 ```{r}
 plot_histogram_agency_booking_window <- 
-    ggplot(data = plot_histogram_booking_window_data, 
-           aes(x = booking_window)) +
-    geom_histogram(aes(fill = agency), binwidth = 7) +
-    labs(y = "Reservation Count",
-         x = "Days elapsed from order to visit\n(1 bar = 1 week)") +
-    theme_minimal() +
-    theme(panel.grid.minor.x = element_blank(),
-          plot.background = element_rect("white")) +
-    scale_x_continuous(limits = c(0, 510), breaks = seq(0, 510, by = 30)) +
-    geom_vline(xintercept = 180, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 210, y = 65000, label = "6 months") +
-    geom_vline(xintercept = 360, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 380, y = 65000, label = "1 year")
+  ggplot(data = plot_histogram_booking_window_data, 
+         aes(x = booking_window)) +
+  geom_histogram(aes(fill = agency), binwidth = 7) +
+  labs(y = "Reservation Count",
+       x = "Days elapsed from order to visit\n(1 bar = 1 week)") +
+  scale_fill_discrete(
+    labels = c("Bureau of Reclamation", "National Park Service", 
+               "US Army Corps of Engineers", "US Foreset Service")) +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white")) +
+  scale_x_continuous(limits = c(0, 510), breaks = seq(0, 510, by = 30)) +
+  geom_vline(xintercept = 180, linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", x = 210, y = 65000, label = "6 months") +
+  geom_vline(xintercept = 360, linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", x = 380, y = 65000, label = "1 year")
 
 plot_histogram_agency_booking_window <- 
 plot_histogram_agency_booking_window + 
@@ -602,4 +632,10 @@ plot_histogram_agency_booking_window +
 plot_histogram_agency_booking_window
 ```
 
+```{r, eval=FALSE}
+ggsave(plot = plot_histogram_agency_booking_window,
+       filename = "../figs/2018_histogram_agency_booking_window.png",
+       width = 14,
+       height = 7)
+```
 
