@@ -17,5 +17,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [Shiny app repository structure](https://ucsb-meds.github.io/shiny-workshop/#26)
 
+`myapp` directory is the slug of our shiny on the webpage
+
+[Two file shiny app](https://ucsb-meds.github.io/shiny-workshop/#28)
+- this is something to consider as the app gets larger 
+
+[Adding inputs and outputs](https://ucsb-meds.github.io/shiny-workshop/#32)
+- there are more inputs than listed on the slide 
+
+[Outputs and render functions](https://ucsb-meds.github.io/shiny-workshop/#44)
+- these sister functions are what makes the webpage elements reactive 
+
 
 
