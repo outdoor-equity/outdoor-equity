@@ -16,18 +16,16 @@ library(sf)
 library(lubridate)
 library(tmap)
 library(patchwork)
+library(scales)
 
 options(scipen = 999)
-
-# file path from .Rproj to outdoorequity shared folder
-raw_data_file_path <- here::here("../../../data_raw/")
 ```
 
 # Bring in geometries
 
-```{r}
+```{r, eval=FALSE}
 # CA county geometries
-ca_county_geom <- st_read(paste0(raw_data_file_path, "ca_county_geometries/counties.shp")) %>% 
+ca_county_geom <- st_read(here::here("../../data_raw/ca_county_geometries/counties.shp")) %>% 
   clean_names() %>% 
   rename(county_name = name)
 st_crs(ca_county_geom) <- 4326
@@ -46,8 +44,7 @@ source("functions/function_data-subsetting-post2019.R")
 
 ```{r}
 # 2018
-RIDB_cleaning_pre2018(full_file_path = paste0(outdoorequity_folder_file_path, 
-                                              "data/reservations2018.csv"), 
+RIDB_cleaning_pre2018(full_file_path = "../../data_raw/reservations2018.csv", 
                       state_abbrev = "CA", df_name = "ridb_2018")
 
 ridb_2018 <- ridb_2018 %>% 
@@ -103,55 +100,8 @@ ridb_2018 <- ridb_2018 %>%
            )
 ```
 
-## Summarized variables
 
-Aggregate (mean) to reservable site level
-```{r}
-ridb_2018_site_summary <- 
-    ridb_2018 %>% 
-    filter(cost_per_visitor_per_day != "Inf") %>% #drop 48 rows with "Inf" for cost/visitor/day
-    group_by(park) %>% 
-    summarize(average_paid = mean(total_paid),
-              max_paid = max(total_paid),
-              min_paid = min(total_paid),
-              average_number_of_people = mean(number_of_people),
-              max_number_of_people = max(number_of_people),
-              min_number_of_people = min(number_of_people),
-              average_length_of_stay = mean(length_of_stay),
-              max_length_of_stay = max(length_of_stay),
-              min_length_of_stay = min(length_of_stay),
-              average_booking_window = mean(booking_window),
-              max_booking_window = max(booking_window),
-              min_booking_window = min(booking_window),
-              average_cost_per_visitor_per_dady = mean(cost_per_visitor_per_day),
-              max_cost_per_visitor_per_day = max(cost_per_visitor_per_day),
-              min_cost_per_visitor_per_day = min(cost_per_visitor_per_day),
-              count = n())
-```
 
-Aggregate (mean) to agency level
-```{r}
-ridb_2018_agency_summary <- 
-    ridb_2018 %>% 
-    filter(cost_per_visitor_per_day != "Inf") %>% #drop 48 rows with "Inf" for cost/visitor/day
-    group_by(agency) %>% 
-    summarize(average_paid = mean(total_paid),
-              max_paid = max(total_paid),
-              min_paid = min(total_paid),
-              average_number_of_people = mean(number_of_people),
-              max_number_of_people = max(number_of_people),
-              min_number_of_people = min(number_of_people),
-              average_length_of_stay = mean(length_of_stay),
-              max_length_of_stay = max(length_of_stay),
-              min_length_of_stay = min(length_of_stay),
-              average_booking_window = mean(booking_window),
-              max_booking_window = max(booking_window),
-              min_booking_window = min(booking_window),
-              average_cost_per_visitor_per_day = mean(cost_per_visitor_per_day),
-              max_cost_per_visitor_per_day = max(cost_per_visitor_per_day),
-              min_cost_per_visitor_per_day = min(cost_per_visitor_per_day),
-              count = n())
-```
 
 
 # Bring in Census Data
@@ -192,6 +142,21 @@ acs_2018_race <-
 ```
 
 ```{r}
+## MEDIAN HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
+acs_2018_median_income <- 
+  get_acs(geography = acs_geography,
+          year = acs_year,
+          variables = c(
+            median_income = "B19013_001" # Estimate!!Median household income in the past 12 months (in 2019 inflation-adjusted dollars)
+          )) %>% 
+  clean_names() %>% 
+  mutate(zip_code = str_sub(name, start = -5, end = -1)) %>% 
+  rename(median_income = estimate) %>% 
+  select(median_income, zip_code)
+  
+```
+
+```{r, eval=FALSE}
 ## MEANS OF TRANSPORTATION TO WORK BY VEHICLES AVAILABLE ##
 acs_2018_transportation <- 
   get_acs(geography = acs_geography,
@@ -231,22 +196,7 @@ acs_2018_total_income <-
   clean_names()
 ```
 
-```{r}
-## MEDIAN HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
-acs_2018_median_income <- 
-  get_acs(geography = acs_geography,
-          year = acs_year,
-          variables = c(
-            median_income = "B19013_001" # Estimate!!Median household income in the past 12 months (in 2019 inflation-adjusted dollars)
-          )) %>% 
-  clean_names() %>% 
-  mutate(zip_code = str_sub(name, start = -5, end = -1)) %>% 
-  rename(median_income = estimate) %>% 
-  select(median_income, zip_code)
-  
-```
-
-```{r}
+```{r, eval=FALSE}
 ## PER CAPITA INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
 acs_2018_percapita_income <- 
   get_acs(geography = acs_geography,
@@ -267,6 +217,7 @@ acs_2018_percapita_income <-
 ## Calculating socioeconomic demographics
 
 ```{r}
+# RACE
 # calculate percentage
 acs_2018_race_stats <- 
     acs_2018_race %>% 
@@ -282,7 +233,7 @@ acs_2018_race_zip_percent <-
 ```
 
 
-# Combine RIDB and Census
+# Join RIDB and Census
 
 ```{r}
 combined_data_2018_ridb_acs <- 
@@ -295,6 +246,42 @@ combined_data_2018_ridb_acs <-
 ```
 
 
+## Summarized variables
+
+Aggregate (median) to reservable site level
+```{r}
+combined_data_2018_ridb_acs_site_summary <- 
+    combined_data_2018_ridb_acs %>% 
+    filter(cost_per_visitor_per_day != "Inf") %>% #drop 48 rows with "Inf" for cost/visitor/day
+    group_by(agency, park) %>% 
+    summarize(median_paid = median(total_paid),
+              max_paid = max(total_paid),
+              min_paid = min(total_paid),
+              median_number_of_people = median(number_of_people),
+              max_number_of_people = max(number_of_people),
+              min_number_of_people = min(number_of_people),
+              median_length_of_stay = median(length_of_stay),
+              max_length_of_stay = max(length_of_stay),
+              min_length_of_stay = min(length_of_stay),
+              median_booking_window = median(booking_window),
+              max_booking_window = max(booking_window),
+              min_booking_window = min(booking_window),
+              median_cost_per_visitor_per_day = median(cost_per_visitor_per_day),
+              max_cost_per_visitor_per_day = max(cost_per_visitor_per_day),
+              min_cost_per_visitor_per_day = min(cost_per_visitor_per_day),
+              median_median_income = median(median_income),
+              max_median_income = max(median_income),
+              min_median_income = min(median_income),
+              median_percent_asian = median(asian),
+              median_percent_black = median(black),
+              median_percent_multiracial = median(multiracial),
+              median_percent_other = median(other),
+              median_percent_white_hisp_latinx = median(white),
+              median_percent_pacific_islander = median(pacific_islander),
+              median_percent_native_american = median(native_american),
+              count = n())
+```
+
 
 
 # Visualization
@@ -302,8 +289,8 @@ combined_data_2018_ridb_acs <-
 ### Reservation viz
 
 ```{r}
-ggplot(data = ridb_2018) +
-    geom_histogram(aes(x = length_of_stay), fill = "goldenrod") +
+ggplot(data = combined_data_2018_ridb_acs) +
+    geom_histogram(aes(x = length_of_stay), fill = "goldenrod", binwidth = 1) +
     labs(x = "Lenth of stay (days)",
          y = "Individual Reservations") +
     theme_minimal()
@@ -312,21 +299,34 @@ ggplot(data = ridb_2018) +
 NOTES for graph below: 
 - `r `nrow(ridb_2018 %>% filter(booking_window < 0)) / nrow(ridb_2018)` of data > 0 (~1%)
 ```{r}
+plot_histogram_booking_window_data <- 
+  combined_data_2018_ridb_acs %>% 
+  filter(booking_window > 0)
+
 plot_histogram_booking_window <- 
-    ggplot(data = ridb_2018, 
-           aes(x = booking_window)) +
-    geom_histogram(fill = "goldenrod", binwidth = 10) +
-    labs(y = "Count of Individual Visits",
-         x = "Days elapsed from order to visit",
-         title = "Booking Window Length \nfor Reservable Overnight Sites in California in 2018") +
+    ggplot(data = plot_histogram_booking_window_data) +
+    geom_histogram(aes(x = booking_window), 
+                   binwidth = 7,
+                   fill = "goldenrod") +
+    labs(y = "Reservation Count",
+         x = "Days elapsed from order to visit\n(1 bar = 1 week)") +
     theme_minimal() +
-    theme(panel.grid.minor.x = element_blank()) +
-    scale_x_continuous(limits = c(0, 510), breaks = seq(0, 510, by = 30)) +
-    scale_y_continuous(limits = c(0, 100000), breaks = seq(0, 100000, by = 20000)) +
-    geom_vline(xintercept = 180, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 210, y = 90900, label = "6 months") +
-    geom_vline(xintercept = 360, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 380, y = 90900, label = "1 year")
+    theme(panel.grid.minor.x = element_blank(),
+          plot.background = element_rect("white")) +
+    scale_x_continuous(limits = c(0, 510), 
+                       breaks = seq(0, 510, by = 30)) +
+    geom_vline(xintercept = 180, 
+               linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", label = "6 months", 
+             x = 210, y = 65000) +
+    geom_vline(xintercept = 360, 
+               linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", label = "1 year", 
+             x = 380, y = 65000)
+
+plot_histogram_booking_window <- 
+plot_histogram_booking_window + 
+  plot_annotation(title = "Distribution of Booking Window\nfor Reservable Overnight Sites in California in 2018")
 
 plot_histogram_booking_window
 ```
@@ -334,7 +334,7 @@ plot_histogram_booking_window
 ```{r, eval=FALSE}
 ggsave(plot = plot_histogram_booking_window, 
        filename = "../figs/2018_histogram_booking_window.png",
-       width = 14,
+       width = 12,
        height = 7)
 ```
 
@@ -344,127 +344,298 @@ ggsave(plot = plot_histogram_booking_window,
 NOTES for graph below: 
 - Removed `r 16661 / nrow(combined_data_2018_ridb_acs)` (~3%)
 ```{r}
+racial_groups <- c("asian", "black", "multiracial", 
+                   "other", "white_hisp_latinx", "pacific_islander", 
+                   "native_american")
+racial_group_colors <- c("darkgreen", "darkblue", "darkmagenta", 
+                         "darkred", "darkgoldenrod1", "darkorange2",
+                         "darkcyan")
+```
+
+```{r, eval=FALSE}
+# for (i in 1:length(racial_groups)){
+#   print(ggplot(combined_data_2018_ridb_acs) +
+#           geom_histogram(aes(x = as.symbol(racial_groups[[i]])), #iterating through list of racial groups is breaking
+#                          fill = racial_group_colors[i], 
+#                          binwidth = .1) +
+#           scale_x_continuous(limits = c(0, 1)) +
+#           scale_y_continuous(limits = c(0, 45000)))
+#   Sys.sleep(2)
+# }
+```
+
+```{r}
 plot_asian <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(asian > .1)) +
-  geom_histogram(aes(x = asian), fill = "darkgreen") +
+  ggplot(combined_data_2018_ridb_acs) +
+  geom_histogram(aes(x = asian), 
+                 fill = racial_group_colors[1], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Proportion of Home ZIP",
-       y = "Number of Reservations",
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
        title = "Asian")
 
 plot_black <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(black > .1)) +
-  geom_histogram(aes(x = black), fill = "darkblue") +
+  ggplot(combined_data_2018_ridb_acs) +
+  geom_histogram(aes(x = black), 
+                 fill = racial_group_colors[2], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Proportion of Home ZIP",
-       y = "Number of Reservations",
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
        title = "Black")
 
 plot_multiracial <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(multiracial > .1)) +
-  geom_histogram(aes(x = multiracial), fill = "darkred") +
+  ggplot(combined_data_2018_ridb_acs) +
+  geom_histogram(aes(x = multiracial), 
+                 fill = racial_group_colors[3], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Proportion of Home ZIP",
-       y = "Number of Reservations",
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
        title = "Multiracial")
 
-plot_native_american <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(native_american > .1)) +
-  geom_histogram(aes(x = native_american), fill = "darkblue") +
-  scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Proportion of Home ZIP",
-       y = "Number of Reservations",
-       title = "Native American")
-
-plot_pacific_islander <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(pacific_islander > .1)) +
-  geom_histogram(aes(x = pacific_islander), fill = "darkblue") +
-  scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Proportion of Home ZIP",
-       y = "Number of Reservations",
-       title = "Hawaiian and Other Pacific Islander")
-
 plot_other <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(other > .1)) +
-  geom_histogram(aes(x = other), fill = "darkblue") +
+  ggplot(combined_data_2018_ridb_acs) +
+  geom_histogram(aes(x = other), 
+                 fill = racial_group_colors[4], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Proportion of Home ZIP",
-       y = "Number of Reservations",
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
        title = "Other")
 
 plot_white_hispanic_latinx <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(white > .1)) +
-  geom_histogram(aes(x = white), fill = "goldenrod") +
+  ggplot(combined_data_2018_ridb_acs) +
+  geom_histogram(aes(x = white), 
+                 fill = racial_group_colors[5], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Proportion of Home ZIP",
-       y = "Number of Reservations",
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
        title = "White and Hispanic/Latinx")
 
+plot_pacific_islander <- 
+  ggplot(combined_data_2018_ridb_acs) +
+  geom_histogram(aes(x = pacific_islander), 
+                 fill = racial_group_colors[6], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
+       title = "Hawaiian and Other Pacific Islander")
 
-plots_race_cost_pervisitor_perday <- (plot_asian + plot_black + plot_native_american) / 
-  (plot_white_hispanic_latinx + plot_other + plot_multiracial) #+ 
-  #plot_annotation(title = "Daily Cost per Visitor Compared to Racial Breakdown of Home ZIP Code \nfor Reservable Overnight Sites in California in 2018")
+plot_native_american <- 
+  ggplot(combined_data_2018_ridb_acs) +
+  geom_histogram(aes(x = native_american), 
+                 fill = racial_group_colors[7], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
+       title = "Native American")
 
-plots_race_cost_pervisitor_perday
+plots_histogram_race <- 
+  (plot_asian + plot_black + plot_white_hispanic_latinx) / 
+  (plot_other + plot_multiracial + plot_native_american) + 
+  plot_annotation(title = "Racial Breakdown of Visitors' Home ZIP Code
+                  \nfor Reservable Overnight Sites in California in 2018")
+
+plots_histogram_race
 ```
-
-
-```{r}
-plot_bor <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "BOR")) +
-  geom_bar(aes(x = length_of_stay), fill = "darkblue")
-
-plot_nps <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "NPS")) +
-  geom_bar(aes(x = length_of_stay), fill = "darkgreen")
-
-plot_usfs <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USFS")) +
-  geom_bar(aes(x = length_of_stay), fill = "darkred")
-
-plot_usace <- 
-  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USACE")) +
-  geom_bar(aes(x = length_of_stay), fill = "goldenrod")
-
-(plot_nps + plot_bor) / (plot_usfs + plot_usace)
-```
-
-
 
 ```{r, eval=FALSE}
-ggsave(plot = plots_race_cost_pervisitor_perday, 
-       filename = "../figs/2018_scatter_race_cost_pervisitor_perday.png",
-       width = 11,
+ggsave(plot = plots_histogram_race, 
+       filename = "../figs/2018_histogram_race.png",
+       width = 12,
        height = 7)
 ```
 
+```{r}
+plot_bor_white <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "BOR")) +
+  geom_histogram(aes(x = white), fill = "#F8766D") +
+  labs(title = "Bureau of Reclamation")
+plot_bor_black <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "BOR")) +
+  geom_histogram(aes(x = black), fill = "#F8766D") +
+  labs(title = "Bureau of Reclamation")
+
+plot_nps_white <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "NPS")) +
+  geom_histogram(aes(x = white), fill = "#7CAE00") +
+  labs(title = "National Park Service")
+plot_nps_black <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "NPS")) +
+  geom_histogram(aes(x = black), fill = "#7CAE00") +
+  labs(title = "National Park Service")
+
+plot_usfs_white <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USFS")) +
+  geom_histogram(aes(x = white), fill = "#00BFC4") +
+  labs(title = "US Forest Service")
+plot_usfs_black <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USFS")) +
+  geom_histogram(aes(x = black), fill = "#00BFC4") +
+  labs(title = "US Forest Service")
+
+plot_usace_white <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USACE")) +
+  geom_histogram(aes(x = white), fill = "#C77CFF") +
+  labs(title = "US Army Corps of Engineers")
+plot_usace_black <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USACE")) +
+  geom_histogram(aes(x = black), fill = "#C77CFF") +
+  labs(title = "US Army Corps of Engineers")
+
+plot_histogram_agency_race_white <- 
+  (plot_bor_white + plot_nps_white + plot_usace_white + plot_usfs_white)
+
+plot_histogram_agency_race_black <- 
+  (plot_bor_black + plot_nps_black + plot_usace_black + plot_usfs_black)
+
+plot_histogram_agency_race_white
+plot_histogram_agency_race_black
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_histogram_agency_race_white, 
+       filename = "../figs/2018_histogram_agency_race_white.png",
+       width = 12,
+       height = 7)
+
+ggsave(plot = plot_histogram_agency_race_black, 
+       filename = "../figs/2018_histogram_agency_race_black.png",
+       width = 12,
+       height = 7)
+```
+
+
+
+```{r}
+plot_scatter_park_medianincome <- 
+  ggplot(combined_data_2018_ridb_acs_site_summary) +
+  geom_point(aes(x = park,
+                 y = median_median_income,
+                 col = agency)) +
+  theme(axis.text.x = element_blank()) +
+  labs(x = "Individual Reservable Sites",
+       y = "Median income of visitor home ZIP code ($)",
+       col = "Agency") +
+  scale_color_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
+                                 "US Army Corps of Engineers", "US Foreset Service"))
+
+plot_scatter_park_medianincome <- 
+  plot_scatter_park_medianincome +
+  plot_annotation(title = "Median Income of Visitors' Home ZIP Code
+                  \nfor Reservable Overnight Sites in California in 2018")
+
+plot_scatter_park_medianincome
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_scatter_park_medianincome, 
+       filename = "../figs/2018_scatter_park_median_income.png",
+       width = 12,
+       height = 7)
+```
 
 
 
 ### Agency viz
 
 ```{r}
+# sites per agency
+plot_bar_agency_park <- 
+  ggplot(combined_data_2018_ridb_acs_site_summary) +
+  geom_bar(aes(x = agency, fill = agency)) +
+  scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
+                                 "US Army Corps of Engineers", "US Foreset Service")) +
+  theme_minimal() +
+  labs(fill = "Agency",
+       x = "Agency",
+       y = "Reservable Site Count")
+
+plot_bar_agency_park <- 
+  plot_bar_agency_park +
+  plot_annotation(title = "Total Sites per Agency
+                  \nfor Reservable Overnight Sites in California in 2018")
+
+plot_bar_agency_park
+```
+
+```{r}
 # reservations per agency
-ggplot(data = ridb_2018) +
-  geom_histogram(aes(x = agency, fill = agency), stat = "count") +
+plot_bar_agency_visits <- 
+  ggplot(data = combined_data_2018_ridb_acs) +
+  geom_bar(aes(x = agency, fill = agency)) +
   scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
                                  "US Army Corps of Engineers", "US Foreset Service")) +
   theme_minimal() +
   labs(x = "Agency",
-       y = "Number of Reservations",
-       fill = "Agency",
-       title = "Total Reservations at Federal Public Land Management Agency \nfor Reservable Overnight Sites in California in 2018")
+       y = "Total Reservations",
+       fill = "Agency")
+
+plot_bar_agency_visits <- 
+  plot_bar_agency_visits +
+  plot_annotation(title = "Total Reservations per Agency
+                  \nfor Reservable Overnight Sites in California in 2018")
+
+plot_bar_agency_visits
 ```
 
 
 
 ```{r, eval=FALSE}
-ggsave(plot = plot_jitter_violin_agency_length_of_stay,
-       filename = "../figs/2018_jitter_violin_length_of_stay.png",
+ggsave(plot = plot_bar_agency_park,
+       filename = "../figs/2018_bar_agency_park.png",
+       width = 14,
+       height = 7)
+
+ggsave(plot = plot_bar_agency_visits,
+       filename = "../figs/2018_bar_agency_visits.png",
        width = 14,
        height = 7)
 ```
 
 
+```{r}
+plot_histogram_agency_booking_window <- 
+  ggplot(data = plot_histogram_booking_window_data, 
+         aes(x = booking_window)) +
+  geom_histogram(aes(fill = agency), binwidth = 7) +
+  labs(y = "Reservation Count",
+       x = "Days elapsed from order to visit\n(1 bar = 1 week)") +
+  scale_fill_discrete(
+    labels = c("Bureau of Reclamation", "National Park Service", 
+               "US Army Corps of Engineers", "US Foreset Service")) +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white")) +
+  scale_x_continuous(limits = c(0, 510), breaks = seq(0, 510, by = 30)) +
+  geom_vline(xintercept = 180, linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", x = 210, y = 65000, label = "6 months") +
+  geom_vline(xintercept = 360, linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", x = 380, y = 65000, label = "1 year")
 
+plot_histogram_agency_booking_window <- 
+plot_histogram_agency_booking_window + 
+  plot_annotation(title = "Distribution of Booking Window by Agency\nfor Reservable Overnight Sites in California in 2018")
+
+plot_histogram_agency_booking_window
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_histogram_agency_booking_window,
+       filename = "../figs/2018_histogram_agency_booking_window.png",
+       width = 14,
+       height = 7)
+```
 
