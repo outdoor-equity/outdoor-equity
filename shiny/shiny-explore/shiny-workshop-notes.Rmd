@@ -15,3 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 `reactlog` is a package that tests R Shiny apps
 
+[Shiny app repository structure](https://ucsb-meds.github.io/shiny-workshop/#26)
+
+
+
