@@ -7,20 +7,25 @@
 #                  thematic,
 #                  reactlog)
 
+# load packages ----
 librarian::shelf(shiny,
                  tidyverse,
                  palmerpenguins,
                  DT,
                  rsconnect,
-                 shinyWidgets)
+                 shinyWidgets,
+                 bslib)
 
-# create UI ----
+# user interface ----
 # fluidPage creates the UI we are going to see
 # tags$h1 creates a level one header
 # p and strong are more tags, where p is paragraph and strong is bold text
 # separate elements using commas
 # most input functions take a label
 ui <- fluidPage(
+  
+  # set theme ----
+  theme = bs_theme(bootswatch = "minty"),
   
   # layout
   navbarPage(

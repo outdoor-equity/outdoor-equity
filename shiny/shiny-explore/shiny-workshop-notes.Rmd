@@ -34,6 +34,8 @@ knitr::opts_chunk$set(echo = TRUE)
 - `navbarPage` is probably what we want to use 
 - can nest layout functions within each other, but this needs to be done with the right function pairing 
 
+[Themes](https://bootswatch.com/)
+
 Software updates will likely break Shiny apps
 - need to create a maintenance plan for our clients
 
