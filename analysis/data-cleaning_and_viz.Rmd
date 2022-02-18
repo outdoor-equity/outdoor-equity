@@ -294,7 +294,7 @@ agency_park_table <-
 
 ```{r}
 ggplot(data = combined_data_2018_ridb_acs) +
-    geom_histogram(aes(x = length_of_stay), fill = "goldenrod") +
+    geom_histogram(aes(x = length_of_stay), fill = "goldenrod", binwidth = 1) +
     labs(x = "Lenth of stay (days)",
          y = "Individual Reservations") +
     theme_minimal()
@@ -308,19 +308,25 @@ plot_histogram_booking_window_data <-
   filter(booking_window > 0)
 
 plot_histogram_booking_window <- 
-    ggplot(data = plot_histogram_booking_window_data, 
-           aes(x = booking_window)) +
-    geom_histogram(fill = "goldenrod", binwidth = 7) +
+    ggplot(data = plot_histogram_booking_window_data) +
+    geom_histogram(aes(x = booking_window), 
+                   binwidth = 7,
+                   fill = "goldenrod") +
     labs(y = "Reservation Count",
          x = "Days elapsed from order to visit\n(1 bar = 1 week)") +
     theme_minimal() +
     theme(panel.grid.minor.x = element_blank(),
           plot.background = element_rect("white")) +
-    scale_x_continuous(limits = c(0, 510), breaks = seq(0, 510, by = 30)) +
-    geom_vline(xintercept = 180, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 210, y = 65000, label = "6 months") +
-    geom_vline(xintercept = 360, linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", x = 380, y = 65000, label = "1 year")
+    scale_x_continuous(limits = c(0, 510), 
+                       breaks = seq(0, 510, by = 30)) +
+    geom_vline(xintercept = 180, 
+               linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", label = "6 months", 
+             x = 210, y = 65000) +
+    geom_vline(xintercept = 360, 
+               linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", label = "1 year", 
+             x = 380, y = 65000)
 
 plot_histogram_booking_window <- 
 plot_histogram_booking_window + 
@@ -345,81 +351,107 @@ NOTES for graph below:
 racial_groups <- c("asian", "black", "multiracial", 
                    "other", "white_hisp_latinx", "pacific_islander", 
                    "native_american")
-racial_group_colors <- c("dark green", "darkblue", "darkmagenta", 
+racial_group_colors <- c("darkgreen", "darkblue", "darkmagenta", 
                          "darkred", "darkgoldenrod1", "darkorange2",
                          "darkcyan")
-# # need to figure out how to save individual plots w/in funciton / for loop
-# function(){
-#   for (i in 1:length(racial_groups)){
-#     ggplot(combined_data_2018_ridb_acs) +
-#       geom_histogram(aes(x = racial_groups[i]), fill = racial_group_colors[i], binwidth = .1) +
-#       scale_x_continuous(limits = c(0, 1)) +
-#       scale_y_continuous(limits = c(0, 45000))
-#   }
-# }
+```
 
+```{r}
+# for (i in 1:length(racial_groups)){
+#   print(ggplot(combined_data_2018_ridb_acs) +
+#           geom_histogram(aes(x = as.symbol(racial_groups[[i]])), #iterating through list of racial groups is breaking
+#                          fill = racial_group_colors[i], 
+#                          binwidth = .1) +
+#           scale_x_continuous(limits = c(0, 1)) +
+#           scale_y_continuous(limits = c(0, 45000)))
+#   Sys.sleep(2)
+# }
+```
+
+```{r}
 plot_asian <- 
   ggplot(combined_data_2018_ridb_acs) +
-  geom_histogram(aes(x = asian), fill = racial_group_colors[1], binwidth = .05) +
+  geom_histogram(aes(x = asian), 
+                 fill = racial_group_colors[1], 
+                 binwidth = .05) +
   scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage of race\nat home ZIP code",
+  labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Asian")
+       title = "Asian") +
+    theme_minimal()
 
 plot_black <- 
   ggplot(combined_data_2018_ridb_acs) +
-  geom_histogram(aes(x = black), fill = racial_group_colors[2], binwidth = .05) +
+  geom_histogram(aes(x = black), 
+                 fill = racial_group_colors[2], 
+                 binwidth = .05) +
   scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage of race\nat home ZIP code",
+  labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Black")
+       title = "Black") +
+    theme_minimal()
 
 plot_multiracial <- 
   ggplot(combined_data_2018_ridb_acs) +
-  geom_histogram(aes(x = multiracial), fill = racial_group_colors[3], binwidth = .05) +
+  geom_histogram(aes(x = multiracial), 
+                 fill = racial_group_colors[3], 
+                 binwidth = .05) +
   scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage of race\nat home ZIP code",
+  labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Multiracial")
+       title = "Multiracial") +
+    theme_minimal()
 
 plot_other <- 
   ggplot(combined_data_2018_ridb_acs) +
-  geom_histogram(aes(x = other), fill = racial_group_colors[4], binwidth = .05) +
+  geom_histogram(aes(x = other), 
+                 fill = racial_group_colors[4], 
+                 binwidth = .05) +
   scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage of race\nat home ZIP code",
+  labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Other")
+       title = "Other") +
+    theme_minimal()
 
 plot_white_hispanic_latinx <- 
   ggplot(combined_data_2018_ridb_acs) +
-  geom_histogram(aes(x = white), fill = racial_group_colors[5], binwidth = .05) +
+  geom_histogram(aes(x = white), 
+                 fill = racial_group_colors[5], 
+                 binwidth = .05) +
   scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage of race\nat home ZIP code",
+  labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "White and \nHispanic/Latinx")
+       title = "White and Hispanic/Latinx") +
+    theme_minimal()
 
 plot_pacific_islander <- 
   ggplot(combined_data_2018_ridb_acs) +
-  geom_histogram(aes(x = pacific_islander), fill = racial_group_colors[6], binwidth = .05) +
+  geom_histogram(aes(x = pacific_islander), 
+                 fill = racial_group_colors[6], 
+                 binwidth = .05) +
   scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage of race\nat home ZIP code",
+  labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Hawaiian and Other Pacific Islander")
+       title = "Hawaiian and Other Pacific Islander") +
+    theme_minimal()
 
 plot_native_american <- 
   ggplot(combined_data_2018_ridb_acs) +
-  geom_histogram(aes(x = native_american), fill = racial_group_colors[7], binwidth = .05) +
+  geom_histogram(aes(x = native_american), 
+                 fill = racial_group_colors[7], 
+                 binwidth = .05) +
   scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage of race\nat home ZIP code",
+  labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Native American")
+       title = "Native American") +
+    theme_minimal()
 
 plots_histogram_race <- 
   (plot_asian + plot_black + plot_white_hispanic_latinx) / 
@@ -428,6 +460,7 @@ plots_histogram_race <-
 
 plots_histogram_race
 ```
+
 
 ```{r, eval=FALSE}
 ggsave(plot = plots_histogram_race, 
