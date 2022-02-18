@@ -21,6 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [Two file shiny app](https://ucsb-meds.github.io/shiny-workshop/#28)
 - this is something to consider as the app gets larger 
+- **global.R** file will be useful for data manipulating, etc.
 
 [Adding inputs and outputs](https://ucsb-meds.github.io/shiny-workshop/#32)
 - there are more inputs than listed on the slide 
