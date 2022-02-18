@@ -22,4 +22,7 @@ activity_body <- content(response, "text")
 activity_parsed_data <- fromJSON(activity_body, flatten=TRUE, simplifyDataFrame=TRUE)
 activity_df <- data.frame(activity_parsed_data)
 
+# convert df to a csv
+# activity_csv <- write_csv()
+
 

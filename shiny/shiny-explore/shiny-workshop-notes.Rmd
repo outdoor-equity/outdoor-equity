@@ -1,0 +1,17 @@
+---
+title: "R Shiny Workshop Notes"
+author: "Halina Do-Linh"
+date: "2/18/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+[Slides](https://ucsb-meds.github.io/shiny-workshop/#1)
+
+[Widgets beyond basic ones](https://github.com/dreamRs/shinyWidgets)
+
+`reactlog` is a package that tests R Shiny apps
+
