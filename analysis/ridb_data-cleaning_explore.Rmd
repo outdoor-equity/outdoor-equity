@@ -1,0 +1,80 @@
+---
+title: "RIDB data cleaning explore"
+author: "Clarissa Boyajian"
+date: "2/18/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(lubridate)
+library(sf)
+library(tidycensus)
+library(patchwork)
+library(scales)
+library(tmap)
+
+options(scipen = 999)
+
+
+# RIDB functions
+# raw data
+source("functions/function_ridb_subset-pre2018.R")
+source("functions/function_ridb_subset-post2019.R")
+# calculate variables
+source("functions/function_ridb_variable_calculate-pre2018.R")
+# standardize values
+# need to make function still
+```
+
+
+# RIDB
+
+## Read in data, calculate varibales, standardize values
+
+```{r}
+## 2018
+# read in data
+RIDB_subset_pre2018(full_file_path = "../../data_raw/reservations2018.csv", 
+                      state_abbrev = "CA", year = 2018)
+# calculate variables
+RIDB_calculate_pre2018(input_df_name = data_ridb_2018, output_df_name = "data_ridb_2018")
+## create function to standardize values (or add to calculate function)
+```
+
+
+*Issues to consider*: 
+- length of stay goes to -126
+- highest price / person is $279 for a group campsite (the site isn't that expensive)
+
+
+*Notes on standardizations to consider*:
+- region description: 
+    - change "-FS" and "- FS" to "Forest Service"
+    - add indicator to regions without (i.e. not USFS or NPS)
+- parent location:
+    - change "-FS" and "- FS" to "Forest Service"
+    - change "NF" to "National Forest"
+    - change "PWR" to "Pacific West Region"
+- park:
+    - remove "--- #idcodehere#", and " (CA)" from ends of park names
+    - fix anomolies that don't follow pattern (i.e. "region / campground name" or "campground name, region")
+    - remove all uppercase
+- facility zip:
+    - remove everything after 5th digit
+- start date:
+    - min: 2017-06-19
+    - max: 2019-09-30
+- end date:
+    - min: 2017-06-22
+    - max: 2019-10-14
+- order date: **the data is split by fiscal year of order date!!**
+    - min: 2017-10-01
+    - max: 2018-09-30
+
+NAs:
+    - facility zip: 108309

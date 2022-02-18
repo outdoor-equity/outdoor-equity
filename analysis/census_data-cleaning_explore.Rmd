@@ -1,0 +1,75 @@
+---
+title: "Census data cleaning exlpore"
+author: "Clarissa Boyajian"
+date: "2/18/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(lubridate)
+library(sf)
+library(tidycensus)
+library(patchwork)
+library(scales)
+library(tmap)
+
+options(scipen = 999)
+
+# ACS functions
+source("functions/function_acs_race.R")
+source("functions/function_acs_median_income.R")
+source("functions/function_acs_transportation.R")
+source("functions/function_acs_education.R")
+```
+
+```{r}
+acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE)
+acs_subset_calculate_median_income(geography = "zcta", year = 2018, geometry = FALSE)
+acs_subset_calculate_transportation(geography = "zcta", year = 2018, geometry = FALSE)
+acs_subset_calculate_education(geography = "zcta", year = 2018, geometry = FALSE)
+```
+
+```{r message=FALSE}
+# # ONLY HAVE TO RUN THE FIRST TIME USING THIS RMD on a new machine
+# census_api <- source("private/census-api.R")
+# census_api_key(key = census_api[[1]], install = TRUE, overwrite = TRUE)
+# # run in console:
+## readRenviron("~/.Renviron")
+
+# # view variable options from acs5
+# acs5_variables <- load_variables(year = 2018, dataset = "acs5")
+```
+
+```{r}
+## -- other median income options -- ##
+## HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
+acs_2018_total_income <- 
+  get_acs(geography = "zcta",
+          year = acs_year,
+          summary_var = "B19001_001", # Estimate!!Total:
+          variables = c(
+            "B19001_002", # Estimate!!Total:!!Less than $10,00 (spread of ranges change from -002 to -0017)
+            "B19001_017" # Estimate!!Total:!!$200,000 or more
+          )) %>% 
+  clean_names()
+
+## PER CAPITA INCOME IN THE PAST 12 MONTHS (IN 2019 INFLATION-ADJUSTED DOLLARS) ##
+acs_2018_percapita_income <- 
+  get_acs(geography = acs_geography,
+          year = acs_year,
+          variables = c(                        
+            "B19301_001" # Estimate!!Per capita income in the past 12 months (in 2019 inflation-adjusted dollars)
+          )) %>% 
+  clean_names()
+```
+
+LANGUAGE SPOKEN AT HOME BY ABILITY TO SPEAK ENGLISH FOR THE POPULATION 5 YEARS AND OVER
+long list found here (https://data.census.gov/cedsci/table?d=ACS%205-Year%20Estimates%20Detailed%20Tables&tid=ACSDT5Y2019.B16001)
+
+THINK ABOUT ADDING:
+"B05001" -- citizenship status

@@ -1,5 +1,5 @@
 
-RIDB_cleaning_pre2018 <- function(full_file_path, state_abbrev, df_name) {
+RIDB_subset_pre2018 <- function(full_file_path, state_abbrev, year) {
   # variables to keep
   select_columns <- c("agency",
                       "region_description",
@@ -37,15 +37,12 @@ RIDB_cleaning_pre2018 <- function(full_file_path, state_abbrev, df_name) {
     filter(!site_type %in% rm_sitetype) %>% 
     filter(use_type == "Overnight") %>%
     filter(customer_zip == str_extract_all(customer_zip, "[[:digit:]]{5}"))
+  # remove use type column
+  df <- 
+    df %>% 
+    select(!use_type)
   # create df
-  assign(paste(df_name), data.frame(df), envir = .GlobalEnv)
+  assign(paste0("data_ridb_", year), data.frame(df), envir = .GlobalEnv)
 }
 
-# test function
-# library(tidyverse)
-# library(janitor)
-# library(here)
-# 
-# RIDB_cleaning_pre2018(full_file_path = "../../../capstone/outdoorequity/data/2017.csv", state = "CA",
-#                       df_name = "RIDB_CA_2017")
 
