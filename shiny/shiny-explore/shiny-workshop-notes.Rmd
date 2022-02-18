@@ -39,4 +39,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Software updates will likely break Shiny apps
 - need to create a maintenance plan for our clients
 
+**Don't use here in the Shiny App**
+- can save using here though because it's not part of the application 
+
 
