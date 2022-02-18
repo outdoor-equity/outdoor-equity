@@ -1,0 +1,45 @@
+---
+title: "R Shiny Workshop Notes"
+author: "Halina Do-Linh"
+date: "2/18/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+[Slides](https://ucsb-meds.github.io/shiny-workshop/#1)
+
+[Widgets beyond basic ones](https://github.com/dreamRs/shinyWidgets)
+
+`reactlog` is a package that tests R Shiny apps
+
+[Shiny app repository structure](https://ucsb-meds.github.io/shiny-workshop/#26)
+
+`myapp` directory is the slug of our shiny on the webpage
+
+[Two file shiny app](https://ucsb-meds.github.io/shiny-workshop/#28)
+- this is something to consider as the app gets larger 
+- **global.R** file will be useful for data manipulating, etc.
+
+[Adding inputs and outputs](https://ucsb-meds.github.io/shiny-workshop/#32)
+- there are more inputs than listed on the slide 
+
+[Outputs and render functions](https://ucsb-meds.github.io/shiny-workshop/#44)
+- these sister functions are what makes the webpage elements reactive 
+
+[Layouts](https://ucsb-meds.github.io/shiny-workshop/#81)
+- side bar layout is most popular 
+- `navbarPage` is probably what we want to use 
+- can nest layout functions within each other, but this needs to be done with the right function pairing 
+
+[Themes](https://bootswatch.com/)
+
+Software updates will likely break Shiny apps
+- need to create a maintenance plan for our clients
+
+**Don't use here in the Shiny App**
+- can save using here though because it's not part of the application 
+
+
