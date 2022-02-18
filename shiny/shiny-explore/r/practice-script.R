@@ -25,3 +25,21 @@ DT::datatable(data = penguins,
               class = "cell-border stripe",
               colnames = colnames)
 
+# reactive histogram
+# filter island data ----
+island_df <- reactive({
+  penguins %>% 
+    filter(island == input$island)
+})
+# render the flipper length histogram ----
+output$flipperLength_hist <- renderPlot({
+  ggplot(na.omit(island_df()), aes(x = flipper_length_mm, fill = species)) +
+    geom_histogram(alpha = 0.6) +
+    scale_fill_manual(values = c("Adelie" = "#FEA346", 
+                                 "Chinstrap" = "#B251F1", 
+                                 "Gentoo" = "#4BA4A4")) +
+    labs(x = "Flipper length (mm)", y = "Frequency", 
+         fill = "Penguin species") +
+    theme_minimal() +
+    theme(legend.position = "bottom",
+          legend.background = element_rect(color = "white"))

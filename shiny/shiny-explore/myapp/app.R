@@ -11,7 +11,8 @@ librarian::shelf(shiny,
                  tidyverse,
                  palmerpenguins,
                  DT,
-                 rsconnect)
+                 rsconnect,
+                 shinyWidgets)
 
 # create UI ----
 # fluidPage creates the UI we are going to see
@@ -43,7 +44,19 @@ ui <- fluidPage(
                       
                       # body mass output ----
                       plotOutput(outputId = "bodyMass_scatterPlot")),
-             tabPanel("Histogram")),
+             tabPanel("Histogram",
+                      # island input ----
+                      shinyWidgets::pickerInput(inputId = "island",
+                                                label = "Select an island:",
+                                                choices = c("Torgersen", "Dream", "Biscoe"),
+                                                selected = c("Torgersen", "Dream", "Biscoe"),
+                                                multiple = TRUE,
+                                                options = pickerOptions(actionsBox = TRUE)),
+                      # flipper length plot output ----
+                      plotOutput(outputId = "flipperLength_hist")
+                      )
+             ),
+           
            "penguin plots go here"),
   
   tabPanel("Weather Plots",
@@ -52,7 +65,7 @@ ui <- fluidPage(
   tabPanel("Explore the Data",
            # DT data table output (does not need input) ----
            DT::dataTableOutput(outputId = "penguins_dt"),
-           "put DT tables here")),
+           "put DT tables here"))
   
 ) 
 
@@ -94,7 +107,7 @@ server <- function(input, output){
     
   })
   
-  # render data table
+  # render data table ----
   output$penguins_dt <- renderDataTable({
     colnames = c("Species", "Island", "Bill Length (mm)", "Bill Depth (mm)", "Flipper Length (mm)", "Body Mass (g)", "Sex", "Year")
     DT::datatable(data = penguins,
@@ -105,9 +118,24 @@ server <- function(input, output){
                   class = "cell-border stripe",
                   colnames = colnames)
   })
+  
+  # filter island data ----
+  island_df <- reactive({
+    penguins %>% 
+      filter(island == input$island)
+  })
 
-    
+  # render flipper length histogram ---- 
+  output$flipperLength_hist <- renderPlot({
+    ggplot(na.omit(island_df()), aes(x = flipper_length_mm, fill = species)) +
+      geom_histogram(alpha = 0.6) +
+      scale_fill_manual(values = c("Adelie" = "#FEA346", "Chinstrap" = "#B251F1", "Gentoo" = "#4BA4A4")) +
+      labs(x = "Flipper length (mm)", y = "Frequency", 
+           fill = "Penguin species") +
+      theme_minimal() +
+      theme(legend.position = "bottom",
+            legend.background = element_rect(color = "white"))
+})
 }
-
 # combine UI and server into an app ----
 shinyApp(ui = ui, server = server)
