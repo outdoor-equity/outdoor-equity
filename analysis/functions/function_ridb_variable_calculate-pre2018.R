@@ -10,6 +10,31 @@ RIDB_calculate_pre2018 <-
              length_of_stay = as.numeric(difftime(end_date, start_date), units = "days"),
              booking_window = as.numeric(difftime(start_date, order_date), units = "days"),
              daily_cost_per_visitor = (total_paid / number_of_people) / length_of_stay) %>% 
+      # aggregate site type
+      mutate(aggregated_site_type = 
+               case_when(
+                 site_type %in% c("walk to",
+                                  "hike to",
+                                  "group hike to",
+                                  "group walk to") ~ "remote",
+                 site_type %in% c("cabin nonelectric",
+                                  "cabin electric",
+                                  "yurt",
+                                  "shelter nonelectric") ~ "shelter",
+                 site_type %in% c("boat in") ~ "water",
+                 site_type %in% c("group equestrian",
+                                  "equestrian nonelectric") ~ "equestrian",
+                 site_type %in% c("rv nonelectric",
+                                  "rv electric",
+                                  "group rv area nonelectric") ~ "rv only",
+                 site_type %in% c("group standard nonelectric",
+                                  "standard nonelectric",
+                                  "standard electric",
+                                  "group standard area nonelectric",
+                                  "group standard electric") ~ "rv or tent",
+                 site_type %in% c("tent only nonelectric",
+                                  "group tent only area nonelectric",
+                                  "tent only electric") ~ "tent only")) %>% 
       # create geometries
       st_as_sf(coords = c("facility_longitude", "facility_latitude"),
                crs = 4326)
