@@ -120,7 +120,13 @@ server <- function(input, output){
   })
   
   # filter island data ----
+  # validate and need work together really well
+  # if false then the error message will show up
   island_df <- reactive({
+    
+    validate(
+      need(length(input$island) > 0, "Please choose at least one island to visualize.")
+    )
     penguins %>% 
       filter(island == input$island)
   })
