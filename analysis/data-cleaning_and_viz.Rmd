@@ -16,13 +16,14 @@ library(sf)
 library(lubridate)
 library(tmap)
 library(patchwork)
+library(scales)
 
 options(scipen = 999)
 ```
 
 # Bring in geometries
 
-```{r}
+```{r, eval=FALSE}
 # CA county geometries
 ca_county_geom <- st_read(here::here("../../data_raw/ca_county_geometries/counties.shp")) %>% 
   clean_names() %>% 
@@ -281,11 +282,6 @@ combined_data_2018_ridb_acs_site_summary <-
               count = n())
 ```
 
-```{r}
-agency_park_table <- 
-  ridb_2018 %>% 
-  group_by(agency, site)
-```
 
 
 # Visualization
@@ -356,7 +352,7 @@ racial_group_colors <- c("darkgreen", "darkblue", "darkmagenta",
                          "darkcyan")
 ```
 
-```{r}
+```{r, eval=FALSE}
 # for (i in 1:length(racial_groups)){
 #   print(ggplot(combined_data_2018_ridb_acs) +
 #           geom_histogram(aes(x = as.symbol(racial_groups[[i]])), #iterating through list of racial groups is breaking
@@ -378,8 +374,7 @@ plot_asian <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Asian") +
-    theme_minimal()
+       title = "Asian")
 
 plot_black <- 
   ggplot(combined_data_2018_ridb_acs) +
@@ -390,8 +385,7 @@ plot_black <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Black") +
-    theme_minimal()
+       title = "Black")
 
 plot_multiracial <- 
   ggplot(combined_data_2018_ridb_acs) +
@@ -402,8 +396,7 @@ plot_multiracial <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Multiracial") +
-    theme_minimal()
+       title = "Multiracial")
 
 plot_other <- 
   ggplot(combined_data_2018_ridb_acs) +
@@ -414,8 +407,7 @@ plot_other <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Other") +
-    theme_minimal()
+       title = "Other")
 
 plot_white_hispanic_latinx <- 
   ggplot(combined_data_2018_ridb_acs) +
@@ -426,8 +418,7 @@ plot_white_hispanic_latinx <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "White and Hispanic/Latinx") +
-    theme_minimal()
+       title = "White and Hispanic/Latinx")
 
 plot_pacific_islander <- 
   ggplot(combined_data_2018_ridb_acs) +
@@ -438,8 +429,7 @@ plot_pacific_islander <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Hawaiian and Other Pacific Islander") +
-    theme_minimal()
+       title = "Hawaiian and Other Pacific Islander")
 
 plot_native_american <- 
   ggplot(combined_data_2018_ridb_acs) +
@@ -450,17 +440,15 @@ plot_native_american <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Native American") +
-    theme_minimal()
+       title = "Native American")
 
 plots_histogram_race <- 
   (plot_asian + plot_black + plot_white_hispanic_latinx) / 
   (plot_other + plot_multiracial + plot_native_american) + 
-  plot_annotation(title = "Distribution Racial Breakdown by Home ZIP Code \nfor Reservable Overnight Sites in California in 2018")
+  plot_annotation(title = "Racial Breakdown of Home ZIP Code \nfor Reservable Overnight Sites in California in 2018")
 
 plots_histogram_race
 ```
-
 
 ```{r, eval=FALSE}
 ggsave(plot = plots_histogram_race, 
@@ -470,30 +458,55 @@ ggsave(plot = plots_histogram_race,
 ```
 
 ```{r}
-plot_bor <- 
+plot_bor_white <- 
   ggplot(combined_data_2018_ridb_acs %>% filter(agency == "BOR")) +
-  geom_col(aes(x = median_income, y = agency), fill = "darkblue")
+  geom_histogram(aes(x = white), fill = "#F8766D") +
+  labs(title = "Bureau of Reclamation")
+plot_bor_black <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "BOR")) +
+  geom_histogram(aes(x = black), fill = "#F8766D") +
+  labs(title = "Bureau of Reclamation")
 
-plot_nps <- 
+plot_nps_white <- 
   ggplot(combined_data_2018_ridb_acs %>% filter(agency == "NPS")) +
-  geom_col(aes(x = median_income), fill = "darkgreen")
+  geom_histogram(aes(x = white), fill = "#7CAE00") +
+  labs(title = "National Park Service")
+plot_nps_black <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "NPS")) +
+  geom_histogram(aes(x = black), fill = "#7CAE00") +
+  labs(title = "National Park Service")
 
-plot_usfs <- 
+plot_usfs_white <- 
   ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USFS")) +
-  geom_col(aes(x = median_income), fill = "darkred")
+  geom_histogram(aes(x = white), fill = "#00BFC4") +
+  labs(title = "US Forest Service")
+plot_usfs_black <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USFS")) +
+  geom_histogram(aes(x = black), fill = "#00BFC4") +
+  labs(title = "US Forest Service")
 
-plot_usace <- 
+plot_usace_white <- 
   ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USACE")) +
-  geom_col(aes(x = median_income), fill = "goldenrod")
+  geom_histogram(aes(x = white), fill = "#C77CFF") +
+  labs(title = "US Army Corps of Engineers")
+plot_usace_black <- 
+  ggplot(combined_data_2018_ridb_acs %>% filter(agency == "USACE")) +
+  geom_histogram(aes(x = black), fill = "#C77CFF") +
+  labs(title = "US Army Corps of Engineers")
 
-(plot_nps + plot_bor) / (plot_usfs + plot_usace)
+plot_histogram_agency_race <- 
+  (plot_bor_white + plot_nps_white + plot_usace_white + plot_usfs_white) /
+  (plot_bor_black + plot_nps_black + plot_usace_black + plot_usfs_black)
+
+plot_histogram_agency_race
 ```
 
-```{r}
-ggplot(combined_data_2018_ridb_acs) +
-  geom_point(aes(x = median_income, y = agency), fill = "darkblue")
+```{r, eval=FALSE}
+ggsave(plot = plot_histogram_agency_race, 
+       filename = "../figs/2018_histogram_agency_race.png",
+       width = 14,
+       height = 7)
 ```
-
 
 
 
@@ -510,25 +523,42 @@ ggplot(combined_data_2018_ridb_acs_site_summary) +
 
 ```{r}
 # sites per agency
-ggplot(combined_data_2018_ridb_acs_site_summary) +
+plot_bar_agency_park <- 
+  ggplot(combined_data_2018_ridb_acs_site_summary) +
   geom_bar(aes(x = agency, fill = agency)) +
   scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
                                  "US Army Corps of Engineers", "US Foreset Service")) +
-  
+  theme_minimal() +
+  labs(fill = "Agency",
+       x = "Agency",
+       y = "Reservable Site Count")
+
+plot_bar_agency_park <- 
+  plot_bar_agency_park +
+  plot_annotation(title = "Total Sites per Agency
+                  \nfor Reservable Overnight Sites in California in 2018")
+
+plot_bar_agency_park
 ```
 
 ```{r}
 # reservations per agency
-ggplot(data = ridb_2018) +
-  geom_histogram(aes(x = agency, fill = agency), stat = "count") +
+plot_bar_agency_visits <- 
+  ggplot(data = combined_data_2018_ridb_acs) +
+  geom_bar(aes(x = agency, fill = agency)) +
   scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
                                  "US Army Corps of Engineers", "US Foreset Service")) +
   theme_minimal() +
   labs(x = "Agency",
-       y = "Number of Reservations",
-       fill = "Agency",
-       title = "Total Reservations at Federal Public Land Management Agency 
-       \nfor Reservable Overnight Sites in California in 2018")
+       y = "Total Reservations",
+       fill = "Agency")
+
+plot_bar_agency_visits <- 
+  plot_bar_agency_visits +
+  plot_annotation(title = "Total Reservations per Agency
+                  \nfor Reservable Overnight Sites in California in 2018")
+
+plot_bar_agency_visits
 ```
 
 
