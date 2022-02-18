@@ -1,0 +1,11 @@
+name: myapp
+title:
+username:
+account: hdolinh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5686638
+bundleId: 5595260
+url: https://hdolinh.shinyapps.io/myapp/
+when: 1645212050.25429
+lastSyncTime: 1645212050.25429
