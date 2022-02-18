@@ -445,7 +445,7 @@ plot_native_american <-
 plots_histogram_race <- 
   (plot_asian + plot_black + plot_white_hispanic_latinx) / 
   (plot_other + plot_multiracial + plot_native_american) + 
-  plot_annotation(title = "Racial Breakdown of Home ZIP Code \nfor Reservable Overnight Sites in California in 2018")
+  plot_annotation(title = "Racial Breakdown of Visitors' Home ZIP Code \nfor Reservable Overnight Sites in California in 2018")
 
 plots_histogram_race
 ```
@@ -494,17 +494,25 @@ plot_usace_black <-
   geom_histogram(aes(x = black), fill = "#C77CFF") +
   labs(title = "US Army Corps of Engineers")
 
-plot_histogram_agency_race <- 
-  (plot_bor_white + plot_nps_white + plot_usace_white + plot_usfs_white) /
+plot_histogram_agency_race_white <- 
+  (plot_bor_white + plot_nps_white + plot_usace_white + plot_usfs_white)
+
+plot_histogram_agency_race_black <- 
   (plot_bor_black + plot_nps_black + plot_usace_black + plot_usfs_black)
 
-plot_histogram_agency_race
+plot_histogram_agency_race_white
+plot_histogram_agency_race_black
 ```
 
 ```{r, eval=FALSE}
-ggsave(plot = plot_histogram_agency_race, 
-       filename = "../figs/2018_histogram_agency_race.png",
-       width = 14,
+ggsave(plot = plot_histogram_agency_race_white, 
+       filename = "../figs/2018_histogram_agency_race_white.png",
+       width = 12,
+       height = 7)
+
+ggsave(plot = plot_histogram_agency_race_black, 
+       filename = "../figs/2018_histogram_agency_race_black.png",
+       width = 12,
        height = 7)
 ```
 
