@@ -4,8 +4,8 @@ username:
 account: hdolinh
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 5686638
-bundleId: 5595260
+appId: 5691492
+bundleId: 5597728
 url: https://hdolinh.shinyapps.io/myapp/
-when: 1645212050.25429
-lastSyncTime: 1645212050.25429
+when: 1645298779.6851
+lastSyncTime: 1645298779.68512

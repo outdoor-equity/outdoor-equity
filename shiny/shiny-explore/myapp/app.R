@@ -8,13 +8,13 @@
 #                  reactlog)
 
 # load packages ----
-librarian::shelf(shiny,
-                 tidyverse,
-                 palmerpenguins,
-                 DT,
-                 rsconnect,
-                 shinyWidgets,
-                 bslib)
+library(shiny)
+library(tidyverse)
+library(palmerpenguins)
+library(DT)
+library(rsconnect)
+library(shinyWidgets)
+library(bslib)
 
 # user interface ----
 # fluidPage creates the UI we are going to see
