@@ -30,6 +30,7 @@ ui <- fluidPage(
                  ),
                tabPanel(
                  title = "Metdata",
+                 # Note(HD): need to change this to a rmd file to include DT table
                  includeMarkdown("./text/metadata-about.md")
                  )),
     tabPanel("Agencies",
