@@ -22,15 +22,15 @@ ui <- fluidPage(
                tabPanel(
                  title = "Background",
                  # Note(HD): need . in front of file path for relative path
-                 includeMarkdown("./text/about-background.md"),
+                 includeMarkdown("./text/background-about.md"),
                  ),
                tabPanel(
                  title = "User Guide",
-                 includeMarkdown("./text/userGuide-background.md")
+                 includeMarkdown("./text/userGuide-about.md")
                  ),
                tabPanel(
                  title = "Metdata",
-                 includeMarkdown("./text/metadata-background.md")
+                 includeMarkdown("./text/metadata-about.md")
                  )),
     tabPanel("Agencies",
              "graphs and inputs to compare agenices here"),
