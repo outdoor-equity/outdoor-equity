@@ -1,7 +1,10 @@
+library(rsconnect)
+library(bslib)
+
 # user interface ----
 ui <- fluidPage(
   
-  # set theme
+  # set theme ----
   theme = bs_theme(bootswatch = "minty"),
   
   # app title ----
@@ -16,7 +19,11 @@ ui <- fluidPage(
     "Outdoor Equity",
     # nav bar tabs
     navbarMenu("About",
-               tabPanel("background information"),
+               tabPanel(
+                 title = "Background",
+                 # Note(HD): need . in front of file path for relative path
+                 includeMarkdown("./text/about-background.md"),
+                 ),
                tabPanel("user guide documentation"),
                tabPanel("metadata here")),
     tabPanel("Agencies",
