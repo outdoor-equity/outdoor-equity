@@ -95,7 +95,7 @@ server <- function(input, output){
   output$bodyMass_scatterPlot <- renderPlot({
     
     # code to generate scatterplot here
-    # reactive df always needs an open/close paraentheses 
+    # reactive df always needs an open/close parentheses 
     ggplot(na.omit(body_mass_df()), aes(x = flipper_length_mm, y = bill_length_mm,
                                   color = species, shape = species)) +
       geom_point(size = 4) +
