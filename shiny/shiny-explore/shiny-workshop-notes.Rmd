@@ -42,4 +42,9 @@ Software updates will likely break Shiny apps
 **Don't use here in the Shiny App**
 - can save using here though because it's not part of the application 
 
+**Rmd cannot be used in shiny ui**, can only use md for ui. If we want to use Rmd files then there are extra steps to use it. i.e. rmarkdown::render(). Some references:
+- https://stackoverflow.com/questions/33499651/rmarkdown-in-shiny-application
+- [R Shiny Introduction to R Markdown](https://shiny.rstudio.com/articles/rmarkdown.html)
+
+
 

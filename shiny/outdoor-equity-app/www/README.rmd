@@ -1,0 +1,19 @@
+---
+title: "READ ME"
+author: "Halina Do-Linh"
+date: "2/19/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Welcome to the www Directory
+
+This directory stores any elements to be rendered in the web browser (and are not the output of the scripts). Files in this directory includes:
+
+- images
+- HTML
+- CSS
+- JavaScript
