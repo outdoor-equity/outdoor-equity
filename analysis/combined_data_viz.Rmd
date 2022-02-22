@@ -56,7 +56,7 @@ source("functions/function_acs_education.R")
 ## 2018
 # read in data
 RIDB_subset_pre2018(full_file_path = "../../data_raw/reservations2018.csv", 
-                      state_abbrev = "CA", year = 2018)
+                    state_abbrev = "CA", year = 2018)
 # calculate variables
 RIDB_calculate_pre2018(input_df_name = data_ridb_2018, output_df_name = "data_ridb_2018")
 ## create function to standardize values (or add to calculate function)
@@ -105,42 +105,42 @@ data_combined_2018 <-
 Aggregate (median) to reservable site level
 ```{r}
 data_combined_2018_site_summary <- 
-    data_combined_2018 %>% 
-    filter(daily_cost_per_visitor != "Inf") %>% #drop 48 rows with "Inf" for cost/visitor/day
-    group_by(agency, park) %>% 
-    summarize(median_paid = median(total_paid),
-              max_paid = max(total_paid),
-              min_paid = min(total_paid),
-              median_number_of_people = median(number_of_people),
-              max_number_of_people = max(number_of_people),
-              min_number_of_people = min(number_of_people),
-              median_length_of_stay = median(length_of_stay),
-              max_length_of_stay = max(length_of_stay),
-              min_length_of_stay = min(length_of_stay),
-              median_booking_window = median(booking_window),
-              max_booking_window = max(booking_window),
-              min_booking_window = min(booking_window),
-              median_daily_cost_per_visitor = median(daily_cost_per_visitor),
-              max_daily_cost_per_visitor = max(daily_cost_per_visitor),
-              min_daily_cost_per_visitor = min(daily_cost_per_visitor),
-              # na.rm drops ~3% of data (missing ZIP codes from acs5)
-              median_median_income = median(median_income, na.rm = TRUE),
-              max_median_income = max(median_income, na.rm = TRUE),
-              min_median_income = min(median_income, na.rm = TRUE),
-              median_percent_asian = median(asian, na.rm = TRUE),
-              median_percent_black = median(black, na.rm = TRUE),
-              median_percent_multiracial = median(multiracial, na.rm = TRUE),
-              median_percent_other = median(other, na.rm = TRUE),
-              median_percent_white_latinx = median(white_latinx, na.rm = TRUE),
-              median_percent_pacific_islander = median(pacific_islander, na.rm = TRUE),
-              median_percent_native_american = median(native_american, na.rm = TRUE),
-              median_college = median(college, na.rm = TRUE),
-              median_hs_GED_or_below = median(hs_GED_or_below, na.rm = TRUE),
-              median_master_or_above = median(master_or_above, na.rm = TRUE),
-              median_some_college = median(some_college, na.rm = TRUE),
-              median_no_vehicle = median(no_vehicle, na.rm = TRUE),
-              # include count column listing number of reservations for each park
-              count = n())
+  data_combined_2018 %>% 
+  filter(daily_cost_per_visitor != "Inf") %>% #drop 48 rows with "Inf" for cost/visitor/day
+  group_by(agency, park) %>% 
+  summarize(median_paid = median(total_paid),
+            max_paid = max(total_paid),
+            min_paid = min(total_paid),
+            median_number_of_people = median(number_of_people),
+            max_number_of_people = max(number_of_people),
+            min_number_of_people = min(number_of_people),
+            median_length_of_stay = median(length_of_stay),
+            max_length_of_stay = max(length_of_stay),
+            min_length_of_stay = min(length_of_stay),
+            median_booking_window = median(booking_window),
+            max_booking_window = max(booking_window),
+            min_booking_window = min(booking_window),
+            median_daily_cost_per_visitor = median(daily_cost_per_visitor),
+            max_daily_cost_per_visitor = max(daily_cost_per_visitor),
+            min_daily_cost_per_visitor = min(daily_cost_per_visitor),
+            # na.rm drops ~3% of data (missing ZIP codes from acs5)
+            median_median_income = median(median_income, na.rm = TRUE),
+            max_median_income = max(median_income, na.rm = TRUE),
+            min_median_income = min(median_income, na.rm = TRUE),
+            median_percent_asian = median(asian, na.rm = TRUE),
+            median_percent_black = median(black, na.rm = TRUE),
+            median_percent_multiracial = median(multiracial, na.rm = TRUE),
+            median_percent_other = median(other, na.rm = TRUE),
+            median_percent_white_latinx = median(white_latinx, na.rm = TRUE),
+            median_percent_pacific_islander = median(pacific_islander, na.rm = TRUE),
+            median_percent_native_american = median(native_american, na.rm = TRUE),
+            median_college = median(college, na.rm = TRUE),
+            median_hs_GED_or_below = median(hs_GED_or_below, na.rm = TRUE),
+            median_master_or_above = median(master_or_above, na.rm = TRUE),
+            median_some_college = median(some_college, na.rm = TRUE),
+            median_no_vehicle = median(no_vehicle, na.rm = TRUE),
+            # include count column listing number of reservations for each park
+            count = n())
 ```
 
 
@@ -173,10 +173,12 @@ agency_colors <-
 ```{r}
 # histogram: length of stay, reservations
 ggplot(data = data_combined_2018) +
-    geom_histogram(aes(x = length_of_stay), fill = "goldenrod", binwidth = 1) +
-    labs(x = "Lenth of stay (days)",
-         y = "Individual Reservations") +
-    theme_minimal()
+  geom_histogram(aes(x = length_of_stay), fill = "goldenrod", binwidth = 1) +
+  labs(x = "Lenth of stay (days)",
+       y = "Individual Reservations") +
+  theme_minimal() +
+  theme(axis.text = element_text(size = 12),
+        axis.title=element_text(size = 14, face = "bold"))
 ```
 
 
@@ -191,29 +193,28 @@ plot_histogram_booking_window_data <-
 
 # histogram: booking window, reservations
 plot_histogram_booking_window <- 
-    ggplot(data = plot_histogram_booking_window_data) +
-    geom_histogram(aes(x = booking_window), 
-                   binwidth = 7,
-                   fill = "goldenrod") +
-    labs(y = "Reservation Count",
-         x = "Days elapsed from order to visit\n(1 bar = 1 week)") +
-    theme_minimal() +
-    theme(panel.grid.minor.x = element_blank(),
-          plot.background = element_rect("white")) +
-    scale_x_continuous(limits = c(0, 510), 
-                       breaks = seq(0, 510, by = 30)) +
-    geom_vline(xintercept = 180, 
-               linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", label = "6 months", 
-             x = 210, y = 65000) +
-    geom_vline(xintercept = 360, 
-               linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", label = "1 year", 
-             x = 380, y = 65000)
-
-plot_histogram_booking_window <- 
-plot_histogram_booking_window + 
-  plot_annotation(title = "Distribution of Booking Window\nfor Reservable Overnight Sites in California in 2018")
+  ggplot(data = plot_histogram_booking_window_data) +
+  geom_histogram(aes(x = booking_window), 
+                 binwidth = 7,
+                 fill = "goldenrod") +
+  labs(y = "Reservation Count",
+       x = "Days elapsed from order to visit\n(1 bar = 1 week)",
+       title = "Distribution of Booking Window\nfor Reservable Overnight Sites in California in 2018") +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title=element_text(size = 14, face = "bold")) +
+  scale_x_continuous(limits = c(0, 510), 
+                     breaks = seq(0, 510, by = 30)) +
+  geom_vline(xintercept = 180, 
+             linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", label = "6 months", 
+           x = 210, y = 65000) +
+  geom_vline(xintercept = 360, 
+             linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", label = "1 year", 
+           x = 380, y = 65000)
 
 plot_histogram_booking_window
 ```
@@ -240,7 +241,7 @@ plot_histogram_agency_booking_window <-
   annotate("text", x = 380, y = 65000, label = "1 year")
 
 plot_histogram_agency_booking_window <- 
-plot_histogram_agency_booking_window + 
+  plot_histogram_agency_booking_window + 
   plot_annotation(title = "Distribution of Booking Window by Agency\nfor Reservable Overnight Sites in California in 2018")
 
 plot_histogram_agency_booking_window
@@ -443,7 +444,7 @@ plot_scatter_park_median_income <-
        y = "Median income of visitor home ZIP code ($)",
        col = "Agency") +
   scale_color_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
-                                 "US Army Corps of Engineers", "US Foreset Service"))
+                                  "US Army Corps of Engineers", "US Foreset Service"))
 
 plot_scatter_park_median_income <- 
   plot_scatter_park_median_income +
