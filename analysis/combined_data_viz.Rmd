@@ -497,7 +497,9 @@ plot_bar_agency_park <-
        x = "Agency",
        y = "Reservable Site Count",
        title = "Total Sites per Agency \nfor Reservable Overnight Sites in California in 2018") +
-  theme(axis.text = element_text(size = 12),
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
         axis.title = element_text(size = 14, face = "bold"),
         title = element_text(size = 16, face = "bold"))
 
@@ -516,7 +518,9 @@ plot_bar_agency_visits <-
        y = "Total Reservations",
        fill = "Agency",
        title = "Total Reservations per Agency \nfor Reservable Overnight Sites in California in 2018") +
-  theme(axis.text = element_text(size = 12),
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
         axis.title = element_text(size = 14, face = "bold"),
         title = element_text(size = 16, face = "bold"))
 
