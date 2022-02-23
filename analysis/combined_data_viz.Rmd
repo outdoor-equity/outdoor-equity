@@ -372,7 +372,7 @@ plot_native_american <-
        title = "Native American") +
   theme(axis.text = element_text(size = 12),
         axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 16, face = "bold"))
+        title = element_text(size = 14, face = "bold"))
 
 plots_histogram_race <- 
   (plot_asian + plot_black + plot_white_latinx) / 
