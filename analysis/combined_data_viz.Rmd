@@ -288,7 +288,7 @@ plot_asian <-
        title = "Asian") +
   theme(axis.text = element_text(size = 12),
         axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 16, face = "bold"))
+        title = element_text(size = 14, face = "bold"))
 
 plot_black <- 
   ggplot(data_combined_2018) +
@@ -302,7 +302,7 @@ plot_black <-
        title = "Black") +
   theme(axis.text = element_text(size = 12),
         axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 16, face = "bold"))
+        title = element_text(size = 14, face = "bold"))
 
 plot_multiracial <- 
   ggplot(data_combined_2018) +
@@ -316,7 +316,7 @@ plot_multiracial <-
        title = "Multiracial") +
   theme(axis.text = element_text(size = 12),
         axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 16, face = "bold"))
+        title = element_text(size = 14, face = "bold"))
 
 plot_other <- 
   ggplot(data_combined_2018) +
@@ -330,7 +330,7 @@ plot_other <-
        title = "Other") +
   theme(axis.text = element_text(size = 12),
         axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 16, face = "bold"))
+        title = element_text(size = 14, face = "bold"))
 
 plot_white_latinx <- 
   ggplot(data_combined_2018) +
@@ -344,7 +344,7 @@ plot_white_latinx <-
        title = "White and Hispanic/Latinx") +
   theme(axis.text = element_text(size = 12),
         axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 16, face = "bold"))
+        title = element_text(size = 14, face = "bold"))
 
 plot_pacific_islander <- 
   ggplot(data_combined_2018) +
@@ -358,7 +358,7 @@ plot_pacific_islander <-
        title = "Hawaiian and Other Pacific Islander") +
   theme(axis.text = element_text(size = 12),
         axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 16, face = "bold"))
+        title = element_text(size = 14, face = "bold"))
 
 plot_native_american <- 
   ggplot(data_combined_2018) +
