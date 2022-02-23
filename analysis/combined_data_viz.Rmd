@@ -285,7 +285,9 @@ plot_asian <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Asian")
+       title = "Asian") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"))
 
 plot_black <- 
   ggplot(data_combined_2018) +
@@ -296,7 +298,9 @@ plot_black <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Black")
+       title = "Black") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"))
 
 plot_multiracial <- 
   ggplot(data_combined_2018) +
@@ -307,7 +311,9 @@ plot_multiracial <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Multiracial")
+       title = "Multiracial") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"))
 
 plot_other <- 
   ggplot(data_combined_2018) +
@@ -318,7 +324,9 @@ plot_other <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Other")
+       title = "Other") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"))
 
 plot_white_latinx <- 
   ggplot(data_combined_2018) +
@@ -329,7 +337,9 @@ plot_white_latinx <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "White and Hispanic/Latinx")
+       title = "White and Hispanic/Latinx") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"))
 
 plot_pacific_islander <- 
   ggplot(data_combined_2018) +
@@ -340,7 +350,9 @@ plot_pacific_islander <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Hawaiian and Other Pacific Islander")
+       title = "Hawaiian and Other Pacific Islander") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"))
 
 plot_native_american <- 
   ggplot(data_combined_2018) +
@@ -351,13 +363,16 @@ plot_native_american <-
   scale_y_continuous(limits = c(0, 45000)) +
   labs(x = "Percentage in home ZIP code",
        y = "Reservation Count",
-       title = "Native American")
+       title = "Native American") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"))
 
 plots_histogram_race <- 
   (plot_asian + plot_black + plot_white_latinx) / 
   (plot_other + plot_multiracial + plot_native_american) + 
   plot_annotation(title = "Racial Breakdown of Visitors' Home ZIP Code
-                  \nfor Reservable Overnight Sites in California in 2018")
+                  \nfor Reservable Overnight Sites in California in 2018",
+                  theme = theme(plot.title = element_text(size = 14, face = "bold")))
 
 plots_histogram_race
 ```
