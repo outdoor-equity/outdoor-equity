@@ -287,7 +287,8 @@ plot_asian <-
        y = "Reservation Count",
        title = "Asian") +
   theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"))
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
 
 plot_black <- 
   ggplot(data_combined_2018) +
@@ -300,7 +301,8 @@ plot_black <-
        y = "Reservation Count",
        title = "Black") +
   theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"))
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
 
 plot_multiracial <- 
   ggplot(data_combined_2018) +
@@ -313,7 +315,8 @@ plot_multiracial <-
        y = "Reservation Count",
        title = "Multiracial") +
   theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"))
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
 
 plot_other <- 
   ggplot(data_combined_2018) +
@@ -326,7 +329,8 @@ plot_other <-
        y = "Reservation Count",
        title = "Other") +
   theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"))
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
 
 plot_white_latinx <- 
   ggplot(data_combined_2018) +
@@ -339,7 +343,8 @@ plot_white_latinx <-
        y = "Reservation Count",
        title = "White and Hispanic/Latinx") +
   theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"))
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
 
 plot_pacific_islander <- 
   ggplot(data_combined_2018) +
@@ -352,7 +357,8 @@ plot_pacific_islander <-
        y = "Reservation Count",
        title = "Hawaiian and Other Pacific Islander") +
   theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"))
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
 
 plot_native_american <- 
   ggplot(data_combined_2018) +
@@ -365,14 +371,14 @@ plot_native_american <-
        y = "Reservation Count",
        title = "Native American") +
   theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"))
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
 
 plots_histogram_race <- 
   (plot_asian + plot_black + plot_white_latinx) / 
   (plot_other + plot_multiracial + plot_native_american) + 
-  plot_annotation(title = "Racial Breakdown of Visitors' Home ZIP Code
-                  \nfor Reservable Overnight Sites in California in 2018",
-                  theme = theme(plot.title = element_text(size = 14, face = "bold")))
+  plot_annotation(title = "Racial Breakdown of Visitors' Home ZIP Code\nfor Reservable Overnight Sites in California in 2018",
+                  theme = theme(plot.title = element_text(size = 16, face = "bold")))
 
 plots_histogram_race
 ```
@@ -489,12 +495,11 @@ plot_bar_agency_park <-
   theme_minimal() +
   labs(fill = "Agency",
        x = "Agency",
-       y = "Reservable Site Count")
-
-plot_bar_agency_park <- 
-  plot_bar_agency_park +
-  plot_annotation(title = "Total Sites per Agency
-                  \nfor Reservable Overnight Sites in California in 2018")
+       y = "Reservable Site Count",
+       title = "Total Sites per Agency \nfor Reservable Overnight Sites in California in 2018") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
 
 plot_bar_agency_park
 ```
@@ -509,12 +514,11 @@ plot_bar_agency_visits <-
   theme_minimal() +
   labs(x = "Agency",
        y = "Total Reservations",
-       fill = "Agency")
-
-plot_bar_agency_visits <- 
-  plot_bar_agency_visits +
-  plot_annotation(title = "Total Reservations per Agency
-                  \nfor Reservable Overnight Sites in California in 2018")
+       fill = "Agency",
+       title = "Total Reservations per Agency \nfor Reservable Overnight Sites in California in 2018") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
 
 plot_bar_agency_visits
 ```
