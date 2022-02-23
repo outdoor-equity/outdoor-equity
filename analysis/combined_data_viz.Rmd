@@ -178,7 +178,7 @@ ggplot(data = data_combined_2018) +
        y = "Individual Reservations") +
   theme_minimal() +
   theme(axis.text = element_text(size = 12),
-        axis.title=element_text(size = 14, face = "bold"))
+        axis.title = element_text(size = 14, face = "bold"))
 ```
 
 
@@ -204,7 +204,8 @@ plot_histogram_booking_window <-
   theme(panel.grid.minor.x = element_blank(),
         plot.background = element_rect("white"),
         axis.text = element_text(size = 12),
-        axis.title=element_text(size = 14, face = "bold")) +
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold")) +
   scale_x_continuous(limits = c(0, 510), 
                      breaks = seq(0, 510, by = 30)) +
   geom_vline(xintercept = 180, 
@@ -227,22 +228,22 @@ plot_histogram_agency_booking_window <-
          aes(x = booking_window)) +
   geom_histogram(aes(fill = agency), binwidth = 7) +
   labs(y = "Reservation Count",
-       x = "Days elapsed from order to visit\n(1 bar = 1 week)") +
+       x = "Days elapsed from order to visit\n(1 bar = 1 week)",
+       title = "Distribution of Booking Window by Agency \nfor Reservable Overnight Sites in California in 2018") +
   scale_fill_discrete(
     labels = c("Bureau of Reclamation", "National Park Service", 
                "US Army Corps of Engineers", "US Foreset Service")) +
   theme_minimal() +
   theme(panel.grid.minor.x = element_blank(),
-        plot.background = element_rect("white")) +
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold")) +
   scale_x_continuous(limits = c(0, 510), breaks = seq(0, 510, by = 30)) +
   geom_vline(xintercept = 180, linetype = "dashed", size = .3, alpha = .5) +
   annotate("text", x = 210, y = 65000, label = "6 months") +
   geom_vline(xintercept = 360, linetype = "dashed", size = .3, alpha = .5) +
   annotate("text", x = 380, y = 65000, label = "1 year")
-
-plot_histogram_agency_booking_window <- 
-  plot_histogram_agency_booking_window + 
-  plot_annotation(title = "Distribution of Booking Window by Agency\nfor Reservable Overnight Sites in California in 2018")
 
 plot_histogram_agency_booking_window
 ```
@@ -255,7 +256,7 @@ ggsave(plot = plot_histogram_booking_window,
 
 ggsave(plot = plot_histogram_agency_booking_window,
        filename = "../figs/2018_histogram_agency_booking_window.png",
-       width = 14,
+       width = 16,
        height = 7)
 ```
 
