@@ -84,6 +84,7 @@ acs_subset_calculate_education(geography = "zcta", year = 2018, geometry = FALSE
 ```
 
 
+
 # Join RIDB and Census
 
 ```{r}
@@ -539,4 +540,9 @@ ggsave(plot = plot_bar_agency_visits,
        height = 7)
 ```
 
+```{r}
+ggplot(data = data_combined_2018) +
+  geom_point(aes(x = site_type,
+                 y = daily_cost_per_visitor))
+```
 
