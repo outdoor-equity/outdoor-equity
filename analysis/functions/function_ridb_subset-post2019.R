@@ -9,7 +9,6 @@ RIDB_subset_post2019 <- function(full_file_path, state_full_name, year) {
     filter(facilitystate == state_full_name) %>% 
     # select variables
     select(c("agency", 
-             "regiondescription", 
              "parentlocation",
              "park", 
              "sitetype", 
