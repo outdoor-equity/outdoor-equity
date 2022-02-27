@@ -1,0 +1,558 @@
+---
+title: "Data Cleaning"
+author: "Clarissa Boyajian and Halina Do-Linh"
+date: "1/24/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(lubridate)
+library(sf)
+library(tidycensus)
+library(patchwork)
+library(scales)
+library(tmap)
+
+options(scipen = 999)
+
+
+# RIDB functions
+# raw data
+source("functions/function_ridb_subset-pre2018.R")
+source("functions/function_ridb_subset-post2019.R")
+# calculate variables
+source("functions/function_ridb_variable_calculate-pre2018.R")
+# standardize values
+# need to make function still
+
+# ACS functions
+source("functions/function_acs_race.R")
+source("functions/function_acs_median_income.R")
+source("functions/function_acs_transportation.R")
+source("functions/function_acs_education.R")
+```
+
+# Geometries
+
+```{r, eval=FALSE}
+# # CA county geometries
+# ca_county_geom <- st_read(here::here("../../data_raw/ca_county_geometries/counties.shp")) %>% 
+#   clean_names() %>% 
+#   rename(county_name = name)
+# st_crs(ca_county_geom) <- 4326
+
+## use acs to get county and state geometries ##
+```
+
+
+# RIDB - read in data, calculate varibales, standardize values
+
+```{r}
+## 2018
+# read in data
+RIDB_subset_pre2018(full_file_path = "../../data_raw/reservations2018.csv", 
+                    state_abbrev = "CA", year = 2018)
+# calculate variables
+RIDB_calculate_pre2018(input_df_name = data_ridb_2018, output_df_name = "data_ridb_2018")
+## create function to standardize values (or add to calculate function)
+```
+
+
+# Census Data - api set up, read, subset, calculate values
+
+```{r message=FALSE}
+# api set up
+
+# # ONLY HAVE TO RUN THE FIRST TIME USING THIS RMD on a new machine
+# census_api <- source("private/census-api.R")
+# census_api_key(key = census_api[[1]], install = TRUE, overwrite = TRUE)
+# # run in console:
+## readRenviron("~/.Renviron")
+```
+
+```{r}
+# read in census data
+acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE)
+acs_subset_calculate_median_income(geography = "zcta", year = 2018, geometry = FALSE)
+acs_subset_calculate_transportation(geography = "zcta", year = 2018, geometry = FALSE)
+acs_subset_calculate_education(geography = "zcta", year = 2018, geometry = FALSE)
+```
+
+
+
+# Join RIDB and Census
+
+```{r}
+data_combined_2018 <- 
+  left_join(x = data_ridb_2018,
+            y = data_acs_2018_race_percent,
+            by = c("customer_zip" = "zip_code")) %>% 
+  left_join(y = data_acs_2018_education_percent,
+            by = c("customer_zip" = "zip_code")) %>% 
+  left_join(y = data_acs_2018_median_income,
+            by = c("customer_zip" = "zip_code")) %>% 
+  left_join(y = data_acs_2018_transportation_percent,
+            by = c("customer_zip" = "zip_code"))
+```
+
+
+# RIDB - site summary
+
+Aggregate (median) to reservable site level
+```{r}
+data_combined_2018_site_summary <- 
+  data_combined_2018 %>% 
+  filter(daily_cost_per_visitor != "Inf") %>% #drop 48 rows with "Inf" for cost/visitor/day
+  group_by(agency, park) %>% 
+  summarize(median_paid = median(total_paid),
+            max_paid = max(total_paid),
+            min_paid = min(total_paid),
+            median_number_of_people = median(number_of_people),
+            max_number_of_people = max(number_of_people),
+            min_number_of_people = min(number_of_people),
+            median_length_of_stay = median(length_of_stay),
+            max_length_of_stay = max(length_of_stay),
+            min_length_of_stay = min(length_of_stay),
+            median_booking_window = median(booking_window),
+            max_booking_window = max(booking_window),
+            min_booking_window = min(booking_window),
+            median_daily_cost_per_visitor = median(daily_cost_per_visitor),
+            max_daily_cost_per_visitor = max(daily_cost_per_visitor),
+            min_daily_cost_per_visitor = min(daily_cost_per_visitor),
+            # na.rm drops ~3% of data (missing ZIP codes from acs5)
+            median_median_income = median(median_income, na.rm = TRUE),
+            max_median_income = max(median_income, na.rm = TRUE),
+            min_median_income = min(median_income, na.rm = TRUE),
+            median_percent_asian = median(asian, na.rm = TRUE),
+            median_percent_black = median(black, na.rm = TRUE),
+            median_percent_multiracial = median(multiracial, na.rm = TRUE),
+            median_percent_other = median(other, na.rm = TRUE),
+            median_percent_white_latinx = median(white_latinx, na.rm = TRUE),
+            median_percent_pacific_islander = median(pacific_islander, na.rm = TRUE),
+            median_percent_native_american = median(native_american, na.rm = TRUE),
+            median_college = median(college, na.rm = TRUE),
+            median_hs_GED_or_below = median(hs_GED_or_below, na.rm = TRUE),
+            median_master_or_above = median(master_or_above, na.rm = TRUE),
+            median_some_college = median(some_college, na.rm = TRUE),
+            median_no_vehicle = median(no_vehicle, na.rm = TRUE),
+            # include count column listing number of reservations for each park
+            count = n())
+```
+
+
+## Save to CSV
+*geometries breaking write to CSV*
+```{r}
+# write.csv(x = data_combined_2018, "../../../data_clean/2018_joined_data.csv", row.names = FALSE)
+# 
+# write.csv(x = data_combined_2018_site_summary, "../../../data_clean/2018_joined_data_site_summary.csv", row.names = FALSE)
+```
+
+
+
+
+
+# Visualization
+
+## COLORS
+
+```{r}
+racial_group_colors <- 
+  c("darkgreen", # asian
+    "darkblue", # black
+    "darkmagenta", # multiracial
+    "darkred", # other
+    "darkgoldenrod1", # white
+    "darkorange2", # pacific_islander
+    "darkcyan" # native_american
+  )
+
+agency_colors <- 
+  c("#F8766D", # BOR
+    "#7CAE00", # NPS
+    "#00BFC4", # USFS
+    "#C77CFF" # USACE
+  )
+```
+
+
+
+```{r}
+# histogram: length of stay, reservations
+ggplot(data = data_combined_2018) +
+  geom_histogram(aes(x = length_of_stay), fill = "goldenrod", binwidth = 7) +
+  labs(x = "Lenth of stay (days)",
+       y = "Individual Reservations") +
+  theme_minimal() +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"))
+```
+
+
+
+NOTES for graph below: 
+- `r `nrow(ridb_2018 %>% filter(booking_window < 0)) / nrow(ridb_2018)` of data > 0 (~1%)
+```{r}
+# exclude negative booking windows
+plot_histogram_booking_window_data <-
+  data_combined_2018 %>%
+  filter(booking_window > 0)
+
+# histogram: booking window, reservations
+plot_histogram_booking_window <- 
+  ggplot(data = data_combined_2018 %>% filter(booking_window > 0)) +
+  geom_histogram(aes(x = booking_window), 
+                 binwidth = 7,
+                 fill = "goldenrod") +
+  labs(y = "Reservation Count",
+       x = "Days elapsed from order to visit\n(1 bar = 1 week)",
+       title = "Distribution of Booking Window\nfor Reservable Overnight Sites in California in 2018") +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold")) +
+  scale_x_continuous(limits = c(0, 510), 
+                     breaks = seq(0, 510, by = 30)) +
+  geom_vline(xintercept = 180, 
+             linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", label = "6 months", 
+           x = 210, y = 65000) +
+  geom_vline(xintercept = 360, 
+             linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", label = "1 year", 
+           x = 380, y = 65000)
+
+plot_histogram_booking_window
+```
+
+
+```{r}
+# histogram: booking window, reservations, agency
+plot_histogram_agency_booking_window <- 
+  ggplot(data = plot_histogram_booking_window_data, 
+         aes(x = booking_window)) +
+  geom_histogram(aes(fill = agency), binwidth = 7) +
+  labs(y = "Reservation Count",
+       x = "Days elapsed from order to visit\n(1 bar = 1 week)",
+       title = "Distribution of Booking Window by Agency \nfor Reservable Overnight Sites in California in 2018") +
+  scale_fill_discrete(
+    labels = c("Bureau of Reclamation", "National Park Service", 
+               "US Army Corps of Engineers", "US Forest Service")) +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold")) +
+  scale_x_continuous(limits = c(0, 510), breaks = seq(0, 510, by = 30)) +
+  geom_vline(xintercept = 180, linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", x = 210, y = 65000, label = "6 months") +
+  geom_vline(xintercept = 360, linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", x = 380, y = 65000, label = "1 year")
+
+plot_histogram_agency_booking_window
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_histogram_booking_window, 
+       filename = "../figs/2018_histogram_booking_window.png",
+       width = 12,
+       height = 7)
+
+ggsave(plot = plot_histogram_agency_booking_window,
+       filename = "../figs/2018_histogram_agency_booking_window.png",
+       width = 16,
+       height = 7)
+```
+
+
+
+NOTES for graph below: 
+- Removed `r 16661 / nrow(combined_data_2018_ridb_acs)` (~3%)
+```{r}
+# for (i in 1:length(racial_groups)){
+#   print(ggplot(combined_data_2018_ridb_acs) +
+#           geom_histogram(aes(x = as.symbol(racial_groups[[i]])), #iterating through list of racial groups is breaking
+#                          fill = racial_group_colors[i], 
+#                          binwidth = .1) +
+#           scale_x_continuous(limits = c(0, 1)) +
+#           scale_y_continuous(limits = c(0, 45000)))
+#   Sys.sleep(2)
+# }
+
+# histogram: race % per home zip, reservations, race
+plot_asian <- 
+  ggplot(data_combined_2018) +
+  geom_histogram(aes(x = asian), 
+                 fill = racial_group_colors[1], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
+       title = "Asian") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 14, face = "bold"))
+
+plot_black <- 
+  ggplot(data_combined_2018) +
+  geom_histogram(aes(x = black), 
+                 fill = racial_group_colors[2], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
+       title = "Black") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 14, face = "bold"))
+
+plot_multiracial <- 
+  ggplot(data_combined_2018) +
+  geom_histogram(aes(x = multiracial), 
+                 fill = racial_group_colors[3], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
+       title = "Multiracial") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 14, face = "bold"))
+
+plot_other <- 
+  ggplot(data_combined_2018) +
+  geom_histogram(aes(x = other), 
+                 fill = racial_group_colors[4], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
+       title = "Other") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 14, face = "bold"))
+
+plot_white_latinx <- 
+  ggplot(data_combined_2018) +
+  geom_histogram(aes(x = white_latinx), 
+                 fill = racial_group_colors[5], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
+       title = "White and Hispanic/Latinx") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 14, face = "bold"))
+
+plot_pacific_islander <- 
+  ggplot(data_combined_2018) +
+  geom_histogram(aes(x = pacific_islander), 
+                 fill = racial_group_colors[6], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
+       title = "Hawaiian and Other Pacific Islander") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 14, face = "bold"))
+
+plot_native_american <- 
+  ggplot(data_combined_2018) +
+  geom_histogram(aes(x = native_american), 
+                 fill = racial_group_colors[7], 
+                 binwidth = .05) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 45000)) +
+  labs(x = "Percentage in home ZIP code",
+       y = "Reservation Count",
+       title = "Native American") +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 14, face = "bold"))
+
+plots_histogram_race <- 
+  (plot_asian + plot_black + plot_white_latinx) / 
+  (plot_other + plot_multiracial + plot_native_american) + 
+  plot_annotation(title = "Racial Breakdown of Visitors' Home ZIP Code\nfor Reservable Overnight Sites in California in 2018",
+                  theme = theme(plot.title = element_text(size = 16, face = "bold")))
+
+plots_histogram_race
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plots_histogram_race, 
+       filename = "../figs/2018_histogram_race.png",
+       width = 12,
+       height = 7)
+```
+
+
+
+```{r}
+# histogram: race, reservations, agency
+plot_bor_white <- 
+  ggplot(data_combined_2018 %>% filter(agency == "BOR")) +
+  geom_histogram(aes(x = white_latinx), fill = agency_colors[1]) +
+  labs(title = "Bureau of Reclamation")
+plot_bor_black <- 
+  ggplot(data_combined_2018 %>% filter(agency == "BOR")) +
+  geom_histogram(aes(x = black), fill = agency_colors[1]) +
+  labs(title = "Bureau of Reclamation")
+
+plot_nps_white <- 
+  ggplot(data_combined_2018 %>% filter(agency == "NPS")) +
+  geom_histogram(aes(x = white_latinx), fill = agency_colors[2]) +
+  labs(title = "National Park Service")
+plot_nps_black <- 
+  ggplot(data_combined_2018 %>% filter(agency == "NPS")) +
+  geom_histogram(aes(x = black), fill = agency_colors[2]) +
+  labs(title = "National Park Service")
+
+plot_usfs_white <- 
+  ggplot(data_combined_2018 %>% filter(agency == "USFS")) +
+  geom_histogram(aes(x = white_latinx), fill = agency_colors[3]) +
+  labs(title = "US Forest Service")
+plot_usfs_black <- 
+  ggplot(data_combined_2018 %>% filter(agency == "USFS")) +
+  geom_histogram(aes(x = black), fill = agency_colors[3]) +
+  labs(title = "US Forest Service")
+
+plot_usace_white <- 
+  ggplot(data_combined_2018 %>% filter(agency == "USACE")) +
+  geom_histogram(aes(x = white_latinx), fill = agency_colors[4]) +
+  labs(title = "US Army Corps of Engineers")
+plot_usace_black <- 
+  ggplot(data_combined_2018 %>% filter(agency == "USACE")) +
+  geom_histogram(aes(x = black), fill = agency_colors[4]) +
+  labs(title = "US Army Corps of Engineers")
+
+plot_histogram_agency_race_white <- 
+  (plot_bor_white + plot_nps_white + plot_usace_white + plot_usfs_white)
+
+plot_histogram_agency_race_black <- 
+  (plot_bor_black + plot_nps_black + plot_usace_black + plot_usfs_black)
+
+plot_histogram_agency_race_white
+plot_histogram_agency_race_black
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_histogram_agency_race_white, 
+       filename = "../figs/2018_histogram_agency_race_white.png",
+       width = 12,
+       height = 7)
+
+ggsave(plot = plot_histogram_agency_race_black, 
+       filename = "../figs/2018_histogram_agency_race_black.png",
+       width = 12,
+       height = 7)
+```
+
+
+
+```{r}
+# scatter: sites, median income, agency
+plot_scatter_park_median_income <- 
+  ggplot(data_combined_2018_site_summary) +
+  geom_point(aes(x = park,
+                 y = median_median_income,
+                 col = agency)) +
+  theme(axis.text.x = element_blank()) +
+  labs(x = "Individual Reservable Sites",
+       y = "Median income of visitor home ZIP code ($)",
+       col = "Agency") +
+  scale_color_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
+                                  "US Army Corps of Engineers", "US Forest Service"))
+
+plot_scatter_park_median_income <- 
+  plot_scatter_park_median_income +
+  plot_annotation(title = "Median Income of Visitors' Home ZIP Code
+                  \nfor Reservable Overnight Sites in California in 2018")
+
+plot_scatter_park_median_income
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_scatter_park_median_income, 
+       filename = "../figs/2018_scatter_park_median_income.png",
+       width = 12,
+       height = 7)
+```
+
+
+
+```{r}
+# bar: agency, sites, agency
+plot_bar_agency_park <- 
+  ggplot(data_combined_2018_site_summary) +
+  geom_bar(aes(x = agency, fill = agency)) +
+  scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
+                                 "US Army Corps of Engineers", "US Forest Service")) +
+  theme_minimal() +
+  labs(fill = "Agency",
+       x = "Agency",
+       y = "Reservable Site Count",
+       title = "Total Sites per Agency \nfor Reservable Overnight Sites in California in 2018") +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
+
+plot_bar_agency_park
+```
+
+```{r}
+# bar: agency, reservations, agency
+plot_bar_agency_visits <- 
+  ggplot(data = data_combined_2018) +
+  geom_bar(aes(x = agency, fill = agency)) +
+  scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
+                                 "US Army Corps of Engineers", "US Forest Service")) +
+  theme_minimal() +
+  labs(x = "Agency",
+       y = "Total Reservations",
+       fill = "Agency",
+       title = "Total Reservations per Agency \nfor Reservable Overnight Sites in California in 2018") +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
+
+plot_bar_agency_visits
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_bar_agency_park,
+       filename = "../figs/2018_bar_agency_park.png",
+       width = 14,
+       height = 7)
+
+ggsave(plot = plot_bar_agency_visits,
+       filename = "../figs/2018_bar_agency_visits.png",
+       width = 14,
+       height = 7)
+```
+
+```{r}
+ggplot(data = data_combined_2018) +
+  geom_point(aes(x = site_type,
+                 y = daily_cost_per_visitor))
+```

@@ -19,129 +19,15 @@ library(scales)
 library(tmap)
 
 options(scipen = 999)
-
-
-# RIDB functions
-# raw data
-source("functions/function_ridb_subset-pre2018.R")
-source("functions/function_ridb_subset-post2019.R")
-# calculate variables
-source("functions/function_ridb_variable_calculate-pre2018.R")
-# standardize values
-# need to make function still
-
-# ACS functions
-source("functions/function_acs_race.R")
-source("functions/function_acs_median_income.R")
-source("functions/function_acs_transportation.R")
-source("functions/function_acs_education.R")
-```
-
-# Geometries
-
-```{r, eval=FALSE}
-# # CA county geometries
-# ca_county_geom <- st_read(here::here("../../data_raw/ca_county_geometries/counties.shp")) %>% 
-#   clean_names() %>% 
-#   rename(county_name = name)
-# st_crs(ca_county_geom) <- 4326
-
-## use acs to get county and state geometries ##
 ```
 
 
-# RIDB - read in data, calculate varibales, standardize values
+# Read in joint data
 
 ```{r}
-## 2018
-# read in data
-RIDB_subset_pre2018(full_file_path = "../../data_raw/reservations2018.csv", 
-                    state_abbrev = "CA", year = 2018)
-# calculate variables
-RIDB_calculate_pre2018(input_df_name = data_ridb_2018, output_df_name = "data_ridb_2018")
-## create function to standardize values (or add to calculate function)
-```
+test <- read.csv("../../../data_clean/2018_joined_data.csv")
 
-
-# Census Data - api set up, read, subset, calculate values
-
-```{r message=FALSE}
-# api set up
-
-# # ONLY HAVE TO RUN THE FIRST TIME USING THIS RMD on a new machine
-# census_api <- source("private/census-api.R")
-# census_api_key(key = census_api[[1]], install = TRUE, overwrite = TRUE)
-# # run in console:
-## readRenviron("~/.Renviron")
-```
-
-```{r}
-# read in census data
-acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE)
-acs_subset_calculate_median_income(geography = "zcta", year = 2018, geometry = FALSE)
-acs_subset_calculate_transportation(geography = "zcta", year = 2018, geometry = FALSE)
-acs_subset_calculate_education(geography = "zcta", year = 2018, geometry = FALSE)
-```
-
-
-
-# Join RIDB and Census
-
-```{r}
-data_combined_2018 <- 
-  left_join(x = data_ridb_2018,
-            y = data_acs_2018_race_percent,
-            by = c("customer_zip" = "zip_code")) %>% 
-  left_join(y = data_acs_2018_education_percent,
-            by = c("customer_zip" = "zip_code")) %>% 
-  left_join(y = data_acs_2018_median_income,
-            by = c("customer_zip" = "zip_code")) %>% 
-  left_join(y = data_acs_2018_transportation_percent,
-            by = c("customer_zip" = "zip_code"))
-```
-
-
-# RIDB - site summary
-
-Aggregate (median) to reservable site level
-```{r}
-data_combined_2018_site_summary <- 
-  data_combined_2018 %>% 
-  filter(daily_cost_per_visitor != "Inf") %>% #drop 48 rows with "Inf" for cost/visitor/day
-  group_by(agency, park) %>% 
-  summarize(median_paid = median(total_paid),
-            max_paid = max(total_paid),
-            min_paid = min(total_paid),
-            median_number_of_people = median(number_of_people),
-            max_number_of_people = max(number_of_people),
-            min_number_of_people = min(number_of_people),
-            median_length_of_stay = median(length_of_stay),
-            max_length_of_stay = max(length_of_stay),
-            min_length_of_stay = min(length_of_stay),
-            median_booking_window = median(booking_window),
-            max_booking_window = max(booking_window),
-            min_booking_window = min(booking_window),
-            median_daily_cost_per_visitor = median(daily_cost_per_visitor),
-            max_daily_cost_per_visitor = max(daily_cost_per_visitor),
-            min_daily_cost_per_visitor = min(daily_cost_per_visitor),
-            # na.rm drops ~3% of data (missing ZIP codes from acs5)
-            median_median_income = median(median_income, na.rm = TRUE),
-            max_median_income = max(median_income, na.rm = TRUE),
-            min_median_income = min(median_income, na.rm = TRUE),
-            median_percent_asian = median(asian, na.rm = TRUE),
-            median_percent_black = median(black, na.rm = TRUE),
-            median_percent_multiracial = median(multiracial, na.rm = TRUE),
-            median_percent_other = median(other, na.rm = TRUE),
-            median_percent_white_latinx = median(white_latinx, na.rm = TRUE),
-            median_percent_pacific_islander = median(pacific_islander, na.rm = TRUE),
-            median_percent_native_american = median(native_american, na.rm = TRUE),
-            median_college = median(college, na.rm = TRUE),
-            median_hs_GED_or_below = median(hs_GED_or_below, na.rm = TRUE),
-            median_master_or_above = median(master_or_above, na.rm = TRUE),
-            median_some_college = median(some_college, na.rm = TRUE),
-            median_no_vehicle = median(no_vehicle, na.rm = TRUE),
-            # include count column listing number of reservations for each park
-            count = n())
+data_combined_2018_site_summary<- read.csv("../../../data_clean/2018_joined_data_site_summary.csv")
 ```
 
 
@@ -156,7 +42,7 @@ racial_group_colors <-
     "darkblue", # black
     "darkmagenta", # multiracial
     "darkred", # other
-    "darkgoldenrod1", # white_latinx
+    "darkgoldenrod1", # white
     "darkorange2", # pacific_islander
     "darkcyan" # native_american
   )
@@ -174,7 +60,7 @@ agency_colors <-
 ```{r}
 # histogram: length of stay, reservations
 ggplot(data = data_combined_2018) +
-  geom_histogram(aes(x = length_of_stay), fill = "goldenrod", binwidth = 1) +
+  geom_histogram(aes(x = length_of_stay), fill = "goldenrod", binwidth = 7) +
   labs(x = "Lenth of stay (days)",
        y = "Individual Reservations") +
   theme_minimal() +
@@ -187,14 +73,14 @@ ggplot(data = data_combined_2018) +
 NOTES for graph below: 
 - `r `nrow(ridb_2018 %>% filter(booking_window < 0)) / nrow(ridb_2018)` of data > 0 (~1%)
 ```{r}
-# exclude negative booking windows
-plot_histogram_booking_window_data <- 
-  data_combined_2018 %>% 
-  filter(booking_window > 0)
+# # exclude negative booking windows
+# plot_histogram_booking_window_data <- 
+#   data_combined_2018 %>% 
+#   filter(booking_window > 0)
 
 # histogram: booking window, reservations
 plot_histogram_booking_window <- 
-  ggplot(data = plot_histogram_booking_window_data) +
+  ggplot(data = data_combined_2018 %>% filter(booking_window > 0)) +
   geom_histogram(aes(x = booking_window), 
                  binwidth = 7,
                  fill = "goldenrod") +
