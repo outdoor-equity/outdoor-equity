@@ -25,9 +25,11 @@ options(scipen = 999)
 # Read in joint data
 
 ```{r}
-test <- read.csv("../../../data_clean/2018_joined_data.csv")
+## geometri column causing problems
 
-data_combined_2018_site_summary<- read.csv("../../../data_clean/2018_joined_data_site_summary.csv")
+# test <- read.csv("../../../data_clean/2018_joined_data.csv")
+# 
+# data_combined_2018_site_summary<- read.csv("../../../data_clean/2018_joined_data_site_summary.csv")
 ```
 
 
