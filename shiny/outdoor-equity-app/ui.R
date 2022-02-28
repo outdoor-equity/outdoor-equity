@@ -1,5 +1,6 @@
 library(rsconnect)
 library(bslib)
+library(shinyWidgets)
 
 # user interface ----
 ui <- fluidPage(
@@ -38,7 +39,15 @@ ui <- fluidPage(
     tabPanel("Reservable Sites",
              "graphs and inputs to compare reservable sites here"),
     tabPanel("Spatial Analysis",
-             "spatial analysis maps and inputs here"),
+             "spatial analysis maps and inputs here",
+             # subset agency picker input ----
+             shinyWidgets::pickerInput(inputId = "agency",
+                                       label = "Select an agency:",
+                                       choices = c("USFS", "NPS", "USACE", "BOR"),
+                                       selected = c("USFS", "NPS", "USACE", "BOR"),
+                                       multiple = TRUE,
+                                       options = pickerOptions(actionsBox = TRUE))
+             ),
     tabPanel("Temporal Analysis",
              "graphs that show interesting temporal trends")
   )
