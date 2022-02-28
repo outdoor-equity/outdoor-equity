@@ -1,0 +1,36 @@
+---
+title: "Scratch HD"
+author: "Halina Do-Linh"
+date: "2/24/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+subset `data_ridb_2018` to one reservable overnight site
+
+```{r}
+data_middle_meadows <- data_combined_2018 %>% 
+  filter(park == "Middle Meadows --- FPIN151") %>% 
+  group_by(customer_zip) %>% 
+  count(customer_zip)
+
+racial_middle_meadows_ZIP1 <- data_combined_2018 %>% 
+  filter(park == "Middle Meadows --- FPIN151") %>% 
+  filter(customer_zip == 94608)
+```
+
+
+```{r}
+data_nps <- data_combined_2018 %>% 
+  filter(parent_location %in% c("Pacific West Region", "PWR")) %>% 
+  filter(region_description == "Yosemite National Park") %>%
+  group_by(customer_zip) %>% 
+  summarize(count = n())
+
+racial_yosemite_ZIP1 <- data_combined_2018 %>%
+  filter(customer_zip == "00001")
+```
+
