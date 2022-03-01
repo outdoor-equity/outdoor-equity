@@ -138,7 +138,10 @@ plot_1 <- ggplot(data = data_plot_1) +
        y = "Race",
        fill = "Race",
        title = "Racial Breakdown of Visitors\nfor Reservable Overnight Sites in California in 2018") +
-  theme(axis.text = element_text(size = 12),
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
         axis.title = element_text(size = 14, face = "bold"),
         title = element_text(size = 14, face = "bold"),
         legend.position = "none") +
