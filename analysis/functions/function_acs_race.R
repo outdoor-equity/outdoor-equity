@@ -8,7 +8,7 @@ acs_subset_calculate_race <-
               geometry = geometry,
               summary_var = "B02001_001", #Estimate!!Total:
               variables = c(
-                white_latinx = "B02001_002", # Estimate!!Total:!!White alone (INCLUDING HISPANIC AND/OR LATINO)
+                white = "B02001_002", # Estimate!!Total:!!White alone (INCLUDING HISPANIC AND/OR LATINO)
                 black = "B02001_003", # Estimate!!Total:!!Black or African American alone
                 native_american = "B02001_004", # Estimate!!Total:!!American Indian and Alaska Native alone
                 asian = "B02001_005", # Estimate!!Total:!!Asian alone
