@@ -1,6 +1,11 @@
 
 acs_subset_calculate_race <- 
-  function(geography, year, geometry){
+  function(geography, # string indicating grouping for census data 
+           #("zcta" = zip code, all options found here: https://walker-data.com/tidycensus/articles/basic-usage.html)
+           year, # year of census datat
+           geometry, # FALSE/TRUE include geometries of geography areas
+           state # string indicating state to be include, use NULL for all US states
+  ){
     # read in raw data
     df <- 
       get_acs(geography = geography,
@@ -19,9 +24,13 @@ acs_subset_calculate_race <-
       clean_names() %>% 
       rename(race = variable) %>% 
       mutate(zip_code = str_sub(name, start = -5, end = -1)) %>% 
-    # create df
-    assign(x = paste0("data_acs_", year, "_race"), 
-           data.frame(df), envir = .GlobalEnv)
+      # create df
+      if (state = NULL) {
+        assign(x = paste0("data_acs_", year, "_race"), 
+               data.frame(df), envir = .GlobalEnv)
+      } else {assign(x = paste0("data_acs_", year, "_race_", state), 
+                     data.frame(df), envir = .GlobalEnv)
+      }
     
     # calculate percentage
     df_percent <- 
@@ -37,6 +46,13 @@ acs_subset_calculate_race <-
       pivot_wider(names_from = "race",
                   values_from = "percent")
     # create df
-    assign(paste0("data_acs_", year, "_race_percent"), 
-           data.frame(df_percent_wider), envir = .GlobalEnv)
+    if (state = NULL) {
+      assign(paste0("data_acs_", year, "_race_percent"), 
+             data.frame(df_percent_wider), envir = .GlobalEnv)
+    } else {
+      assign(paste0("data_acs_", year, "_race_percent_", state), 
+             data.frame(df_percent_wider), envir = .GlobalEnv)
+    }
   }
+
+

@@ -43,15 +43,6 @@ racial_group_colors <-
     "darkorange2", # pacific_islander
     "darkgoldenrod1" # white
   )
-racial_group <- 
-  c("Asian",
-    "Black",
-    "Multiracial",
-    "Native American or Alaskan",
-    "Other",
-    "Native Hawaiian or \nOther Pacific Islander",
-    "White"
-  )
 ```
 
 ```{r}
@@ -66,7 +57,8 @@ RIDB_calculate_pre2018(input_df_name = data_ridb_2018, output_df_name = "data_ri
 
 ```{r}
 # read in census data
-acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE)
+acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE, state = NULL)
+acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE, state = "California")
 # acs_subset_calculate_median_income(geography = "zcta", year = 2018, geometry = FALSE)
 # acs_subset_calculate_transportation(geography = "zcta", year = 2018, geometry = FALSE)
 # acs_subset_calculate_education(geography = "zcta", year = 2018, geometry = FALSE)

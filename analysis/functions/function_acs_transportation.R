@@ -1,10 +1,16 @@
 
 acs_subset_calculate_transportation <- 
-  function(geography, year, geometry){
+  function(geography, # string indicating grouping for census data 
+           #("zcta" = zip code, all options found here: https://walker-data.com/tidycensus/articles/basic-usage.html)
+           year, # year of census datat
+           geometry, # FALSE/TRUE include geometries of geography areas
+           state # string indicating state to be include, use NULL for all US states
+           ){
     df <- 
       get_acs(geography = geography,
               year = year,
               geometry = geometry,
+              state = state,
               summary_var = "B08141_001", #Estimate!!Total:
               variables = c(
                 no_vehicle = "B08141_002" # Estimate!!Total:!!No vehicle available
