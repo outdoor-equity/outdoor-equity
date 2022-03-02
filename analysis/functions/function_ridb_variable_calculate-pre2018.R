@@ -34,14 +34,7 @@ RIDB_calculate_pre2018 <-
                                   "group standard electric") ~ "rv or tent",
                  site_type %in% c("tent only nonelectric",
                                   "group tent only area nonelectric",
-                                  "tent only electric") ~ "tent only")) %>% 
-      # create geometries
-      st_as_sf(coords = c("facility_longitude", "facility_latitude"),
-               crs = 4326)
-    
+                                  "tent only electric") ~ "tent only"))
     # create df
     assign(paste(output_df_name), data.frame(df), envir = .GlobalEnv)
   }
-
-# # check
-# RIDB_variable_calculations_pre2018(input_df_name = ridb_2018, output_df_name = "ridb_2018")

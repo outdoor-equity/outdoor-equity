@@ -11,6 +11,7 @@ acs_subset_calculate_race <-
       get_acs(geography = geography,
               year = year,
               geometry = geometry,
+              state = state,
               summary_var = "B02001_001", #Estimate!!Total:
               variables = c(
                 white = "B02001_002", # Estimate!!Total:!!White alone (INCLUDING HISPANIC AND/OR LATINO)
@@ -23,14 +24,14 @@ acs_subset_calculate_race <-
               )) %>% 
       clean_names() %>% 
       rename(race = variable) %>% 
-      mutate(zip_code = str_sub(name, start = -5, end = -1)) %>% 
-      # create df
-      if (state = NULL) {
-        assign(x = paste0("data_acs_", year, "_race"), 
-               data.frame(df), envir = .GlobalEnv)
-      } else {assign(x = paste0("data_acs_", year, "_race_", state), 
-                     data.frame(df), envir = .GlobalEnv)
-      }
+      mutate(zip_code = str_sub(name, start = -5, end = -1))
+    # create df
+    if (is.null(state)) {
+      assign(x = paste0("data_acs_", year, "_race"), 
+             data.frame(df), envir = .GlobalEnv)
+    } else {assign(x = paste0("data_acs_", year, "_race_", state), 
+                                     data.frame(df), envir = .GlobalEnv)
+    }
     
     # calculate percentage
     df_percent <- 
@@ -46,7 +47,7 @@ acs_subset_calculate_race <-
       pivot_wider(names_from = "race",
                   values_from = "percent")
     # create df
-    if (state = NULL) {
+    if (is.null(state)) {
       assign(paste0("data_acs_", year, "_race_percent"), 
              data.frame(df_percent_wider), envir = .GlobalEnv)
     } else {
@@ -54,5 +55,4 @@ acs_subset_calculate_race <-
              data.frame(df_percent_wider), envir = .GlobalEnv)
     }
   }
-
 
