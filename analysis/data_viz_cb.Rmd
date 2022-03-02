@@ -57,18 +57,20 @@ acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE, sta
 # VIZ
 
 ```{r}
+## NEED TO FIX CODE
 # data wrangle for plot
-data_plot_bar_race <- data_combined_2018 %>% 
-  summarize(white = mean(white, na.rm = TRUE),
-            black = mean(black, na.rm = TRUE),
-            asian = mean(asian, na.rm = TRUE),
-            multiracial = mean(multiracial, na.rm = TRUE),
-            other = mean(other, na.rm = TRUE),
-            native_american = mean(native_american, na.rm = TRUE),
-            pacific_islander = mean(pacific_islander, na.rm = TRUE)) %>% 
-  pivot_longer(cols = 16:22, names_to = "race", values_to = "race_percent_average")
-
-data_plot_bar_race$race <- with(data_plot_bar_race, reorder(race, race_percent_average))
+# data_plot_bar_race <- data_combined_2018 %>% 
+#   drop_na(white, black, asian, multiracial, other, native_american, pacific_islander) %>% 
+#   summarize(white = mean(white),
+#             black = mean(black),
+#             asian = mean(asian),
+#             multiracial = mean(multiracial),
+#             other = mean(other),
+#             native_american = mean(native_american),
+#             pacific_islander = mean(pacific_islander)) %>% 
+#   pivot_longer(cols = 16:22, names_to = "race", values_to = "race_percent_average")
+# 
+# data_plot_bar_race$race <- with(data_plot_bar_race, reorder(race, race_percent_average))
 
 # create plot
 plot_bar_race <- ggplot(data = data_plot_bar_race) +
@@ -102,15 +104,16 @@ ggsave(plot = data_plot_bar_race,
 ```
 
 ```{r}
-data_plot_bar_race_ca <-  data_acs_2018_race_percent_California %>% 
-  summarize(white = mean(white, na.rm = TRUE),
-            black = mean(black, na.rm = TRUE),
-            asian = mean(asian, na.rm = TRUE),
-            multiracial = mean(multiracial, na.rm = TRUE),
-            other = mean(other, na.rm = TRUE),
-            native_american = mean(native_american, na.rm = TRUE),
-            pacific_islander = mean(pacific_islander, na.rm = TRUE)) %>% 
-  pivot_longer(cols = 2:8, names_to = "race", values_to = "race_percent_sum")
+## NEED TO FIX CODE
+# data_plot_bar_race_ca <-  data_acs_2018_race_percent_California %>% 
+#   summarize(white = mean(white, na.rm = TRUE),
+#             black = mean(black, na.rm = TRUE),
+#             asian = mean(asian, na.rm = TRUE),
+#             multiracial = mean(multiracial, na.rm = TRUE),
+#             other = mean(other, na.rm = TRUE),
+#             native_american = mean(native_american, na.rm = TRUE),
+#             pacific_islander = mean(pacific_islander, na.rm = TRUE)) %>% 
+#   pivot_longer(cols = 2:8, names_to = "race", values_to = "race_percent_sum")
 
 plot_bar_race_ca <- ggplot(data = data_plot_bar_race_ca) +
   geom_col(aes(y = race, 
@@ -138,11 +141,6 @@ ggplot(data = data_combined_2018) +
 NOTES for graph below: 
 - `r `nrow(ridb_2018 %>% filter(booking_window < 0)) / nrow(ridb_2018)` of data > 0 (~1%)
 ```{r}
-# exclude negative booking windows
-plot_histogram_booking_window_data <-
-  data_combined_2018 %>%
-  filter(booking_window > 0)
-
 # histogram: booking window, reservations
 plot_histogram_booking_window <- 
   ggplot(data = data_combined_2018 %>% filter(booking_window > 0)) +
@@ -176,7 +174,7 @@ plot_histogram_booking_window
 ```{r}
 # histogram: booking window, reservations, agency
 plot_histogram_agency_booking_window <- 
-  ggplot(data = plot_histogram_booking_window_data, 
+  ggplot(data = data_combined_2018 %>% filter(booking_window > 0), 
          aes(x = booking_window)) +
   geom_histogram(aes(fill = agency), binwidth = 7) +
   labs(y = "Reservation Count",
@@ -214,191 +212,9 @@ ggsave(plot = plot_histogram_agency_booking_window,
 ```
 
 
-
-NOTES for graph below: 
-- Removed `r 16661 / nrow(combined_data_2018_ridb_acs)` (~3%)
 ```{r}
-# histogram: race % per home zip, reservations, race
-plot_asian <- 
-  ggplot(data_combined_2018) +
-  geom_histogram(aes(x = asian), 
-                 fill = racial_group_colors[1], 
-                 binwidth = .05) +
-  # scale_x_continuous(limits = c(0, 1)) +
-  # scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage in home ZIP code",
-       y = "Reservation Count",
-       title = "Asian") +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 14, face = "bold"))
+## NEED TO ADD CODE TO CREATE SUMMARY DATA
 
-plot_black <- 
-  ggplot(data_combined_2018) +
-  geom_histogram(aes(x = black), 
-                 fill = racial_group_colors[2], 
-                 binwidth = .05) +
-  # scale_x_continuous(limits = c(0, 1)) +
-  # scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage in home ZIP code",
-       y = "Reservation Count",
-       title = "Black") +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 14, face = "bold"))
-
-plot_multiracial <- 
-  ggplot(data_combined_2018) +
-  geom_histogram(aes(x = multiracial), 
-                 fill = racial_group_colors[3], 
-                 binwidth = .05) +
-  # scale_x_continuous(limits = c(0, 1)) +
-  # scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage in home ZIP code",
-       y = "Reservation Count",
-       title = "Multiracial") +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 14, face = "bold"))
-
-plot_other <- 
-  ggplot(data_combined_2018) +
-  geom_histogram(aes(x = other), 
-                 fill = racial_group_colors[4], 
-                 binwidth = .05) +
-  # scale_x_continuous(limits = c(0, 1)) +
-  # scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage in home ZIP code",
-       y = "Reservation Count",
-       title = "Other") +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 14, face = "bold"))
-
-plot_white <- 
-  ggplot(data_combined_2018) +
-  geom_histogram(aes(x = white), 
-                 fill = racial_group_colors[5], 
-                 binwidth = .05) +
-  # scale_x_continuous(limits = c(0, 1)) +
-  # scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage in home ZIP code",
-       y = "Reservation Count",
-       title = "White") +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 14, face = "bold"))
-
-plot_pacific_islander <- 
-  ggplot(data_combined_2018) +
-  geom_histogram(aes(x = pacific_islander), 
-                 fill = racial_group_colors[6], 
-                 binwidth = .05) +
-  # scale_x_continuous(limits = c(0, 1)) +
-  # scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage in home ZIP code",
-       y = "Reservation Count",
-       title = "Hawaiian and Other Pacific Islander") +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 14, face = "bold"))
-
-plot_native_american <- 
-  ggplot(data_combined_2018) +
-  geom_histogram(aes(x = native_american), 
-                 fill = racial_group_colors[7], 
-                 binwidth = .05) +
-  # scale_x_continuous(limits = c(0, 1)) +
-  # scale_y_continuous(limits = c(0, 45000)) +
-  labs(x = "Percentage in home ZIP code",
-       y = "Reservation Count",
-       title = "Native American") +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 14, face = "bold"))
-
-plots_histogram_race <- 
-  (plot_asian + plot_black + plot_white) / 
-  (plot_other + plot_multiracial + plot_native_american) + 
-  plot_annotation(title = "Racial Breakdown of Visitors' Home ZIP Code\nfor Reservable Overnight Sites in California in 2018",
-                  theme = theme(plot.title = element_text(size = 16, face = "bold")))
-
-plots_histogram_race
-```
-
-
-```{r, eval=FALSE}
-ggsave(plot = plots_histogram_race, 
-       filename = "../figs/2018_histogram_race.png",
-       width = 12,
-       height = 7)
-```
-
-
-
-```{r}
-# histogram: race, reservations, agency
-plot_bor_white <- 
-  ggplot(data_combined_2018 %>% filter(agency == "BOR")) +
-  geom_histogram(aes(x = white_latinx), fill = agency_colors[1]) +
-  labs(title = "Bureau of Reclamation")
-plot_bor_black <- 
-  ggplot(data_combined_2018 %>% filter(agency == "BOR")) +
-  geom_histogram(aes(x = black), fill = agency_colors[1]) +
-  labs(title = "Bureau of Reclamation")
-
-plot_nps_white <- 
-  ggplot(data_combined_2018 %>% filter(agency == "NPS")) +
-  geom_histogram(aes(x = white_latinx), fill = agency_colors[2]) +
-  labs(title = "National Park Service")
-plot_nps_black <- 
-  ggplot(data_combined_2018 %>% filter(agency == "NPS")) +
-  geom_histogram(aes(x = black), fill = agency_colors[2]) +
-  labs(title = "National Park Service")
-
-plot_usfs_white <- 
-  ggplot(data_combined_2018 %>% filter(agency == "USFS")) +
-  geom_histogram(aes(x = white_latinx), fill = agency_colors[3]) +
-  labs(title = "US Forest Service")
-plot_usfs_black <- 
-  ggplot(data_combined_2018 %>% filter(agency == "USFS")) +
-  geom_histogram(aes(x = black), fill = agency_colors[3]) +
-  labs(title = "US Forest Service")
-
-plot_usace_white <- 
-  ggplot(data_combined_2018 %>% filter(agency == "USACE")) +
-  geom_histogram(aes(x = white_latinx), fill = agency_colors[4]) +
-  labs(title = "US Army Corps of Engineers")
-plot_usace_black <- 
-  ggplot(data_combined_2018 %>% filter(agency == "USACE")) +
-  geom_histogram(aes(x = black), fill = agency_colors[4]) +
-  labs(title = "US Army Corps of Engineers")
-
-plot_histogram_agency_race_white <- 
-  (plot_bor_white + plot_nps_white + plot_usace_white + plot_usfs_white)
-
-plot_histogram_agency_race_black <- 
-  (plot_bor_black + plot_nps_black + plot_usace_black + plot_usfs_black)
-
-plot_histogram_agency_race_white
-plot_histogram_agency_race_black
-```
-
-```{r, eval=FALSE}
-ggsave(plot = plot_histogram_agency_race_white, 
-       filename = "../figs/2018_histogram_agency_race_white.png",
-       width = 12,
-       height = 7)
-
-ggsave(plot = plot_histogram_agency_race_black, 
-       filename = "../figs/2018_histogram_agency_race_black.png",
-       width = 12,
-       height = 7)
-```
-
-
-
-```{r}
 # scatter: sites, median income, agency
 plot_scatter_park_median_income <- 
   ggplot(data_combined_2018_site_summary) +
@@ -430,9 +246,13 @@ ggsave(plot = plot_scatter_park_median_income,
 
 
 ```{r}
+data_plot_bar_agency_park <- data_combined_2018 %>% 
+  group_by(agency, park) %>% 
+  summarise(count = n())
+
 # bar: agency, sites, agency
 plot_bar_agency_park <- 
-  ggplot(data_combined_2018_site_summary) +
+  ggplot(data_plot_bar_agency_park) +
   geom_bar(aes(x = agency, fill = agency)) +
   scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
                                  "US Army Corps of Engineers", "US Forest Service")) +
