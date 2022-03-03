@@ -25,7 +25,7 @@ options(scipen = 999)
 # raw data
 source("functions/function_ridb_subset-pre2018.R")
 source("functions/function_ridb_subset-post2019.R")
-# calculate variables
+# clean data and calculate variables
 source("functions/function_ridb_variable_calculate-pre2018.R")
 # standardize values
 # need to make function still
@@ -149,6 +149,11 @@ write.csv(x = data_combined_2018, "../../../data_clean/2018_joined_data.csv", ro
 
 
 
+```{r}
+# small version of data for Will and Soyoung
+data_combined_2018_small <- head(data_combined_2018, 100)
+write.csv(x = data_combined_2018_small, "../../../data_clean/2018_joined_data_smallSubset.csv", row.names = FALSE)
+```
 
 
 
