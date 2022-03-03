@@ -44,10 +44,10 @@ agency_colors <-
 ```{r}
 ## 2018
 # read in data
-data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv") %>% 
-  # create geometries
-  st_as_sf(coords = c("facility_longitude", "facility_latitude"),
-           crs = 4326)
+data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv") #%>% 
+  # # create geometries ##need to only add this in when necessary, slows down processing for summary
+  # st_as_sf(coords = c("facility_longitude", "facility_latitude"),
+  #          crs = 4326)
 
 # ACS CA race data
 acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE, state = "California")
@@ -57,20 +57,19 @@ acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE, sta
 # VIZ
 
 ```{r}
-## NEED TO FIX CODE
 # data wrangle for plot
-# data_plot_bar_race <- data_combined_2018 %>% 
-#   drop_na(white, black, asian, multiracial, other, native_american, pacific_islander) %>% 
-#   summarize(white = mean(white),
-#             black = mean(black),
-#             asian = mean(asian),
-#             multiracial = mean(multiracial),
-#             other = mean(other),
-#             native_american = mean(native_american),
-#             pacific_islander = mean(pacific_islander)) %>% 
-#   pivot_longer(cols = 16:22, names_to = "race", values_to = "race_percent_average")
-# 
-# data_plot_bar_race$race <- with(data_plot_bar_race, reorder(race, race_percent_average))
+data_plot_bar_race <- data_combined_2018 %>%
+  drop_na(white, black, asian, multiracial, other, native_american, pacific_islander) %>%
+  summarize(white = mean(white),
+            black = mean(black),
+            asian = mean(asian),
+            multiracial = mean(multiracial),
+            other = mean(other),
+            native_american = mean(native_american),
+            pacific_islander = mean(pacific_islander)) %>%
+  pivot_longer(cols = 1:7, names_to = "race", values_to = "race_percent_average")
+
+data_plot_bar_race$race <- with(data_plot_bar_race, reorder(race, race_percent_average))
 
 # create plot
 plot_bar_race <- ggplot(data = data_plot_bar_race) +
@@ -93,7 +92,7 @@ plot_bar_race <- ggplot(data = data_plot_bar_race) +
                               "Native American or Native Alaskan",
                               "Black", "Multiracial", "Other", "Asian", "White"))
 
-plot_1
+plot_bar_race
 ```
 
 ```{r}
@@ -104,21 +103,39 @@ ggsave(plot = data_plot_bar_race,
 ```
 
 ```{r}
-## NEED TO FIX CODE
-# data_plot_bar_race_ca <-  data_acs_2018_race_percent_California %>% 
-#   summarize(white = mean(white, na.rm = TRUE),
-#             black = mean(black, na.rm = TRUE),
-#             asian = mean(asian, na.rm = TRUE),
-#             multiracial = mean(multiracial, na.rm = TRUE),
-#             other = mean(other, na.rm = TRUE),
-#             native_american = mean(native_american, na.rm = TRUE),
-#             pacific_islander = mean(pacific_islander, na.rm = TRUE)) %>% 
-#   pivot_longer(cols = 2:8, names_to = "race", values_to = "race_percent_sum")
+# data wrangle for plot
+data_plot_bar_race_ca <-  data_acs_2018_race_percent_California %>%
+  summarize(white = mean(white, na.rm = TRUE),
+            black = mean(black, na.rm = TRUE),
+            asian = mean(asian, na.rm = TRUE),
+            multiracial = mean(multiracial, na.rm = TRUE),
+            other = mean(other, na.rm = TRUE),
+            native_american = mean(native_american, na.rm = TRUE),
+            pacific_islander = mean(pacific_islander, na.rm = TRUE)) %>%
+  pivot_longer(cols = 1:7, names_to = "race", values_to = "race_percent_average")
 
+data_plot_bar_race_ca$race <- with(data_plot_bar_race_ca, reorder(race, race_percent_average))
+
+# create plot
 plot_bar_race_ca <- ggplot(data = data_plot_bar_race_ca) +
   geom_col(aes(y = race, 
-               x = race_percent_sum, 
-               fill = race))
+               x = race_percent_average, 
+               fill = race)) +
+  labs(x = "Proportion of residents' race",
+       y = "Race",
+       fill = "Race",
+       title = "Racial Breakdown of Residents\nin California in 2018") +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 14, face = "bold"),
+        legend.position = "none") +
+  scale_fill_manual(values = racial_group_colors) #+
+  # scale_y_discrete(labels = c("Native Hawaiian or Other Pacific Islander",
+  #                             "Native American or Native Alaskan",
+  #                             "Black", "Multiracial", "Other", "Asian", "White"))
 
 plot_bar_race_ca
 ```

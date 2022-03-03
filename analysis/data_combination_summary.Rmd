@@ -67,6 +67,10 @@ RIDB_calculate_pre2018(input_df_name = data_ridb_2018, output_df_name = "data_ri
 # census_api_key(key = census_api[[1]], install = TRUE, overwrite = TRUE)
 # # run in console:
 ## readRenviron("~/.Renviron")
+
+# look at option variables
+View(load_variables(2018, "acs5", cache = TRUE))
+
 ```
 
 ```{r}
@@ -129,6 +133,7 @@ data_combined_2018_site_summary <-
             median_percent_white = median(white, na.rm = TRUE),
             median_percent_pacific_islander = median(pacific_islander, na.rm = TRUE),
             median_percent_native_american = median(native_american, na.rm = TRUE),
+            median_hispanic_latinx = median(hispanic_latinx, na.rm = TRUE),
             median_college = median(college, na.rm = TRUE),
             median_hs_GED_or_below = median(hs_GED_or_below, na.rm = TRUE),
             median_master_or_above = median(master_or_above, na.rm = TRUE),
@@ -144,15 +149,15 @@ data_combined_2018_site_summary <-
 ```{r}
 write.csv(x = data_combined_2018, "../../../data_clean/2018_joined_data.csv", row.names = FALSE)
 
-# write.csv(x = data_combined_2018_site_summary, "../../../data_clean/2018_joined_data_site_summary.csv", row.names = FALSE)
+write.csv(x = data_combined_2018_site_summary, "../../../data_clean/2018_joined_data_site_summary.csv", row.names = FALSE)
 ```
 
 
 
-```{r}
-# small version of data for Will and Soyoung
-data_combined_2018_small <- head(data_combined_2018, 100)
-write.csv(x = data_combined_2018_small, "../../../data_clean/2018_joined_data_smallSubset.csv", row.names = FALSE)
+```{r, eval=FALSe}
+# # small version of data for Will and Soyoung
+# data_combined_2018_small <- head(data_combined_2018, 100)
+# write.csv(x = data_combined_2018_small, "../../../data_clean/2018_joined_data_smallSubset.csv", row.names = FALSE)
 ```
 
 
