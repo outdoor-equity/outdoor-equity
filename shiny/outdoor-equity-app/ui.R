@@ -34,22 +34,30 @@ ui <- fluidPage(
                  # Note(HD): need to change this to a rmd file to include DT table
                  includeMarkdown("./text/metadata-about.md")
                  )),
-    tabPanel("Agencies",
-             "graphs and inputs to compare agenices here"),
-    tabPanel("Reservable Sites",
-             "graphs and inputs to compare reservable sites here"),
-    tabPanel("Spatial Analysis",
-             "spatial analysis maps and inputs here",
-             # subset agency picker input ----
-             shinyWidgets::pickerInput(inputId = "agency",
-                                       label = "Select an agency:",
-                                       choices = c("USFS", "NPS", "USACE", "BOR"),
-                                       selected = c("USFS", "NPS", "USACE", "BOR"),
-                                       multiple = TRUE,
-                                       options = pickerOptions(actionsBox = TRUE))
-             ),
-    tabPanel("Temporal Analysis",
-             "graphs that show interesting temporal trends")
-  )
+    navbarMenu("Analysis",
+               tabPanel(
+                 title = "Agency Analysis",
+                 "graphs and inputs to compare agenices here"
+               ),
+               tabPanel(
+                 title = "Reservable Site Analysis",
+                 "graphs and inputs to compare reservable sites here"
+               ),
+               tabPanel(
+                 title = "Spatial Analysis",
+                 "spatial analysis maps and inputs here",
+                 # subset agency picker input ----
+                 shinyWidgets::pickerInput(inputId = "agency",
+                                           label = "Select an agency:",
+                                           choices = c("USFS", "NPS", "USACE", "BOR"),
+                                           # selected = c("USFS", "NPS", "USACE", "BOR"), use this to automatically selected choices
+                                           multiple = TRUE,
+                                           options = pickerOptions(actionsBox = TRUE)
+               ),
+               tabPanel(
+                 title = "Temporal Analysis",
+                 "graphs that show interesting temporal trends"
+               )))
+    
   
 )
