@@ -17,6 +17,7 @@ library(tidycensus)
 library(patchwork)
 library(scales)
 library(tmap)
+library(plotly)
 
 options(scipen = 999)
 
@@ -48,14 +49,43 @@ agency_colors <-
 data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
 
 # ACS CA race data
-acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE, state = "California")
+zip_geometries <- get_acs(geography = "zcta", year = 2018, geometry = TRUE, 
+                          summary_var = "B01001_001",
+                          variables = c(male = "B01001_002")) %>% 
+  mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>% 
+  select(zip_code, geometry) %>% 
+  
 ```
+
 
 
 # VIZ
 
 ```{r}
+data_map <- data_combined_2018 %>% 
+  filter(park == "Santa Cruz Scorpion (CA)") %>% 
+  group_by(customer_zip) %>% 
+  summarize(number_reservations = n()) %>% 
+  mutate(customer_zip = as.character(customer_zip))
 
+data_map_geometries <- zip_geometries %>% 
+  left_join(data_map, by = c("zip_code" = "customer_zip")) %>% 
+  mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
+
+tm_shape(data_map_geometries, 
+         projection = sf::st_crs(4269)) + 
+  tm_polygons(col = "number_reservations",
+          style = "jenks",
+          n = 5,
+          palette = "Purples",
+          title = "test",
+          legend.hist = TRUE) + 
+  tm_layout(title = "test",
+            frame = FALSE,
+            legend.outside = TRUE,
+            bg.color = "grey70",
+            legend.hist.width = 5,
+            fontfamily = "Verdana")
 ```
 
 

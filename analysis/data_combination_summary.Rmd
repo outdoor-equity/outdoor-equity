@@ -69,16 +69,16 @@ RIDB_calculate_pre2018(input_df_name = data_ridb_2018, output_df_name = "data_ri
 ## readRenviron("~/.Renviron")
 
 # look at option variables
-View(load_variables(2018, "acs5", cache = TRUE))
+#View(load_variables(2018, "acs5", cache = TRUE))
 
 ```
 
 ```{r}
 # read in census data
-acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE, state = NULL)
-acs_subset_calculate_median_income(geography = "zcta", year = 2018, geometry = FALSE, state = NULL)
-acs_subset_calculate_transportation(geography = "zcta", year = 2018, geometry = FALSE, state = NULL)
-acs_subset_calculate_education(geography = "zcta", year = 2018, geometry = FALSE, state = NULL)
+acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
+acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = NULL)
+acs_subset_calculate_transportation(geography = "zcta", year = 2018, state = NULL)
+acs_subset_calculate_education(geography = "zcta", year = 2018, state = NULL)
 ```
 
 

@@ -3,14 +3,12 @@ acs_subset_calculate_race <-
   function(geography, # string indicating grouping for census data 
            #("zcta" = zip code, all options found here: https://walker-data.com/tidycensus/articles/basic-usage.html)
            year, # year of census datat
-           geometry, # FALSE/TRUE include geometries of geography areas
            state # string indicating state to be include, use NULL for all US states
   ){
     # read in raw data
     df <- 
       get_acs(geography = geography,
               year = year,
-              geometry = geometry,
               state = state,
               summary_var = "B03002_001", #Estimate!!Total: 
               variables = c(

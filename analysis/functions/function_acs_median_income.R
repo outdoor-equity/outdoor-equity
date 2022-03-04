@@ -3,13 +3,11 @@ acs_subset_calculate_median_income <-
   function(geography, # string indicating grouping for census data 
            #("zcta" = zip code, all options found here: https://walker-data.com/tidycensus/articles/basic-usage.html)
            year, # year of census datat
-           geometry, # FALSE/TRUE include geometries of geography areas
            state # string indicating state to be include, use NULL for all US states
   ){
     df <- 
       get_acs(geography = geography,
               year = year,
-              geometry = geometry,
               state = state,
               variables = c(
                 median_income = "B19013_001" # Estimate!!Median household income in the past 12 months (in 2019 inflation-adjusted dollars)
