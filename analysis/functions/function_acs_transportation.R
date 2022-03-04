@@ -1,10 +1,16 @@
 
 acs_subset_calculate_transportation <- 
-  function(geography, year, geometry){
+  function(geography, # string indicating grouping for census data 
+           #("zcta" = zip code, all options found here: https://walker-data.com/tidycensus/articles/basic-usage.html)
+           year, # year of census datat
+           geometry, # FALSE/TRUE include geometries of geography areas
+           state # string indicating state to be include, use NULL for all US states
+  ){
     df <- 
       get_acs(geography = geography,
               year = year,
               geometry = geometry,
+              state = state,
               summary_var = "B08141_001", #Estimate!!Total:
               variables = c(
                 no_vehicle = "B08141_002" # Estimate!!Total:!!No vehicle available
@@ -13,8 +19,13 @@ acs_subset_calculate_transportation <-
       mutate(zip_code = str_sub(name, start = -5, end = -1)) %>% 
       rename(no_vehicle = variable)
     # create df
-    assign(x = paste0("data_acs_", year, "_transportation"), 
-           data.frame(df), envir = .GlobalEnv)
+    if (is.null(state)) {
+      assign(x = paste0("data_acs_", year, "_transportation"), 
+             data.frame(df), envir = .GlobalEnv) 
+    } else {
+      assign(x = paste0("data_acs_", year, "_transportation_", state), 
+             data.frame(df), envir = .GlobalEnv)
+    }
     
     # calculate percentage
     df_percent <- 
@@ -29,6 +40,11 @@ acs_subset_calculate_transportation <-
       pivot_wider(names_from = "no_vehicle",
                   values_from = "percent")
     # create df
-    assign(paste0("data_acs_", year, "_transportation_percent"), 
-           data.frame(df_percent_wider), envir = .GlobalEnv)
+    if (is.null(state)) {
+      assign(paste0("data_acs_", year, "_transportation_percent"), 
+             data.frame(df_percent_wider), envir = .GlobalEnv)
+    } else {
+      assign(paste0("data_acs_", year, "_transportation_percent_", state), 
+             data.frame(df_percent_wider), envir = .GlobalEnv)
+    }
   }

@@ -1,0 +1,63 @@
+---
+title: "Data Cleaning"
+author: "Clarissa Boyajian and Halina Do-Linh"
+date: "1/24/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(lubridate)
+library(sf)
+library(tidycensus)
+library(patchwork)
+library(scales)
+library(tmap)
+
+options(scipen = 999)
+
+source("functions/function_acs_race.R")
+
+# colors for racial groups
+racial_group_colors <- 
+  c("darkgreen", # asian
+    "darkblue", # black
+    "darkmagenta", # multiracial
+    "darkred", # other
+    "darkgoldenrod1", # white
+    "darkorange2", # pacific_islander
+    "darkcyan", # native_american
+    "darkgrey" # hispanix_latinx
+  )
+# colors for agencies
+agency_colors <- 
+  c("#F8766D", # BOR
+    "#7CAE00", # NPS
+    "#00BFC4", # USFS
+    "#C77CFF" # USACE
+  )
+```
+
+```{r}
+## 2018
+# read in data
+data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
+
+# ACS CA race data
+acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE, state = "California")
+```
+
+
+# VIZ
+
+```{r}
+
+```
+
+
+
+

@@ -1,11 +1,17 @@
 
 acs_subset_calculate_education <- 
-  function(geography, year, geometry){
+  function(geography, # string indicating grouping for census data 
+           #("zcta" = zip code, all options found here: https://walker-data.com/tidycensus/articles/basic-usage.html)
+           year, # year of census datat
+           geometry, # FALSE/TRUE include geometries of geography areas
+           state # string indicating state to be include, use NULL for all US states
+  ){
     # read in raw data
     df <- 
       get_acs(geography = geography,
               year = year,
               geometry = geometry,
+              state = state,
               summary_var = "B15003_001", # Estimate!!Total:
               variables = c(
                 # Estimate!!Total:!!GED or alternative credential or below (including above)
@@ -41,8 +47,13 @@ acs_subset_calculate_education <-
       rename(education = variable) %>% 
       mutate(zip_code = str_sub(name, start = -5, end = -1))
     # create df
-    assign(x = paste0("data_acs_", year, "_education"), 
-           data.frame(df), envir = .GlobalEnv)
+    if (is.null(state)){
+      assign(x = paste0("data_acs_", year, "_education"), 
+             data.frame(df), envir = .GlobalEnv)
+    } else {
+      assign(x = paste0("data_acs_", year, "_education_", state), 
+             data.frame(df), envir = .GlobalEnv)
+    }
     
     # calculate percentage
     df_percent <- 
@@ -62,6 +73,11 @@ acs_subset_calculate_education <-
       pivot_wider(names_from = "education",
                   values_from = "percent")
     # create df
-    assign(paste0("data_acs_", year, "_education_percent"), 
-           data.frame(df_percent_wider), envir = .GlobalEnv)
+    if (is.null(state)) {
+      assign(paste0("data_acs_", year, "_education_percent"), 
+             data.frame(df_percent_wider), envir = .GlobalEnv)
+    } else {
+      assign(paste0("data_acs_", year, "_education_percent_", state), 
+             data.frame(df_percent_wider), envir = .GlobalEnv)
+    }
   }

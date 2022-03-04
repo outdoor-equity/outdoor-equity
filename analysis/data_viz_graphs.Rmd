@@ -1,0 +1,323 @@
+---
+title: "Data Cleaning"
+author: "Clarissa Boyajian and Halina Do-Linh"
+date: "1/24/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(lubridate)
+library(sf)
+library(tidycensus)
+library(patchwork)
+library(scales)
+library(tmap)
+
+options(scipen = 999)
+
+source("functions/function_acs_race.R")
+
+# colors for racial groups
+racial_group_colors <- 
+  c("darkgreen", # asian
+    "darkblue", # black
+    "darkmagenta", # multiracial
+    "darkred", # other
+    "darkgoldenrod1", # white
+    "darkorange2", # pacific_islander
+    "darkcyan" # native_american
+  )
+# colors for agencies
+agency_colors <- 
+  c("#F8766D", # BOR
+    "#7CAE00", # NPS
+    "#00BFC4", # USFS
+    "#C77CFF" # USACE
+  )
+```
+
+```{r}
+## 2018
+# read in data
+data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv") #%>% 
+  # # create geometries ##need to only add this in when necessary, slows down processing for summary
+  # st_as_sf(coords = c("facility_longitude", "facility_latitude"),
+  #          crs = 4326)
+
+# ACS CA race data
+acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE, state = "California")
+```
+
+
+# VIZ
+
+```{r}
+# data wrangle for plot
+data_plot_bar_race <- data_combined_2018 %>%
+  drop_na(white, black, asian, multiracial, other, native_american, pacific_islander) %>%
+  summarize(white = mean(white),
+            black = mean(black),
+            asian = mean(asian),
+            multiracial = mean(multiracial),
+            other = mean(other),
+            native_american = mean(native_american),
+            pacific_islander = mean(pacific_islander)) %>%
+  pivot_longer(cols = 1:7, names_to = "race", values_to = "race_percent_average")
+
+data_plot_bar_race$race <- with(data_plot_bar_race, reorder(race, race_percent_average))
+
+# create plot
+plot_bar_race <- ggplot(data = data_plot_bar_race) +
+  geom_col(aes(x = race_percent_average,
+               y = race, 
+               fill = race)) +
+  labs(x = "Proportion of visitors' race",
+       y = "Race",
+       fill = "Race",
+       title = "Racial Breakdown of Visitors\nfor Reservable Overnight Sites in California in 2018") +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 14, face = "bold"),
+        legend.position = "none") +
+  scale_fill_manual(values = racial_group_colors) +
+  scale_y_discrete(labels = c("Native Hawaiian or Other Pacific Islander",
+                              "Native American or Native Alaskan",
+                              "Black", "Multiracial", "Other", "Asian", "White"))
+
+plot_bar_race
+```
+
+```{r}
+ggsave(plot = data_plot_bar_race, 
+       filename = "../figs/2018_bar_race.png",
+       width = 12,
+       height = 7)
+```
+
+```{r}
+# data wrangle for plot
+data_plot_bar_race_ca <-  data_acs_2018_race_percent_California %>%
+  summarize(white = mean(white, na.rm = TRUE),
+            black = mean(black, na.rm = TRUE),
+            asian = mean(asian, na.rm = TRUE),
+            multiracial = mean(multiracial, na.rm = TRUE),
+            other = mean(other, na.rm = TRUE),
+            native_american = mean(native_american, na.rm = TRUE),
+            pacific_islander = mean(pacific_islander, na.rm = TRUE)) %>%
+  pivot_longer(cols = 1:7, names_to = "race", values_to = "race_percent_average")
+
+data_plot_bar_race_ca$race <- with(data_plot_bar_race_ca, reorder(race, race_percent_average))
+
+# create plot
+plot_bar_race_ca <- ggplot(data = data_plot_bar_race_ca) +
+  geom_col(aes(y = race, 
+               x = race_percent_average, 
+               fill = race)) +
+  labs(x = "Proportion of residents' race",
+       y = "Race",
+       fill = "Race",
+       title = "Racial Breakdown of Residents\nin California in 2018") +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 14, face = "bold"),
+        legend.position = "none") +
+  scale_fill_manual(values = racial_group_colors) #+
+  # scale_y_discrete(labels = c("Native Hawaiian or Other Pacific Islander",
+  #                             "Native American or Native Alaskan",
+  #                             "Black", "Multiracial", "Other", "Asian", "White"))
+
+plot_bar_race_ca
+```
+
+
+
+```{r}
+# histogram: length of stay, reservations
+ggplot(data = data_combined_2018) +
+  geom_histogram(aes(x = length_of_stay), fill = "goldenrod", binwidth = 7) +
+  labs(x = "Lenth of stay (days)",
+       y = "Individual Reservations") +
+  theme_minimal() +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"))
+```
+
+
+
+NOTES for graph below: 
+- `r `nrow(ridb_2018 %>% filter(booking_window < 0)) / nrow(ridb_2018)` of data > 0 (~1%)
+```{r}
+# histogram: booking window, reservations
+plot_histogram_booking_window <- 
+  ggplot(data = data_combined_2018 %>% filter(booking_window > 0)) +
+  geom_histogram(aes(x = booking_window), 
+                 binwidth = 7,
+                 fill = "goldenrod") +
+  labs(y = "Reservation Count",
+       x = "Days elapsed from order to visit\n(1 bar = 1 week)",
+       title = "Distribution of Booking Window\nfor Reservable Overnight Sites in California in 2018") +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold")) +
+  scale_x_continuous(limits = c(0, 510), 
+                     breaks = seq(0, 510, by = 30)) +
+  geom_vline(xintercept = 180, 
+             linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", label = "6 months", 
+           x = 210, y = 65000) +
+  geom_vline(xintercept = 360, 
+             linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", label = "1 year", 
+           x = 380, y = 65000)
+
+plot_histogram_booking_window
+```
+
+
+```{r}
+# histogram: booking window, reservations, agency
+plot_histogram_agency_booking_window <- 
+  ggplot(data = data_combined_2018 %>% filter(booking_window > 0), 
+         aes(x = booking_window)) +
+  geom_histogram(aes(fill = agency), binwidth = 7) +
+  labs(y = "Reservation Count",
+       x = "Days elapsed from order to visit\n(1 bar = 1 week)",
+       fill = "Agency",
+       title = "Distribution of Booking Window by Agency \nfor Reservable Overnight Sites in California in 2018") +
+  scale_fill_discrete(
+    labels = c("Bureau of Reclamation", "National Park Service", 
+               "US Army Corps of Engineers", "US Forest Service")) +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold")) +
+  scale_x_continuous(limits = c(0, 510), breaks = seq(0, 510, by = 30)) +
+  geom_vline(xintercept = 180, linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", x = 210, y = 65000, label = "6 months") +
+  geom_vline(xintercept = 360, linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", x = 380, y = 65000, label = "1 year")
+
+plot_histogram_agency_booking_window
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_histogram_booking_window, 
+       filename = "../figs/2018_histogram_booking_window.png",
+       width = 12,
+       height = 7)
+
+ggsave(plot = plot_histogram_agency_booking_window,
+       filename = "../figs/2018_histogram_agency_booking_window.png",
+       width = 16,
+       height = 7)
+```
+
+
+```{r}
+## NEED TO ADD CODE TO CREATE SUMMARY DATA
+
+# scatter: sites, median income, agency
+plot_scatter_park_median_income <- 
+  ggplot(data_combined_2018_site_summary) +
+  geom_point(aes(x = park,
+                 y = median_median_income,
+                 col = agency)) +
+  theme(axis.text.x = element_blank()) +
+  labs(x = "Individual Reservable Sites",
+       y = "Median income of visitor home ZIP code ($)",
+       col = "Agency") +
+  scale_color_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
+                                  "US Army Corps of Engineers", "US Forest Service"))
+
+plot_scatter_park_median_income <- 
+  plot_scatter_park_median_income +
+  plot_annotation(title = "Median Income of Visitors' Home ZIP Code
+                  \nfor Reservable Overnight Sites in California in 2018")
+
+plot_scatter_park_median_income
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_scatter_park_median_income, 
+       filename = "../figs/2018_scatter_park_median_income.png",
+       width = 12,
+       height = 7)
+```
+
+
+
+```{r}
+data_plot_bar_agency_park <- data_combined_2018 %>% 
+  group_by(agency, park) %>% 
+  summarise(count = n())
+
+# bar: agency, sites, agency
+plot_bar_agency_park <- 
+  ggplot(data_plot_bar_agency_park) +
+  geom_bar(aes(x = agency, fill = agency)) +
+  scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
+                                 "US Army Corps of Engineers", "US Forest Service")) +
+  theme_minimal() +
+  labs(fill = "Agency",
+       x = "Agency",
+       y = "Reservable Site Count",
+       title = "Total Sites per Agency \nfor Reservable Overnight Sites in California in 2018") +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
+
+plot_bar_agency_park
+```
+
+```{r}
+# bar: agency, reservations, agency
+plot_bar_agency_visits <- 
+  ggplot(data = data_combined_2018) +
+  geom_bar(aes(x = agency, fill = agency)) +
+  scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
+                                 "US Army Corps of Engineers", "US Forest Service")) +
+  theme_minimal() +
+  labs(x = "Agency",
+       y = "Total Reservations",
+       fill = "Agency",
+       title = "Total Reservations per Agency \nfor Reservable Overnight Sites in California in 2018") +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
+
+plot_bar_agency_visits
+```
+
+```{r, eval=FALSE}
+ggsave(plot = plot_bar_agency_park,
+       filename = "../figs/2018_bar_agency_park.png",
+       width = 14,
+       height = 7)
+
+ggsave(plot = plot_bar_agency_visits,
+       filename = "../figs/2018_bar_agency_visits.png",
+       width = 14,
+       height = 7)
+```
+
+
