@@ -3,7 +3,7 @@ acs_subset_calculate_education <-
   function(geography, # string indicating grouping for census data 
            #("zcta" = zip code, all options found here: https://walker-data.com/tidycensus/articles/basic-usage.html)
            year, # year of census data
-           state # string indicating state to be include, use NULL for all US states
+           state # string indicating state to be included, use NULL for all US states
   ){
     # read in raw data
     df <- 
