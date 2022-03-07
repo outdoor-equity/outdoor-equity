@@ -7,7 +7,30 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(janitor)
 ```
+
+load in data, `clean_names()`, subset to California and overnight reservable sites
+```{r}
+ridb2018 <- read_csv(here::here("../../data_raw/reservations2018.csv")) %>% 
+  clean_names() %>% 
+  filter(facility_state == "CA") %>% 
+  filter(use_type == "Overnight")
+## 451 of sites in CA ##
+  # group_by(park) %>%
+  # summarize(counts = n())
+
+
+```
+
+
+```{r}
+ridb2018_zip <- ridb2018 %>% 
+  select(c(park, facility_state, customer_zip))
+```
+
 
 subset `data_ridb_2018` to one reservable overnight site
 
