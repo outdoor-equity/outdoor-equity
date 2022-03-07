@@ -37,13 +37,6 @@ source("functions/function_acs_transportation.R")
 source("functions/function_acs_education.R")
 ```
 
-# Geometries
-
-```{r, eval=FALSE}
-## use acs to get county and state geometries ##
-```
-
-
 # RIDB - read in data, calculate varibales, standardize values
 
 ```{r}
@@ -108,18 +101,23 @@ data_combined_2018_site_summary <-
   filter(daily_cost_per_visitor != "Inf") %>% #drop 48 rows with "Inf" for cost/visitor/day
   group_by(agency, park) %>% 
   summarize(median_paid = median(total_paid),
+            mean_paid = mean(total_paid),
             max_paid = max(total_paid),
             min_paid = min(total_paid),
             median_number_of_people = median(number_of_people),
+            mean_number_of_people = mean(number_of_people),
             max_number_of_people = max(number_of_people),
             min_number_of_people = min(number_of_people),
             median_length_of_stay = median(length_of_stay),
+            mean_length_of_stay = mean(length_of_stay),
             max_length_of_stay = max(length_of_stay),
             min_length_of_stay = min(length_of_stay),
             median_booking_window = median(booking_window),
+            mean_booking_window = mean(booking_window),
             max_booking_window = max(booking_window),
             min_booking_window = min(booking_window),
             median_daily_cost_per_visitor = median(daily_cost_per_visitor),
+            mean_daily_cost_per_visitor = mean(daily_cost_per_visitor),
             max_daily_cost_per_visitor = max(daily_cost_per_visitor),
             min_daily_cost_per_visitor = min(daily_cost_per_visitor),
             # na.rm drops ~3% of data (missing ZIP codes from acs5)

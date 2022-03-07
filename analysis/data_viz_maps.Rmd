@@ -56,7 +56,13 @@ zip_geometries_ca <- get_acs(geography = "zcta", year = 2018, geometry = TRUE,
   select(NAME, geometry) %>% 
   mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>% 
   select(zip_code, geometry)
-
+# ACS US race data
+zip_geometries_us <- get_acs(geography = "zcta", year = 2018, geometry = TRUE, 
+                             summary_var = "B01001_001",
+                             variables = c(male = "B01001_002")) %>% 
+  select(NAME, geometry) %>% 
+  mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>% 
+  select(zip_code, geometry)
 ```
 
 
@@ -73,17 +79,21 @@ data_map_santa_cruz_scorpion <- data_combined_2018 %>%
 data_map_geometries_ca <- zip_geometries_ca %>% 
   left_join(data_map_santa_cruz_scorpion, by = c("zip_code" = "customer_zip")) %>% 
   mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
+
+data_map_geometries_us <- zip_geometries_us %>% 
+  left_join(data_map_santa_cruz_scorpion, by = c("zip_code" = "customer_zip")) %>% 
+  mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
 ```
 
 
 ```{r}
-# # hard to see without zoom ability
-# ggplot() +
-#   geom_sf(data = zip_geometries,
-#           col = "black") +
-#   geom_sf(data = data_map_geometries,
-#           aes(fill = number_reservations)) +
-#   scale_fill_distiller(palette = "BuPu")
+# hard to see without zoom ability
+ggplot() +
+  geom_sf(data = zip_geometries_us,
+          col = "black") +
+  geom_sf(data = data_map_geometries_us,
+          aes(fill = number_reservations)) +
+  scale_fill_distiller(palette = "BuPu")
 ```
 
 
@@ -105,5 +115,10 @@ tm_shape(data_map_geometries_ca) +
 ```
 
 
+```{r}
+ggplot() +
+  geom_sf(data = zip_geometries_ca,
+          col = "black")
+```
 
 

@@ -10,6 +10,7 @@ RIDB_subset_post2019 <- function(full_file_path, state_full_name, year) {
     # select variables
     select(c("agency", 
              "parentlocation",
+             "regiondescription",
              "park", 
              "sitetype", 
              "usetype", 
