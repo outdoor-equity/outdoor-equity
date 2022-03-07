@@ -322,4 +322,5 @@ ggsave(plot = plot_bar_agency_visits,
        height = 7)
 ```
 
-
+## NOTES
+- point = park, x = mean distance traveled, y = 
