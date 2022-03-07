@@ -52,12 +52,10 @@ ui <- fluidPage(
                                            choices = c("USFS", "NPS", "USACE", "BOR"),
                                            # selected = c("USFS", "NPS", "USACE", "BOR"), use this to automatically selected choices
                                            multiple = TRUE,
-                                           options = pickerOptions(actionsBox = TRUE)
+                                           options = pickerOptions(actionsBox = TRUE))
                ),
                tabPanel(
                  title = "Temporal Analysis",
                  "graphs that show interesting temporal trends"
                )))
-    
-  
 )
