@@ -5,9 +5,7 @@ account: hdolinh
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5693119
-bundleId: 5623690
+bundleId: 5654016
 url: https://hdolinh.shinyapps.io/outdoor-equity-app/
-when: 1646011044.95238
-lastSyncTime: 1646011044.95239
-asMultiple: FALSE
-asStatic: FALSE
+when: 1646691084.88571
+lastSyncTime: 1646691084.88572
