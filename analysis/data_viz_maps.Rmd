@@ -17,6 +17,7 @@ library(tidycensus)
 library(patchwork)
 library(scales)
 library(tmap)
+library(plotly)
 
 options(scipen = 999)
 
@@ -48,13 +49,58 @@ agency_colors <-
 data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
 
 # ACS CA race data
-acs_subset_calculate_race(geography = "zcta", year = 2018, geometry = FALSE, state = "California")
+zip_geometries_ca <- get_acs(geography = "zcta", year = 2018, geometry = TRUE, 
+                             state = "California",
+                             summary_var = "B01001_001",
+                             variables = c(male = "B01001_002")) %>% 
+  select(NAME, geometry) %>% 
+  mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>% 
+  select(zip_code, geometry)
+
 ```
+
 
 
 # VIZ
 
 ```{r}
+data_map_santa_cruz_scorpion <- data_combined_2018 %>% 
+  filter(park == "Santa Cruz Scorpion (CA)") %>% 
+  group_by(customer_zip) %>% 
+  summarize(number_reservations = n()) %>% 
+  mutate(customer_zip = as.character(customer_zip))
+
+data_map_geometries_ca <- zip_geometries_ca %>% 
+  left_join(data_map_santa_cruz_scorpion, by = c("zip_code" = "customer_zip")) %>% 
+  mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
+```
+
+
+```{r}
+# # hard to see without zoom ability
+# ggplot() +
+#   geom_sf(data = zip_geometries,
+#           col = "black") +
+#   geom_sf(data = data_map_geometries,
+#           aes(fill = number_reservations)) +
+#   scale_fill_distiller(palette = "BuPu")
+```
+
+
+```{r}
+## transform zip codes to county level for visitor-shed??
+tmap_mode("view")
+tm_shape(data_map_geometries_ca) +
+  tm_fill(col = "number_reservations",
+          palette = "PuRd",
+          style = "jenks",
+          n = 10)
+
+# tm_shape(data_map_geometries) +
+#   tm_fill(col = "number_reservations",
+#           palette = "magma",
+#           style = "jenks",
+#           n = 10)
 
 ```
 
