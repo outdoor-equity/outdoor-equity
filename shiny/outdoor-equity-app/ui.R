@@ -50,9 +50,27 @@ ui <- fluidPage(
                  shinyWidgets::pickerInput(inputId = "agency",
                                            label = "Select an agency:",
                                            choices = c("USFS", "NPS", "USACE", "BOR"),
-                                           # selected = c("USFS", "NPS", "USACE", "BOR"), use this to automatically selected choices
+                                           # selected = c("USFS", "NPS", "USACE", "BOR"), 
+                                           # use this to automatically to set default choices
                                            multiple = TRUE,
-                                           options = pickerOptions(actionsBox = TRUE))
+                                           options = pickerOptions(actionsBox = TRUE)),
+                 shinyWidgets::pickerInput(inputId = "state",
+                                           label = "Select a state:",
+                                           choices = c("California", "Alaska", "Utah", "Maine"),
+                                           selected = "California",
+                                           multiple = TRUE,
+                                           options = pickerOptions(actionsBox = TRUE)),
+                 shinyWidgets::pickerInput(inputId = "year",
+                                           label = "Select a year:",
+                                           choices = 2018,
+                                           multiple = TRUE,
+                                           options = pickerOptions(actionsBox = TRUE)),
+                 shinyWidgets::pickerInput(inputId = "variable",
+                             label = "Select a variable",
+                             choices = c("Median income", "Race", "Transportation"),
+                             selected = " ", # need to figure out why there is a default select
+                             multiple = FALSE,
+                             options = pickerOptions(actionsBox = TRUE))
                ),
                tabPanel(
                  title = "Temporal Analysis",
