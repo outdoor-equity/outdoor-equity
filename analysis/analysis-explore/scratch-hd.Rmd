@@ -28,8 +28,18 @@ ridb2018 <- read_csv(here::here("../../data_raw/reservations2018.csv")) %>%
 
 ```{r}
 ridb2018_zip <- ridb2018 %>% 
-  select(c(park, facility_state, customer_zip))
+  select(c(park, facility_state, customer_zip)) %>% 
+  mutate(customer_zip = substr(customer_zip, 1, 5))
+  # mutate(customer_zip = str_sub(customer_zip, start = -5, end = -1))
 ```
+
+```{r}
+customer_zip <- c("zxcz", "95409-07")
+  # "95409-07"
+
+substr(customer_zip, 1, 5)
+```
+
 
 
 subset `data_ridb_2018` to one reservable overnight site
