@@ -14,17 +14,9 @@ acs_subset_calculate_transportation <-
                 no_vehicle = "B08141_002" # Estimate!!Total:!!No vehicle available
               )) %>% 
       clean_names() %>% 
+      # create column with just 5 digit ZIP code
       mutate(zip_code = str_sub(name, start = -5, end = -1)) %>% 
       rename(no_vehicle = variable)
-    # create df
-    if (is.null(state)) {
-      assign(x = paste0("data_acs_", year, "_transportation"), 
-             data.frame(df), envir = .GlobalEnv) 
-    } else {
-      assign(x = paste0("data_acs_", year, "_transportation_", state), 
-             data.frame(df), envir = .GlobalEnv)
-    }
-    
     # calculate percentage
     df_percent <- 
       df %>% 
@@ -37,6 +29,7 @@ acs_subset_calculate_transportation <-
       select(zip_code, no_vehicle, percent) %>% 
       pivot_wider(names_from = "no_vehicle",
                   values_from = "percent")
+    
     # create df
     if (is.null(state)) {
       assign(paste0("data_acs_", year, "_transportation_percent"), 
