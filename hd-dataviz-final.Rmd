@@ -1,0 +1,17 @@
+---
+title: "hd-dataviz-final"
+author: "Halina Do-Linh"
+date: "3/8/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load Data
+
+```{r}
+data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
+```
+
