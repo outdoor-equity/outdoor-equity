@@ -63,7 +63,24 @@ data_plot_bar_race_ca <- data_acs_2018_race_percent_California %>%
                             pattern = "_",
                             replacement = " "),
          race = str_to_title(race))
-data_plot_bar_race_ca$race <- with(data_plot_bar_race, reorder(race, race_percent_average))
+data_plot_bar_race_ca$race <- with(data_plot_bar_race_ca, reorder(race, race_percent_average))
+
+# US population
+data_plot_bar_race_us <- data_acs_2018_race_percent %>%
+  summarize(white = mean(white, na.rm = TRUE),
+            black = mean(black, na.rm = TRUE),
+            asian = mean(asian, na.rm = TRUE),
+            multiracial = mean(multiracial, na.rm = TRUE),
+            other = mean(other, na.rm = TRUE),
+            native_american = mean(native_american, na.rm = TRUE),
+            pacific_islander = mean(pacific_islander, na.rm = TRUE),
+            hispanic_latinx = mean(hispanic_latinx, na.rm = TRUE)) %>%
+  pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race))
+data_plot_bar_race_us$race <- with(data_plot_bar_race_us, reorder(race, race_percent_average))
 ```
 
 
@@ -95,7 +112,7 @@ plot_bar_race <- ggplot(data = data_plot_bar_race) +
   scale_fill_manual(values = c("Other" = "#999999", "Black" = "#E69F00", "Multiracial" = "#56B4E9",
                               "Asian" = "#009E73", "White" = "#F0E442", "Pacific Islander" = "#0072B2", 
                               "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")) +
-  scale_x_continuous(breaks = seq(0, 0.5, 0.1))
+  scale_x_continuous(breaks = seq(0, 0.5, 0.1), minor_breaks = seq(0, 0.5, 0.025))
 
 plot_bar_race
 ```
@@ -120,9 +137,32 @@ plot_bar_race_ca <- ggplot(data = data_plot_bar_race_ca) +
   scale_fill_manual(values = c("Other" = "#999999", "Black" = "#E69F00", "Multiracial" = "#56B4E9",
                               "Asian" = "#009E73", "White" = "#F0E442", "Pacific Islander" = "#0072B2", 
                               "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")) +
-  scale_x_continuous(breaks = seq(0, 0.5, 0.1))
+  scale_x_continuous(breaks = seq(0, 0.6, 0.1), minor_breaks = seq(0, 0.6, 0.025))
 
 plot_bar_race_ca
 ```
 
+```{r}
+# create plot of population in CA
+plot_bar_race_us <- ggplot(data = data_plot_bar_race_us) +
+  geom_col(aes(x = race_percent_average,
+               y = race, 
+               fill = race)) +
+  labs(x = "Average proportion of race in home ZIP codes",
+       y = "Race",
+       fill = "Race",
+       title = "Racial Breakdown of Visitors' Home ZIP Codes\nfor Reservations at Reservable Overnight Sites in California in 2018") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        #axis.text = element_text(size = 12),
+        #axis.title = element_text(size = 14, face = "bold"),
+        #title = element_text(size = 14, face = "bold"),
+        legend.position = "none",
+        panel.grid.major.y = element_blank()) +
+  scale_fill_manual(values = c("Other" = "#999999", "Black" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "White" = "#F0E442", "Pacific Islander" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")) +
+  scale_x_continuous(breaks = seq(0, 0.8, 0.1), minor_breaks = seq(0, 0.8, 0.025))
 
+plot_bar_race_us
+```
