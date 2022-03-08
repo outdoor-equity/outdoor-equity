@@ -11,17 +11,18 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)
 library(janitor)
+library(tidycensus)
+library(tmap)
 ```
 
-# Load Data
-
 ```{r}
-data_combined_2018 <- read.csv("../../data_clean/2018_joined_data.csv")
+# load data
+data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
 ```
 
-# Set up data
 
 ```{r}
+# set up data
 data_combined_2018_clean <- 
   data_combined_2018 %>% 
   group_by(agency, park) %>% 
@@ -29,12 +30,45 @@ data_combined_2018_clean <-
             mean_median_income = mean(median_income, na.rm = TRUE),
             max_median_income = max(median_income, na.rm = TRUE),
             min_median_income = min(median_income, na.rm = TRUE),
+            facility_latitude = mean(facility_latitude),
+            facility_longitude = mean(facility_longitude),
             count = n()) %>% 
-  mutate(park)
+  
 ```
 
+```{r}
+# pull in acs CA county data
+zip_geometries_ca <- get_acs(geography = "county", year = 2018, geometry = TRUE, 
+                             state = "California",
+                             summary_var = "B01001_001",
+                             variables = c(male = "B01001_002")) %>% 
+  select(NAME, geometry)
+  
+zip_geometries_ca_clean <- zip_geometries_ca %>% 
+  mutate(county = str_extract(NAME, "(\\w)([:punct:])"))
+  # select(zip_code, geometry)
+
+```
+
+# Map
 
 ```{r}
-
+tmap_mode("view")
+tm_shape(zip_geometries_ca) +
+  tm_polygons() +
+tm_shape(data_combined_2018_clean) +
+  tm_dots("count")
+  
+  
+  # tm_shape(shapefile_with_MNO_data) + 
+  # tm_dots("MNO_variable")
+  
+  
+  
+  # 
+  # tm_fill(col = "number_reservations",
+  #         palette = "PuRd",
+  #         style = "jenks",
+  #         n = 10)
 ```
 
