@@ -2,11 +2,107 @@
 title: 'Data Visualization 240: Final Project'
 author: "Clarissa Boyajian"
 date: "3/8/2022"
-output: html_document
+output: pdf_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(tidycensus)
+library(patchwork)
+
+# load script to pull and clean ACS data
+source("../analysis/functions/function_acs_race.R")
 ```
 
+```{r, include=FALSE}
+# load joined RIDB and ACS dataframe
+data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
+
+# ACS CA race data
+acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
+
+# ACS US race data
+acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
+```
+
+```{r}
+# wrangle data for plot
+data_plot_bar_race <- data_combined_2018 %>%
+  summarize(white = mean(white, na.rm = TRUE),
+            black = mean(black, na.rm = TRUE),
+            asian = mean(asian, na.rm = TRUE),
+            multiracial = mean(multiracial, na.rm = TRUE),
+            other = mean(other, na.rm = TRUE),
+            native_american = mean(native_american, na.rm = TRUE),
+            pacific_islander = mean(pacific_islander, na.rm = TRUE),
+            hispanic_latinx = mean(hispanic_latinx, na.rm = TRUE)) %>%
+  pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
+  
+
+data_plot_bar_race$race <- with(data_plot_bar_race, reorder(race, race_percent_average))
+```
+
+
+# Equitable Access to Federal Public Land Overnight Reservable Sites
+
+## Background
+
+
+
+# Visualizations
+
+```{r}
+# create plot
+plot_bar_race <- ggplot(data = data_plot_bar_race) +
+  geom_col(aes(x = race_percent_average,
+               y = race, 
+               fill = race)) +
+  labs(x = "Proportion of visitors' race",
+       y = "Race",
+       fill = "Race",
+       title = "Racial Breakdown of Visitors' Home ZIP Codes\nfor Reservations at Reservable Overnight Sites in California in 2018") +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        #axis.text = element_text(size = 12),
+        #axis.title = element_text(size = 14, face = "bold"),
+        #title = element_text(size = 14, face = "bold"),
+        legend.position = "none") +
+  scale_color_manual(c("asian" = "#999999", "black" = "#E69F00", "multiracial" = "#56B4E9",
+                              "other" = "#009E73", "white" = "#F0E442", "pacific_islander" = "#0072B2", 
+                              "native_american" = "#D55E00", "hispanix_latinx" = "#CC79A7")) #+
+  #scale_y_discrete(labels = c("Native Hawaiian or Other Pacific Islander",
+                              #"Native American or Native Alaskan",
+                              #"Black", "Multiracial", "Other", "Asian", "White", "Hispanic Latinx"))
+
+plot_bar_race
+```
+
+```{r}
+# colors for racial groups
+racial_group_colors <- 
+  c("darkgreen", # asian
+    "darkblue", # black
+    "darkmagenta", # multiracial
+    "darkred", # other
+    "darkgoldenrod1", # white
+    "darkorange2", # pacific_islander
+    "darkcyan", # native_american
+    "red" # histpanic_latinx
+  )
+
+# colors for agencies
+agency_colors <- 
+  c("#F8766D", # BOR
+    "#7CAE00", # NPS
+    "#00BFC4", # USFS
+    "#C77CFF" # USACE
+  )
+
+#scale_color_manual_values(c("value" = "color"))
+```
 
