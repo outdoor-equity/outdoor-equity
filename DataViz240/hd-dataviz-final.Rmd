@@ -1,0 +1,40 @@
+---
+title: "Data Viz: Final Project"
+author: "Halina Do-Linh"
+date: "3/8/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+```
+
+# Load Data
+
+```{r}
+data_combined_2018 <- read.csv("../../data_clean/2018_joined_data.csv")
+```
+
+# Set up data
+
+```{r}
+data_combined_2018_clean <- 
+  data_combined_2018 %>% 
+  group_by(agency, park) %>% 
+  summarize(median_median_income = median(median_income, na.rm = TRUE),
+            mean_median_income = mean(median_income, na.rm = TRUE),
+            max_median_income = max(median_income, na.rm = TRUE),
+            min_median_income = min(median_income, na.rm = TRUE),
+            count = n()) %>% 
+  mutate(park)
+```
+
+
+```{r}
+
+```
+
