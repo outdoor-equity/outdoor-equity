@@ -34,7 +34,21 @@ RIDB_calculate_pre2018 <-
                                   "group standard electric") ~ "rv or tent",
                  site_type %in% c("tent only nonelectric",
                                   "group tent only area nonelectric",
-                                  "tent only electric") ~ "tent only"))
+                                  "tent only electric") ~ "tent only"),
+             regional_area = case_when(agency == "USFS" ~ parent_location,
+                                       agency %in% c("NPS", "BOR", "USACE") ~ region_description)) %>% 
+      select(!c("parent_location", "region_description", "site_type")) %>% 
+      select("agency", "regional_area", "park", "aggregated_site_type", "facility_state", 
+             "facility_longitude", "facility_latitude", "customer_zip", "total_paid", 
+             "start_date", "end_date", "order_date", "number_of_people", 
+             "length_of_stay", "booking_window", "daily_cost_per_visitor") %>% 
+      mutate(regional_area = str_replace(string = regional_area,
+                                         pattern = paste(c("NF - FS", "NF -FS", "NF- FS", "NF-FS", "-FS", " - FS"), 
+                                                         collapse = "|"),
+                                         replacement = "National Forest"),
+             
+             regional_area = str_to_title(regional_area))
+    
     # create df
     assign(paste(output_df_name), data.frame(df), envir = .GlobalEnv)
   }
