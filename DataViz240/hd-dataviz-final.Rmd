@@ -11,17 +11,17 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)
 library(janitor)
+library(tidycensus)
 ```
 
-# Load Data
-
 ```{r}
-data_combined_2018 <- read.csv("../../data_clean/2018_joined_data.csv")
+# load data
+data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
 ```
 
-# Set up data
 
 ```{r}
+# set up data
 data_combined_2018_clean <- 
   data_combined_2018 %>% 
   group_by(agency, park) %>% 
@@ -33,8 +33,17 @@ data_combined_2018_clean <-
   mutate(park)
 ```
 
-
 ```{r}
+# pull in acs CA county data
+zip_geometries_ca <- get_acs(geography = "county", year = 2018, geometry = TRUE, 
+                             state = "California",
+                             summary_var = "B01001_001",
+                             variables = c(male = "B01001_002")) %>% 
+  select(NAME, geometry)
+  
+zip_geometries_ca_clean <- zip_geometries_ca %>% 
+  mutate(county = str_extract(NAME, "(\\w+) (\\w+)")) # regex notation to match any word character
+  # select(zip_code, geometry)
 
 ```
 
