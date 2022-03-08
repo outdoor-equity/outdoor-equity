@@ -12,6 +12,7 @@ library(tidyverse)
 library(here)
 library(janitor)
 library(tidycensus)
+library(tmap)
 ```
 
 ```{r}
@@ -29,8 +30,10 @@ data_combined_2018_clean <-
             mean_median_income = mean(median_income, na.rm = TRUE),
             max_median_income = max(median_income, na.rm = TRUE),
             min_median_income = min(median_income, na.rm = TRUE),
+            facility_latitude = mean(facility_latitude),
+            facility_longitude = mean(facility_longitude),
             count = n()) %>% 
-  mutate(park)
+  
 ```
 
 ```{r}
@@ -47,4 +50,25 @@ zip_geometries_ca_clean <- zip_geometries_ca %>%
 
 ```
 
+# Map
+
+```{r}
+tmap_mode("view")
+tm_shape(zip_geometries_ca) +
+  tm_polygons() +
+tm_shape(data_combined_2018_clean) +
+  tm_dots("count")
+  
+  
+  # tm_shape(shapefile_with_MNO_data) + 
+  # tm_dots("MNO_variable")
+  
+  
+  
+  # 
+  # tm_fill(col = "number_reservations",
+  #         palette = "PuRd",
+  #         style = "jenks",
+  #         n = 10)
+```
 
