@@ -26,9 +26,9 @@ data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
 # set up data
 data_combined_2018_clean <- 
   data_combined_2018 %>% 
-  group_by(agency, park) %>% 
+  group_by(park, agency) %>%
   summarize(median_median_income = median(median_income, na.rm = TRUE),
-            mean_median_income = mean(median_income, na.rm = TRUE),
+            mean_median_income = round(mean(median_income, na.rm = TRUE), 0),
             max_median_income = max(median_income, na.rm = TRUE),
             min_median_income = min(median_income, na.rm = TRUE),
             facility_latitude = mean(facility_latitude),
@@ -54,18 +54,37 @@ zip_geometries_ca_clean <- zip_geometries_ca %>%
 
 # Map
 
+Pull in median household income for 2018
+
+## histogram of median median income
+```{r}
+ggplot(data = data_combined_2018_clean, aes(x = median_median_income)) +
+  geom_histogram()
+```
+
+## histogram of mean median income
+```{r}
+ggplot(data = data_combined_2018_clean, aes(x = mean_median_income)) +
+  geom_histogram()
+```
+
+## map of median median income at park sites
 ```{r}
 tmap_mode("view")
 tm_shape(zip_geometries_ca) +
   tm_polygons() +
 tm_shape(data_combined_2018_clean) +
   tm_symbols(size = "count",
-             palette = "viridis")
-  # tm_bubbles(size = "count")
-  # tm_dots(col = "count",
-  #         title = "park")
-  # tm_text("park")
-  
+             col = "mean_median_income",
+             alpha = 0.8,
+             title.col = "Average Median Income of Visitors' Home ZIP Code",
+             breaks = c(40000, 50000, 60000, 70000, 80000, 90000, 100000, 150000, 200000),
+             palette = "viridis",
+             popup.vars = c("Agency" = "agency",
+                            "Number of Reservations" = "count", 
+                            "Average Median Income" = "mean_median_income")) 
+  # tm_layout(title = "Median Income of Visitors' Home ZIP at Reservable Sites in CA",
+  #           legend.position = c("left", "bottom"))
   
 
 ## OLD CODE ##
