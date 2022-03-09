@@ -29,7 +29,8 @@ acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
 acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
 ```
 
-```{r}
+
+```{r, include=FALSE}
 # wrangle data for plots
 # reservations in CA
 data_plot_bar_race <- data_combined_2018 %>%
@@ -87,10 +88,10 @@ data_plot_bar_race_us$race <- with(data_plot_bar_race_us, reorder(race, race_per
 # Equitable Access to Federal Public Land Overnight Reservable Sites
 
 ## Background
+Access to federal public lands is not equitable. 
 
 
-
-# Visualizations
+## Visualizations: Comparative graphs
 
 ```{r, echo=FALSE}
 # create plot of reservations in CA
@@ -101,7 +102,7 @@ plot_bar_race <- ggplot(data = data_plot_bar_race) +
   labs(x = "Average proportion of race in home ZIP codes",
        y = "Race",
        fill = "Race",
-       title = "Racial Breakdown of Visitors' Home ZIP Codes\nfor Reservations at Reservable Overnight Sites in California in 2018") +
+       title = "Racial Breakdown of Visitors' Home ZIP Codes for Reservations \nat Reservable Overnight Sites in California in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         #axis.text = element_text(size = 12),
@@ -112,9 +113,7 @@ plot_bar_race <- ggplot(data = data_plot_bar_race) +
   scale_fill_manual(values = c("Other" = "#999999", "Black" = "#E69F00", "Multiracial" = "#56B4E9",
                               "Asian" = "#009E73", "White" = "#F0E442", "Pacific Islander" = "#0072B2", 
                               "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")) +
-  scale_x_continuous(breaks = seq(0, 0.5, 0.1), minor_breaks = seq(0, 0.5, 0.025))
-
-plot_bar_race
+  scale_x_continuous(limits = c(0, 0.8), breaks = seq(0, 0.8, 0.1), minor_breaks = seq(0, 0.8, 0.025))
 ```
 
 ```{r, echo=FALSE}
@@ -126,7 +125,7 @@ plot_bar_race_ca <- ggplot(data = data_plot_bar_race_ca) +
   labs(x = "Average proportion of race in home ZIP codes",
        y = "Race",
        fill = "Race",
-       title = "Racial Breakdown of Visitors' Home ZIP Codes\nfor California in 2018") +
+       title = "Racial Breakdown of Home ZIP Codes\nfor California in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         #axis.text = element_text(size = 12),
@@ -137,9 +136,7 @@ plot_bar_race_ca <- ggplot(data = data_plot_bar_race_ca) +
   scale_fill_manual(values = c("Other" = "#999999", "Black" = "#E69F00", "Multiracial" = "#56B4E9",
                               "Asian" = "#009E73", "White" = "#F0E442", "Pacific Islander" = "#0072B2", 
                               "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")) +
-  scale_x_continuous(breaks = seq(0, 0.6, 0.1), minor_breaks = seq(0, 0.6, 0.025))
-
-plot_bar_race_ca
+  scale_x_continuous(limits = c(0, 0.8), breaks = seq(0, 0.8, 0.1), minor_breaks = seq(0, 0.8, 0.025))
 ```
 
 ```{r, echo=FALSE}
@@ -151,7 +148,7 @@ plot_bar_race_us <- ggplot(data = data_plot_bar_race_us) +
   labs(x = "Average proportion of race in home ZIP codes",
        y = "Race",
        fill = "Race",
-       title = "Racial Breakdown of Visitors' Home ZIP Codes\nfor United States in 2018") +
+       title = "Racial Breakdown of Home ZIP Codes\nfor United States in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         #axis.text = element_text(size = 12),
@@ -162,7 +159,81 @@ plot_bar_race_us <- ggplot(data = data_plot_bar_race_us) +
   scale_fill_manual(values = c("Other" = "#999999", "Black" = "#E69F00", "Multiracial" = "#56B4E9",
                               "Asian" = "#009E73", "White" = "#F0E442", "Pacific Islander" = "#0072B2", 
                               "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")) +
-  scale_x_continuous(breaks = seq(0, 0.8, 0.1), minor_breaks = seq(0, 0.8, 0.025))
-
-plot_bar_race_us
+  scale_x_continuous(limits = c(0, 0.8), breaks = seq(0, 0.8, 0.1), minor_breaks = seq(0, 0.8, 0.025))
 ```
+
+The graphs below...
+
+```{r, echo=FALSE}
+plot_bar_race / plot_bar_race_ca
+```
+
+The graphs below...
+
+```{r, echo=FALSE}
+plot_bar_race / plot_bar_race_us
+```
+
+## Visualizations: Difference graphs
+
+The graphs below... 
+
+```{r, include=FALSE}
+data_plot_difference_race <- left_join(x = data_plot_bar_race, 
+                                       y = data_plot_bar_race_ca,
+                                       by = "race") %>% 
+  rename(percent_ridb = race_percent_average.x, 
+         percent_ca = race_percent_average.y) %>% 
+  left_join(y = data_plot_bar_race_us, by = "race") %>% 
+  rename(percent_us = race_percent_average) %>% 
+  mutate(percent_diff_ridb_ca = percent_ca - percent_ridb,
+         percent_diff_ridb_us = percent_us - percent_ridb)
+
+```
+
+```{r, echo=FALSE}
+plot_bar_race_diff_ridb_ca <- ggplot(data = data_plot_difference_race) +
+  geom_col(aes(x = percent_diff_ridb_ca,
+               y = race, 
+               fill = race)) +
+  labs(x = "Difference in average proportion of race in home ZIP codes (CA - RIDB)",
+       y = "Race",
+       fill = "Race",
+       title = "Difference in Racial Breakdown of Home ZIP Codes \nfor California Residents Compared to Visitors to \nReservable Overnight Sites in California in 2018") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        #axis.text = element_text(size = 12),
+        #axis.title = element_text(size = 14, face = "bold"),
+        #title = element_text(size = 14, face = "bold"),
+        legend.position = "none",
+        panel.grid.major.y = element_blank()) +
+  scale_fill_manual(values = c("Other" = "#999999", "Black" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "White" = "#F0E442", "Pacific Islander" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7"))
+```
+
+```{r, echo=FALSE}
+plot_bar_race_diff_ridb_us <- ggplot(data = data_plot_difference_race) +
+  geom_col(aes(x = percent_diff_ridb_us,
+               y = race, 
+               fill = race)) +
+  labs(x = "Difference in average proportion of race in home ZIP codes (US - RIDB)",
+       y = "Race",
+       fill = "Race",
+       title = "Difference in Racial Breakdown of Home ZIP Codes \nfor United States Residents Compared to Visitors to \nReservable Overnight Sites in California in 2018") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        #axis.text = element_text(size = 12),
+        #axis.title = element_text(size = 14, face = "bold"),
+        #title = element_text(size = 14, face = "bold"),
+        legend.position = "none",
+        panel.grid.major.y = element_blank()) +
+  scale_fill_manual(values = c("Other" = "#999999", "Black" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "White" = "#F0E442", "Pacific Islander" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7"))
+```
+
+```{r, echo=FALSE}
+plot_bar_race_diff_ridb_ca / plot_bar_race_diff_ridb_us
+```
+
