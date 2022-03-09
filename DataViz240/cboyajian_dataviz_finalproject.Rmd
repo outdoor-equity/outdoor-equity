@@ -92,7 +92,7 @@ data_plot_bar_race_us$race <- with(data_plot_bar_race_us, reorder(race, race_per
 
 # Visualizations
 
-```{r}
+```{r, echo=FALSE}
 # create plot of reservations in CA
 plot_bar_race <- ggplot(data = data_plot_bar_race) +
   geom_col(aes(x = race_percent_average,
@@ -117,7 +117,7 @@ plot_bar_race <- ggplot(data = data_plot_bar_race) +
 plot_bar_race
 ```
 
-```{r}
+```{r, echo=FALSE}
 # create plot of population in CA
 plot_bar_race_ca <- ggplot(data = data_plot_bar_race_ca) +
   geom_col(aes(x = race_percent_average,
@@ -126,7 +126,7 @@ plot_bar_race_ca <- ggplot(data = data_plot_bar_race_ca) +
   labs(x = "Average proportion of race in home ZIP codes",
        y = "Race",
        fill = "Race",
-       title = "Racial Breakdown of Visitors' Home ZIP Codes\nfor Reservations at Reservable Overnight Sites in California in 2018") +
+       title = "Racial Breakdown of Visitors' Home ZIP Codes\nfor California in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         #axis.text = element_text(size = 12),
@@ -142,7 +142,7 @@ plot_bar_race_ca <- ggplot(data = data_plot_bar_race_ca) +
 plot_bar_race_ca
 ```
 
-```{r}
+```{r, echo=FALSE}
 # create plot of population in CA
 plot_bar_race_us <- ggplot(data = data_plot_bar_race_us) +
   geom_col(aes(x = race_percent_average,
@@ -151,7 +151,7 @@ plot_bar_race_us <- ggplot(data = data_plot_bar_race_us) +
   labs(x = "Average proportion of race in home ZIP codes",
        y = "Race",
        fill = "Race",
-       title = "Racial Breakdown of Visitors' Home ZIP Codes\nfor Reservations at Reservable Overnight Sites in California in 2018") +
+       title = "Racial Breakdown of Visitors' Home ZIP Codes\nfor United States in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         #axis.text = element_text(size = 12),
