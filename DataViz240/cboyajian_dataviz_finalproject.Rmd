@@ -82,6 +82,10 @@ data_plot_bar_race_us <- data_acs_2018_race_percent %>%
                             replacement = " "),
          race = str_to_title(race))
 data_plot_bar_race_us$race <- with(data_plot_bar_race_us, reorder(race, race_percent_average))
+
+racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
 ```
 
 
@@ -110,9 +114,7 @@ plot_bar_race <- ggplot(data = data_plot_bar_race) +
         #title = element_text(size = 14, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
-  scale_fill_manual(values = c("Other" = "#999999", "Black" = "#E69F00", "Multiracial" = "#56B4E9",
-                              "Asian" = "#009E73", "White" = "#F0E442", "Pacific Islander" = "#0072B2", 
-                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")) +
+  scale_fill_manual(values = racial_group_colors) +
   scale_x_continuous(limits = c(0, 0.8), breaks = seq(0, 0.8, 0.1), minor_breaks = seq(0, 0.8, 0.025))
 ```
 
@@ -133,9 +135,7 @@ plot_bar_race_ca <- ggplot(data = data_plot_bar_race_ca) +
         #title = element_text(size = 14, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
-  scale_fill_manual(values = c("Other" = "#999999", "Black" = "#E69F00", "Multiracial" = "#56B4E9",
-                              "Asian" = "#009E73", "White" = "#F0E442", "Pacific Islander" = "#0072B2", 
-                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")) +
+  scale_fill_manual(values = racial_group_colors) +
   scale_x_continuous(limits = c(0, 0.8), breaks = seq(0, 0.8, 0.1), minor_breaks = seq(0, 0.8, 0.025))
 ```
 
@@ -156,9 +156,7 @@ plot_bar_race_us <- ggplot(data = data_plot_bar_race_us) +
         #title = element_text(size = 14, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
-  scale_fill_manual(values = c("Other" = "#999999", "Black" = "#E69F00", "Multiracial" = "#56B4E9",
-                              "Asian" = "#009E73", "White" = "#F0E442", "Pacific Islander" = "#0072B2", 
-                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")) +
+  scale_fill_manual(values = racial_group_colors) +
   scale_x_continuous(limits = c(0, 0.8), breaks = seq(0, 0.8, 0.1), minor_breaks = seq(0, 0.8, 0.025))
 ```
 
@@ -207,9 +205,7 @@ plot_bar_race_diff_ridb_ca <- ggplot(data = data_plot_difference_race) +
         #title = element_text(size = 14, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
-  scale_fill_manual(values = c("Other" = "#999999", "Black" = "#E69F00", "Multiracial" = "#56B4E9",
-                              "Asian" = "#009E73", "White" = "#F0E442", "Pacific Islander" = "#0072B2", 
-                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7"))
+  scale_fill_manual(values = racial_group_colors)
 ```
 
 ```{r, echo=FALSE}
@@ -228,9 +224,7 @@ plot_bar_race_diff_ridb_us <- ggplot(data = data_plot_difference_race) +
         #title = element_text(size = 14, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
-  scale_fill_manual(values = c("Other" = "#999999", "Black" = "#E69F00", "Multiracial" = "#56B4E9",
-                              "Asian" = "#009E73", "White" = "#F0E442", "Pacific Islander" = "#0072B2", 
-                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7"))
+  scale_fill_manual(values = racial_group_colors)
 ```
 
 ```{r, echo=FALSE}
