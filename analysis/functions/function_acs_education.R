@@ -43,16 +43,8 @@ acs_subset_calculate_education <-
               )) %>% 
       clean_names() %>% 
       rename(education = variable) %>% 
-      mutate(zip_code = str_sub(name, start = -5, end = -1))
-    # create df
-    if (is.null(state)){
-      assign(x = paste0("data_acs_", year, "_education"), 
-             data.frame(df), envir = .GlobalEnv)
-    } else {
-      assign(x = paste0("data_acs_", year, "_education_", state), 
-             data.frame(df), envir = .GlobalEnv)
-    }
-    
+      # create ZIP column with just 5 digit numbers
+      mutate(zip_code = str_sub(name, start = -5, end = -1)) %>% 
     # calculate percentage
     df_percent <- 
       df %>% 
@@ -62,7 +54,6 @@ acs_subset_calculate_education <-
                 summary_est = unique(summary_est),
                 summary_moe = unique(summary_moe),
                 percent = estimate / summary_est)
-    
     # create column for each percentage for each group (pivot wider)
     # necessary to be able to left_join() with RIDB data
     df_percent_wider <- 
@@ -70,6 +61,7 @@ acs_subset_calculate_education <-
       select(zip_code, education, percent) %>% 
       pivot_wider(names_from = "education",
                   values_from = "percent")
+    
     # create df
     if (is.null(state)) {
       assign(paste0("data_acs_", year, "_education_percent"), 

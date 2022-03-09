@@ -29,8 +29,10 @@ acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
 acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
 ```
 
-```{r}
-# wrangle data for plot
+
+```{r, include=FALSE}
+# wrangle data for plots
+# reservations in CA
 data_plot_bar_race <- data_combined_2018 %>%
   summarize(white = mean(white, na.rm = TRUE),
             black = mean(black, na.rm = TRUE),
@@ -41,68 +43,191 @@ data_plot_bar_race <- data_combined_2018 %>%
             pacific_islander = mean(pacific_islander, na.rm = TRUE),
             hispanic_latinx = mean(hispanic_latinx, na.rm = TRUE)) %>%
   pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
-  
-
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race))
 data_plot_bar_race$race <- with(data_plot_bar_race, reorder(race, race_percent_average))
+
+# CA population
+data_plot_bar_race_ca <- data_acs_2018_race_percent_California %>%
+  summarize(white = mean(white, na.rm = TRUE),
+            black = mean(black, na.rm = TRUE),
+            asian = mean(asian, na.rm = TRUE),
+            multiracial = mean(multiracial, na.rm = TRUE),
+            other = mean(other, na.rm = TRUE),
+            native_american = mean(native_american, na.rm = TRUE),
+            pacific_islander = mean(pacific_islander, na.rm = TRUE),
+            hispanic_latinx = mean(hispanic_latinx, na.rm = TRUE)) %>%
+  pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race))
+data_plot_bar_race_ca$race <- with(data_plot_bar_race_ca, reorder(race, race_percent_average))
+
+# US population
+data_plot_bar_race_us <- data_acs_2018_race_percent %>%
+  summarize(white = mean(white, na.rm = TRUE),
+            black = mean(black, na.rm = TRUE),
+            asian = mean(asian, na.rm = TRUE),
+            multiracial = mean(multiracial, na.rm = TRUE),
+            other = mean(other, na.rm = TRUE),
+            native_american = mean(native_american, na.rm = TRUE),
+            pacific_islander = mean(pacific_islander, na.rm = TRUE),
+            hispanic_latinx = mean(hispanic_latinx, na.rm = TRUE)) %>%
+  pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race))
+data_plot_bar_race_us$race <- with(data_plot_bar_race_us, reorder(race, race_percent_average))
+
+racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
 ```
 
 
 # Equitable Access to Federal Public Land Overnight Reservable Sites
 
 ## Background
+Access to federal public lands is not equitable. 
 
 
+## Visualizations: Comparative graphs
 
-# Visualizations
-
-```{r}
-# create plot
+```{r, echo=FALSE}
+# create plot of reservations in CA
 plot_bar_race <- ggplot(data = data_plot_bar_race) +
   geom_col(aes(x = race_percent_average,
                y = race, 
                fill = race)) +
-  labs(x = "Proportion of visitors' race",
+  labs(x = "Average proportion of race in home ZIP codes",
        y = "Race",
        fill = "Race",
-       title = "Racial Breakdown of Visitors' Home ZIP Codes\nfor Reservations at Reservable Overnight Sites in California in 2018") +
+       title = "Racial Breakdown of Visitors' Home ZIP Codes for Reservations \nat Reservable Overnight Sites in California in 2018") +
   theme_minimal() +
-  theme(panel.grid.minor.x = element_blank(),
-        plot.background = element_rect("white"),
+  theme(plot.background = element_rect("white"),
         #axis.text = element_text(size = 12),
         #axis.title = element_text(size = 14, face = "bold"),
         #title = element_text(size = 14, face = "bold"),
-        legend.position = "none") +
-  scale_color_manual(c("asian" = "#999999", "black" = "#E69F00", "multiracial" = "#56B4E9",
-                              "other" = "#009E73", "white" = "#F0E442", "pacific_islander" = "#0072B2", 
-                              "native_american" = "#D55E00", "hispanix_latinx" = "#CC79A7")) #+
-  #scale_y_discrete(labels = c("Native Hawaiian or Other Pacific Islander",
-                              #"Native American or Native Alaskan",
-                              #"Black", "Multiracial", "Other", "Asian", "White", "Hispanic Latinx"))
-
-plot_bar_race
+        legend.position = "none",
+        panel.grid.major.y = element_blank()) +
+  scale_fill_manual(values = racial_group_colors) +
+  scale_x_continuous(limits = c(0, 0.8), breaks = seq(0, 0.8, 0.1), minor_breaks = seq(0, 0.8, 0.025))
 ```
 
-```{r}
-# colors for racial groups
-racial_group_colors <- 
-  c("darkgreen", # asian
-    "darkblue", # black
-    "darkmagenta", # multiracial
-    "darkred", # other
-    "darkgoldenrod1", # white
-    "darkorange2", # pacific_islander
-    "darkcyan", # native_american
-    "red" # histpanic_latinx
-  )
+```{r, echo=FALSE}
+# create plot of population in CA
+plot_bar_race_ca <- ggplot(data = data_plot_bar_race_ca) +
+  geom_col(aes(x = race_percent_average,
+               y = race, 
+               fill = race)) +
+  labs(x = "Average proportion of race in home ZIP codes",
+       y = "Race",
+       fill = "Race",
+       title = "Racial Breakdown of Home ZIP Codes\nfor California in 2018") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        #axis.text = element_text(size = 12),
+        #axis.title = element_text(size = 14, face = "bold"),
+        #title = element_text(size = 14, face = "bold"),
+        legend.position = "none",
+        panel.grid.major.y = element_blank()) +
+  scale_fill_manual(values = racial_group_colors) +
+  scale_x_continuous(limits = c(0, 0.8), breaks = seq(0, 0.8, 0.1), minor_breaks = seq(0, 0.8, 0.025))
+```
 
-# colors for agencies
-agency_colors <- 
-  c("#F8766D", # BOR
-    "#7CAE00", # NPS
-    "#00BFC4", # USFS
-    "#C77CFF" # USACE
-  )
+```{r, echo=FALSE}
+# create plot of population in CA
+plot_bar_race_us <- ggplot(data = data_plot_bar_race_us) +
+  geom_col(aes(x = race_percent_average,
+               y = race, 
+               fill = race)) +
+  labs(x = "Average proportion of race in home ZIP codes",
+       y = "Race",
+       fill = "Race",
+       title = "Racial Breakdown of Home ZIP Codes\nfor United States in 2018") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        #axis.text = element_text(size = 12),
+        #axis.title = element_text(size = 14, face = "bold"),
+        #title = element_text(size = 14, face = "bold"),
+        legend.position = "none",
+        panel.grid.major.y = element_blank()) +
+  scale_fill_manual(values = racial_group_colors) +
+  scale_x_continuous(limits = c(0, 0.8), breaks = seq(0, 0.8, 0.1), minor_breaks = seq(0, 0.8, 0.025))
+```
 
-#scale_color_manual_values(c("value" = "color"))
+The graphs below...
+
+```{r, echo=FALSE}
+plot_bar_race / plot_bar_race_ca
+```
+
+The graphs below...
+
+```{r, echo=FALSE}
+plot_bar_race / plot_bar_race_us
+```
+
+## Visualizations: Difference graphs
+
+The graphs below... 
+
+```{r, include=FALSE}
+data_plot_difference_race <- left_join(x = data_plot_bar_race, 
+                                       y = data_plot_bar_race_ca,
+                                       by = "race") %>% 
+  rename(percent_ridb = race_percent_average.x, 
+         percent_ca = race_percent_average.y) %>% 
+  left_join(y = data_plot_bar_race_us, by = "race") %>% 
+  rename(percent_us = race_percent_average) %>% 
+  mutate(percent_diff_ridb_ca = percent_ca - percent_ridb,
+         percent_diff_ridb_us = percent_us - percent_ridb)
+
+```
+
+```{r, echo=FALSE}
+plot_bar_race_diff_ridb_ca <- ggplot(data = data_plot_difference_race) +
+  geom_col(aes(x = percent_diff_ridb_ca,
+               y = race, 
+               fill = race)) +
+  labs(x = "Difference in average proportion of race in home ZIP codes (CA - RIDB)",
+       y = "Race",
+       fill = "Race",
+       title = "Difference in Racial Breakdown of Home ZIP Codes \nfor California Residents Compared to Visitors to \nReservable Overnight Sites in California in 2018") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        #axis.text = element_text(size = 12),
+        #axis.title = element_text(size = 14, face = "bold"),
+        #title = element_text(size = 14, face = "bold"),
+        legend.position = "none",
+        panel.grid.major.y = element_blank()) +
+  scale_fill_manual(values = racial_group_colors)
+```
+
+```{r, echo=FALSE}
+plot_bar_race_diff_ridb_us <- ggplot(data = data_plot_difference_race) +
+  geom_col(aes(x = percent_diff_ridb_us,
+               y = race, 
+               fill = race)) +
+  labs(x = "Difference in average proportion of race in home ZIP codes (US - RIDB)",
+       y = "Race",
+       fill = "Race",
+       title = "Difference in Racial Breakdown of Home ZIP Codes \nfor United States Residents Compared to Visitors to \nReservable Overnight Sites in California in 2018") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        #axis.text = element_text(size = 12),
+        #axis.title = element_text(size = 14, face = "bold"),
+        #title = element_text(size = 14, face = "bold"),
+        legend.position = "none",
+        panel.grid.major.y = element_blank()) +
+  scale_fill_manual(values = racial_group_colors)
+```
+
+```{r, echo=FALSE}
+plot_bar_race_diff_ridb_ca / plot_bar_race_diff_ridb_us
 ```
 

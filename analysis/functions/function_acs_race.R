@@ -23,21 +23,13 @@ acs_subset_calculate_race <-
               )) %>% 
       clean_names() %>% 
       rename(race = variable) %>% 
+      # create column of 5 digit ZIP code
       mutate(zip_code = str_sub(name, start = -5, end = -1))
-    # create df
-    if (is.null(state)) {
-      assign(x = paste0("data_acs_", year, "_race"), 
-             data.frame(df), envir = .GlobalEnv)
-    } else {assign(x = paste0("data_acs_", year, "_race_", state), 
-                                     data.frame(df), envir = .GlobalEnv)
-    }
-    
     # calculate percentage
     df_percent <- 
       df %>% 
       group_by(zip_code, race) %>% 
       summarise(percent = estimate / summary_est)
-    
     # create column for each percentage for each group (pivot wider)
     # necessary to be able to left_join() with RIDB data
     df_percent_wider <- 
@@ -45,6 +37,7 @@ acs_subset_calculate_race <-
       select(zip_code, race, percent) %>% 
       pivot_wider(names_from = "race",
                   values_from = "percent")
+    
     # create df
     if (is.null(state)) {
       assign(paste0("data_acs_", year, "_race_percent"), 
