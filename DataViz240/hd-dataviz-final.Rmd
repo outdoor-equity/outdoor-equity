@@ -59,15 +59,18 @@ tmap_mode("view")
 tm_shape(zip_geometries_ca) +
   tm_polygons() +
 tm_shape(data_combined_2018_clean) +
-  tm_dots("count")
+  tm_symbols(size = "count",
+             palette = "viridis")
+  # tm_bubbles(size = "count")
+  # tm_dots(col = "count",
+  #         title = "park")
+  # tm_text("park")
   
   
+
+## OLD CODE ##
   # tm_shape(shapefile_with_MNO_data) + 
   # tm_dots("MNO_variable")
-  
-  
-  
-  # 
   # tm_fill(col = "number_reservations",
   #         palette = "PuRd",
   #         style = "jenks",
