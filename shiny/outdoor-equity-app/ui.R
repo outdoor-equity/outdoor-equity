@@ -20,31 +20,25 @@ ui <- fluidPage(
     "Outdoor Equity",
     # nav bar tabs
     navbarMenu("About",
-               tabPanel(
-                 title = "Background",
+               tabPanel(title = "Background",
                  # Note(HD): need . in front of file path for relative path
                  includeMarkdown("./text/background-about.md"),
                  ),
-               tabPanel(
-                 title = "User Guide",
+               tabPanel(title = "User Guide",
                  includeMarkdown("./text/userGuide-about.md")
                  ),
-               tabPanel(
-                 title = "Metdata",
+               tabPanel(title = "Metdata",
                  # Note(HD): need to change this to a rmd file to include DT table
                  includeMarkdown("./text/metadata-about.md")
                  )),
     navbarMenu("Analysis",
-               tabPanel(
-                 title = "Agency Analysis",
+               tabPanel(title = "Agency Analysis",
                  "graphs and inputs to compare agenices here"
                ),
-               tabPanel(
-                 title = "Reservable Site Analysis",
+               tabPanel(title = "Reservable Site Analysis",
                  "graphs and inputs to compare reservable sites here"
                ),
-               tabPanel(
-                 title = "Spatial Analysis",
+               tabPanel(title = "Spatial Analysis",
                  "spatial analysis maps and inputs here",
                  # subset agency picker input ----
                  shinyWidgets::pickerInput(inputId = "agency",
@@ -72,8 +66,9 @@ ui <- fluidPage(
                              multiple = FALSE,
                              options = pickerOptions(actionsBox = TRUE))
                ),
-               tabPanel(
-                 title = "Temporal Analysis",
+               tabPanel(title = "Temporal Analysis",
                  "graphs that show interesting temporal trends"
-               )))
+               )),
+    tabPanel(title = "Maps",
+             "Map of Average Median Income at Overnight Reservations for California in 2018"))
 )
