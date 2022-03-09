@@ -13,6 +13,7 @@ library(here)
 library(janitor)
 library(tidycensus)
 library(tmap)
+library(sf)
 ```
 
 ```{r}
@@ -33,6 +34,7 @@ data_combined_2018_clean <-
             facility_latitude = mean(facility_latitude),
             facility_longitude = mean(facility_longitude),
             count = n()) %>% 
+  st_as_sf(coords = c("facility_longitude","facility_latitude")) # lat lon columns are removed and values are moved into geometry column
   
 ```
 
