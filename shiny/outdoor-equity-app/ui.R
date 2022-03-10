@@ -1,11 +1,3 @@
-library(rsconnect)
-library(bslib)
-library(shinyWidgets)
-library(tidycensus)
-library(shiny)
-library(leaflet)
-library(tidyverse)
-
 # user interface ----
 ui <- fluidPage(
   
@@ -26,7 +18,7 @@ ui <- fluidPage(
     navbarMenu("About",
                tabPanel(title = "Background",
                  # Note(HD): need . in front of file path for relative path
-                 includeMarkdown("./text/background-about.md"),
+                 includeMarkdown("./text/background-about.md")
                  ),
                tabPanel(title = "User Guide",
                  includeMarkdown("./text/userGuide-about.md")
@@ -75,6 +67,8 @@ ui <- fluidPage(
                )),
     tabPanel(title = "Maps",
              "Map of Average Median Income at Overnight Reservations for California in 2018"),
-    # reservations avg median income output ----
-    plotOutput(outputId = "resMedIncome_CAmap"))
-)
+    # test plot ----
+    plotOutput(outputId = "test")
+    # # reservations avg median income output ----
+    # plotOutput(outputId = "resMedIncome_CAmap"))
+))
