@@ -75,6 +75,7 @@ tmap_mode("view")
 tm_shape(zip_geometries_ca) +
   tm_polygons() +
 tm_shape(data_combined_2018_clean) +
+  tm_view(view.legend.position = c("bottom", "right")) +
   tm_symbols(size = "count",
              col = "mean_median_income",
              alpha = 0.8,
@@ -83,8 +84,7 @@ tm_shape(data_combined_2018_clean) +
              palette = "viridis",
              popup.vars = c("Agency" = "agency",
                             "Number of Reservations" = "count", 
-                            "Average Median Household Income" = "mean_median_income")) +
-  tm_view(view.legend.position = c("bottom", "right"))
+                            "Average Median Household Income" = "mean_median_income"))
   # tm_layout(title = "Median Income of Visitors' Home ZIP at Reservable Sites in CA",
   #           legend.position = c("left", "bottom"))
   

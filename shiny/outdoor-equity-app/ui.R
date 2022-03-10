@@ -1,6 +1,10 @@
 library(rsconnect)
 library(bslib)
 library(shinyWidgets)
+library(tidycensus)
+library(shiny)
+library(leaflet)
+library(tidyverse)
 
 # user interface ----
 ui <- fluidPage(
@@ -70,5 +74,7 @@ ui <- fluidPage(
                  "graphs that show interesting temporal trends"
                )),
     tabPanel(title = "Maps",
-             "Map of Average Median Income at Overnight Reservations for California in 2018"))
+             "Map of Average Median Income at Overnight Reservations for California in 2018"),
+    # reservations avg median income output ----
+    plotOutput(outputId = "resMedIncome_map"))
 )
