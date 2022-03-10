@@ -109,9 +109,9 @@ plot_bar_race <- ggplot(data = data_plot_bar_race) +
        title = "Racial Breakdown of Visitors' Home ZIP Codes \nfor Overnight Reservations in California in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 14, face = "bold"),
+        axis.text = element_text(size = 16),
+        axis.title = element_text(size = 18, face = "bold"),
+        title = element_text(size = 20, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
   scale_fill_manual(values = racial_group_colors) +
@@ -130,9 +130,9 @@ plot_bar_race_ca <- ggplot(data = data_plot_bar_race_ca) +
        title = "Racial Breakdown of Home ZIP Codes\nfor California in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 14, face = "bold"),
+        axis.text = element_text(size = 16),
+        axis.title = element_text(size = 18, face = "bold"),
+        title = element_text(size = 20, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
   scale_fill_manual(values = racial_group_colors) +
@@ -151,9 +151,9 @@ plot_bar_race_us <- ggplot(data = data_plot_bar_race_us) +
        title = "Racial Breakdown of Home ZIP Codes\nfor United States in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 14, face = "bold"),
+        axis.text = element_text(size = 16),
+        axis.title = element_text(size = 18, face = "bold"),
+        title = element_text(size = 20, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
   scale_fill_manual(values = racial_group_colors) +
@@ -162,7 +162,10 @@ plot_bar_race_us <- ggplot(data = data_plot_bar_race_us) +
 
 
 ```{r, echo=FALSE, fig.height=16, fig.width=16}
+plot_bar_race_combined <- 
 plot_bar_race / plot_bar_race_ca / plot_bar_race_us
+
+plot_bar_race_combined
 ```
 
 ## Visualizations: Difference graphs
@@ -191,9 +194,9 @@ plot_bar_race_diff_ridb_ca <- ggplot(data = data_plot_difference_race) +
        title = "Difference in Racial Breakdown of Home ZIP Codes for \nCalifornia Residents Compared to Overnight Reservations \nin California in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 14, face = "bold"),
+        axis.text = element_text(size = 18),
+        axis.title = element_text(size = 18, face = "bold"),
+        title = element_text(size = 20, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
   scale_fill_manual(values = racial_group_colors)
@@ -210,16 +213,30 @@ plot_bar_race_diff_ridb_us <- ggplot(data = data_plot_difference_race) +
        title = "Difference in Racial Breakdown of Home ZIP Codes for \nUnited States Residents Compared to Overnight Reservations \nin California in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 14, face = "bold"),
+        axis.text = element_text(size = 18),
+        axis.title = element_text(size = 18, face = "bold"),
+        title = element_text(size = 20, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
   scale_fill_manual(values = racial_group_colors)
 ```
 
-```{r, echo=FALSE, fig.height=6, fig.width=10}
+```{r, echo=FALSE}
+plot_bar_race_diff_combined <- 
 plot_bar_race_diff_ridb_ca / plot_bar_race_diff_ridb_us +
   plot_annotation(caption = "Positive values indicate an overrepresentation of a given racial group in visitors' home ZIP codes as compared \nto the overall population of California or the United Sate and negative values indicate an underrepresentation.")
+
+plot_bar_race_diff_combined
 ```
+
+
+```{r, eval=FALSE}
+ggsave(plot = plot_bar_race_combined, filename = "../figs/plot_bar_race_combined.png",
+       width = 16, height = 18)
+
+ggsave(plot = plot_bar_race_diff_combined, filename = "../figs/plot_bar_race_diff.png", 
+       width = 16, height = 14)
+```
+
+
 
