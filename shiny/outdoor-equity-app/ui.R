@@ -76,5 +76,5 @@ ui <- fluidPage(
     tabPanel(title = "Maps",
              "Map of Average Median Income at Overnight Reservations for California in 2018"),
     # reservations avg median income output ----
-    plotOutput(outputId = "resMedIncome_map"))
+    plotOutput(outputId = "resMedIncome_CAmap"))
 )
