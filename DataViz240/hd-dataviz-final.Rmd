@@ -35,8 +35,20 @@ data_combined_2018_clean <-
             facility_longitude = mean(facility_longitude),
             count = n()) %>% 
   st_as_sf(coords = c("facility_longitude","facility_latitude")) # lat lon columns are removed and values are moved into geometry column
-  
 ```
+
+## write `data_combined_2018_clean` as a csv
+```{r}
+# save as an RDS next time
+saveRDS(data_combined_2018_clean, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data/data_resMedIncome_CAmap_2018.rds")
+```
+
+
+## write `zip_geometries_ca` as a csv
+```{r}
+saveRDS(zip_geometries_ca, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data/data_zip_geometries_ca.rds")
+```
+
 
 ```{r}
 # pull in acs CA county data

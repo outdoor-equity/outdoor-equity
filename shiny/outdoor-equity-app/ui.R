@@ -66,9 +66,12 @@ ui <- fluidPage(
                  "graphs that show interesting temporal trends"
                )),
     tabPanel(title = "Maps",
-             "Map of Average Median Income at Overnight Reservations for California in 2018"),
-    # test plot ----
-    plotOutput(outputId = "test")
-    # # reservations avg median income output ----
-    # plotOutput(outputId = "resMedIncome_CAmap"))
-))
+             "Map of Average Median Income at Overnight Reservations for California in 2018",
+    # median income slider input ----
+    sliderInput(inputId = "medianIncome_CA",
+                label = "Select a range of median incomes:",
+                min = 50000, max = 215000, value = c(50000, 215000)), # range of slider
+    
+    # avg median income CA output ----
+    tmapOutput(outputId = "medinCA_leflet"))
+  ))
