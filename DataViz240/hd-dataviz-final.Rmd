@@ -71,7 +71,7 @@ ggplot(data = data_combined_2018_clean, aes(x = mean_median_income)) +
 ## map of median median income at park sites
 ```{r}
 # add explanatory text about median household income for US
-tmap_mode("view")
+tmap_mode("view") 
 tm_shape(zip_geometries_ca) +
   tm_polygons() +
 tm_shape(data_combined_2018_clean) +
@@ -83,7 +83,8 @@ tm_shape(data_combined_2018_clean) +
              palette = "viridis",
              popup.vars = c("Agency" = "agency",
                             "Number of Reservations" = "count", 
-                            "Average Median Household Income" = "mean_median_income")) 
+                            "Average Median Household Income" = "mean_median_income")) +
+  tm_view(view.legend.position = c("bottom", "right"))
   # tm_layout(title = "Median Income of Visitors' Home ZIP at Reservable Sites in CA",
   #           legend.position = c("left", "bottom"))
   
