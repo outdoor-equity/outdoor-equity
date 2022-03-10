@@ -221,7 +221,7 @@ plot_bar_race_diff_ridb_us <- ggplot(data = data_plot_difference_race) +
   scale_fill_manual(values = racial_group_colors)
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.width=16, fig.height=14}
 plot_bar_race_diff_combined <- 
 plot_bar_race_diff_ridb_ca / plot_bar_race_diff_ridb_us +
   plot_annotation(caption = "Positive values indicate an overrepresentation of a given racial group in visitors' home ZIP codes as compared \nto the overall population of California or the United Sate and negative values indicate an underrepresentation.")
