@@ -52,7 +52,7 @@ saveRDS(zip_geometries_ca, "/capstone/outdoorequity/halina/outdoor-equity/shiny/
 
 ```{r}
 # pull in acs CA county data
-zip_geometries_ca <- get_acs(geography = "county", year = 2018, geometry = TRUE, 
+zip_geometries_ca <- get_acs(geography = "state", year = 2018, geometry = TRUE, 
                              state = "California",
                              summary_var = "B01001_001",
                              variables = c(male = "B01001_002")) %>% 
@@ -85,18 +85,18 @@ ggplot(data = data_combined_2018_clean, aes(x = mean_median_income)) +
 # add explanatory text about median household income for US
 tmap_mode("view") 
 tm_shape(zip_geometries_ca) +
-  tm_polygons() +
+  tm_polygons(interactive = FALSE) + # this layer doesn't need to be interactive and this removes the popup vars
 tm_shape(data_combined_2018_clean) +
   tm_view(view.legend.position = c("bottom", "right")) +
   tm_symbols(size = "count",
              col = "mean_median_income",
              alpha = 0.8,
-             title.col = "Avg Median Household Income of Visitors' Home ZIP Code",
+             title.col = "Estimated Household Income of Visitor ZIP Code",
              breaks = c(40000, 50000, 60000, 70000, 80000, 90000, 100000, 150000, 200000),
              palette = "viridis",
              popup.vars = c("Agency" = "agency",
                             "Number of Reservations" = "count", 
-                            "Average Median Household Income" = "mean_median_income"))
+                            "Estimated Median Household Income" = "mean_median_income"))
   # tm_layout(title = "Median Income of Visitors' Home ZIP at Reservable Sites in CA",
   #           legend.position = c("left", "bottom"))
   
