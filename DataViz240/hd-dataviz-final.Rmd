@@ -25,7 +25,7 @@ data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
 ```{r}
 # set up data
 data_combined_2018_clean <- 
-  data_combined_2018 %>% 
+  data_combined_2018 %>%
   group_by(park, agency) %>%
   summarize(median_median_income = median(median_income, na.rm = TRUE),
             mean_median_income = round(mean(median_income, na.rm = TRUE), 0),
