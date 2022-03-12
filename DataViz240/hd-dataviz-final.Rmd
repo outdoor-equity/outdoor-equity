@@ -34,7 +34,10 @@ data_combined_2018_clean <-
             facility_latitude = mean(facility_latitude),
             facility_longitude = mean(facility_longitude),
             count = n()) %>% 
-  st_as_sf(coords = c("facility_longitude","facility_latitude"), crs = 4326) # lat lon columns are removed and values are moved into geometry column
+  st_as_sf(coords = c("facility_longitude","facility_latitude"), crs = 4326) %>% 
+  # lat lon columns are removed and values are moved into geometry column
+  filter(park != "BLUE LAKE CAMPGROUND") %>% 
+  filter(park != "BEAR LAKE CAMPGROUND (CO)")
 ```
 
 ## write `data_combined_2018_clean` as a csv
@@ -99,6 +102,7 @@ tm_shape(data_combined_2018_clean) +
                             "Estimated Household Income" = "mean_median_income"))
              # legend.hist = TRUE) can't use histogram for interactive map
   
+# had to remove two points 
 
 ## OLD CODE ##
   # tm_shape(shapefile_with_MNO_data) + 
