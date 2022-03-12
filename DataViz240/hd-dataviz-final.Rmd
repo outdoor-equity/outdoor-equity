@@ -34,19 +34,19 @@ data_combined_2018_clean <-
             facility_latitude = mean(facility_latitude),
             facility_longitude = mean(facility_longitude),
             count = n()) %>% 
-  st_as_sf(coords = c("facility_longitude","facility_latitude")) # lat lon columns are removed and values are moved into geometry column
+  st_as_sf(coords = c("facility_longitude","facility_latitude"), crs = 4326) # lat lon columns are removed and values are moved into geometry column
 ```
 
 ## write `data_combined_2018_clean` as a csv
 ```{r}
 # save as an RDS next time
-saveRDS(data_combined_2018_clean, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data/data_resMedIncome_CAmap_2018.rds")
+saveRDS(data_combined_2018_clean, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data_resMedIncome_CAmap_2018.rds")
 ```
 
 
 ## write `zip_geometries_ca` as a csv
 ```{r}
-saveRDS(zip_geometries_ca, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data/data_zip_geometries_ca.rds")
+saveRDS(zip_geometries_ca, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data_zip_geometries_ca.rds")
 ```
 
 
@@ -83,22 +83,21 @@ ggplot(data = data_combined_2018_clean, aes(x = mean_median_income)) +
 ## map of median median income at park sites
 ```{r}
 # add explanatory text about median household income for US
-tmap_mode("view") 
+tmap_mode("view") # plot
 tm_shape(zip_geometries_ca) +
   tm_polygons(interactive = FALSE) + # this layer doesn't need to be interactive and this removes the popup vars
 tm_shape(data_combined_2018_clean) +
-  tm_view(view.legend.position = c("bottom", "right")) +
+  tm_view(view.legend.position = c("bottom", "right")) + # doesn't work for interactive maps??
   tm_symbols(size = "count",
              col = "mean_median_income",
              alpha = 0.8,
              title.col = "Estimated Household Income of Visitor ZIP Code",
-             breaks = c(40000, 50000, 60000, 70000, 80000, 90000, 100000, 150000, 200000),
+             style = "jenks",
              palette = "viridis",
              popup.vars = c("Agency" = "agency",
                             "Number of Reservations" = "count", 
-                            "Estimated Median Household Income" = "mean_median_income"))
-  # tm_layout(title = "Median Income of Visitors' Home ZIP at Reservable Sites in CA",
-  #           legend.position = c("left", "bottom"))
+                            "Estimated Household Income" = "mean_median_income"))
+             # legend.hist = TRUE) can't use histogram for interactive map
   
 
 ## OLD CODE ##
@@ -108,5 +107,8 @@ tm_shape(data_combined_2018_clean) +
   #         palette = "PuRd",
   #         style = "jenks",
   #         n = 10)
+  # tm_layout(title = "Median Income of Visitors' Home ZIP at Reservable Sites in CA",
+  #           legend.position = c("left", "bottom"))
+             # breaks = c(40000, 50000, 60000, 70000, 80000, 90000, 100000, 150000, 200000),
 ```
 

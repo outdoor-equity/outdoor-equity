@@ -66,7 +66,7 @@ ui <- fluidPage(
                  "graphs that show interesting temporal trends"
                )),
     tabPanel(title = "Maps",
-             "Map of Average Median Income at Overnight Reservations for California in 2018",
+             "Map of Estimated Household Income at Overnight Reservations for California in 2018",
     # median income slider input ----
     sliderInput(inputId = "medianIncome_CA",
                 label = "Select a range of median incomes:",
