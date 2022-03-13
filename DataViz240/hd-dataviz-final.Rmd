@@ -16,9 +16,98 @@ library(tmap)
 library(sf)
 ```
 
+
+# Set up data
+
 ```{r}
 # load data
-data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
+# data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
+```
+
+# Functions
+
+```{r}
+# ridb subset pre 2018
+source("../analysis/functions/function_ridb_subset-pre2018.R")
+# acs median income
+source("../analysis/functions/function_acs_median_income.R")
+# calculated variables 
+source("../analysis/functions/function_ridb_variable_calculate-pre2018.R")
+```
+
+```{r}
+# read and cleaned and subsetted ridb 2018 data using function
+data_ridb_2018 <- RIDB_subset_pre2018("../../data_raw/reservations2018.csv", "CA", 2018)
+# read in acs median income data using function
+acs_mi_2018 <- acs_subset_calculate_median_income(geography = "zcta",
+                                                  year = 2018,
+                                                  state = NULL) # not all CA visits are from CA
+# combined data
+data_combined_2018 <- left_join(data_ridb_2018, acs_mi_2018, 
+                                by = c("customer_zip" = "zip_code"))
+# add calculated variables
+RIDB_calculate_pre2018(data_combined_2018, output_df_name = data_combined_2018)
+
+# add regional_area
+data_combined_2018 <- data_combined_2018 %>% 
+  mutate(regional_area = case_when(agency == "USFS" ~ parent_location,
+                                   agency %in% c("NPS", "BOR", "USACE") ~ region_description)) %>% mutate(regional_area = str_replace(string = regional_area,
+                                         pattern = paste(c("NF - FS", "NF -FS", "NF- FS",
+                                                           "NF-FS", "-FS", " - FS"), 
+                                                         collapse = "|"),
+                                         replacement = "National Forest")) %>% 
+  mutate(regional_area = str_to_title(regional_area)) 
+# noticed not all zips have median incomes?
+
+# add median income stats
+data_combined_2018_clean <- data_combined_2018 %>% 
+  group_by(park, regional_area, agency) %>%
+  summarize(median_median_income = median(median_income, na.rm = TRUE),
+            mean_median_income = round(mean(median_income, na.rm = TRUE), 0),
+            max_median_income = max(median_income, na.rm = TRUE),
+            min_median_income = min(median_income, na.rm = TRUE),
+            facility_latitude = mean(facility_latitude),
+            facility_longitude = mean(facility_longitude),
+            count = n()) %>%
+  st_as_sf(coords = c("facility_longitude","facility_latitude"), crs = 4326) %>% # creates geometry column
+  ## cleaning up park ##
+  mutate(park = str_replace(string = park,
+                            pattern = "PYRAMID LAKE / LOS ALAMOS CAMPGROUND",
+                            replacement = "PYRAMID LAKE LOS ALAMOS CAMPGROUND")) %>%
+  mutate(park = str_replace(string = park,
+                            pattern = "Lewis @ French Meadows",
+                            replacement = "Lewis at French Meadows")) %>% 
+  mutate(park = str_replace(string = park,
+                            pattern = "Cg",
+                            replacement = "Campground")) %>% 
+  mutate(park = str_remove_all(string = park,
+                               pattern = paste(c("\\(.*",
+                                                 "---.*",
+                                                 ",.*"),
+                                               collapse = "|")))
+                                 
+                                 
+                               pattern = paste(c("\\(CA\\) --- .*",
+                                                 "\\(CA\\)-*"
+                                                 #"\\(*",
+                                                 "--- .*"),
+                                               collapse = "|")))
+
+
+pattern = paste(c("---", "\\(CA\\)", "-"), collapse = "|")))
+(CA) --- FPIN2377
+\\(CA\\) --- \W
+--- 12390100
+(CA)
+
+  
+  
+
+# add calculated variables 
+# RIDB_calculate_pre2018(data_combined_2018, output_df_name = data_combined_calculated_2018)
+# Error in paste(output_df_name) : object 'data_combined_calculated_2018' not found
+# RIDB_calculate_pre2018(data_combined_2018, data_combined_2018_clean)
+# Error in assign(paste(output_df_name), data.frame(df), envir = .GlobalEnv) : variable names are limited to 10000 bytes
 ```
 
 
@@ -26,19 +115,25 @@ data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
 # set up data
 data_combined_2018_clean <- 
   data_combined_2018 %>%
-  group_by(park, agency) %>%
+  RIDB_calculate_pre2018(data_combined_2018_clean)
+  group_by(park, regional_area, agency) %>%
   summarize(median_median_income = median(median_income, na.rm = TRUE),
             mean_median_income = round(mean(median_income, na.rm = TRUE), 0),
             max_median_income = max(median_income, na.rm = TRUE),
             min_median_income = min(median_income, na.rm = TRUE),
             facility_latitude = mean(facility_latitude),
             facility_longitude = mean(facility_longitude),
-            count = n()) %>% 
-  st_as_sf(coords = c("facility_longitude","facility_latitude"), crs = 4326) %>% 
+            count = n()) %>%
+  st_as_sf(coords = c("facility_longitude","facility_latitude"), crs = 4326) %>%
   # lat lon columns are removed and values are moved into geometry column
-  filter(park != "BLUE LAKE CAMPGROUND") %>% 
+  filter(park != "BLUE LAKE CAMPGROUND") %>%
   filter(park != "BEAR LAKE CAMPGROUND (CO)")
+
+
 ```
+
+
+
 
 ## write `data_combined_2018_clean` as a csv
 ```{r}
