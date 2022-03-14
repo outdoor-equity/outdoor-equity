@@ -19,11 +19,6 @@ library(sf)
 
 # Set up data
 
-```{r}
-# load data
-# data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
-```
-
 ## Functions
 
 ```{r}
@@ -91,70 +86,32 @@ data_clean_combined_2018 <- data_combined_2018 %>%
   # remove sites not in CA
   filter(park != "Blue Lake Campground",
          park != "Bear Lake Campground ")
-  
-
-## OLD CODE ## 
-#                                pattern = paste(c("\\(CA\\) --- .*",
-#                                                  "\\(CA\\)-*"
-#                                                  #"\\(*",
-#                                                  "--- .*"),
-#                                                collapse = "|")))
-# 
-# 
-# pattern = paste(c("---", "\\(CA\\)", "-"), collapse = "|")))
-# (CA) --- FPIN2377
-# \\(CA\\) --- \W
-# --- 12390100
-# (CA)
-
-# # add regional_area
-# data_combined_2018 <- data_combined_2018 %>% 
-#   mutate(regional_area = case_when(agency == "USFS" ~ parent_location,
-#                                    agency %in% c("NPS", "BOR", "USACE") ~ region_description)) %>% mutate(regional_area = str_replace(string = regional_area,
-#                                          pattern = paste(c("NF - FS", "NF -FS", "NF- FS",
-#                                                            "NF-FS", "-FS", " - FS"), 
-#                                                          collapse = "|"),
-#                                          replacement = "National Forest")) %>% 
-#   mutate(regional_area = str_to_title(regional_area))
-
-# add calculated variables 
-#RIDB_calculate_pre2018(data_ridb_2018, output_df_name = "data_test_calculated_2018")
-# Error in paste(output_df_name) : object 'data_combined_calculated_2018' not found
-# RIDB_calculate_pre2018(data_combined_2018, data_combined_2018_clean)
-# Error in assign(paste(output_df_name), data.frame(df), envir = .GlobalEnv) : variable names are limited to 10000 bytes
 ```
 
-
-## write `data_combined_2018_clean` as a csv
-```{r}
-# save as an RDS next time
-saveRDS(data_combined_2018_clean, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data_resMedIncome_CAmap_2018.rds")
-```
-
-
-## write `zip_geometries_ca` as a csv
-```{r}
-saveRDS(zip_geometries_ca, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data_zip_geometries_ca.rds")
-```
-
+# CA geometry from ACS
 
 ```{r}
-# pull in acs CA county data
-zip_geometries_ca <- get_acs(geography = "state", year = 2018, geometry = TRUE, 
+# pull in acs CA data
+ca_geom <- get_acs(geography = "state", year = 2018, geometry = TRUE, 
                              state = "California",
-                             summary_var = "B01001_001",
-                             variables = c(male = "B01001_002")) %>% 
+                             summary_var = "B01001_001", # dummy var
+                             variables = c(male = "B01001_002")) %>% # dummy var
+  # select for only zip (NAME) and geometry
   select(NAME, geometry)
-  
-zip_geometries_ca_clean <- zip_geometries_ca %>% 
-  mutate(county = str_extract(NAME, "(\\w)([:punct:])"))
-  # select(zip_code, geometry)
-
 ```
+
+## Save `data_clean_combined_2018` as a RDS
+```{r}
+saveRDS(data_clean_combined_2018, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data_combined_CAmap_2018.rds")
+```
+
+## Save `ca_geom` as a RDS
+```{r}
+saveRDS(ca_geom, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data_ca_geom.rds")
+```
+
 
 # Map
-
-Pull in median household income for 2018
 
 ## histogram of median median income
 ```{r}
@@ -201,3 +158,39 @@ tm_shape(data_combined_2018_clean) +
              # breaks = c(40000, 50000, 60000, 70000, 80000, 90000, 100000, 150000, 200000),
 ```
 
+# OLD
+
+```{r}
+# load data
+# data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
+
+## OLD CODE ## 
+#                                pattern = paste(c("\\(CA\\) --- .*",
+#                                                  "\\(CA\\)-*"
+#                                                  #"\\(*",
+#                                                  "--- .*"),
+#                                                collapse = "|")))
+# 
+# 
+# pattern = paste(c("---", "\\(CA\\)", "-"), collapse = "|")))
+# (CA) --- FPIN2377
+# \\(CA\\) --- \W
+# --- 12390100
+# (CA)
+
+# # add regional_area
+# data_combined_2018 <- data_combined_2018 %>% 
+#   mutate(regional_area = case_when(agency == "USFS" ~ parent_location,
+#                                    agency %in% c("NPS", "BOR", "USACE") ~ region_description)) %>% mutate(regional_area = str_replace(string = regional_area,
+#                                          pattern = paste(c("NF - FS", "NF -FS", "NF- FS",
+#                                                            "NF-FS", "-FS", " - FS"), 
+#                                                          collapse = "|"),
+#                                          replacement = "National Forest")) %>% 
+#   mutate(regional_area = str_to_title(regional_area))
+
+# add calculated variables 
+#RIDB_calculate_pre2018(data_ridb_2018, output_df_name = "data_test_calculated_2018")
+# Error in paste(output_df_name) : object 'data_combined_calculated_2018' not found
+# RIDB_calculate_pre2018(data_combined_2018, data_combined_2018_clean)
+# Error in assign(paste(output_df_name), data.frame(df), envir = .GlobalEnv) : variable names are limited to 10000 bytes
+```
