@@ -16,7 +16,12 @@ library(patchwork)
 
 # load script to pull and clean ACS data
 source("../analysis/functions/function_acs_race.R")
+
+racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
 ```
+
 
 ```{r, include=FALSE}
 # load joined RIDB and ACS dataframe
@@ -48,7 +53,10 @@ data_plot_bar_race <- data_combined_2018 %>%
                             replacement = " "),
          race = str_to_title(race))
 data_plot_bar_race$race <- with(data_plot_bar_race, reorder(race, race_percent_average))
+```
 
+
+```{r, include=FALSE}
 # CA population
 data_plot_bar_race_ca <- data_acs_2018_race_percent_California %>%
   summarize(white = mean(white, na.rm = TRUE),
@@ -65,7 +73,10 @@ data_plot_bar_race_ca <- data_acs_2018_race_percent_California %>%
                             replacement = " "),
          race = str_to_title(race))
 data_plot_bar_race_ca$race <- with(data_plot_bar_race_ca, reorder(race, race_percent_average))
+```
 
+
+```{r, include=FALSE}
 # US population
 data_plot_bar_race_us <- data_acs_2018_race_percent %>%
   summarize(white = mean(white, na.rm = TRUE),
@@ -82,10 +93,23 @@ data_plot_bar_race_us <- data_acs_2018_race_percent %>%
                             replacement = " "),
          race = str_to_title(race))
 data_plot_bar_race_us$race <- with(data_plot_bar_race_us, reorder(race, race_percent_average))
+```
 
-racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
-                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
-                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+
+```{r, include=FALSE}
+data_plot_bar_race_ridb_ca_us <- data_plot_bar_race %>% 
+  left_join(y = data_plot_bar_race_ca,
+            by = c("race"),
+            suffix = c("_ridb", "_ca")) %>% 
+  left_join(y = data_plot_bar_race_us,
+            by = c("race")) %>% 
+  rename(ridb = race_percent_average_ridb,
+         ca = race_percent_average_ca,
+         us = race_percent_average) %>% 
+  pivot_longer(cols = 2:4,
+               names_to = "data_source",
+               values_to = "race_percent_average") %>% 
+  mutate(data_source = factor(data_source, levels = c("ridb", "ca", "us")))
 ```
 
 
@@ -96,6 +120,20 @@ Access to federal public lands is not equitable.
 
 
 ## Visualizations: Comparative graphs
+
+```{r, echo=FALSE}
+plot_col_race_ridb_ca_us <- 
+  ggplot(data = data_plot_bar_race_ridb_ca_us) +
+  geom_col(aes(x = race_percent_average,
+               y = race,
+               fill = data_source),
+           position = "dodge") +
+  scale_fill_manual(aes(direction = -1)) # breaking
+
+plot_col_race_ridb_ca_us
+```
+
+
 
 ```{r, echo=FALSE}
 # create plot of reservations in CA
@@ -109,9 +147,9 @@ plot_bar_race <- ggplot(data = data_plot_bar_race) +
        title = "Racial Breakdown of Visitors' Home ZIP Codes \nfor Overnight Reservations in California in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        axis.text = element_text(size = 16),
-        axis.title = element_text(size = 18, face = "bold"),
-        title = element_text(size = 20, face = "bold"),
+        # axis.text = element_text(size = 16),
+        # axis.title = element_text(size = 18, face = "bold"),
+        # title = element_text(size = 20, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
   scale_fill_manual(values = racial_group_colors) +
@@ -130,9 +168,9 @@ plot_bar_race_ca <- ggplot(data = data_plot_bar_race_ca) +
        title = "Racial Breakdown of Home ZIP Codes\nfor California in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        axis.text = element_text(size = 16),
-        axis.title = element_text(size = 18, face = "bold"),
-        title = element_text(size = 20, face = "bold"),
+        # axis.text = element_text(size = 16),
+        # axis.title = element_text(size = 18, face = "bold"),
+        # title = element_text(size = 20, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
   scale_fill_manual(values = racial_group_colors) +
@@ -151,9 +189,9 @@ plot_bar_race_us <- ggplot(data = data_plot_bar_race_us) +
        title = "Racial Breakdown of Home ZIP Codes\nfor United States in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        axis.text = element_text(size = 16),
-        axis.title = element_text(size = 18, face = "bold"),
-        title = element_text(size = 20, face = "bold"),
+        # axis.text = element_text(size = 16),
+        # axis.title = element_text(size = 18, face = "bold"),
+        # title = element_text(size = 20, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
   scale_fill_manual(values = racial_group_colors) +
@@ -194,9 +232,9 @@ plot_bar_race_diff_ridb_ca <- ggplot(data = data_plot_difference_race) +
        title = "Difference in Racial Breakdown of Home ZIP Codes for \nCalifornia Residents Compared to Overnight Reservations \nin California in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        axis.text = element_text(size = 18),
-        axis.title = element_text(size = 18, face = "bold"),
-        title = element_text(size = 20, face = "bold"),
+        # axis.text = element_text(size = 18),
+        # axis.title = element_text(size = 18, face = "bold"),
+        # title = element_text(size = 20, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
   scale_fill_manual(values = racial_group_colors)
@@ -213,9 +251,9 @@ plot_bar_race_diff_ridb_us <- ggplot(data = data_plot_difference_race) +
        title = "Difference in Racial Breakdown of Home ZIP Codes for \nUnited States Residents Compared to Overnight Reservations \nin California in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        axis.text = element_text(size = 18),
-        axis.title = element_text(size = 18, face = "bold"),
-        title = element_text(size = 20, face = "bold"),
+        # axis.text = element_text(size = 18),
+        # axis.title = element_text(size = 18, face = "bold"),
+        # title = element_text(size = 20, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank()) +
   scale_fill_manual(values = racial_group_colors)

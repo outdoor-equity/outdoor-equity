@@ -50,8 +50,23 @@ RIDB_calculate_pre2018(input_df_name = data_ridb_2018, output_df_name = "data_ri
 ```
 
 ```{r}
-test <- data_ridb_2018 %>% 
-  mutate(park = str_remove(string = park, pattern = " --- "))
+# test <- data_ridb_2018 %>% 
+#   mutate(park = str_remove(string = park, pattern = " --- "))
+# 
+#  mutate(park = str_replace(string = park,
+#                             pattern = "PYRAMID LAKE / LOS ALAMOS CAMPGROUND",
+#                             replacement = "PYRAMID LAKE LOS ALAMOS CAMPGROUND")) %>%
+#   mutate(park = str_replace(string = park,
+#                             pattern = "Lewis @ French Meadows",
+#                             replacement = "Lewis at French Meadows")) %>% 
+#   mutate(park = str_replace(string = park,
+#                             pattern = "Cg",
+#                             replacement = "Campground")) %>% 
+#   mutate(park = str_remove_all(string = park,
+#                                pattern = paste(c("\\(.*",
+#                                                  "---.*",
+#                                                  ",.*"),
+#                                                collapse = "|")))
 ```
 
 
