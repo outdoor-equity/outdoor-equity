@@ -46,7 +46,10 @@ RIDB_calculate_pre2018 <-
                                          pattern = paste(c("NF - FS", "NF -FS", "NF- FS", "NF-FS", "-FS", " - FS"), 
                                                          collapse = "|"),
                                          replacement = "National Forest"),
-             regional_area = str_to_title(regional_area))
+             regional_area = str_to_title(regional_area),
+             regional_area = str_replace(string = regional_area,
+                                         pattern = "And",
+                                         replacement = "&"))
     
     # create df
     assign(paste(output_df_name), data.frame(df), envir = .GlobalEnv)
