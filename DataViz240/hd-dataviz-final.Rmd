@@ -54,6 +54,7 @@ data_combined_2018 <- left_join(data_ridb_calculated_2018,
                                 by = c("customer_zip" = "zip_code"))
 
 ## cleaning combined data ##
+# FIX SEQUOIA HERE
 data_clean_combined_2018 <- data_combined_2018 %>% 
   group_by(park, regional_area, agency) %>%
   # add median income stats
@@ -88,8 +89,25 @@ data_clean_combined_2018 <- data_combined_2018 %>%
          park != "Bear Lake Campground ")
 ```
 
-# CA geometry from ACS
+## median income for regional area and agency subset
+```{r}
+# cleaning
+data_regional_combined_2018 <- data_combined_2018 %>%
+  mutate(regional_area = str_replace(string = regional_area,
+                                     pattern = "Sequoia & Kings Canyon National Parks", # NEED TO FIGURE OUT HOW TO FIND PATTERN WITH ONE S
+                                     replacement = "Sequoia & Kings Canyon National Park")) %>% 
+  group_by(regional_area, agency) %>%
+  # add median income stats
+  summarize(mean_median_income = round(mean(median_income, na.rm = TRUE), 0),
+            facility_latitude = mean(facility_latitude),
+            facility_longitude = mean(facility_longitude),
+            count = n()) %>%
+  # create geometry column
+  st_as_sf(coords = c("facility_longitude","facility_latitude"), crs = 4326)
+```
 
+
+## CA geometry from ACS
 ```{r}
 # pull in acs CA data
 ca_geom <- get_acs(geography = "state", year = 2018, geometry = TRUE, 
@@ -110,28 +128,66 @@ saveRDS(data_clean_combined_2018, "/capstone/outdoorequity/halina/outdoor-equity
 saveRDS(ca_geom, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data_ca_geom.rds")
 ```
 
+## Save `data_regional_combined_2018` as a RDS
+```{r}
+saveRDS(data_regional_combined_2018, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data_regional_combined_2018.rds")
+```
+
 
 # Map
 
 ## histogram of median median income
 ```{r}
-ggplot(data = data_combined_2018_clean, aes(x = median_median_income)) +
+ggplot(data = data_clean_combined_2018, aes(x = median_median_income)) +
   geom_histogram()
 ```
 
 ## histogram of mean median income
 ```{r}
-ggplot(data = data_combined_2018_clean, aes(x = mean_median_income)) +
+ggplot(data = data_clean_combined_2018, aes(x = mean_median_income)) +
   geom_histogram()
 ```
+
+## map of median income for regional area and agencies
+```{r, fig.width=8, fig.height=4}
+tmap_mode("plot")
+regional_tmap <- tm_shape(ca_geom) +
+  tm_polygons(col = "white") +
+tm_shape(data_regional_combined_2018) +
+  tm_symbols(shape = "agency",
+             title.shape = "Agency",
+             title.col = "Estimated Household Income \nof Visitor ZIP Code",
+             col = "mean_median_income",
+             size = 0.3,
+             breaks = c(50000, 60000, 70000, 80000, 90000, 110000),
+             palette = "viridis",
+             legend.hist = TRUE) +
+  tm_legend(outside = TRUE,
+            legend.outside.position = "right") +
+  tm_layout(main.title = "Estimated Household Income at \nOvernight Reservations for California (2018)")
+# tm_shape(data_regional_combined_2018 %>% filter(count > 25172)) +
+#   tm_text("regional_area",
+#           size = 0.48,
+#           fontfamily = "Kefa", 
+#           fontface = "bold",
+#           along.lines = T)
+
+# tm_layout(basemaps = leaflet::providers$OpenStreetMap)
+  # tm_text("regional_area", 
+  #         size = 0.3)
+tmap_save(regional_tmap, "regional.png")
+regional_tmap
+```
+
 
 ## map of median median income at park sites
 ```{r}
 # add explanatory text about median household income for US
-tmap_mode("view") # plot
-tm_shape(zip_geometries_ca) +
-  tm_polygons(interactive = FALSE) + # this layer doesn't need to be interactive and this removes the popup vars
-tm_shape(data_combined_2018_clean) +
+tmap_mode("view") # vs plot
+tm_shape(ca_geom) +
+  # this layer doesn't need to be interactive and this removes the popup vars
+  tm_polygons(interactive = FALSE) + 
+tm_shape(data_clean_combined_2018) +
   tm_view(view.legend.position = c("bottom", "right")) + # doesn't work for interactive maps??
   tm_symbols(size = "count",
              col = "mean_median_income",
@@ -142,10 +198,14 @@ tm_shape(data_combined_2018_clean) +
              popup.vars = c("Agency" = "agency",
                             "Number of Reservations" = "count", 
                             "Estimated Household Income" = "mean_median_income"))
-             # legend.hist = TRUE) can't use histogram for interactive map
-  
-# had to remove two points 
+             # legend.hist = TRUE) can't use histogram for interactive map?
+```
 
+
+
+# OLD
+
+```{r}
 ## OLD CODE ##
   # tm_shape(shapefile_with_MNO_data) + 
   # tm_dots("MNO_variable")
@@ -156,11 +216,8 @@ tm_shape(data_combined_2018_clean) +
   # tm_layout(title = "Median Income of Visitors' Home ZIP at Reservable Sites in CA",
   #           legend.position = c("left", "bottom"))
              # breaks = c(40000, 50000, 60000, 70000, 80000, 90000, 100000, 150000, 200000),
-```
 
-# OLD
 
-```{r}
 # load data
 # data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
 
