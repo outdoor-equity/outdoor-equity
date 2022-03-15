@@ -20,22 +20,6 @@ library(tmap)
 library(vroom)
 
 options(scipen = 999)
-
-
-# RIDB functions
-# raw data
-source("functions/function_ridb_subset-pre2018.R")
-source("functions/function_ridb_subset-post2019.R")
-# clean data and calculate variables
-source("functions/function_ridb_variable_calculate-pre2018.R")
-# standardize values
-# need to make function still
-
-# ACS functions
-source("functions/function_acs_race.R")
-source("functions/function_acs_median_income.R")
-source("functions/function_acs_transportation.R")
-source("functions/function_acs_education.R")
 ```
 
 
@@ -43,7 +27,8 @@ source("functions/function_acs_education.R")
 
 ```{r}
 # read in joined data
-
+data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
+                            delim = ",")
 ```
 
 

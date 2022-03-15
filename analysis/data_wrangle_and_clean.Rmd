@@ -96,9 +96,9 @@ data_combined_2018 <-
 
 ```{r}
 # full dataset (RIDB and ACS joined)
-vroom_write(x = data_combined_2018, 
+write.csv(x = data_combined_2018, 
             file = "../../../data_clean/2018_joined_data.csv", 
-            delim = ",")
+            row.names = FALSE)
 
 # dataset summarized to `park` level (RIDB and ACS joined)
 #write.csv(x = data_combined_2018_site_summary, "../../../data_clean/2018_joined_data_site_summary.csv", row.names = FALSE)
