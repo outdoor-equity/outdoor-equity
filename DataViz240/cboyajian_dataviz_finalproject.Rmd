@@ -162,7 +162,7 @@ plot_col_race_ridb_ca_nps <-
        y = "Race",
        fill = "Race",
        title = "Racial Breakdown of ZIP Codes in 2018",
-       subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
+       subtitle = "Visitors' home ZIP codes for National Park Service Overnight Reservations in California \nvs. California Residents") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         axis.text = element_text(size = 20),
@@ -196,7 +196,7 @@ plot_col_race_ridb_ca_usfs <-
        y = "Race",
        fill = "Race",
        title = "Racial Breakdown of ZIP Codes in 2018",
-       subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
+       subtitle = "Visitors' home ZIP codes for US Forest Service Overnight Reservations in California \nvs. California Residents") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         axis.text = element_text(size = 20),
