@@ -118,7 +118,7 @@ Access to federal public lands is not equitable.
 
 ## Visualizations: Comparative graphs
 
-```{r, echo=FALSE, fig.width=10}
+```{r, echo=FALSE, fig.width=18, fig.height=10}
 # plot for shiny app
 plot_col_race_ridb_ca_us <- 
   ggplot(data = data_plot_bar_race_ridb_ca) +
@@ -132,7 +132,7 @@ plot_col_race_ridb_ca_us <-
                 y = race,
                 label = paste0(round(race_percent_average, 1), "%"),
                 col = data_source), 
-            position = position_dodge(width = 0.7), hjust = -0.1) +
+            position = position_dodge(width = 0.7), hjust = -0.1, size = 8) +
   scale_color_manual(values = c("RIDB" = "navy", "CA" = "darkred")) +
   labs(x = "Average percentage of race (%)",
        y = "Race",
@@ -143,13 +143,14 @@ plot_col_race_ridb_ca_us <-
        ) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        title = element_text(size = 14, face = "bold"),
+        axis.text = element_text(size = 20),
+        axis.title = element_text(size = 22, face = "bold"),
+        title = element_text(size = 24, face = "bold"),
         legend.position = "none",
         panel.grid.major.y = element_blank(),
-        plot.caption.position = "plot",
-        plot.caption = element_text(vjust = 70)) +
+        # plot.caption.position = "plot",
+        # plot.caption = element_text(vjust = 70)
+        ) +
   scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5))
 
 plot_col_race_ridb_ca_us
