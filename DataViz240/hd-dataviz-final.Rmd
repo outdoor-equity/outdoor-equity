@@ -54,6 +54,7 @@ data_combined_2018 <- left_join(data_ridb_calculated_2018,
                                 by = c("customer_zip" = "zip_code"))
 
 ## cleaning combined data ##
+# FIX SEQUOIA HERE
 data_clean_combined_2018 <- data_combined_2018 %>% 
   group_by(park, regional_area, agency) %>%
   # add median income stats
@@ -92,11 +93,15 @@ data_clean_combined_2018 <- data_combined_2018 %>%
 ```{r}
 # cleaning
 data_regional_combined_2018 <- data_combined_2018 %>%
+  mutate(regional_area = str_replace(string = regional_area,
+                                     pattern = "Sequoia & Kings Canyon National Parks", # NEED TO FIGURE OUT HOW TO FIND PATTERN WITH ONE S
+                                     replacement = "Sequoia & Kings Canyon National Park")) %>% 
   group_by(regional_area, agency) %>%
   # add median income stats
   summarize(mean_median_income = round(mean(median_income, na.rm = TRUE), 0),
             facility_latitude = mean(facility_latitude),
-            facility_longitude = mean(facility_longitude)) %>%
+            facility_longitude = mean(facility_longitude),
+            count = n()) %>%
   # create geometry column
   st_as_sf(coords = c("facility_longitude","facility_latitude"), crs = 4326)
 ```
@@ -144,14 +149,34 @@ ggplot(data = data_clean_combined_2018, aes(x = mean_median_income)) +
 ```
 
 ## map of median income for regional area and agencies
-```{r}
-tmap_mode("view")
-tm_shape(ca_geom) +
-  tm_polygons() +
+```{r, fig.width=8, fig.height=4}
+tmap_mode("plot")
+regional_tmap <- tm_shape(ca_geom) +
+  tm_polygons(col = "white") +
 tm_shape(data_regional_combined_2018) +
-  tm_dots(col = "regional_area",
-          size = 0.1,
-          legend.show = FALSE)
+  tm_symbols(shape = "agency",
+             title.shape = "Agency",
+             title.col = "Estimated Household Income \nof Visitor ZIP Code",
+             col = "mean_median_income",
+             size = 0.3,
+             breaks = c(50000, 60000, 70000, 80000, 90000, 110000),
+             palette = "viridis",
+             legend.hist = TRUE) +
+  tm_legend(outside = TRUE,
+            legend.outside.position = "right") +
+  tm_layout(main.title = "Estimated Household Income at \nOvernight Reservations for California (2018)")
+# tm_shape(data_regional_combined_2018 %>% filter(count > 25172)) +
+#   tm_text("regional_area",
+#           size = 0.48,
+#           fontfamily = "Kefa", 
+#           fontface = "bold",
+#           along.lines = T)
+
+# tm_layout(basemaps = leaflet::providers$OpenStreetMap)
+  # tm_text("regional_area", 
+  #         size = 0.3)
+tmap_save(regional_tmap, "regional.png")
+regional_tmap
 ```
 
 
