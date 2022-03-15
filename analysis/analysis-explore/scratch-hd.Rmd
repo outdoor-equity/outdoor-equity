@@ -12,6 +12,33 @@ library(here)
 library(janitor)
 ```
 
+
+## Task: Standarize ZIP coe
+
+```{r}
+# load raw data
+# here() -> "/Users/halina"
+data_ridb_2018 <- read_csv(here::here("../../capstone/outdoorequity/data_raw/reservations2018.csv"))
+```
+```{r}
+data_clean_ridb_2018 <- data_ridb_2018 %>%
+  janitor::clean_names() %>% 
+  # 595002 obs
+  filter(facility_state == "CA") %>% 
+  select(customer_zip) %>% 
+  # 29567 unique ZIP codes
+  group_by(customer_zip) %>% 
+  summarize(count = n()) %>% 
+  # remove punct and symbols 29,657
+  mutate(customer_zip = str_remove(string = customer_zip,
+                                   pattern = paste(c("[:punct:]",
+                                                     "[:symbol:]"),
+                                                   collapse = "|"))) %>% 
+  # filter strings that are 5 characters 16,902
+  filter(customer_zip == str_subset(customer_zip, "[[:digit:]]{5}"))
+```
+
+
 load in data, `clean_names()`, subset to California and overnight reservable sites
 ```{r}
 ridb2018 <- read_csv(here::here("../../data_raw/reservations2018.csv")) %>% 
