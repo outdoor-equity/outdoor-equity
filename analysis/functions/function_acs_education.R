@@ -44,7 +44,7 @@ acs_subset_calculate_education <-
       clean_names() %>% 
       rename(education = variable) %>% 
       # create ZIP column with just 5 digit numbers
-      mutate(zip_code = str_sub(name, start = -5, end = -1)) %>% 
+      mutate(zip_code = str_sub(name, start = -5, end = -1))
     # calculate percentage
     df_percent <- 
       df %>% 

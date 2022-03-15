@@ -1,0 +1,77 @@
+---
+title: "Working on functions"
+author: "Clarissa"
+date: "3/15/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(lubridate)
+library(sf)
+library(tidycensus)
+library(patchwork)
+library(scales)
+library(tmap)
+library(vroom)
+
+options(scipen = 999)
+
+
+# RIDB functions
+# raw data
+source("functions/function_ridb_subset-pre2018.R")
+source("functions/function_ridb_subset-post2019.R")
+# clean data and calculate variables
+source("functions/function_ridb_variable_calculate-pre2018.R")
+# standardize values
+# need to make function still
+
+# ACS functions
+source("functions/function_acs_race.R")
+source("functions/function_acs_median_income.R")
+source("functions/function_acs_transportation.R")
+source("functions/function_acs_education.R")
+```
+
+
+# Read in joined data
+
+```{r}
+# read in joined data
+
+```
+
+
+
+
+
+```{r}
+# test <- data_ridb_2018 %>% 
+#   mutate(park = str_remove(string = park, pattern = " --- "))
+# 
+#  mutate(park = str_replace(string = park,
+#                             pattern = "PYRAMID LAKE / LOS ALAMOS CAMPGROUND",
+#                             replacement = "PYRAMID LAKE LOS ALAMOS CAMPGROUND")) %>%
+#   mutate(park = str_replace(string = park,
+#                             pattern = "Lewis @ French Meadows",
+#                             replacement = "Lewis at French Meadows")) %>% 
+#   mutate(park = str_replace(string = park,
+#                             pattern = "Cg",
+#                             replacement = "Campground")) %>% 
+#   mutate(park = str_remove_all(string = park,
+#                                pattern = paste(c("\\(.*",
+#                                                  "---.*",
+#                                                  ",.*"),
+#                                                collapse = "|")))
+```
+
+
+
+
+
+

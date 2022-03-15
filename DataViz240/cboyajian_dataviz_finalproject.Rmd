@@ -34,11 +34,12 @@ acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
 acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
 ```
 
+# wrangle data for plots
 
 ```{r, include=FALSE}
-# wrangle data for plots
 # reservations in CA
-data_plot_bar_race <- data_combined_2018 %>%
+data_plot_bar_race_nps <- data_combined_2018 %>%
+  filter(agency == "NPS") %>% 
   summarize(white = (mean(white, na.rm = TRUE) * 100),
             black = (mean(black, na.rm = TRUE) * 100),
             asian = (mean(asian, na.rm = TRUE) * 100),
@@ -52,7 +53,24 @@ data_plot_bar_race <- data_combined_2018 %>%
                             pattern = "_",
                             replacement = " "),
          race = str_to_title(race))
-data_plot_bar_race$race <- with(data_plot_bar_race, reorder(race, race_percent_average))
+data_plot_bar_race_nps$race <- with(data_plot_bar_race, reorder(race, race_percent_average))
+
+data_plot_bar_race_usfs <- data_combined_2018 %>%
+  filter(agency == "USFS") %>% 
+  summarize(white = (mean(white, na.rm = TRUE) * 100),
+            black = (mean(black, na.rm = TRUE) * 100),
+            asian = (mean(asian, na.rm = TRUE) * 100),
+            multiracial = (mean(multiracial, na.rm = TRUE) * 100),
+            other = (mean(other, na.rm = TRUE) * 100),
+            native_american = (mean(native_american, na.rm = TRUE) * 100),
+            pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
+            hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>%
+  pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race))
+data_plot_bar_race_usfs$race <- with(data_plot_bar_race, reorder(race, race_percent_average))
 ```
 
 
@@ -97,7 +115,18 @@ data_plot_bar_race_us$race <- with(data_plot_bar_race_us, reorder(race, race_per
 
 
 ```{r, include=FALSE}
-data_plot_bar_race_ridb_ca <- data_plot_bar_race %>% 
+data_plot_bar_race_ridb_ca_nps <- data_plot_bar_race_nps %>% 
+  left_join(y = data_plot_bar_race_ca,
+            by = c("race"),
+            suffix = c("_ridb", "_ca")) %>% 
+  rename(RIDB = race_percent_average_ridb,
+         CA = race_percent_average_ca) %>% 
+  pivot_longer(cols = 2:3,
+               names_to = "data_source",
+               values_to = "race_percent_average") %>% 
+  mutate(data_source = factor(data_source, levels = c("RIDB", "CA")))
+
+data_plot_bar_race_ridb_ca_usfs <- data_plot_bar_race_usfs %>% 
   left_join(y = data_plot_bar_race_ca,
             by = c("race"),
             suffix = c("_ridb", "_ca")) %>% 
@@ -110,18 +139,13 @@ data_plot_bar_race_ridb_ca <- data_plot_bar_race %>%
 ```
 
 
-# Equitable Access to Federal Public Land Overnight Reservable Sites
 
-## Background
-Access to federal public lands is not equitable. 
+# Visualizations: Comparative graphs
 
-
-## Visualizations: Comparative graphs
-
-```{r, echo=FALSE, fig.width=10}
+```{r, echo=FALSE, fig.width=18, fig.height=10}
 # plot for shiny app
-plot_col_race_ridb_ca_us <- 
-  ggplot(data = data_plot_bar_race_ridb_ca) +
+plot_col_race_ridb_ca_nps <- 
+  ggplot(data = data_plot_bar_race_ridb_ca_nps) +
   geom_col(aes(x = race_percent_average,
                y = race,
                fill = data_source),
@@ -132,28 +156,59 @@ plot_col_race_ridb_ca_us <-
                 y = race,
                 label = paste0(round(race_percent_average, 1), "%"),
                 col = data_source), 
-            position = position_dodge(width = 0.7), hjust = -0.1) +
+            position = position_dodge(width = 0.7), hjust = -0.1, size = 8) +
   scale_color_manual(values = c("RIDB" = "navy", "CA" = "darkred")) +
   labs(x = "Average percentage of race (%)",
        y = "Race",
        fill = "Race",
        title = "Racial Breakdown of ZIP Codes in 2018",
-       subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents",
-       # caption = "A bar ending in blue indicates the racial group has more representation \nin the reservation data (visitors' home ZIP codes) and ending in red \nindicates the racial group has more representation within California \nresidents."
-       ) +
+       subtitle = "Visitors' home ZIP codes for National Park Service Overnight Reservations in California \nvs. California Residents") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        title = element_text(size = 14, face = "bold"),
+        axis.text = element_text(size = 20),
+        axis.title = element_text(size = 22, face = "bold"),
+        title = element_text(size = 24, face = "bold"),
         legend.position = "none",
-        panel.grid.major.y = element_blank(),
-        plot.caption.position = "plot",
-        plot.caption = element_text(vjust = 70)) +
+        panel.grid.major.y = element_blank()) +
   scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5))
 
-plot_col_race_ridb_ca_us
+plot_col_race_ridb_ca_nps
 ```
+
+
+```{r, echo=FALSE, fig.width=18, fig.height=10}
+# plot for shiny app
+plot_col_race_ridb_ca_usfs <- 
+  ggplot(data = data_plot_bar_race_ridb_ca_usfs) +
+  geom_col(aes(x = race_percent_average,
+               y = race,
+               fill = data_source),
+           stat = "identity",
+           position = "identity", alpha = 0.5) +
+  scale_fill_manual(values = c("RIDB" = "blue", "CA" = "red")) +  
+  geom_text(aes(x = race_percent_average,
+                y = race,
+                label = paste0(round(race_percent_average, 1), "%"),
+                col = data_source), 
+            position = position_dodge(width = 0.7), hjust = -0.1, size = 8) +
+  scale_color_manual(values = c("RIDB" = "navy", "CA" = "darkred")) +
+  labs(x = "Average percentage of race (%)",
+       y = "Race",
+       fill = "Race",
+       title = "Racial Breakdown of ZIP Codes in 2018",
+       subtitle = "Visitors' home ZIP codes for US Forest Service Overnight Reservations in California \nvs. California Residents") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        axis.text = element_text(size = 20),
+        axis.title = element_text(size = 22, face = "bold"),
+        title = element_text(size = 24, face = "bold"),
+        legend.position = "none",
+        panel.grid.major.y = element_blank()) +
+  scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5))
+
+plot_col_race_ridb_ca_usfs
+```
+
 
 
 
@@ -296,7 +351,11 @@ ggsave(plot = plot_bar_race_combined, filename = "../figs/plot_bar_race_combined
 
 ggsave(plot = plot_bar_race_diff_combined, filename = "../figs/plot_bar_race_diff.png", 
        width = 16, height = 14)
-ggsave(plot = plot_col_race_ridb_ca_us, filename = "../figs/plot_col_race_ridb_ca_overlay.png",
+
+ggsave(plot = plot_col_race_ridb_ca_nps, filename = "../figs/plot_col_race_ridb_ca_overlay_nps.png",
+       width = 22, height = 10)
+
+ggsave(plot = plot_col_race_ridb_ca_usfs, filename = "../figs/plot_col_race_ridb_ca_overlay_usfs.png",
        width = 22, height = 10)
 ```
 

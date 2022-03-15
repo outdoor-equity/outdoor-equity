@@ -12,14 +12,11 @@ library(tidyverse)
 library(here)
 library(janitor)
 library(lubridate)
+library(vroom)
 library(sf)
 library(tidycensus)
-library(patchwork)
-library(scales)
-library(tmap)
 
 options(scipen = 999)
-
 
 # RIDB functions
 # raw data
@@ -27,8 +24,6 @@ source("functions/function_ridb_subset-pre2018.R")
 source("functions/function_ridb_subset-post2019.R")
 # clean data and calculate variables
 source("functions/function_ridb_variable_calculate-pre2018.R")
-# standardize values
-# need to make function still
 
 # ACS functions
 source("functions/function_acs_race.R")
@@ -41,39 +36,17 @@ source("functions/function_acs_education.R")
 
 ```{r}
 ## 2018
-# read in data
+# read in data subset for specific year and state 
 RIDB_subset_pre2018(full_file_path = "../../data_raw/reservations2018.csv", 
                     state_abbrev = "CA", year = 2018)
-# calculate variables
+# clean and calculate variables
 RIDB_calculate_pre2018(input_df_name = data_ridb_2018, output_df_name = "data_ridb_2018")
-## create function to standardize values (or add to calculate function)
 ```
-
-```{r}
-# test <- data_ridb_2018 %>% 
-#   mutate(park = str_remove(string = park, pattern = " --- "))
-# 
-#  mutate(park = str_replace(string = park,
-#                             pattern = "PYRAMID LAKE / LOS ALAMOS CAMPGROUND",
-#                             replacement = "PYRAMID LAKE LOS ALAMOS CAMPGROUND")) %>%
-#   mutate(park = str_replace(string = park,
-#                             pattern = "Lewis @ French Meadows",
-#                             replacement = "Lewis at French Meadows")) %>% 
-#   mutate(park = str_replace(string = park,
-#                             pattern = "Cg",
-#                             replacement = "Campground")) %>% 
-#   mutate(park = str_remove_all(string = park,
-#                                pattern = paste(c("\\(.*",
-#                                                  "---.*",
-#                                                  ",.*"),
-#                                                collapse = "|")))
-```
-
 
 
 # Census Data - api set up, read, subset, calculate values
 
-```{r message=FALSE}
+```{r, message=FALSE}
 # api set up
 
 # # ONLY HAVE TO RUN THE FIRST TIME USING THIS RMD on a new machine
@@ -84,17 +57,15 @@ RIDB_calculate_pre2018(input_df_name = data_ridb_2018, output_df_name = "data_ri
 
 # look at option variables
 #View(load_variables(2018, "acs5", cache = TRUE))
-
 ```
 
 ```{r}
-# read in census data
+# read in, subset, and clean census data
 acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
 acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = NULL)
 acs_subset_calculate_transportation(geography = "zcta", year = 2018, state = NULL)
 acs_subset_calculate_education(geography = "zcta", year = 2018, state = NULL)
 ```
-
 
 
 # Join RIDB and Census
@@ -113,28 +84,33 @@ data_combined_2018 <-
 ```
 
 
+# Summarize joined data to park level
+
 ```{r}
-# read in summary funciton
+# read in summary function
 ```
 
-
-
+# Saving dataframes
 
 ## Save to CSV
-*geometries breaking write to CSV*
+
 ```{r}
-write.csv(x = data_combined_2018, "../../../data_clean/2018_joined_data.csv", row.names = FALSE)
+# full dataset (RIDB and ACS joined)
+vroom_write(x = data_combined_2018, 
+            file = "../../../data_clean/2018_joined_data.csv", 
+            delim = ",")
 
-write.csv(x = data_combined_2018_site_summary, "../../../data_clean/2018_joined_data_site_summary.csv", row.names = FALSE)
+# dataset summarized to `park` level (RIDB and ACS joined)
+#write.csv(x = data_combined_2018_site_summary, "../../../data_clean/2018_joined_data_site_summary.csv", row.names = FALSE)
 ```
 
 
+## Save to RDS
 
-```{r, eval=FALSe}
-# # small version of data for Will and Soyoung
-# data_combined_2018_small <- head(data_combined_2018, 100)
-# write.csv(x = data_combined_2018_small, "../../../data_clean/2018_joined_data_smallSubset.csv", row.names = FALSE)
+```{r}
+# add code to save above files to RDS
 ```
+
 
 
 
