@@ -1,0 +1,11 @@
+name: oe_app
+title:
+username:
+account: hdolinh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5869035
+bundleId: 5692552
+url: https://hdolinh.shinyapps.io/oe_app/
+when: 1647456052.63719
+lastSyncTime: 1647456052.6372
