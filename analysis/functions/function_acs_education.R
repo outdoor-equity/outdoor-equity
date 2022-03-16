@@ -10,6 +10,7 @@ acs_subset_calculate_education <-
       get_acs(geography = geography,
               year = year,
               state = state,
+              survey = "acs5",
               summary_var = "B15003_001", # Estimate!!Total:
               variables = c(
                 # Estimate!!Total:!!GED or alternative credential or below (including above)

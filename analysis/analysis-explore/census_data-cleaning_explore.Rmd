@@ -45,11 +45,7 @@ acs_subset_calculate_education(geography = "zcta", year = 2018, geometry = FALSE
 # acs5_variables <- load_variables(year = 2018, dataset = "acs5")
 ```
 
-LANGUAGE SPOKEN AT HOME BY ABILITY TO SPEAK ENGLISH FOR THE POPULATION 5 YEARS AND OVER
-long list found here (https://data.census.gov/cedsci/table?d=ACS%205-Year%20Estimates%20Detailed%20Tables&tid=ACSDT5Y2019.B16001)
 
-THINK ABOUT ADDING:
-"B05001" -- citizenship status
 
 
 

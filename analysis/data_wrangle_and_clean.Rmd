@@ -30,6 +30,7 @@ source("functions/function_acs_race.R")
 source("functions/function_acs_median_income.R")
 source("functions/function_acs_transportation.R")
 source("functions/function_acs_education.R")
+source("functions/function_acs_language.R")
 
 # join RIDB and ACS function
 source("functions/function_join_ridb_acs.R")
@@ -71,6 +72,7 @@ acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
 acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = NULL)
 acs_subset_calculate_transportation(geography = "zcta", year = 2018, state = NULL)
 acs_subset_calculate_education(geography = "zcta", year = 2018, state = NULL)
+acs_subset_calculate_language(geography = "zcta", state = NULL)
 ```
 
 
@@ -82,6 +84,7 @@ join_ridb_acs_data(ridb_df = data_ridb_2018,
                    acs_df_education = data_acs_2018_education_percent,
                    acs_df_median_income = data_acs_2018_median_income,
                    acs_df_transportation = data_acs_2018_transportation_percent,
+                   acs_df_language = data_acs_2020_language_percent,
                    output_df_string = "data_combined_2018")
 ```
 
