@@ -46,7 +46,8 @@ RIDB_calculate_pre2018 <-
       # update values
       mutate(
         regional_area = str_replace(string = regional_area,
-                                    pattern = paste(c("NF - FS", "NF -FS", "NF- FS", "NF-FS", "-FS", " - FS"), 
+                                    pattern = paste(c("NF - FS", "NF -FS", "NF- FS", 
+                                                      "NF-FS", "-FS", " - FS"), 
                                                     collapse = "|"),
                                     replacement = "National Forest"),
         regional_area = str_to_title(regional_area),
@@ -57,8 +58,7 @@ RIDB_calculate_pre2018 <-
         park = str_remove(string = park,
                           pattern = paste(c("\\(.*", " \\(.*",
                                             "---.*", " ---.*",
-                                            ",.*"),
-                                          collapse = "|")),
+                                            ",.*"), collapse = "|")),
         park = str_to_title(park),
         park = str_replace(string = park,
                            pattern = "Cg",
@@ -76,7 +76,8 @@ RIDB_calculate_pre2018 <-
                               pattern = " \\d.*"),
         # update park values (CA specific)
         park = str_remove(string = park,
-                          pattern = paste(c(" - Angeles Nf", " -Hwy"), collapse = "|")))
+                          pattern = paste(c(" - Angeles Nf", " -Hwy"), 
+                                          collapse = "|")))
     
     # create df
     assign(paste(output_df_name), data.frame(df), envir = .GlobalEnv)
