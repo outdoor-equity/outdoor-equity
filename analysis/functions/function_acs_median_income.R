@@ -9,6 +9,7 @@ acs_subset_calculate_median_income <-
       get_acs(geography = geography,
               year = year,
               state = state,
+              survey = "acs5",
               variables = c(
                 median_income = "B19013_001" # Estimate!!Median household income in the past 12 months (in 2019 inflation-adjusted dollars)
               )) %>% 

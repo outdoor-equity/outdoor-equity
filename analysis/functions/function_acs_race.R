@@ -10,6 +10,7 @@ acs_subset_calculate_race <-
       get_acs(geography = geography,
               year = year,
               state = state,
+              survey = "acs5",
               summary_var = "B03002_001", #Estimate!!Total: 
               variables = c(
                 white = "B03002_003", #Estimate!!Total!!Not Hispanic or Latino!!White alone

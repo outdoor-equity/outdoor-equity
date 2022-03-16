@@ -9,6 +9,7 @@ acs_subset_calculate_transportation <-
       get_acs(geography = geography,
               year = year,
               state = state,
+              survey = "acs5",
               summary_var = "B08141_001", #Estimate!!Total:
               variables = c(
                 no_vehicle = "B08141_002" # Estimate!!Total:!!No vehicle available
