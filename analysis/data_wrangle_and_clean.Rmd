@@ -115,7 +115,24 @@ write.csv(x = data_combined_park_summary_2018,
 ## Save to RDS
 
 ```{r}
-# add code to save above files to RDS
+# bootstrap geometries
+data_combined_2018_geometry <- 
+  data_combined_2018 %>% 
+  st_as_sf(coords = c("facility_longitude", "facility_latitude"),
+           crs = 4326)
+data_combined_park_summary_2018_geometry <- 
+  data_combined_park_summary_2018 %>% 
+  st_as_sf(coords = c("mean_facility_longitude", "mean_facility_latitude"),
+           crs = 4326)
+
+
+# full dataset (RIDB and ACS joined)
+saveRDS(object = data_combined_2018_geometry,
+        file = "../../../data_clean/2018_joined_data.rds")
+
+# dataset summarized to `park` level (RIDB and ACS joined)
+saveRDS(object = data_combined_park_summary_2018_geometry,
+        file = "../../../data_clean/2018_joined_data_site_summary.rds")
 ```
 
 
