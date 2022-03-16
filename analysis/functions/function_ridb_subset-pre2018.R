@@ -35,7 +35,12 @@ RIDB_subset_pre2018 <- function(full_file_path, state_abbrev, year) {
                              "trailhead")) %>% 
     filter(use_type == "Overnight") %>%
     # filter out invalid ZIP codes
-    filter(customer_zip == str_extract_all(customer_zip, "[[:digit:]]{5}")) %>% 
+    mutate(customer_zip = str_remove(string = customer_zip,
+                                     pattern = paste(c("[:punct:]",
+                                                       "[:symbol:]"),
+                                                     collapse = "|")),
+           customer_zip = str_extract(string = customer_zip,
+                                      pattern = "[:digit:]{5}")) %>% 
     # remove use type column
     select(!use_type)
   
