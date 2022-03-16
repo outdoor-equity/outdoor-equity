@@ -39,9 +39,9 @@ ui <- fluidPage(
                                        choices = c("BOR", "NPS", "USACE", "USFS"),
                                        multiple = TRUE,
                                        options = list(
-                                         placeholder = "Type to search for an agency"
-                                         # onInitialize think about using this later
-                                       )),
+                                         placeholder = "Type to search for an agency",
+                                         onInitialize = I('function() { this.setValue(""); }')
+                                         )),
                         # inputId = analysis ----
                         selectizeInput(inputId = "analysis",
                                        label = "2. What kind of analysis do you want to see?",
@@ -57,21 +57,18 @@ ui <- fluidPage(
                         conditionalPanel(condition = "input.analysis == 'compare'",
                                          # inputId = compare ----
                                          selectizeInput(input = "comparison",
-                                                        label = "3. Pick a variable to see its distribution",
+                                                        label = "3. Pick two variables to compare",
                                                         # mean vs median?
                                                         # need to add dist traveled 
                                                         choices = c("mean_daily_cost_per_visitor",
                                                                     "mean_booking_window",
                                                                     # count is number of visits to a park
-                                                                    "count",
-                                                                    ""))
-                          
-                          'input.agency != ""',
-                                         selectizeInput(inputId = "distribution",
-                                                        label = "3. Pick a variable to see its distribution",
-                                                        choices = c()),
-                                         selectizeInput(inputId = "comparison",
-                                                        label = "3. Pick two variables to compare"))
+                                                                    "count"),
+                                                        multiple = TRUE,
+                                                        options = list(
+                                                          placeholder = "Type to select two variables",
+                                                          onInitialize = I('function() { this.setValue(""); }')
+                                                          )))
                         ), # end of Agency Analysis tabPanel
                tabPanel(title = "Reservable Site Analysis",
                         "graphs and inputs to compare reservable sites here"
@@ -83,7 +80,14 @@ ui <- fluidPage(
     
     
     
-    #### TABS TO THINK ABOUT READDING LATER #### ----           
+    #### TABS TO THINK ABOUT READDING LATER #### ----  
+    
+    
+    # selectizeInput(inputId = "distribution",
+    #                label = "3. Pick a variable to see its distribution",
+    #                choices = c()),
+    
+    
                # tabPanel(title = "Spatial Analysis",
                #   "spatial analysis maps and inputs here",
                #   # subset agency picker input ----
