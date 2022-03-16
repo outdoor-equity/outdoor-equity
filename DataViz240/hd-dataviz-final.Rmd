@@ -35,7 +35,7 @@ source("../analysis/functions/function_ridb_variable_calculate-pre2018.R")
 ```{r}
 # read and cleaned and subsetted ridb 2018 data using function
 # data_ridb_2018
-RIDB_subset_pre2018("../../data_raw/reservations2018.csv", "CA", 2018)
+RIDB_subset_pre2018("../../data_raw/reservations2018.csv", "CA", 2018) #521615
 
 # read in acs median income data using function
 # data_acs_2018_median_income
@@ -88,6 +88,12 @@ data_clean_combined_2018 <- data_combined_2018 %>%
   filter(park != "Blue Lake Campground",
          park != "Bear Lake Campground ")
 ```
+
+```{r}
+data_test_combined_2018 <- data_combined_2018 %>% 
+  select(c(customer_zip, median_income)) # NAs 19945 (3% of total data) 
+```
+
 
 ## median income for regional area and agency subset
 ```{r}
