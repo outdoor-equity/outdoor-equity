@@ -37,48 +37,31 @@ data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv"
 
 ```{r}
 test <- data_ridb_acs_2018 %>%
-  mutate(park = str_remove_all(string = park,
-                               pattern = paste(c("\\(.*", " \\(.*",
-                                                 "---.*", " ---.*",
-                                                 ",.*"),
-                                               collapse = "|")),
+  mutate(park = str_remove(string = park,
+                           pattern = paste(c("\\(.*", " \\(.*",
+                                             "---.*", " ---.*",
+                                             ",.*"),
+                                           collapse = "|")),
          park = str_to_title(park),
          park = str_replace(string = park,
                             pattern = "Cg",
-                            replacement = "Campground"))
+                            replacement = "Campground"),
+         park = str_replace(string = park,
+                            pattern = paste(c("/", " / "), collapse = "|"),
+                            replacement = " "),
+         park = str_remove_all(string = park,
+                               pattern = " \\d.*"),
+         park = str_replace(string = park,
+                            pattern = "@",
+                            replacement = "At"),
+         park = str_replace(string = park,
+                            pattern = "&",
+                            replacement = "And"),
+         # CA specific changes
+         park = str_remove(string = park,
+                           pattern = paste(c(" - Angeles Nf", " -Hwy"), collapse = "|"))
+  )
 
-
-# Tunnel Mills Il
-# Stoney Group/Shasta-Trinity
-# Ribbonwood Equestrian Cg
-# Silver Creek Campground -Hwy 4
-# Stony Creek / Sequoia
-# Table Mountain - Angeles Nf
-# Pyramid Lake / Los Alamos Campground
-# Lodgepole/Bear Valley
-# Boat-In Sites
-# Pines Group Site - Stony Gorge Reservoir
-# rystal Springs Campground Mid-Sized Group Sites
-# Lewis @ French Meadows
-# Upper Billy Creek Cg
-# Kyen Campground & Oak Grove Day Use Area
-# Butte Lake Group 74195 BUTG
-
-
-mutate(park = str_replace(string = park,
-                          pattern = "PYRAMID LAKE / LOS ALAMOS CAMPGROUND",
-                          replacement = "PYRAMID LAKE LOS ALAMOS CAMPGROUND")) %>%
-  mutate(park = str_replace(string = park,
-                            pattern = "Lewis @ French Meadows",
-                            replacement = "Lewis at French Meadows")) %>%
-  mutate(park = str_replace(string = park,
-                            pattern = "Cg",
-                            replacement = "Campground")) %>%
-  mutate(park = str_remove_all(string = park,
-                               pattern = paste(c("\\(.*",
-                                                 "---.*",
-                                                 ",.*"),
-                                               collapse = "|")))
 ```
 
 
