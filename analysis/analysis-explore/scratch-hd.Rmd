@@ -35,9 +35,9 @@ data_clean_ridb_2018 <- data_ridb_2018 %>%
   mutate(customer_zip = str_remove(string = customer_zip,
                                    pattern = paste(c("[:punct:]",
                                                      "[:symbol:]"),
-                                                   collapse = "|"))) %>% 
-  # # of na's 8897 (30% of data)
-  mutate(customer_zip = str_extract(string = customer_zip,
+                                                   collapse = "|")),
+         # of na's 8897 (30% of data)
+         customer_zip = str_extract(string = customer_zip,
                                     pattern = "[:digit:]{5}"))
 ```
 
