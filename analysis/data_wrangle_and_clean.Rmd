@@ -19,7 +19,7 @@ library(tidycensus)
 options(scipen = 999)
 
 # RIDB functions
-# raw data
+# data subset
 source("functions/function_ridb_subset-pre2018.R")
 source("functions/function_ridb_subset-post2019.R")
 # clean data and calculate variables
@@ -30,6 +30,12 @@ source("functions/function_acs_race.R")
 source("functions/function_acs_median_income.R")
 source("functions/function_acs_transportation.R")
 source("functions/function_acs_education.R")
+
+# join RIDB and ACS function
+source("functions/function_join_ridb_acs.R")
+
+# summarized joined data to park level
+source("functions/function_joined_data_park_summary.R")
 ```
 
 # RIDB - read in data, calculate varibales, standardize values
@@ -71,23 +77,20 @@ acs_subset_calculate_education(geography = "zcta", year = 2018, state = NULL)
 # Join RIDB and Census
 
 ```{r}
-data_combined_2018 <- 
-  left_join(x = data_ridb_2018,
-            y = data_acs_2018_race_percent,
-            by = c("customer_zip" = "zip_code")) %>% 
-  left_join(y = data_acs_2018_education_percent,
-            by = c("customer_zip" = "zip_code")) %>% 
-  left_join(y = data_acs_2018_median_income,
-            by = c("customer_zip" = "zip_code")) %>% 
-  left_join(y = data_acs_2018_transportation_percent,
-            by = c("customer_zip" = "zip_code"))
+join_ridb_acs_data(ridb_df = data_ridb_2018,
+                   acs_df_race = data_acs_2018_race_percent,
+                   acs_df_education = data_acs_2018_education_percent,
+                   acs_df_median_income = data_acs_2018_median_income,
+                   acs_df_transportation = data_acs_2018_transportation_percent,
+                   output_df_string = "data_combined_2018")
 ```
 
 
 # Summarize joined data to park level
 
 ```{r}
-# read in summary function
+joined_park_summary(input_df_name = data_combined_2018,
+                    output_df_string = "data_combined_park_summary_2018")
 ```
 
 # Saving dataframes
@@ -101,9 +104,10 @@ write.csv(x = data_combined_2018,
             row.names = FALSE)
 
 # dataset summarized to `park` level (RIDB and ACS joined)
-#write.csv(x = data_combined_2018_site_summary, "../../../data_clean/2018_joined_data_site_summary.csv", row.names = FALSE)
+write.csv(x = data_combined_park_summary_2018, 
+          "../../../data_clean/2018_joined_data_site_summary.csv", 
+          row.names = FALSE)
 ```
-
 
 ## Save to RDS
 
