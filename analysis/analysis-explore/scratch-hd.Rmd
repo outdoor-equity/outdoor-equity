@@ -20,6 +20,8 @@ library(janitor)
 # here() -> "/Users/halina"
 data_ridb_2018 <- read_csv(here::here("../../capstone/outdoorequity/data_raw/reservations2018.csv"))
 ```
+
+
 ```{r}
 data_clean_ridb_2018 <- data_ridb_2018 %>%
   janitor::clean_names() %>% 
@@ -34,8 +36,26 @@ data_clean_ridb_2018 <- data_ridb_2018 %>%
                                    pattern = paste(c("[:punct:]",
                                                      "[:symbol:]"),
                                                    collapse = "|"))) %>% 
-  # filter strings that are 5 characters 16,902
-  filter(customer_zip == str_subset(customer_zip, "[[:digit:]]{5}"))
+  # # of na's 8897 (30% of data)
+  mutate(customer_zip = str_extract(string = customer_zip,
+                                    pattern = "[:digit:]{5}"))
+```
+
+# test `[:digit:]{5}`
+
+```{r}
+data_test_ridb_2018 <- data_ridb_2018 %>%
+  janitor::clean_names() %>% 
+  # 595002 obs
+  filter(facility_state == "CA") %>% 
+  select(customer_zip) %>% 
+  # 29567 unique ZIP codes
+  group_by(customer_zip) %>% 
+  summarize(count = n()) %>% 
+  # 01241001(Y), 01760-6043(Y)
+  filter(customer_zip == "01760-6043") %>% 
+  mutate(customer_zip = str_extract(string = customer_zip,
+                                    pattern = "[:digit:]{5}"))
 ```
 
 
