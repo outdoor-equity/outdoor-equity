@@ -1,6 +1,6 @@
 ## HOW TO DEPLOY APP ##
 # use function deployApp()
-# deployApp("/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/OE_app")
+# deployApp("/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/oe_app")
 
 # attached packages ----
 library(rsconnect)
@@ -10,13 +10,11 @@ library(tidycensus)
 library(shiny)
 library(leaflet)
 library(tidyverse)
-library(here)
 # library(tmap)
 
 # import data ---- 
-data_joined_2018 <- readRDS(here("shiny/outdoor-equity-app/OE_app/data/data_joined_2018.rds"))
-data_summary_2018 <- readRDS(here("shiny/outdoor-equity-app/OE_app/data/data_summary_2018.rds"))
-
+data_joined_2018 <- readRDS("data/data_joined_2018.rds")
+data_summary_2018 <- readRDS("data/data_summary_2018.rds")
 
 # pretty names here to reference in ui or server 
 agency_hist_vars <- c("Booking window" = "median_booking_window",
