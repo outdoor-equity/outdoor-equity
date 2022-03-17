@@ -464,15 +464,19 @@ groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
 
 # plot for shiny app
 plot_density_language <- ggplot() +
-    geom_density(data = data_plot_density_language_ca,
-               aes(x = not_english_only),
+    geom_histogram(data = data_plot_density_language_ca,
+               aes(x = not_english_only,
+                   y = stat(count) / sum(count),
+                   bins = 10),
                fill = groups_colors_ridb_ca[[2]], 
                col = groups_colors_ridb_ca[[2]],
-               alpha = 0.5) +
-  geom_density(data = data_plot_density_language_ridb,
-               aes(x = not_english_only), 
-                   fill = groups_colors_ridb_ca[[1]], 
-               col = groups_colors_ridb_ca[[2]], 
+               alpha = 0.75) +
+  geom_histogram(data = data_plot_density_language_ridb,
+               aes(x = not_english_only,
+                   y = stat(count) / sum(count),
+                   bins = 10),
+                   fill = groups_colors_ridb_ca[[1]],
+               col = groups_colors_ridb_ca[[2]],
                alpha = 0.5) +
   labs(x = "Percentage (%)",
        y = "",
@@ -598,13 +602,12 @@ plot_data <- c("data_plot_hist_distance_traveled", "data_plot_hist_boooking_wind
                "data_plot_col_site_type", "data_plot_col_race", "data_plot_col_education")
 
 for (i in seq_along(plot_data)){
-  saveRDS(object = plot_data[[i]],
+  saveRDS(object = get(plot_data[[i]]),
           file = paste0("../../../../data_clean/2018_data_graphs_single_variable/2018_", 
                         plot_data[[i]],
                         ".rds"))
 }
 ```
-
 
 
 
