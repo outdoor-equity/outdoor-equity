@@ -13,13 +13,16 @@ library(tidyverse)
 # library(tmap)
 
 # import data ---- 
+data_joined_test <- readRDS("../../data_clean/2018_joined_data_site_summary.rds")
+data_summary_test <- readRDS("../../data_clean/2018_joined_data.rds")
+
 # data_test <- readRDS("./data_resMedIncome_CAmap_2018.rds")
 # data_zip_geometries_ca <- readRDS("./data_zip_geometries_ca.rds")
 
 # pretty names here to reference in ui or server 
 agency_hist_vars <- c("Booking window" = "median_booking_window",
                       "Daily cost" = "median_daily_cost_per_visitor",
-                      "Distance traveled" = "ADD",
+                      "Distance traveled" = "distance_traveled_m",
                       "Education - High School/GED" = "median_hs_GED_or_below",
                       "Education - College" = "median_college",
                       "Education - Some college" = "median_some_college",
@@ -36,7 +39,7 @@ agency_hist_vars <- c("Booking window" = "median_booking_window",
                       "Race - Pacific Islander" = "median_pacific_islander",
                       "Race - White" = "median_white",
                       "Race - Other" = "median_other",
-                      "Total number of different site types" = "ADD",
+                      "Total number of different site types" = "aggregated_site_type",
                       "Total number of sites" = "park", # is this right?
                       "Total number of visits" = "count",
                       "Transportation - No access to vehicle" = "median_no_vehicle")
@@ -60,12 +63,12 @@ agency_comp_acs_col_vars <- c("Education - High School/GED" = "median_hs_GED_or_
 
 agency_comp_col_vars <- c("Booking window" = "median_booking_window",
                            "Daily cost" = "median_daily_cost_per_visitor",
-                           "Distance traveled" = "ADD",
+                           "Distance traveled" = "distance_traveled_m",
                            "Length of stay" = "median_length_of_stay",
-                           "Site Type" = "NEED TO ADD THIS TO DF")
+                           "Site Type" = "aggregated_site_type")
 
 # comparing with booking window
 booking_scat_var <- c("Booking window" = "median_booking_window")
 
-agency_comp_scat_vars <- c("Distance traveled" = "ADD",
-                           "Site Type" = "NEED TO ADD THIS TO DF")
+agency_comp_scat_vars <- c("Distance traveled" = "distance_traveled_m",
+                           "Site Type" = "aggregated_site_type")
