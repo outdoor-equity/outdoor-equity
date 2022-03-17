@@ -1,0 +1,215 @@
+---
+title: "Data Viz for Shiny App"
+author: "Clarissa"
+date: "3/17/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(lubridate)
+library(sf)
+library(tidycensus)
+library(patchwork)
+library(scales)
+library(tmap)
+library(vroom)
+library(paletteer)
+
+options(scipen = 999)
+
+# load script to pull and clean ACS data
+source("../functions/function_acs_race.R")
+source("../functions/function_acs_median_income.R")
+source("../functions/function_acs_transportation.R")
+source("../functions/function_acs_education.R")
+source("../functions/function_acs_language.R")
+```
+
+# Read in data
+
+```{r, message=FALSE, warning=FALSE}
+# read in joined data
+data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
+                            delim = ",") ## non-map graphs (no geometries)
+# data_ridb_acs_2018 <- readRDS(file = "../../../../data_clean/2018_joined_data.rds") ## maps (don't use RDS for non-map viz, too slow)
+
+# ACS CA data
+acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
+acs_subset_calculate_education(geography = "zcta", year = 2018, state = "California")
+acs_subset_calculate_language(geography = "zcta", state = "California")
+acs_subset_calculate_transportation(geography = "zcta", year = 2018, state = "California")
+acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = "California")
+
+# ACS US data
+# acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
+# acs_subset_calculate_education(geography = "zcta", year = 2018, state = NULL)
+```
+
+
+# Graphs
+
+## Race x distance traveled
+
+```{r}
+## -- data wrangle -- ##
+data_plot_col_race_distance_traveled <- data_ridb_acs_2018 %>% 
+  select(agency, regional_area, park, customer_zip, asian, black, hispanic_latinx, 
+         multiracial, native_american, other, pacific_islander, white) %>% 
+  pivot_longer(cols = 5:12,
+               names_to = "race", 
+               values_to = "race_percentage") %>% 
+  group_by(race) %>% 
+  summarise()
+  
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+plot_col_race_distance_traveled <- ggplot(data = data_plot_col_race_distance_traveled) +
+  geom_col(aes(y = race,
+               x = race_percentage))
+plot_col_race_distance_traveled
+```
+
+
+## Race x site type
+
+```{r}
+## -- data wrangle -- ##
+
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+```
+
+
+## Race x booking window
+
+## Race x daily cost
+
+## Race x length of stay
+
+
+## Education x distance traveled
+
+## Education x site type
+
+## Education x booking window
+
+## Education x daily cost
+
+## Education x length of stay
+
+
+## Transportation x distance traveled
+
+## Transportation x site type
+
+## Transportation x booking window
+
+## Transportation x daily cost
+
+## Transportation x length of stay
+
+
+## Language x distance traveled
+
+## Language x site type
+
+## Language x booking window
+
+## Language x daily cost
+
+## Language x length of stay
+
+
+## Median-income x distance traveled
+
+## Median-income x site type
+
+## Median-income x booking window
+
+## Median-income x daily cost
+
+## Median-income x length of stay
+
+
+## Booking window x site type
+
+## Booking window x distance traveled
+
+
+## Agency x total reservations
+
+```{r}
+## -- data wrangle -- ##
+
+data_plot_bar_agency_park <- data_ridb_acs_2018 %>% 
+  group_by(agency, park) %>% 
+  summarise(count = n())
+
+## -- create plot -- ##
+
+# parameters
+agency_colors <- 
+  c("Bureau of Reclamation" = "#F8766D", # BOR
+    "National Park Service" = "#7CAE00", # NPS
+    "US Forest Service" = "#00BFC4", # USFS
+    "US Forest Service" = "#C77CFF" # USACE
+  )
+
+# plot for shiny app
+plot_bar_agency_park <- 
+  ggplot(data_plot_bar_agency_park) +
+  geom_bar(aes(x = agency, fill = agency)) +
+  scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
+                                 "US Army Corps of Engineers", "US Forest Service")) +
+  theme_minimal() +
+  labs(fill = "Agency",
+       x = "Agency",
+       y = "Reservable Site Count",
+       title = "Total Sites per Agency \nfor Reservable Overnight Sites in California in 2018") +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        # axis.text = element_text(size = 12),
+        # axis.title = element_text(size = 14, face = "bold"),
+        # title = element_text(size = 16, face = "bold")
+        )
+
+plot_bar_agency_park
+```
+
+```{r}
+# bar: agency, reservations, agency
+plot_bar_agency_visits <- 
+  ggplot(data = data_combined_2018) +
+  geom_bar(aes(x = agency, fill = agency)) +
+  scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
+                                 "US Army Corps of Engineers", "US Forest Service")) +
+  theme_minimal() +
+  labs(x = "Agency",
+       y = "Total Reservations",
+       fill = "Agency",
+       title = "Total Reservations per Agency \nfor Reservable Overnight Sites in California in 2018") +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.background = element_rect("white"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        title = element_text(size = 16, face = "bold"))
+
+plot_bar_agency_visits
+```
+
+
+
+

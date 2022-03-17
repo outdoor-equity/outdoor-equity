@@ -20,7 +20,7 @@ library(tmap)
 
 options(scipen = 999)
 
-source("functions/function_acs_race.R")
+source("../functions/function_acs_race.R")
 
 # colors for racial groups
 racial_group_colors <- 
@@ -43,15 +43,24 @@ agency_colors <-
 ```
 
 ```{r}
+start_time <- Sys.time()
 ## 2018
 # read in data
-data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv") #%>% 
+data_combined_2018 <- read.csv("../../../../data_clean/2018_joined_data.csv") #%>% 
+  # # create geometries ##need to only add this in when necessary, slows down processing for summary
+  # st_as_sf(coords = c("facility_longitude", "facility_latitude"),
+  #          crs = 4326)
+data_combined_2018_park_summary <- read.csv("../../../../data_clean/2018_joined_data_site_summary.csv") #%>% 
   # # create geometries ##need to only add this in when necessary, slows down processing for summary
   # st_as_sf(coords = c("facility_longitude", "facility_latitude"),
   #          crs = 4326)
 
 # ACS CA race data
 acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
+
+end_time <- Sys.time()
+time_taken <- end_time - start_time
+time_taken
 ```
 
 
@@ -232,11 +241,9 @@ ggsave(plot = plot_histogram_agency_booking_window,
 
 
 ```{r}
-## NEED TO ADD CODE TO CREATE SUMMARY DATA
-
 # scatter: sites, median income, agency
 plot_scatter_park_median_income <- 
-  ggplot(data_combined_2018_site_summary) +
+  ggplot(data_combined_2018_park_summary) +
   geom_point(aes(x = park,
                  y = median_median_income,
                  col = agency)) +
