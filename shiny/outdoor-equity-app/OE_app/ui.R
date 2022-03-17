@@ -50,7 +50,7 @@ ui <- fluidPage(
                                        choices = c(Comparison = "compare", Distribution = "hist"),
                                        multiple = FALSE,
                                        options = list(
-                                         placeholder = "Type to select an analysis type",
+                                         placeholder = "Select an analysis type",
                                          onInitialize = I('function() { this.setValue(""); }')
                                        )),
                         # conditional analysis type is comparison first variable ----
@@ -102,53 +102,52 @@ ui <- fluidPage(
                                                      ))) # end of conditional distribution
                         ), # end of Agency Analysis tabPanel
                tabPanel(title = "Reservable Site Analysis",
-                        "graphs and inputs to compare reservable sites here"
+                        # inputId = admin_unit ----
+                        selectizeInput(inputId = "admin_unit",
+                                       label = "1. Select an administrative unit:",
+                                       choices = c("BOR", "NPS", "USACE", "USFS"),
+                                       multiple = TRUE,
+                                       options = list(
+                                         placeholder = "Type to search for an admin unit",
+                                         onInitialize = I('function() { this.setValue(""); }')
+                                       )),
+                        # inputId = site_info_comp
+                        selectizeInput(inputId = "site_info_comp",
+                                       label = "2. What kind of information do you want to see?",
+                                       choices = c('Site Information' = "site_info", 'Variable Analysis' = "var_analysis"),
+                                       multiple = FALSE,
+                                       options = list(
+                                         placeholder = "Select an information type",
+                                         onInitialize = I('function() { this.setValue(""); }')
+                                         )), # end of pick which info you want to see ----
+                        # conditional is site_info ----
+                        conditionalPanel(condition = "input.site_info_comp == 'site_info'",
+                                         # inputId = site_info ----
+                                         selectizeInput(inputId = "site_info",
+                                                        label = "3. Pick a reservable site",
+                                                        choices = agency_comp_scat_vars, # need to change
+                                                        multiple = FALSE,
+                                                        options = list(
+                                                          placeholder = "Type to select a reservable site",
+                                                          onInitialize = I('function() { this.setValue(""); }')
+                                                        ))),
+                        # conditional is var_analysis ----
+                        conditionalPanel(condition = "input.site_info_comp == 'var_analysis'",
+                                         # inputId = site_info ----
+                                         selectizeInput(inputId = "var_analysis",
+                                                        label = "3. Pick a variable to visualize",
+                                                        choices = agency_comp_scat_vars, # need to change
+                                                        multiple = FALSE,
+                                                        options = list(
+                                                          placeholder = "Type to select a variable",
+                                                          onInitialize = I('function() { this.setValue(""); }')
+                                                        )))
                         ), # end of Reservable Site analysis tabPanel
                ), # end of Analysis tab ----
     # Data Download tab ----
     tabPanel(title = "Data Download",
              "DT Table and data download inputs here") # end of Data Download tabPanel
-    
-    
-    
-    #### TABS TO THINK ABOUT READDING LATER #### ----  
-    
-    
-    # selectizeInput(inputId = "distribution",
-    #                label = "3. Pick a variable to see its distribution",
-    #                choices = c()),
-    
-    
-               # tabPanel(title = "Spatial Analysis",
-               #   "spatial analysis maps and inputs here",
-               #   # subset agency picker input ----
-               #   shinyWidgets::pickerInput(inputId = "agency",
-               #                             label = "Select an agency:",
-               #                             choices = c("USFS", "NPS", "USACE", "BOR"),
-               #                             # selected = c("USFS", "NPS", "USACE", "BOR"), 
-               #                             # use this to automatically to set default choices
-               #                             multiple = TRUE,
-               #                             options = pickerOptions(actionsBox = TRUE)),
-               #   shinyWidgets::pickerInput(inputId = "state",
-               #                             label = "Select a state:",
-               #                             choices = c("California", "Alaska", "Utah", "Maine"),
-               #                             selected = "California",
-               #                             multiple = TRUE,
-               #                             options = pickerOptions(actionsBox = TRUE)),
-               #   shinyWidgets::pickerInput(inputId = "year",
-               #                             label = "Select a year:",
-               #                             choices = 2018,
-               #                             multiple = TRUE,
-               #                             options = pickerOptions(actionsBox = TRUE)),
-               #   shinyWidgets::pickerInput(inputId = "variable",
-               #               label = "Select a variable",
-               #               choices = c("Median income", "Race", "Transportation"),
-               #               selected = " ", # need to figure out why there is a default select
-               #               multiple = FALSE,
-               #               options = pickerOptions(actionsBox = TRUE))
-               # ),
-               # tabPanel(title = "Temporal Analysis",
-               #   "graphs that show interesting temporal trends"
-               # ))
+
+  
   ) # end of navbarPage ----
   ) # end of fluid page ---- 
