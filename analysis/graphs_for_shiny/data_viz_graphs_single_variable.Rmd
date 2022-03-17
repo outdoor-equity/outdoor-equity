@@ -1,7 +1,7 @@
 ---
-title: "Working on functions"
+title: "Data Viz for Shiny App"
 author: "Clarissa"
-date: "3/15/2022"
+date: "3/16/2022"
 output: html_document
 ---
 
@@ -20,16 +20,13 @@ library(tmap)
 library(vroom)
 library(paletteer)
 
-options(scipen = 999)
-
 # load script to pull and clean ACS data
 source("../functions/function_acs_race.R")
 ```
 
+# Read in data
 
-# Read in joined data
-
-```{r}
+```{r, message=FALSE, warning=FALSE}
 # read in joined data
 data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
                             delim = ",")
@@ -42,19 +39,14 @@ acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
 acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
 ```
 
-# Set parameters
+
+# ACS data
+
+## Race
 
 ```{r}
-racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
-                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
-                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+## -- data wrangle -- ##
 
-
-```
-
-
-
-```{r}
 # reservations in CA
 data_plot_col_race_ridb <- data_ridb_acs_2018 %>%
   summarize(white = (mean(white, na.rm = TRUE) * 100),
@@ -100,9 +92,9 @@ data_plot_col <- data_plot_col_race_ridb %>%
                names_to = "data_source",
                values_to = "race_percent_average") %>% 
   mutate(data_source = factor(data_source, levels = c("RIDB", "CA")))
-```
 
-```{r}
+## -- create plot -- ##
+
 # parameters
 groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#990099FF")
 
@@ -139,7 +131,4 @@ plot_col_race <-
 
 plot_col_race
 ```
-
-
-
 
