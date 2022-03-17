@@ -15,7 +15,7 @@ ui <- fluidPage(
     # title of nav bar ----
     # need title to display other nav bar tabs
     ## this title is also the name of the tab on a browser ##
-    "Get Started",
+    "Visualize RIDB Data",
     # nav bar tabs ----
     # About tab ----
     navbarMenu("About",
@@ -33,7 +33,42 @@ ui <- fluidPage(
     # Analysis tab ----
     navbarMenu("Analysis",
                tabPanel(title = "Agency Analysis",
-                        "graphs and inputs to compare agencies here"
+                        # inputId = agency ----
+                        selectizeInput(inputId = "agency",
+                                       label = "1. Select an agency:",
+                                       choices = c("BOR", "NPS", "USACE", "USFS"),
+                                       multiple = TRUE,
+                                       options = list(
+                                         placeholder = "Type to search for an agency",
+                                         onInitialize = I('function() { this.setValue(""); }')
+                                         )),
+                        # inputId = analysis ----
+                        selectizeInput(inputId = "analysis",
+                                       label = "2. What kind of analysis do you want to see?",
+                                       # conditional panel options / "id's" ---- 
+                                       choices = c(Comparison = "compare", Distribution = "hist"),
+                                       multiple = FALSE,
+                                       options = list(
+                                         placeholder = "Type to select an analysis type",
+                                         # need to figure out what onInitialize does exactly?
+                                         onInitialize = I('function() { this.setValue(""); }')
+                                       )),
+                        # only show panel if analysis type is comparison ----
+                        conditionalPanel(condition = "input.analysis == 'compare'",
+                                         # inputId = compare ----
+                                         selectizeInput(input = "comparison",
+                                                        label = "3. Pick two variables to compare",
+                                                        # mean vs median?
+                                                        # need to add dist traveled 
+                                                        choices = c("mean_daily_cost_per_visitor",
+                                                                    "mean_booking_window",
+                                                                    # count is number of visits to a park
+                                                                    "count"),
+                                                        multiple = TRUE,
+                                                        options = list(
+                                                          placeholder = "Type to select two variables",
+                                                          onInitialize = I('function() { this.setValue(""); }')
+                                                          )))
                         ), # end of Agency Analysis tabPanel
                tabPanel(title = "Reservable Site Analysis",
                         "graphs and inputs to compare reservable sites here"
@@ -45,7 +80,14 @@ ui <- fluidPage(
     
     
     
-    #### TABS TO THINK ABOUT READDING LATER #### ----           
+    #### TABS TO THINK ABOUT READDING LATER #### ----  
+    
+    
+    # selectizeInput(inputId = "distribution",
+    #                label = "3. Pick a variable to see its distribution",
+    #                choices = c()),
+    
+    
                # tabPanel(title = "Spatial Analysis",
                #   "spatial analysis maps and inputs here",
                #   # subset agency picker input ----
