@@ -27,8 +27,17 @@ options(scipen = 999)
 
 ```{r}
 # read in joined data
-data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
-                            delim = ",")
+# data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
+#                             delim = ",")
+data_ridb_acs_2018 <- readRDS(file = "../../../../data_clean/2018_joined_data.rds")
+
+zip_geometries_us <- get_acs(geography = "zcta", year = 2018, geometry = TRUE, 
+                             summary_var = "B01001_001",
+                             survey = "acs5",
+                             variables = c(male = "B01001_002")) %>% 
+  select(NAME, geometry) %>% 
+  mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>% 
+  select(zip_code, geometry)
 ```
 
 
@@ -36,8 +45,8 @@ data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv"
 
 
 ```{r}
-test <- 
-  data_ridb_acs_2018 %>% 
+test <-
+  
   
 ```
 
