@@ -1,6 +1,35 @@
 library(tidyverse)
 library(here)
 
+## Distance traveled (histogram/density)
+
+## -- data wrangle -- ##
+data_plot_hist_distance_traveled <- data_joined_2018 %>% 
+  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371)
+
+## -- create plot -- ##
+
+# parameters
+hist_colors <- c("#009900FF")
+
+# plot for shiny app
+plot_hist_distance_traveled <-
+  ggplot(data = data_plot_hist_distance_traveled) +
+  geom_histogram(aes(x = distance_traveled_mi),
+                 fill = hist_colors)+
+  labs(x = "Distance traveled (miles)",
+       y = "",
+       title = "Distribution of Distance Traveled to ",
+       subtitle = "Overnight Reservations in California in 2018") +
+  scale_x_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 500), minor_breaks = seq(0, 3000, 250)) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank())
+
+
+
+
+
 combined_summary_2018 <- readRDS(here::here("../../data_clean/2018_joined_data_site_summary.rds"))
 combined_2018 <- readRDS(here::here("../../data_clean/2018_joined_data.csv"))
 
