@@ -20,6 +20,8 @@ library(tmap)
 library(vroom)
 library(paletteer)
 
+options(scipen = 999)
+
 # load script to pull and clean ACS data
 source("../functions/function_acs_race.R")
 source("../functions/function_acs_median_income.R")
@@ -51,14 +53,80 @@ acs_subset_calculate_education(geography = "zcta", year = 2018, state = "Califor
 ## Distance traveled (histogram/density)
 
 ```{r}
+## -- data wrangle -- ##
+data_plot_hist_distance_traveled <- data_ridb_acs_2018 %>% 
+  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371)
 
+## -- create plot -- ##
+
+# parameters
+hist_colors <- c("#009900FF")
+
+# plot for shiny app
+plot_hist_distance_traveled <-
+  ggplot(data = data_plot_hist_distance_traveled) +
+  geom_histogram(aes(x = distance_traveled_mi),
+                 fill = hist_colors)+
+  labs(x = "Distance traveled (miles)",
+       y = "",
+       title = "Distribution of Distance Traveled to ",
+       subtitle = "Overnight Reservations in California in 2018") +
+  scale_x_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 500), minor_breaks = seq(0, 3000, 250)) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_hist_distance_traveled
 ```
 
 
 ## Booking window (histogram/density)
 
 ```{r}
+## -- data wrangle -- ##
+data_plot_hist_boooking_window <- data_ridb_acs_2018 %>% 
+  filter(booking_window > 0)
 
+## -- create plot -- ##
+
+# parameters
+hist_colors <- c("#009900FF")
+
+# plot for shiny app
+plot_hist_booking_window <-
+  ggplot(data = data_plot_hist_boooking_window) +
+  geom_histogram(aes(x = booking_window),
+                 binwidth = 7,
+                 fill = hist_colors)+
+  labs(x = "Days elapsed from order to visit (each bar = 1 week)",
+       y = "",
+       title = "Distribution of Booking Windows for",
+       subtitle = "Overnight Reservations in California in 2018") +
+  scale_x_continuous(limits = c(0, 510), 
+                     breaks = seq(0, 510, by = 30)) +
+  geom_vline(xintercept = 180, 
+             linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", label = "6 months", 
+           x = 210, y = 65000) +
+  geom_vline(xintercept = 360, 
+             linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", label = "1 year", 
+           x = 380, y = 65000) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_hist_booking_window
 ```
 
 
@@ -141,7 +209,7 @@ data_plot_col_race <- data_plot_col_race_ridb %>%
 ## -- create plot -- ##
 
 # parameters
-groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#990099FF")
+groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
 
 # plot for shiny app
 plot_col_race <- 
@@ -159,8 +227,8 @@ plot_col_race <-
             position = position_dodge(width = 1), 
             hjust = -0.1, size = 4) +
   scale_color_manual(values = groups_colors_ridb_ca) +
-  labs(x = "Average percentage of race (%)",
-       y = "Race",
+  labs(x = "Percentage (%)",
+       y = "",
        title = "Racial Breakdown of ZIP Codes in 2018",
        subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
   scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
@@ -240,7 +308,7 @@ data_plot_col_education <- data_plot_col_education_ridb %>%
 ## -- create plot -- ##
 
 # parameters
-groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#990099FF")
+groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
 
 # plot for shiny app
 plot_col_education <- 
@@ -258,8 +326,8 @@ plot_col_education <-
             position = position_dodge(width = 1), 
             hjust = -0.1, size = 4) +
   scale_color_manual(values = groups_colors_ridb_ca) +
-  labs(x = "Average percentage of education (%)",
-       y = "Education",
+  labs(x = "Percentage (%)",
+       y = "",
        title = "Breakdown of Education Levels of ZIP Codes in 2018",
        subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
   scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
@@ -276,14 +344,14 @@ plot_col_education
 ```
 
 
-## Transportation (column)
+## Language (histogram/density)
 
 ```{r}
 
 ```
 
 
-## Language (column)
+## Transportation (histogram/density)
 
 ```{r}
 
