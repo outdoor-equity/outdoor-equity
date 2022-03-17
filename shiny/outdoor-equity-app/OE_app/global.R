@@ -66,5 +66,6 @@ agency_comp_col_vars <- c("Booking window" = "median_booking_window",
 
 # comparing with booking window
 booking_scat_var <- c("Booking window" = "median_booking_window")
+
 agency_comp_scat_vars <- c("Distance traveled" = "ADD",
                            "Site Type" = "NEED TO ADD THIS TO DF")

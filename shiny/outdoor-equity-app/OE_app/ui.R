@@ -43,6 +43,8 @@ ui <- fluidPage(
                                          # Note(HD) when created set a value for the input to an empty string
                                          onInitialize = I('function() { this.setValue(""); }')
                                          )),
+                        
+                        
                         # inputId = analysis ----
                         selectizeInput(inputId = "analysis",
                                        label = "2. What kind of analysis do you want to see?",
@@ -53,6 +55,8 @@ ui <- fluidPage(
                                          placeholder = "Select an analysis type",
                                          onInitialize = I('function() { this.setValue(""); }')
                                        )),
+                        
+                        
                         # conditional analysis type is comparison first variable ----
                         conditionalPanel(condition = "input.analysis == 'compare'",
                                          # inputId = comparison ----
@@ -60,16 +64,30 @@ ui <- fluidPage(
                                          selectizeInput(inputId = "comparison",
                                                         label = "3. Pick first variable to compare",
                                                         # median right now bc more robust to outliers
-                                                        choices = c(booking_scat_var = "book_scat",
-                                                                    agency_comp_acs_col_vars = "acs_scat"),
+                                                        choices = c(booking_scat_var,
+                                                                    agency_comp_acs_col_vars),
                                                         multiple = FALSE,
                                                         options = list(
                                                           placeholder = "Type to select a variable",
                                                           onInitialize = I('function() { this.setValue(""); }')
                                                           ))), # end of conditional comparison first variable
+                        # conditional analysis is distribution
+                        conditionalPanel(condition = "input.analysis != '' && input.analysis == 'hist'",
+                                         # inputId = agency_hist_vars ----
+                                         selectizeInput(inputId = "agency_hist_vars",
+                                                        label = "3. Pick a variable to see its distribution",
+                                                        choices = agency_hist_vars,
+                                                        multiple = FALSE,
+                                                        options = list(
+                                                          placeholder = "Type to select a variable",
+                                                          onInitialize = I('function() { this.setValue(""); }')
+                                                        ))), # end of conditional distribution
+                        
+                        
                         # conditional comparison is booking window second variable ----
-                        conditionalPanel(condition = "input.comparison == 'book_scat'",
+                        conditionalPanel(condition = "input.analysis != 'hist' && input.analysis != '' && input.comparison != '' && input.comparison == 'median_booking_window'",
                                          # inputId = scat_ridb_vars ----
+                                         # 2 options 
                                          selectizeInput(inputId = "scat_ridb_vars",
                                                         label = "4. Pick second variable to compare",
                                                         choices = agency_comp_scat_vars,
@@ -79,8 +97,9 @@ ui <- fluidPage(
                                                           onInitialize = I('function() { this.setValue(""); }')
                                                         ))), # end of conditional compare booking window
                         # conditional comparison is agency_comp_acs_col_vars second variable ----
-                        conditionalPanel(condition = "input.comparison == 'acs_scat'", 
+                        conditionalPanel(condition = "input.analysis != '' && input.analysis != 'hist' && input.comparison != '' && input.comparison != 'median_booking_window'", 
                                          # inputId = comp_col_vars ----
+                                         # 5 options
                                          selectizeInput(inputId = "comp_col_vars",
                                                         label = "4. Pick second variable to compare",
                                                         choices = agency_comp_col_vars, # showing up in distribution
@@ -88,18 +107,9 @@ ui <- fluidPage(
                                                         options = list(
                                                           placeholder = "Type to select a variable",
                                                           onInitialize = I('function() { this.setValue(""); }')
-                                                        ))), # end of conditional compare acs vars
-                        # conditional analysis is distribution
-                        conditionalPanel(condition = "input.analysis == 'hist'",
-                                         # inputId = agency_hist_vars ----
-                                         selectizeInput(inputId = "agency_hist_vars",
-                                                     label = "3. Pick a variable to see its distribution",
-                                                     choices = agency_hist_vars,
-                                                     multiple = FALSE,
-                                                     options = list(
-                                                       placeholder = "Type to select a variable",
-                                                       onInitialize = I('function() { this.setValue(""); }')
-                                                     ))) # end of conditional distribution
+                                                        ))) # end of conditional compare acs vars
+                        
+                        
                         ), # end of Agency Analysis tabPanel
                tabPanel(title = "Reservable Site Analysis",
                         # inputId = admin_unit ----
