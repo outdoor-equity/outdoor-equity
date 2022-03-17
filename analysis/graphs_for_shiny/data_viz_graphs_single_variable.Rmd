@@ -22,6 +22,10 @@ library(paletteer)
 
 # load script to pull and clean ACS data
 source("../functions/function_acs_race.R")
+source("../functions/function_acs_median_income.R")
+source("../functions/function_acs_transportation.R")
+source("../functions/function_acs_education.R")
+source("../functions/function_acs_language.R")
 ```
 
 # Read in data
@@ -32,17 +36,58 @@ data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv"
                             delim = ",")
 # data_ridb_acs_2018 <- readRDS(file = "../../../../data_clean/2018_joined_data.rds") # don't use RDS for non-map viz
 
-# ACS CA race data
+# ACS CA data
 acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
+acs_subset_calculate_education(geography = "zcta", year = 2018, state = "California")
 
-# ACS US race data
-acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
+# ACS US data
+# acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
+# acs_subset_calculate_education(geography = "zcta", year = 2018, state = NULL)
 ```
+
+
+# RIDB data
+
+## Distance traveled (histogram/density)
+
+```{r}
+
+```
+
+
+## Booking window (histogram/density)
+
+```{r}
+
+```
+
+
+## Daily cost per visitor (histogram/density)
+
+```{r}
+
+```
+
+
+## Length of Stay (histogram/density)
+
+```{r}
+
+```
+
+
+## Site Type (column)
+
+```{r}
+
+```
+
+
 
 
 # ACS data
 
-## Race
+## Race (column)
 
 ```{r}
 ## -- data wrangle -- ##
@@ -82,7 +127,7 @@ data_plot_col_race_ca <- data_acs_2018_race_percent_California %>%
 data_plot_col_race_ca$race <- with(data_plot_col_race_ca, reorder(race, race_percent_average))
 
 # join data for plotting
-data_plot_col <- data_plot_col_race_ridb %>% 
+data_plot_col_race <- data_plot_col_race_ridb %>% 
   left_join(y = data_plot_col_race_ca,
             by = c("race"),
             suffix = c("_ridb", "_ca")) %>% 
@@ -100,7 +145,7 @@ groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#990099FF")
 
 # plot for shiny app
 plot_col_race <- 
-  ggplot(data = data_plot_col) +
+  ggplot(data = data_plot_col_race) +
   geom_col(aes(x = race_percent_average,
                y = race,
                fill = data_source),
@@ -117,11 +162,10 @@ plot_col_race <-
   labs(x = "Average percentage of race (%)",
        y = "Race",
        title = "Racial Breakdown of ZIP Codes in 2018",
-       subtitle = "Visitors' home ZIP codes for National Park Service Overnight Reservations in California \nvs. California Residents") +
-  scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5))
+       subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
+  scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        legend.position = "none",
         panel.grid.major.y = element_blank(),
         # ## only needed for saving as image
         # axis.text = element_text(size = 20),
@@ -131,4 +175,128 @@ plot_col_race <-
 
 plot_col_race
 ```
+
+## Education (column)
+
+```{r}
+## -- data wrangle -- ##
+
+# reservations in CA
+data_plot_col_education_ridb <- data_ridb_acs_2018 %>%
+  summarize(hs_GED_or_below = (mean(hs_GED_or_below, na.rm = TRUE) * 100),
+            some_college = (mean(some_college, na.rm = TRUE) * 100),
+            college = (mean(college, na.rm = TRUE) * 100),
+            master_or_above = (mean(master_or_above, na.rm = TRUE) * 100))  %>%
+  pivot_longer(cols = 1:4, names_to = "education", values_to = "education_percent_average") %>% 
+  mutate(education = str_replace(string = education,
+                            pattern = "hs_GED_or_below",
+                            replacement = "High school, GED, or below"),
+         education = str_replace(string = education,
+                            pattern = "some_college",
+                            replacement = "Some College"),
+         education = str_replace(string = education,
+                            pattern = "college",
+                            replacement = "Associates or bachelors degree"),
+         education = str_replace(string = education,
+                            pattern = "master_or_above",
+                            replacement = "Masters degree or higher"))
+
+# CA population
+data_plot_col_education_ca <- data_acs_2018_education_percent_California %>%
+  summarize(hs_GED_or_below = (mean(hs_GED_or_below, na.rm = TRUE) * 100),
+            some_college = (mean(some_college, na.rm = TRUE) * 100),
+            college = (mean(college, na.rm = TRUE) * 100),
+            master_or_above = (mean(master_or_above, na.rm = TRUE) * 100))  %>%
+  pivot_longer(cols = 1:4, names_to = "education", values_to = "education_percent_average") %>% 
+  mutate(education = str_replace(string = education,
+                            pattern = "hs_GED_or_below",
+                            replacement = "High school, GED, or below"),
+         education = str_replace(string = education,
+                            pattern = "some_college",
+                            replacement = "Some College"),
+         education = str_replace(string = education,
+                            pattern = "college",
+                            replacement = "Associates or bachelors degree"),
+         education = str_replace(string = education,
+                            pattern = "master_or_above",
+                            replacement = "Masters degree or higher"))
+
+# join data for plotting
+data_plot_col_education <- data_plot_col_education_ridb %>% 
+  left_join(y = data_plot_col_education_ca,
+            by = c("education"),
+            suffix = c("_ridb", "_ca")) %>% 
+  rename(RIDB = education_percent_average_ridb,
+         CA = education_percent_average_ca) %>% 
+  pivot_longer(cols = 2:3,
+               names_to = "data_source",
+               values_to = "education_percent_average") %>% 
+  mutate(data_source = factor(data_source, levels = c("RIDB", "CA")),
+         education = factor(education, levels = c("High school, GED, or below",
+                                                  "Some College", 
+                                                  "Associates or bachelors degree",
+                                                  "Masters degree or higher")))
+
+## -- create plot -- ##
+
+# parameters
+groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#990099FF")
+
+# plot for shiny app
+plot_col_education <- 
+  ggplot(data = data_plot_col_education) +
+  geom_col(aes(x = education_percent_average,
+               y = education,
+               fill = data_source),
+           stat = "identity",
+           position = "dodge") +
+  scale_fill_manual(values = groups_colors_ridb_ca) +  
+  geom_text(aes(x = education_percent_average,
+                y = education,
+                label = paste0(round(education_percent_average, 1), "%"),
+                col = data_source), 
+            position = position_dodge(width = 1), 
+            hjust = -0.1, size = 4) +
+  scale_color_manual(values = groups_colors_ridb_ca) +
+  labs(x = "Average percentage of education (%)",
+       y = "Education",
+       title = "Breakdown of Education Levels of ZIP Codes in 2018",
+       subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
+  scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_col_education
+```
+
+
+## Transportation (column)
+
+```{r}
+
+```
+
+
+## Language (column)
+
+```{r}
+
+```
+
+
+## Median income (histogram/density)
+
+```{r}
+
+```
+
+
+
+
 
