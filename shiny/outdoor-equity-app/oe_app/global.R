@@ -10,14 +10,13 @@ library(tidycensus)
 library(shiny)
 library(leaflet)
 library(tidyverse)
+library(here)
 # library(tmap)
 
 # import data ---- 
-data_joined_test <- readRDS("../../data_clean/2018_joined_data_site_summary.rds")
-data_summary_test <- readRDS("../../data_clean/2018_joined_data.rds")
+data_joined_2018 <- readRDS(here("shiny/outdoor-equity-app/OE_app/data/data_joined_2018.rds"))
+data_summary_2018 <- readRDS(here("shiny/outdoor-equity-app/OE_app/data/data_summary_2018.rds"))
 
-# data_test <- readRDS("./data_resMedIncome_CAmap_2018.rds")
-# data_zip_geometries_ca <- readRDS("./data_zip_geometries_ca.rds")
 
 # pretty names here to reference in ui or server 
 agency_hist_vars <- c("Booking window" = "median_booking_window",
