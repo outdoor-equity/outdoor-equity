@@ -41,6 +41,9 @@ data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv"
 # ACS CA data
 acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
 acs_subset_calculate_education(geography = "zcta", year = 2018, state = "California")
+acs_subset_calculate_language(geography = "zcta", state = "California")
+acs_subset_calculate_transportation(geography = "zcta", year = 2018, state = "California")
+acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = "California")
 
 # ACS US data
 # acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
@@ -102,7 +105,7 @@ plot_hist_booking_window <-
   ggplot(data = data_plot_hist_boooking_window) +
   geom_histogram(aes(x = booking_window),
                  binwidth = 7,
-                 fill = hist_colors)+
+                 fill = hist_colors) +
   labs(x = "Days elapsed from order to visit (each bar = 1 week)",
        y = "",
        title = "Distribution of Booking Windows for",
@@ -133,21 +136,112 @@ plot_hist_booking_window
 ## Daily cost per visitor (histogram/density)
 
 ```{r}
+## -- data wrangle -- ##
+data_plot_hist_daily_cost_per_visitor <- data_ridb_acs_2018 %>% 
+  filter(daily_cost_per_visitor != "Inf")
 
+## -- create plot -- ##
+
+# parameters
+hist_colors <- c("#009900FF")
+
+# plot for shiny app
+plot_hist_daily_cost_per_visitor <-
+  ggplot(data = data_plot_hist_daily_cost_per_visitor) +
+  geom_histogram(aes(x = daily_cost_per_visitor),
+                 fill = hist_colors) +
+  labs(x = "Daily cost per visitor ($)",
+       y = "",
+       title = "Distribution of Daily Costs per Visitor for",
+       subtitle = "Overnight Reservations in California in 2018") +
+  scale_x_continuous(limits = c(0, 50),
+                     breaks = seq(0, 50, by = 10)) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_hist_daily_cost_per_visitor
 ```
 
 
 ## Length of Stay (histogram/density)
 
 ```{r}
+## -- data wrangle -- ##
+data_plot_hist_length_of_stay <- data_ridb_acs_2018
 
+## -- create plot -- ##
+
+# parameters
+hist_colors <- c("#009900FF")
+
+# plot for shiny app
+plot_hist_length_of_stay <-
+  ggplot(data = data_plot_hist_length_of_stay) +
+  geom_histogram(aes(x = length_of_stay),
+                 binwidth = 1,
+                 fill = hist_colors) +
+  labs(x = "Length of stay (days)",
+       y = "",
+       title = "Distribution of Length of Stay for",
+       subtitle = "Overnight Reservations in California in 2018") +
+  # scale_x_continuous(limits = c(0, 50),
+  #                    breaks = seq(0, 50, by = 10)) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_hist_length_of_stay
 ```
 
 
 ## Site Type (column)
 
 ```{r}
+## -- data wrangle -- ##
+data_plot_col_site_type <- data_ridb_acs_2018 %>% 
+  group_by(aggregated_site_type) %>% 
+  summarise(count = n()) %>% 
+  mutate(aggregated_site_type = factor(aggregated_site_type, 
+                                       levels = c("shelter", "rv only", "rv or tent",
+                                                  "tent only", "remote", "equestrian",
+                                                  "water")))
+ 
+## -- create plot -- ##
 
+# parameters
+hist_colors <- c("#009900FF")
+
+# plot for shiny app
+plot_hist_site_type <-
+  ggplot(data = data_plot_col_site_type) +
+  geom_col(aes(x = count,
+               y = aggregated_site_type),
+                 fill = hist_colors) +
+  labs(x = "Number of Sites",
+       y = "Types of Sites",
+       title = "Distribution of Type of Sites for",
+       subtitle = "Overnight Reservations in California in 2018") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_hist_site_type
 ```
 
 
@@ -347,21 +441,151 @@ plot_col_education
 ## Language (histogram/density)
 
 ```{r}
+## -- data wrangle -- ##
 
+# reservations in CA
+data_plot_density_language_ridb <- data_ridb_acs_2018 %>%
+  select(agency, regional_area, park, customer_zip, not_english_only) %>% 
+  mutate(not_english_only = not_english_only * 100)
+
+# CA population
+data_plot_density_language_ca <- data_acs_2020_language_percent_California %>%
+  select(zip_code, not_english_only) %>% 
+  mutate(not_english_only = not_english_only * 100)
+
+
+## -- create plot -- ##
+
+# parameters
+groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
+
+# plot for shiny app
+plot_density_language <- ggplot() +
+    geom_density(data = data_plot_density_language_ca,
+               aes(x = not_english_only),
+               fill = groups_colors_ridb_ca[[2]], 
+               col = groups_colors_ridb_ca[[2]],
+               alpha = 0.5) +
+  geom_density(data = data_plot_density_language_ridb,
+               aes(x = not_english_only), 
+                   fill = groups_colors_ridb_ca[[1]], 
+               col = groups_colors_ridb_ca[[2]], 
+               alpha = 0.5) +
+  labs(x = "Percentage (%)",
+       y = "",
+       title = "Distribution of Non-English Spoken in the Home in ZIP Codes in 2018",
+       subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
+  scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, 10), minor_breaks = seq(0, 100, 5)) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_density_language
 ```
 
 
 ## Transportation (histogram/density)
 
 ```{r}
+## -- data wrangle -- ##
 
+# reservations in CA
+data_plot_density_transportation_ridb <- data_ridb_acs_2018 %>%
+  select(agency, regional_area, park, customer_zip, no_vehicle) %>% 
+  mutate(no_vehicle = no_vehicle * 100)
+
+# CA population
+data_plot_density_transportation_ca <- data_acs_2018_transportation_percent_California %>%
+  select(zip_code, no_vehicle) %>% 
+  mutate(no_vehicle = no_vehicle * 100)
+
+
+## -- create plot -- ##
+
+# parameters
+groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
+
+# plot for shiny app
+plot_density_transportation <- ggplot() +
+    geom_density(data = data_plot_density_transportation_ca,
+               aes(x = no_vehicle),
+               fill = groups_colors_ridb_ca[[2]], 
+               col = groups_colors_ridb_ca[[2]],
+               alpha = 0.5) +
+  geom_density(data = data_plot_density_transportation_ridb,
+               aes(x = no_vehicle), 
+                   fill = groups_colors_ridb_ca[[1]], 
+               col = groups_colors_ridb_ca[[2]], 
+               alpha = 0.5) +
+  labs(x = "Percentage (%)",
+       y = "",
+       title = "Distribution of No Personal Vehicle Available in Home in ZIP Codes in 2018",
+       subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
+  scale_x_continuous(limits = c(0, 10), breaks = seq(0, 10, 1), minor_breaks = seq(0, 10, .5)) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_density_transportation
 ```
 
 
 ## Median income (histogram/density)
 
 ```{r}
+## -- data wrangle -- ##
 
+# reservations in CA
+data_plot_density_median_income_ridb <- data_ridb_acs_2018 %>%
+  select(agency, regional_area, park, customer_zip, median_income)
+
+# CA population
+data_plot_density_median_income_ca <- data_acs_2018_median_income_California %>%
+  select(zip_code, median_income)
+
+
+## -- create plot -- ##
+
+# parameters
+groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
+
+# plot for shiny app
+plot_density_median_income <- ggplot() +
+    geom_density(data = data_plot_density_median_income_ca,
+               aes(x = median_income),
+               fill = groups_colors_ridb_ca[[2]], 
+               col = groups_colors_ridb_ca[[2]],
+               alpha = 0.5) +
+  geom_density(data = data_plot_density_median_income_ridb,
+               aes(x = median_income), 
+                   fill = groups_colors_ridb_ca[[1]], 
+               col = groups_colors_ridb_ca[[2]], 
+               alpha = 0.5) +
+  labs(x = "Median Income ($))",
+       y = "",
+       title = "Distribution of Median Income in Home in ZIP Codes in 2018",
+       subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
+  #scale_x_continuous(limits = c(0, 10), breaks = seq(0, 10, 1), minor_breaks = seq(0, 10, .5)) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_density_median_income
 ```
 
 
