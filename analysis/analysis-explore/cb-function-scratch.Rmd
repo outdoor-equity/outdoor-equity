@@ -18,8 +18,12 @@ library(patchwork)
 library(scales)
 library(tmap)
 library(vroom)
+library(paletteer)
 
 options(scipen = 999)
+
+# load script to pull and clean ACS data
+source("../functions/function_acs_race.R")
 ```
 
 
@@ -29,19 +33,112 @@ options(scipen = 999)
 # read in joined data
 data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
                             delim = ",")
+# data_ridb_acs_2018 <- readRDS(file = "../../../../data_clean/2018_joined_data.rds") # don't use RDS for non-map viz
+
+# ACS CA race data
+acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
+
+# ACS US race data
+acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
 ```
 
+# Set parameters
 
+```{r}
+racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+
+
+```
 
 
 
 ```{r}
-test <- 
-  data_ridb_acs_2018 %>% 
-  
+# reservations in CA
+data_plot_col_race_ridb <- data_ridb_acs_2018 %>%
+  summarize(white = (mean(white, na.rm = TRUE) * 100),
+            black = (mean(black, na.rm = TRUE) * 100),
+            asian = (mean(asian, na.rm = TRUE) * 100),
+            multiracial = (mean(multiracial, na.rm = TRUE) * 100),
+            other = (mean(other, na.rm = TRUE) * 100),
+            native_american = (mean(native_american, na.rm = TRUE) * 100),
+            pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
+            hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>%
+  pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race))
+data_plot_col_race_ridb$race <- with(data_plot_col_race_ridb, reorder(race, race_percent_average))
+
+# CA population
+data_plot_col_race_ca <- data_acs_2018_race_percent_California %>%
+  summarize(white = (mean(white, na.rm = TRUE) * 100),
+            black = (mean(black, na.rm = TRUE) * 100),
+            asian = (mean(asian, na.rm = TRUE) * 100),
+            multiracial = (mean(multiracial, na.rm = TRUE) * 100),
+            other = (mean(other, na.rm = TRUE) * 100),
+            native_american = (mean(native_american, na.rm = TRUE) * 100),
+            pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
+            hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>%
+  pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race))
+data_plot_col_race_ca$race <- with(data_plot_col_race_ca, reorder(race, race_percent_average))
+
+# join data for plotting
+data_plot_col <- data_plot_col_race_ridb %>% 
+  left_join(y = data_plot_col_race_ca,
+            by = c("race"),
+            suffix = c("_ridb", "_ca")) %>% 
+  rename(RIDB = race_percent_average_ridb,
+         CA = race_percent_average_ca) %>% 
+  pivot_longer(cols = 2:3,
+               names_to = "data_source",
+               values_to = "race_percent_average") %>% 
+  mutate(data_source = factor(data_source, levels = c("RIDB", "CA")))
 ```
 
+```{r}
+# parameters
+groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#990099FF")
 
+# plot for shiny app
+plot_col_race <- 
+  ggplot(data = data_plot_col) +
+  geom_col(aes(x = race_percent_average,
+               y = race,
+               fill = data_source),
+           stat = "identity",
+           position = "dodge") +
+  scale_fill_manual(values = groups_colors_ridb_ca) +  
+  geom_text(aes(x = race_percent_average,
+                y = race,
+                label = paste0(round(race_percent_average, 1), "%"),
+                col = data_source), 
+            position = position_dodge(width = 1), 
+            hjust = -0.1, size = 4) +
+  scale_color_manual(values = groups_colors_ridb_ca) +
+  labs(x = "Average percentage of race (%)",
+       y = "Race",
+       title = "Racial Breakdown of ZIP Codes in 2018",
+       subtitle = "Visitors' home ZIP codes for National Park Service Overnight Reservations in California \nvs. California Residents") +
+  scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5))
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        legend.position = "none",
+        panel.grid.major.y = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_col_race
+```
 
 
 

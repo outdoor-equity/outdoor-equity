@@ -1,7 +1,7 @@
 
 RIDB_calculate_pre2018 <- 
   function(input_df_name, output_df_name){
-    # update variables
+    ## update variables
     df <- input_df_name %>% 
       mutate(start_date = as.Date(start_date),
              end_date = as.Date(end_date),
@@ -37,8 +37,8 @@ RIDB_calculate_pre2018 <-
                          site_type %in% c("tent only nonelectric",
                                           "group tent only area nonelectric",
                                           "tent only electric") ~ "tent only")
-             ) %>% 
-      select(!c("parent_location", "region_description", "site_type")) %>% # (CB) I think this is repetative, remove?
+             ) %>% # close mutate for creating new variables
+      select(!c("parent_location", "region_description", "site_type")) %>% # (CB) I think this is repetitive, remove?
       select("agency", "regional_area", "park", "aggregated_site_type", "facility_state", 
              "facility_longitude", "facility_latitude", "customer_zip", "total_paid", 
              "start_date", "end_date", "order_date", "number_of_people", 
@@ -77,8 +77,43 @@ RIDB_calculate_pre2018 <-
         # update park values (CA specific)
         park = str_remove(string = park,
                           pattern = paste(c(" - Angeles Nf", " -Hwy"), 
-                                          collapse = "|")))
+                                          collapse = "|"))
+        ) # close mutate for update values
+    
+    ## calculate distance traveled
+    # bootstrap geometries and reproject to NAD 83
+    df_geometries <- df %>% 
+      st_as_sf(coords = c("facility_longitude", "facility_latitude"),
+               crs = 4326) %>% 
+      st_transform(crs = 4269) # using NAD83 because measured in meters
+    # get centroid of geometries for all US ZIP codes 
+    df_zip_centroids_us <- get_acs(geography = "zcta", year = 2018, geometry = TRUE, 
+                                summary_var = "B01001_001",
+                                survey = "acs5",
+                                variables = c(male = "B01001_002")) %>% 
+      select(NAME, geometry) %>% 
+      mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>% 
+      select(zip_code, geometry) %>% 
+      st_centroid()
+    # join data and calculate `distance_traveled` variable
+    df_joined_geometries <- 
+      left_join(x = df_geometries %>% as.data.frame(),
+                y = df_zip_centroids_us %>% as.data.frame(), 
+                by = c("customer_zip" = "zip_code")) %>%
+      st_sf(sf_column_name = 'geometry.x') %>% 
+      mutate(distance_traveled_m = st_distance(x = geometry.x, 
+                                               y = geometry.y,
+                                               by_element = TRUE),
+             distance_traveled_m = as.numeric(distance_traveled_m)) 
+    # convert to back to data.frame (from sf data.frame), remove geometries
+    df_joined <- df_joined_geometries %>% 
+      as.data.frame() %>% 
+      extract(col = geometry.x, 
+              into = c('facility_latitude', 'facility_longitude'), 
+              regex = '\\((.*), (.*)\\)', 
+              convert = TRUE, remove = TRUE) %>% 
+      select(-geometry.y)
     
     # create df
-    assign(paste(output_df_name), data.frame(df), envir = .GlobalEnv)
+    assign(paste(output_df_name), data.frame(df_joined), envir = .GlobalEnv)
   }
