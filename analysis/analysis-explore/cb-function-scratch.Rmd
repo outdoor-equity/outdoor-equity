@@ -29,25 +29,28 @@ options(scipen = 999)
 # read in joined data
 # data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
 #                             delim = ",")
-data_ridb_acs_2018 <- readRDS(file = "../../../../data_clean/2018_joined_data.rds")
-
-zip_geometries_us <- get_acs(geography = "zcta", year = 2018, geometry = TRUE, 
-                             summary_var = "B01001_001",
-                             survey = "acs5",
-                             variables = c(male = "B01001_002")) %>% 
-  select(NAME, geometry) %>% 
-  mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>% 
-  select(zip_code, geometry)
+test_df <- readRDS(file = "../../../../data_clean/2018_joined_data.rds")
 ```
 
 
-
-
-
 ```{r}
-test <-
-  
-  
+# test <- 
+#   left_join(x = test_df %>% as.data.frame(),
+#             y = test_zip_centroids %>% as.data.frame(), 
+#             by = c("customer_zip" = "zip_code")) %>%
+#   st_sf(sf_column_name = 'geometry.x') %>% 
+#   mutate(distance_traveled_m = as.number(st_distance(x = geometry.x, 
+#                                          y = geometry.y,
+#                                          by_element = TRUE))) %>% 
+#   as.data.frame() %>% 
+#   extract(col = geometry.x, 
+#           into = c('facility_latitude', 'facility_longitude'), 
+#           regex = '\\((.*), (.*)\\)', 
+#           convert = TRUE, remove = TRUE) %>% 
+#   select(-geometry.y)
+
+test <- data_combined_2018 %>% 
+  mutate(distance_traveled_m = as.numeric(distance_traveled_m))
 ```
 
 
