@@ -118,13 +118,13 @@ write.csv(x = data_combined_park_summary_2018,
 # bootstrap geometries and reproject to NAD83
 data_combined_2018_geometry <- 
   data_combined_2018 %>% 
-  st_as_sf(coords = c("facility_longitude", "facility_latitude"),
+  st_as_sf(coords = c("facility_latitude", "facility_longitude"),
            crs = 4326) %>% 
   st_transform(crs = 4269) # using NAD83 because measured in meters
 
 data_combined_park_summary_2018_geometry <- 
   data_combined_park_summary_2018 %>% 
-  st_as_sf(coords = c("mean_facility_longitude", "mean_facility_latitude"),
+  st_as_sf(coords = c("mean_facility_latitude", "mean_facility_longitude"),
            crs = 4326) %>% 
   st_transform(crs = 4269) # using NAD83 because measured in meters
 
