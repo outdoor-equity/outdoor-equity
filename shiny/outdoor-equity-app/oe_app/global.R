@@ -21,6 +21,7 @@ data_hist_distance_traveled <- readRDS("data/data_hist_distance_traveled.rds")
 agency_hist_vars <- c("Booking window" = "booking_window",
                       "Daily cost" = "daily_cost_per_visitor",
                       "Distance traveled" = "distance_traveled_mi",
+                      # cat education
                       "Education - High School/GED" = "hs_GED_or_below",
                       "Education - College" = "college",
                       "Education - Some college" = "some_college",

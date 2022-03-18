@@ -16,7 +16,7 @@ server <- function(input, output){
       # plot for shiny app
       if(input$agency_hist_vars != ""){
         ggplot(data = distance_traveled_df()) +
-          geom_histogram(aes_string(x = input$agency_hist_vars),
+          geom_histogram(aes_string(x = !!input$agency_hist_vars),
                          fill = hist_colors) +
           theme_minimal() +
           theme(plot.background = element_rect("white"),
