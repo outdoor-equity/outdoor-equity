@@ -126,17 +126,17 @@ ca_geom <- get_acs(geography = "state", year = 2018, geometry = TRUE,
 
 ## Save `data_clean_combined_2018` as a RDS
 ```{r}
-saveRDS(data_clean_combined_2018, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data_combined_CAmap_2018.rds")
+saveRDS(data_clean_combined_2018, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/oe_app/data/data_combined_CAmap_2018.rds")
 ```
 
 ## Save `ca_geom` as a RDS
 ```{r}
-saveRDS(ca_geom, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data_ca_geom.rds")
+saveRDS(ca_geom, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/oe_app/data/data_ca_geom.rds")
 ```
 
 ## Save `data_regional_combined_2018` as a RDS
 ```{r}
-saveRDS(data_regional_combined_2018, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/data_regional_combined_2018.rds")
+saveRDS(data_regional_combined_2018, "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/oe_app/data/data_regional_combined_2018.rds")
 ```
 
 

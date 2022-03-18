@@ -8,13 +8,14 @@ server <- function(input, output){
   })
   
   # race df ----
-  race_df <- reactive({
-    data_hist_race %>% filter(agency %in% input$agency)
-  })
+  # NEED TO ADD AGENCY IF WE WANT IT TO BE REACTIVE 
+  # race_df <- reactive({
+  #   data_hist_race %>% filter(agency %in% input$agency)
+  # })
 
   
   
-  ## RENDERING PLOTS ## ----
+  ## RENDERING AGENCY ANALYSIS PLOTS ## ----
   # render dist traveled hist ----
   output$agency_analysis <- renderPlot({
     
@@ -24,7 +25,7 @@ server <- function(input, output){
       hist_colors <- c("#009900FF")
       
       # plot for shiny app
-      ggplot(data = data_hist_distance_traveled) +
+      ggplot(data = distance_traveled_df()) +
         geom_histogram(aes(x = distance_traveled_mi),
                        fill = hist_colors) +
         scale_x_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 500), 
@@ -40,9 +41,35 @@ server <- function(input, output){
     # else if for race hist ----
     else if(input$agency_hist_vars == "race"){
       
+      # parameters
+      groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
       
+      ggplot(data = data_hist_race) +
+        geom_col(aes(x = race_percent_average,
+                     y = race,
+                     fill = data_source),
+                 stat = "identity",
+                 position = "dodge") +
+        scale_fill_manual(values = groups_colors_ridb_ca) +  
+        geom_text(aes(x = race_percent_average,
+                      y = race,
+                      label = paste0(round(race_percent_average, 1), "%"),
+                      col = data_source), 
+                  position = position_dodge(width = 1), 
+                  hjust = -0.1, size = 4) +
+        scale_color_manual(values = groups_colors_ridb_ca) +
+        labs(x = "Percentage (%)",
+             y = "") +
+        scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), 
+                           minor_breaks = seq(0, 60, 5)) +
+        theme_minimal() +
+        theme(plot.background = element_rect("white"),
+              panel.grid.major.y = element_blank())
       
-    }
+    } # end of race plot ----
+  
+  ## RENDERING SITE ANALYSIS PLOTS ## ----
+    
   
     
     
