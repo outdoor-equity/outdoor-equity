@@ -154,6 +154,24 @@ ggplot(data = data_clean_combined_2018, aes(x = mean_median_income)) +
   geom_histogram()
 ```
 
+# map testing
+
+```{r}
+test <- readRDS("../../../data_clean/2018_joined_data_test.rds")
+```
+
+```{r}
+test_map <- test %>% 
+  group_by(regional_area, park, agency) %>% 
+  summarize(count = n())
+```
+
+```{r}
+tm_shape(test_map) +
+  tm_symbols(shape = "agency")
+```
+
+
 ## map of median income for regional area and agencies
 ```{r, fig.width=8, fig.height=4}
 tmap_mode("plot")

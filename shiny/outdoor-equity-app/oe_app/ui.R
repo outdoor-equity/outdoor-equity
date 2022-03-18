@@ -171,7 +171,8 @@ ui <- fluidPage(
                                          # inputId = site_info ----
                                          selectizeInput(inputId = "var_analysis",
                                                         label = "3. Pick a variable to visualize",
-                                                        choices = sites, # need to change 
+                                                        choices = c("Distance traveled" = "distance_traveled_mi",
+                                                                    "Race" = "race"),
                                                         multiple = FALSE,
                                                         options = list(
                                                           placeholder = "Type to select a variable",
