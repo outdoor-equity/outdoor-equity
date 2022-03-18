@@ -195,66 +195,8 @@ plot_booking_window_site_type2
 ## Booking window x distance traveled
 
 
-## Agency x total reservations
 
-```{r}
-## -- data wrangle -- ##
 
-data_plot_bar_agency_park <- data_ridb_acs_2018 %>% 
-  group_by(agency, park) %>% 
-  summarise(count = n())
-
-## -- create plot -- ##
-
-# parameters
-agency_colors <- 
-  c("Bureau of Reclamation" = "#F8766D", # BOR
-    "National Park Service" = "#7CAE00", # NPS
-    "US Forest Service" = "#00BFC4", # USFS
-    "US Forest Service" = "#C77CFF" # USACE
-  )
-
-# plot for shiny app
-plot_bar_agency_park <- 
-  ggplot(data_plot_bar_agency_park) +
-  geom_bar(aes(x = agency, fill = agency)) +
-  scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
-                                 "US Army Corps of Engineers", "US Forest Service")) +
-  theme_minimal() +
-  labs(fill = "Agency",
-       x = "Agency",
-       y = "Reservable Site Count",
-       title = "Total Sites per Agency \nfor Reservable Overnight Sites in California in 2018") +
-  theme(panel.grid.minor.x = element_blank(),
-        plot.background = element_rect("white"),
-        # axis.text = element_text(size = 12),
-        # axis.title = element_text(size = 14, face = "bold"),
-        # title = element_text(size = 16, face = "bold")
-        )
-
-plot_bar_agency_park
-```
-
-```{r}
-# bar: agency, reservations, agency
-plot_bar_agency_visits <- 
-  ggplot(data = data_ridb_acs_2018) +
-  geom_bar(aes(x = agency, fill = agency)) +
-  scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
-                                 "US Army Corps of Engineers", "US Forest Service")) +
-  theme_minimal() +
-  labs(x = "Agency",
-       y = "Total Reservations",
-       fill = "Agency",
-       title = "Total Reservations per Agency \nfor Reservable Overnight Sites in California in 2018") +
-  theme(panel.grid.minor.x = element_blank(),
-        plot.background = element_rect("white"),
-        axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
-        title = element_text(size = 16, face = "bold"))
-
-plot_bar_agency_visits
-```
 
 
 
