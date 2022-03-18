@@ -57,43 +57,68 @@ acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = "Cal
 
 ```{r}
 ## -- data wrangle -- ##
-data_plot_race_distance_traveled <- data_ridb_acs_2018 %>% 
+data_plot_race_distance_traveled_bins <- data_ridb_acs_2018 %>% 
   select(agency, regional_area, park, customer_zip, asian, black, hispanic_latinx, 
          multiracial, native_american, other, pacific_islander, white,
          distance_traveled_m) %>% 
   mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
-  pivot_longer(cols = 5:12,
+  drop_na(distance_traveled_mi) %>% 
+  mutate(distance_traveled_bins = ntile(distance_traveled_mi, 5)) 
+
+data_plot_race_distance_traveled <- data_plot_race_distance_traveled_bins %>% 
+  group_by(distance_traveled_bins) %>% 
+  summarize(white = (mean(white, na.rm = TRUE) * 100),
+            black = (mean(black, na.rm = TRUE) * 100),
+            asian = (mean(asian, na.rm = TRUE) * 100),
+            multiracial = (mean(multiracial, na.rm = TRUE) * 100),
+            other = (mean(other, na.rm = TRUE) * 100),
+            native_american = (mean(native_american, na.rm = TRUE) * 100),
+            pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
+            hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>% 
+  pivot_longer(cols = 2:9,
                names_to = "race",
-               values_to = "race_percentage") %>%
-  filter(park == "Middle Meadows")
+               values_to = "race_percentage") %>% 
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race))
   
+distance_traveled_bin_breaks <- quantile(data_plot_race_distance_traveled_bins$distance_traveled_mi, prob = seq(0, 1, length = 6), type = 5)
+         
 
 ## -- create plot -- ##
 
 # parameters
+racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
 
 # plot for shiny
 plot_race_distance_traveled <- ggplot(data = data_plot_race_distance_traveled) +
-  geom_point(aes(x = distance_traveled_mi, 
-                 y = race_percentage,
-                 col = race, group = race), alpha = 0.6, size = 3)
+  geom_col(aes(x = distance_traveled_bins,
+               y = race_percentage,
+               fill = race),
+           stat = "identity",
+           position = "dodge")  +
+  scale_fill_manual(values = racial_group_colors) +
+  labs(x = "Distance Traveled (miles)",
+       y = "Percentage (%)",
+       title = "Breakdown of Education Levels of ZIP Codes in 2018",
+       subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
+  #scale_x_discrete(labels = c("1" = "1st", "2" = "2nd", "3" = "3rd", "4" = "4th", "5" = "5th")) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
 
 plot_race_distance_traveled
-
-test <- ggplot(data = data_plot_race_distance_traveled) +
-  geom_point(aes(x = distance_traveled_mi, 
-                   y = race_percentage,
-                   col = race, fill = race)) +
-  facet_wrap(~ race)
-test
-
-test2 <- ggplot(data = data_plot_race_distance_traveled) +
-  geom_boxplot(aes(x = distance_traveled_mi, 
-                   y = race_percentage,
-                   col = race, fill = race)) +
-  facet_wrap(~ race)
-test2
 ```
+
+
 
 
 ## Race x site type
@@ -194,10 +219,33 @@ plot_booking_window_site_type2
 
 ## Booking window x distance traveled
 
+```{r}
+## -- data wrangle -- ##
+
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+ggplot(data = )
+```
 
 
 
+# Save plot all data to RDS
 
+```{r}
+plot_data <- c(
+  
+)
 
+for (i in seq_along(plot_data)){
+  saveRDS(object = get(plot_data[[i]]),
+          file = paste0("../../../../data_clean/2018_data_graphs_comparison_variable/2018_", 
+                        plot_data[[i]],
+                        ".rds"))
+}
+```
 
 
