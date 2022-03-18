@@ -72,20 +72,25 @@ ui <- fluidPage(
                                          selectizeInput(inputId = "comparison",
                                                         label = "3. Pick first variable to compare",
                                                         # median right now bc more robust to outliers
-                                                        choices = c(booking_scat_var,
-                                                                    agency_comp_acs_col_vars),
+                                                        choices = c("Distance traveled" = "distance_traveled_mi",
+                                                                    "Race" = "race"),
+                                                        ## ADD THESE CHOICES BACK IN LATER ##
+                                                        #choices = c(booking_scat_var,
+                                                        #            agency_comp_acs_col_vars),
                                                         multiple = FALSE,
                                                         options = list(
                                                           placeholder = "Type to select a variable",
                                                           onInitialize = I('function() { this.setValue(""); }')
                                                           ))), # end of conditional comparison first variable
-                        
                         # step 3 conditional analysis is distribution
                         conditionalPanel(condition = "input.analysis != '' && input.analysis == 'hist'",
                                          # inputId = agency_hist_vars ----
                                          selectizeInput(inputId = "agency_hist_vars",
                                                         label = "3. Pick a variable to see its distribution",
-                                                        choices = agency_hist_vars,
+                                                        choices = c("Distance traveled" = "distance_traveled_mi",
+                                                                    "Race" = "race"),
+                                                        ## ADD THESE CHOICE BACK IN LATER ##
+                                                        #choices = agency_hist_vars,
                                                         multiple = FALSE,
                                                         options = list(
                                                           placeholder = "Type to select a variable",
@@ -99,7 +104,10 @@ ui <- fluidPage(
                                          # 2 options 
                                          selectizeInput(inputId = "scat_ridb_vars",
                                                         label = "4. Pick second variable to compare",
-                                                        choices = agency_comp_scat_vars,
+                                                        choices = c("Distance traveled" = "distance_traveled_mi",
+                                                                    "Race" = "race"),
+                                                        ## ADD THESE CHOICES BACK IN LATER ##
+                                                        #choices = agency_comp_scat_vars,
                                                         multiple = FALSE,
                                                         options = list(
                                                           placeholder = "Type to select a variable",
@@ -111,7 +119,10 @@ ui <- fluidPage(
                                          # 5 options
                                          selectizeInput(inputId = "comp_col_vars",
                                                         label = "4. Pick second variable to compare",
-                                                        choices = agency_comp_col_vars, # showing up in distribution
+                                                        choices = c("Distance traveled" = "distance_traveled_mi",
+                                                                    "Race" = "race"),
+                                                        ## ADD THESE CHOICES BACK IN LATER ##
+                                                        #choices = agency_comp_col_vars, 
                                                         multiple = FALSE,
                                                         options = list(
                                                           placeholder = "Type to select a variable",
@@ -119,8 +130,8 @@ ui <- fluidPage(
                                                         ))), # end of conditional compare acs vars
                         
                         
-                        # agency analysis output Id = agency_scat_col ----
-                        plotOutput(outputId = "agency_hist_dist_travel")
+                        # agency analysis output Id = agency_analysis ----
+                        plotOutput(outputId = "agency_analysis")
              
                         ), # end of Agency Analysis tabPanel
                
@@ -129,7 +140,7 @@ ui <- fluidPage(
                         # inputId = admin_unit ----
                         selectizeInput(inputId = "admin_unit",
                                        label = "1. Select an administrative unit:",
-                                       choices = c("BOR", "NPS", "USACE", "USFS"),
+                                       choices = admin_units,
                                        multiple = TRUE,
                                        options = list(
                                          placeholder = "Type to search for an admin unit",
