@@ -41,6 +41,9 @@ server <- function(input, output){
     # else if for race hist ----
     else if(input$agency_hist_vars == "race"){
       
+      # parameters
+      groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
+      
       ggplot(data = data_hist_race) +
         geom_col(aes(x = race_percent_average,
                      y = race,
