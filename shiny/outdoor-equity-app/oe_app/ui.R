@@ -140,7 +140,7 @@ ui <- fluidPage(
                         # inputId = admin_unit ----
                         selectizeInput(inputId = "admin_unit",
                                        label = "1. Select an administrative unit:",
-                                       choices = c("BOR", "NPS", "USACE", "USFS"),
+                                       choices = admin_units,
                                        multiple = TRUE,
                                        options = list(
                                          placeholder = "Type to search for an admin unit",
