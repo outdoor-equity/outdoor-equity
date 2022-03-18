@@ -464,28 +464,27 @@ groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
 
 # plot for shiny app
 plot_density_language <- ggplot() +
-    geom_histogram(data = data_plot_density_language_ca,
-               aes(x = not_english_only,
-                   y = stat(count) / sum(count),
-                   bins = 10),
-               fill = groups_colors_ridb_ca[[2]], 
-               col = groups_colors_ridb_ca[[2]],
-               alpha = 0.75) +
+  geom_histogram(data = data_plot_density_language_ca,
+                 aes(x = not_english_only,
+                     y = stat(count) / sum(count),
+                     bins = 10),
+                 fill = groups_colors_ridb_ca[[2]],
+                 alpha = 0.75) +
   geom_histogram(data = data_plot_density_language_ridb,
-               aes(x = not_english_only,
-                   y = stat(count) / sum(count),
-                   bins = 10),
-                   fill = groups_colors_ridb_ca[[1]],
-               col = groups_colors_ridb_ca[[2]],
-               alpha = 0.5) +
+                 aes(x = not_english_only,
+                     y = stat(count) / sum(count),
+                     bins = 10),
+                 fill = groups_colors_ridb_ca[[1]],
+                 alpha = 0.75) +
   labs(x = "Percentage (%)",
        y = "",
        title = "Distribution of Non-English Spoken in the Home in ZIP Codes in 2018",
        subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
   scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, 10), minor_breaks = seq(0, 100, 5)) +
+  scale_y_continuous(labels = scales::percent) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
+        panel.grid.major.y = element_blank()
         # ## only needed for saving as image
         # axis.text = element_text(size = 20),
         # axis.title = element_text(size = 22, face = "bold"),
@@ -519,24 +518,27 @@ groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
 
 # plot for shiny app
 plot_density_transportation <- ggplot() +
-    geom_density(data = data_plot_density_transportation_ca,
-               aes(x = no_vehicle),
-               fill = groups_colors_ridb_ca[[2]], 
-               col = groups_colors_ridb_ca[[2]],
-               alpha = 0.5) +
-  geom_density(data = data_plot_density_transportation_ridb,
-               aes(x = no_vehicle), 
-                   fill = groups_colors_ridb_ca[[1]], 
-               col = groups_colors_ridb_ca[[2]], 
-               alpha = 0.5) +
+  geom_histogram(data = data_plot_density_transportation_ca,
+                 aes(x = no_vehicle,
+                     y = stat(count) / sum(count),
+                     bins = 10),
+                 fill = groups_colors_ridb_ca[[2]],
+                 alpha = 0.75) +
+  geom_histogram(data = data_plot_density_transportation_ridb,
+                 aes(x = no_vehicle,
+                     y = stat(count) / sum(count),
+                     bins = 10), 
+                 fill = groups_colors_ridb_ca[[1]],
+                 alpha = 0.75) +
   labs(x = "Percentage (%)",
        y = "",
        title = "Distribution of No Personal Vehicle Available in Home in ZIP Codes in 2018",
        subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
   scale_x_continuous(limits = c(0, 10), breaks = seq(0, 10, 1), minor_breaks = seq(0, 10, .5)) +
+  scale_y_continuous(labels = scales::percent) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
+        panel.grid.major.y = element_blank()
         # ## only needed for saving as image
         # axis.text = element_text(size = 20),
         # axis.title = element_text(size = 22, face = "bold"),
@@ -568,24 +570,31 @@ groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
 
 # plot for shiny app
 plot_density_median_income <- ggplot() +
-    geom_density(data = data_plot_density_median_income_ca,
-               aes(x = median_income),
-               fill = groups_colors_ridb_ca[[2]], 
-               col = groups_colors_ridb_ca[[2]],
-               alpha = 0.5) +
-  geom_density(data = data_plot_density_median_income_ridb,
-               aes(x = median_income), 
-                   fill = groups_colors_ridb_ca[[1]], 
-               col = groups_colors_ridb_ca[[2]], 
-               alpha = 0.5) +
+  geom_histogram(data = data_plot_density_median_income_ca,
+                 aes(x = median_income,
+                     y = stat(count) / sum(count),
+                     bins = 10),
+                 fill = groups_colors_ridb_ca[[2]], 
+                 alpha = 0.75) +
+  geom_histogram(data = data_plot_density_median_income_ridb,
+                 aes(x = median_income,
+                     y = stat(count) / sum(count),
+                     bins = 10), 
+                 fill = groups_colors_ridb_ca[[1]], 
+                 alpha = 0.75) +
+  geom_vline(xintercept = 75277, 
+             linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", label = "Median household income \nin 2018 in CA ($75,277)", 
+           x = 118000, y = .15) +
   labs(x = "Median Income ($))",
        y = "",
        title = "Distribution of Median Income in Home in ZIP Codes in 2018",
        subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
-  #scale_x_continuous(limits = c(0, 10), breaks = seq(0, 10, 1), minor_breaks = seq(0, 10, .5)) +
+  scale_x_continuous(limits = c(0, 260000), breaks = seq(0, 260000, 50000), minor_breaks = seq(0, 260000, 25000), labels = comma) +
+  scale_y_continuous(labels = scales::percent) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
+        panel.grid.major.y = element_blank()
         # ## only needed for saving as image
         # axis.text = element_text(size = 20),
         # axis.title = element_text(size = 22, face = "bold"),
