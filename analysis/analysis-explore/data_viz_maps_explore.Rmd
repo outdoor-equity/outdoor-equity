@@ -21,7 +21,7 @@ library(plotly)
 
 options(scipen = 999)
 
-source("functions/function_acs_race.R")
+source("../functions/function_acs_race.R")
 
 # colors for racial groups
 racial_group_colors <- 
@@ -46,7 +46,7 @@ agency_colors <-
 ```{r}
 ## 2018
 # read in data
-data_combined_2018 <- read.csv("../../../data_clean/2018_joined_data.csv")
+data_combined_2018 <- read.csv("../../../../data_clean/2018_joined_data.csv")
 
 # ACS CA race data
 zip_geometries_ca <- get_acs(geography = "zcta", year = 2018, geometry = TRUE, 
@@ -71,7 +71,7 @@ zip_geometries_us <- get_acs(geography = "zcta", year = 2018, geometry = TRUE,
 
 ```{r}
 data_map_santa_cruz_scorpion <- data_combined_2018 %>% 
-  filter(park == "Santa Cruz Scorpion (CA)") %>% 
+  filter(park == "Santa Cruz Scorpion") %>% 
   group_by(customer_zip) %>% 
   summarize(number_reservations = n()) %>% 
   mutate(customer_zip = as.character(customer_zip))
@@ -114,11 +114,5 @@ tm_shape(data_map_geometries_ca) +
 
 ```
 
-
-```{r}
-ggplot() +
-  geom_sf(data = zip_geometries_ca,
-          col = "black")
-```
 
 

@@ -101,11 +101,11 @@ plot_race_distance_traveled <- ggplot(data = data_plot_race_distance_traveled) +
            stat = "identity",
            position = "dodge")  +
   scale_fill_manual(values = racial_group_colors) +
-  labs(x = "Distance Traveled (miles)",
-       y = "Percentage (%)",
-       title = "Breakdown of Education Levels of ZIP Codes in 2018",
-       subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
-  #scale_x_discrete(labels = c("1" = "1st", "2" = "2nd", "3" = "3rd", "4" = "4th", "5" = "5th")) +
+  labs(y = "Distance Traveled (miles)",
+       x = "Percentage (%)",
+       title = "Breakdown of Race of Home ZIP Codes vs. Distance Traveled",
+       subtitle = "for Overnight Reservations in California \nvs. California Residents",
+       caption = "Distance Travel Quintiles: 1 = less than 60.2 (with the lowest being 0.5), 2 = 60.2 - 116.9, 3 = 116.7 - 180.9, 4 = 180.9 - 229.3, 5 = above 229.3 (with the highest being 3613.7") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank(),
@@ -236,13 +236,11 @@ ggplot(data = )
 # Save plot all data to RDS
 
 ```{r}
-plot_data <- c(
-  
-)
+plot_data <- c("data_plot_race_distance_traveled")
 
 for (i in seq_along(plot_data)){
   saveRDS(object = get(plot_data[[i]]),
-          file = paste0("../../../../data_clean/2018_data_graphs_comparison_variable/2018_", 
+          file = paste0("../../../../data_clean/2018_data_graphs_comparison_variables/2018_", 
                         plot_data[[i]],
                         ".rds"))
 }
