@@ -57,14 +57,15 @@ acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = "Cal
 
 ```{r}
 ## -- data wrangle -- ##
-data_plot_col_race_distance_traveled <- data_ridb_acs_2018 %>% 
+data_plot_race_distance_traveled <- data_ridb_acs_2018 %>% 
   select(agency, regional_area, park, customer_zip, asian, black, hispanic_latinx, 
-         multiracial, native_american, other, pacific_islander, white) %>% 
+         multiracial, native_american, other, pacific_islander, white,
+         distance_traveled_m) %>% 
+  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
   pivot_longer(cols = 5:12,
-               names_to = "race", 
-               values_to = "race_percentage") %>% 
-  group_by(race) %>% 
-  summarise()
+               names_to = "race",
+               values_to = "race_percentage") %>%
+  filter(park == "Middle Meadows")
   
 
 ## -- create plot -- ##
@@ -72,10 +73,26 @@ data_plot_col_race_distance_traveled <- data_ridb_acs_2018 %>%
 # parameters
 
 # plot for shiny
-plot_col_race_distance_traveled <- ggplot(data = data_plot_col_race_distance_traveled) +
-  geom_col(aes(y = race,
-               x = race_percentage))
-plot_col_race_distance_traveled
+plot_race_distance_traveled <- ggplot(data = data_plot_race_distance_traveled) +
+  geom_point(aes(x = distance_traveled_mi, 
+                 y = race_percentage,
+                 col = race, group = race), alpha = 0.6, size = 3)
+
+plot_race_distance_traveled
+
+test <- ggplot(data = data_plot_race_distance_traveled) +
+  geom_point(aes(x = distance_traveled_mi, 
+                   y = race_percentage,
+                   col = race, fill = race)) +
+  facet_wrap(~ race)
+test
+
+test2 <- ggplot(data = data_plot_race_distance_traveled) +
+  geom_boxplot(aes(x = distance_traveled_mi, 
+                   y = race_percentage,
+                   col = race, fill = race)) +
+  facet_wrap(~ race)
+test2
 ```
 
 
@@ -146,6 +163,35 @@ plot_col_race_distance_traveled
 
 ## Booking window x site type
 
+```{r}
+## -- data wrangle -- ##
+data_plot_booking_window_site_type <- data_ridb_acs_2018 %>% 
+  #select(agency, regional_area, park, booking_window, aggregated_site_type) %>% 
+  group_by(aggregated_site_type) %>% 
+  summarise(mean_booking_window = mean(booking_window, na.rm = TRUE))
+data_plot_booking_window_site_type$aggregated_site_type <- with(data_plot_booking_window_site_type, reorder(aggregated_site_type, mean_booking_window))
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+plot_booking_window_site_type <- ggplot(data = data_plot_booking_window_site_type) +
+  geom_col(aes(y = aggregated_site_type,
+           x = mean_booking_window))
+
+plot_booking_window_site_type
+
+plot_booking_window_site_type2 <- ggplot(data = data_ridb_acs_2018 %>% filter(booking_window > 0)) +
+  geom_boxplot(aes(x = booking_window, 
+                     #y = stat(count) / sum(count),
+                     fill = aggregated_site_type)) +
+  facet_wrap(~aggregated_site_type)
+
+plot_booking_window_site_type2
+```
+
+
 ## Booking window x distance traveled
 
 
@@ -192,7 +238,7 @@ plot_bar_agency_park
 ```{r}
 # bar: agency, reservations, agency
 plot_bar_agency_visits <- 
-  ggplot(data = data_combined_2018) +
+  ggplot(data = data_ridb_acs_2018) +
   geom_bar(aes(x = agency, fill = agency)) +
   scale_fill_discrete(labels = c("Bureau of Reclamation", "National Park Service", 
                                  "US Army Corps of Engineers", "US Forest Service")) +
