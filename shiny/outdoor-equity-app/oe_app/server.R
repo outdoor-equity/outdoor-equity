@@ -2,25 +2,26 @@
 server <- function(input, output){
   
   # filter agency ----
-  length_of_stay_df <- reactive({
+  distance_traveled_df <- reactive({
     
-    data_hist_length_of_stay %>% filter(agency %in% input$agency)
+    data_hist_distance_traveled %>% filter(agency %in% input$agency)
   })
 
   # render scatterplot ----
-  output$agency_scat_col <- renderPlot({
-    
-    ## -- create plot -- ##
-
-    # parameters
-    hist_colors <- c("#009900FF")
-
-    # plot for shiny app
-    ggplot(data = length_of_stay_df()) +
-      geom_histogram(aes_string(x = input$agency_hist_vars),
-                     fill = hist_colors,
-                     bins = 29) +
-      theme_minimal()
-  })
+    output$agency_hist_dist_travel <- renderPlot({
+  
+      # parameters
+      hist_colors <- c("#009900FF")
+      
+      # plot for shiny app
+      if(input$agency_hist_vars != ""){
+        ggplot(data = distance_traveled_df()) +
+          geom_histogram(aes_string(x = input$agency_hist_vars),
+                         fill = hist_colors) +
+          theme_minimal() +
+          theme(plot.background = element_rect("white"),
+                panel.grid.major.y = element_blank())
+      } # end of if input$agency_hist_vars statement 
+    })
 
 }

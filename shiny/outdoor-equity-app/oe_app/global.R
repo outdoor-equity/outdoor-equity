@@ -14,25 +14,20 @@ library(tidyverse)
 
 # import data ---- 
 data_joined_2018 <- readRDS("data/data_joined_2018.rds")
-data_hist_length_of_stay <- readRDS("data/data_hist_length_of_stay.rds")
-
-
-data_hist_length_of_stay <- readRDS("../../../../../data_clean/2018_data_graphs_single_variable/2018_data_plot_hist_length_of_stay.rds")
-saveRDS(data_hist_length_of_stay, 
-        "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/oe_app/data/data_hist_length_of_stay.rds")
+data_hist_distance_traveled <- readRDS("data/data_hist_distance_traveled.rds")
 
 # pretty names here to reference in ui or server 
 # variables from 2018_joined_data.rds 
 agency_hist_vars <- c("Booking window" = "booking_window",
                       "Daily cost" = "daily_cost_per_visitor",
-                      "Distance traveled" = "distance_traveled_m",
+                      "Distance traveled" = "distance_traveled_mi",
                       "Education - High School/GED" = "hs_GED_or_below",
                       "Education - College" = "college",
                       "Education - Some college" = "some_college",
                       "Education - Master or above" = "master_or_above",
-                      #"Estimated household income" = "median_income",
-                      #"Language - English only" = "english_only",
-                      #"Language - Not English only" = "not_english_only",
+                      "Estimated household income" = "median_income",
+                      "Language - English only" = "english_only",
+                      "Language - Not English only" = "not_english_only",
                       "Length of stay" = "length_of_stay",
                       "Race - Asian" = "asian",
                       "Race - Black" = "black",
@@ -42,10 +37,10 @@ agency_hist_vars <- c("Booking window" = "booking_window",
                       "Race - Pacific Islander" = "pacific_islander",
                       "Race - White" = "white",
                       "Race - Other" = "other",
-                      "Total number of different site types" = "aggregated_site_type",
-                      "Total number of sites" = "park") # is this right?
+                      #"Total number of different site types" = "aggregated_site_type",
+                      #"Total number of sites" = "park", # is this right?
                       #"Total number of visits" = "count",
-                      #"Transportation - No access to vehicle" = "no_vehicle")
+                      "Transportation - No access to vehicle" = "no_vehicle")
        
 agency_comp_acs_col_vars <- c("Education - High School/GED" = "median_hs_GED_or_below",
                           "Education - College" = "median_college",
