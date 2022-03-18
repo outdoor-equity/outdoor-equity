@@ -1,55 +1,20 @@
 library(tidyverse)
 library(here)
 
+data_reg_comb <- data_joined_2018 %>% 
+  group_by(regional_area, agency) %>% 
+  summarize(count = n())
+
+
+tmap_mode("plot")
+tm_shape(data_ca_geom) +
+  tm_polygons(col = "white") +
+tm_shape(data_reg_comb) +
+  tm_symbols(shape = "agency",
+             title.shape = "Agency")
 
 ## RACE COL PLOT ----
 ## -- data wrangle -- ##
-
-# reservations in CA
-data_plot_col_race_ridb <- data_hist_race %>%
-  summarize(white = (mean(white, na.rm = TRUE) * 100),
-            black = (mean(black, na.rm = TRUE) * 100),
-            asian = (mean(asian, na.rm = TRUE) * 100),
-            multiracial = (mean(multiracial, na.rm = TRUE) * 100),
-            other = (mean(other, na.rm = TRUE) * 100),
-            native_american = (mean(native_american, na.rm = TRUE) * 100),
-            pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
-            hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>%
-  pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
-  mutate(race = str_replace(string = race,
-                            pattern = "_",
-                            replacement = " "),
-         race = str_to_title(race))
-data_plot_col_race_ridb$race <- with(data_plot_col_race_ridb, reorder(race, race_percent_average))
-
-# CA population
-data_plot_col_race_ca <- data_acs_2018_race_percent_California %>%
-  summarize(white = (mean(white, na.rm = TRUE) * 100),
-            black = (mean(black, na.rm = TRUE) * 100),
-            asian = (mean(asian, na.rm = TRUE) * 100),
-            multiracial = (mean(multiracial, na.rm = TRUE) * 100),
-            other = (mean(other, na.rm = TRUE) * 100),
-            native_american = (mean(native_american, na.rm = TRUE) * 100),
-            pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
-            hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>%
-  pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
-  mutate(race = str_replace(string = race,
-                            pattern = "_",
-                            replacement = " "),
-         race = str_to_title(race))
-data_plot_col_race_ca$race <- with(data_plot_col_race_ca, reorder(race, race_percent_average))
-
-# join data for plotting
-data_plot_col_race <- data_plot_col_race_ridb %>% 
-  left_join(y = data_plot_col_race_ca,
-            by = c("race"),
-            suffix = c("_ridb", "_ca")) %>% 
-  rename(RIDB = race_percent_average_ridb,
-         CA = race_percent_average_ca) %>% 
-  pivot_longer(cols = 2:3,
-               names_to = "data_source",
-               values_to = "race_percent_average") %>% 
-  mutate(data_source = factor(data_source, levels = c("RIDB", "CA")))
 
 ## -- create plot -- ##
 
@@ -57,7 +22,7 @@ data_plot_col_race <- data_plot_col_race_ridb %>%
 race_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
 
 # plot for shiny app
-ggplot(data = data_plot_col_race) +
+ggplot(data = data_hist_race) +
   geom_col(aes(x = race_percent_average,
                y = race,
                fill = data_source),
@@ -77,7 +42,8 @@ ggplot(data = data_plot_col_race) +
                      minor_breaks = seq(0, 60, 5)) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank())
+        panel.grid.major.y = element_blank()) 
+# END RACE PLOT
 
 
 

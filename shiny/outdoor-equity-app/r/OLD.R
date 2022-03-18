@@ -8,6 +8,15 @@ data_hist_race <- readRDS("../../../../../data_clean/2018_data_graphs_single_var
 saveRDS(data_hist_race, 
         "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/oe_app/data/2018_data_plot_col_race.rds")
 
+### data joined park
+data_joined_park <- data_joined_2018 %>%
+  select(-geometry) %>% 
+  group_by(park) %>% 
+  summarize(count = n())
+
+saveRDS(data_joined_park, 
+        "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/oe_app/data/data_joined_park.rds")
+
 ## UI TMAP ----
 tabPanel(title = "Maps",
          "Map of Estimated Household Income at Overnight Reservations for California in 2018",

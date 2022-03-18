@@ -160,7 +160,7 @@ ui <- fluidPage(
                                          # inputId = site_info ----
                                          selectizeInput(inputId = "site_info",
                                                         label = "3. Pick a reservable site",
-                                                        choices = agency_comp_scat_vars, # need to change
+                                                        choices = sites, # this is right
                                                         multiple = FALSE,
                                                         options = list(
                                                           placeholder = "Type to select a reservable site",
@@ -171,12 +171,16 @@ ui <- fluidPage(
                                          # inputId = site_info ----
                                          selectizeInput(inputId = "var_analysis",
                                                         label = "3. Pick a variable to visualize",
-                                                        choices = agency_comp_scat_vars, # need to change
+                                                        choices = sites, # need to change 
                                                         multiple = FALSE,
                                                         options = list(
                                                           placeholder = "Type to select a variable",
                                                           onInitialize = I('function() { this.setValue(""); }')
-                                                        )))
+                                                        ))), # end of conditional var analysis ----
+                        
+                        # agency analysis output Id = site_analysis ----
+                        plotOutput(outputId = "site_analysis")
+                        
                         ), # end of Reservable Site analysis tabPanel
                ), # end of Analysis tab ----
     # Data Download tab ----
