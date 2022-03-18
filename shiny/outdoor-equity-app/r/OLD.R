@@ -4,9 +4,9 @@ data_test <- readRDS("./data_resMedIncome_CAmap_2018.rds")
 data_zip_geometries_ca <- readRDS("./data_zip_geometries_ca.rds")
 
 ### had to read in the data first, then saved as RDS to data directory in oe_app ###
-data_joined_2018 <- readRDS("../../../../../data_clean/2018_joined_data.rds")
-saveRDS(data_joined_2018, 
-        "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/oe_app/data/data_joined_2018.rds")
+data_hist_race <- readRDS("../../../../../data_clean/2018_data_graphs_single_variable/2018_data_plot_col_race.rds")
+saveRDS(data_hist_race, 
+        "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/oe_app/data/2018_data_plot_col_race.rds")
 
 ## UI TMAP ----
 tabPanel(title = "Maps",

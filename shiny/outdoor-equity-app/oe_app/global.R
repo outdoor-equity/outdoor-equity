@@ -10,14 +10,67 @@ library(tidycensus)
 library(shiny)
 library(leaflet)
 library(tidyverse)
-# library(tmap)
+library(tmap)
+library(janitor)
+library(lubridate)
+library(sf)
+library(patchwork)
+library(scales)
+library(paletteer)
 
 # import data ---- 
 data_joined_2018 <- readRDS("data/data_joined_2018.rds")
 data_hist_distance_traveled <- readRDS("data/data_hist_distance_traveled.rds")
+data_hist_race <- readRDS("data/2018_data_plot_col_race.rds")
 
 # pretty names here to reference in ui or server 
 # variables from 2018_joined_data.rds 
+
+# admin units ---- 
+admin_units <-  c("Eldorado National Forest",
+                  "Inyo National Forest",
+                  "Los Padres National Forest",
+                  "Plumas National Forest",
+                  "San Bernardino National Forest",
+                  "Tahoe National Forest",
+                  "Humboldt-Toiyabe National Forest",
+                  "Sierra National Forest",
+                  "Lassen National Forest",
+                  "Six Rivers National Forest",
+                  "Shasta-Trinity National Forest",
+                  "Yosemite National Park",
+                  "Sequoia & Kings Canyon National Parks",
+                  "Joshua Tree National Park",
+                  "Golden Gate National Recreation Area",
+                  "Channel Islands National Park",
+                  "Lake Tahoe Basin National Forest", 
+                  "Sequoia National Forest",
+                  "Cleveland National Forest",
+                  "Lassen Volcanic National Park",
+                  "Point Reyes National Seashore",
+                  "Hensley Lake",
+                  "Lake Mendocino",
+                  "New Hogan Lake",
+                  "Angeles National Forest",
+                  "New Melones",
+                  "Klamath National Forest",
+                  "Mendocino National Forest",
+                  "Sequoia & Kings Canyon National Park",
+                  "Whiskeytown National Recreation Area",
+                  "Stanislaus National Forest",
+                  "Success Lake",
+                  "Pine Flat Lake", 
+                  "Lake Kaweah",
+                  "Modoc National Forest",
+                  "Eastman Lake",
+                  "Pinnacles National Park",
+                  "Death Valley National Park",
+                  "Lake Sonoma",
+                  "Black Butte Lake",
+                  "Santa Monica Mountains National Recreation Area",
+                  "East Park & Stoney Gorge Reservoirs")
+
+
 agency_hist_vars <- c("Booking window" = "booking_window",
                       "Daily cost" = "daily_cost_per_visitor",
                       "Distance traveled" = "distance_traveled_mi",

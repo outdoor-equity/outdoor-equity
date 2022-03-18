@@ -1,6 +1,20 @@
 library(tidyverse)
 library(here)
 
+hist_colors <- c("#009900FF")
+
+# plot for shiny app
+ggplot(data = data_hist_distance_traveled) +
+  geom_histogram(aes(x = distance_traveled_mi),
+                 fill = hist_colors) +
+  scale_x_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 500), minor_breaks = seq(0, 3000, 250)) +
+  labs(x = "Distance traveled (miles)",
+       y = "") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank())
+
+
 # distance traveled ----
 # parameters
 hist_colors <- c("#009900FF")
