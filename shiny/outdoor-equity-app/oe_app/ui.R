@@ -19,21 +19,29 @@ ui <- fluidPage(
     # nav bar tabs ----
     # About tab ----
     navbarMenu("About",
+               
                tabPanel(title = "Background",
                  # Note(HD): need . in front of file path for relative path
                  includeMarkdown("./text/background-about.md")
                  ), # end of Background tabPanel
+               
+               
                tabPanel(title = "User Guide",
                  includeMarkdown("./text/userGuide-about.md")
                  ), # end of User Guide tabPanel
+               
+               
                tabPanel(title = "Metadata",
                  # Note(HD): need to change this to a rmd file to include DT table
                  includeMarkdown("./text/metadata-about.md")
                  )), # end of About tab ----
+    
+    
     # Analysis tab ----
     navbarMenu("Analysis",
+               
                tabPanel(title = "Agency Analysis",
-                        # inputId = agency ----
+                        # step 1 inputId = agency ----
                         selectizeInput(inputId = "agency",
                                        label = "1. Select an agency:",
                                        choices = c("BOR", "NPS", "USACE", "USFS"),
@@ -45,7 +53,7 @@ ui <- fluidPage(
                                          )),
                         
                         
-                        # inputId = analysis ----
+                        # step 2 inputId = analysis ----
                         selectizeInput(inputId = "analysis",
                                        label = "2. What kind of analysis do you want to see?",
                                        # conditional panel options / "id's" ---- 
@@ -57,7 +65,7 @@ ui <- fluidPage(
                                        )),
                         
                         
-                        # conditional analysis type is comparison first variable ----
+                        # step 3 conditional analysis type is comparison first variable ----
                         conditionalPanel(condition = "input.analysis == 'compare'",
                                          # inputId = comparison ----
                                          # have to inputs that dynamically change for second input
@@ -71,7 +79,8 @@ ui <- fluidPage(
                                                           placeholder = "Type to select a variable",
                                                           onInitialize = I('function() { this.setValue(""); }')
                                                           ))), # end of conditional comparison first variable
-                        # conditional analysis is distribution
+                        
+                        # step 3 conditional analysis is distribution
                         conditionalPanel(condition = "input.analysis != '' && input.analysis == 'hist'",
                                          # inputId = agency_hist_vars ----
                                          selectizeInput(inputId = "agency_hist_vars",
@@ -84,7 +93,7 @@ ui <- fluidPage(
                                                         ))), # end of conditional distribution
                         
                         
-                        # conditional comparison is booking window second variable ----
+                        # step 4 conditional comparison is booking window second variable ----
                         conditionalPanel(condition = "input.analysis != 'hist' && input.analysis != '' && input.comparison != '' && input.comparison == 'median_booking_window'",
                                          # inputId = scat_ridb_vars ----
                                          # 2 options 
@@ -96,7 +105,7 @@ ui <- fluidPage(
                                                           placeholder = "Type to select a variable",
                                                           onInitialize = I('function() { this.setValue(""); }')
                                                         ))), # end of conditional compare booking window
-                        # conditional comparison is agency_comp_acs_col_vars second variable ----
+                        # step 4 conditional comparison is agency_comp_acs_col_vars second variable ----
                         conditionalPanel(condition = "input.analysis != '' && input.analysis != 'hist' && input.comparison != '' && input.comparison != 'median_booking_window'", 
                                          # inputId = comp_col_vars ----
                                          # 5 options
@@ -107,10 +116,15 @@ ui <- fluidPage(
                                                         options = list(
                                                           placeholder = "Type to select a variable",
                                                           onInitialize = I('function() { this.setValue(""); }')
-                                                        ))) # end of conditional compare acs vars
+                                                        ))), # end of conditional compare acs vars
                         
                         
+                        # agency analysis output Id = agency_scat_col ----
+                        plotOutput(outputId = "agency_scat_col")
+             
                         ), # end of Agency Analysis tabPanel
+               
+               
                tabPanel(title = "Reservable Site Analysis",
                         # inputId = admin_unit ----
                         selectizeInput(inputId = "admin_unit",

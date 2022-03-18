@@ -3,13 +3,10 @@
 data_test <- readRDS("./data_resMedIncome_CAmap_2018.rds")
 data_zip_geometries_ca <- readRDS("./data_zip_geometries_ca.rds")
 
-### had to read in the data first, then saved as RDS to data directory in OE_app ###
-data_joined_2018 <- readRDS("../../data_clean/2018_joined_data_site_summary.rds")
-data_summary_2018 <- readRDS("../../data_clean/2018_joined_data.rds")
+### had to read in the data first, then saved as RDS to data directory in oe_app ###
+data_joined_2018 <- readRDS("../../../../../data_clean/2018_joined_data.rds")
 saveRDS(data_joined_2018, 
-         "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/OE_app/data/data_joined_2018.rds")
-saveRDS(data_summary_2018, 
-         "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/OE_app/data/data_summary_2018.rds")
+        "/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/oe_app/data/data_joined_2018.rds")
 
 ## UI TMAP ----
 tabPanel(title = "Maps",
