@@ -119,29 +119,6 @@ plot_race_distance_traveled
 ```
 
 
-```{r}
-# testing with old data
-test1 <- ggplot(data = data_plot_race_distance_traveled) +
-  geom_point(aes(x = distance_traveled_mi, 
-                 y = race_percentage,
-                 col = race, group = race), alpha = 0.6, size = 3)
-
-test1
-
-test2 <- ggplot(data = data_plot_race_distance_traveled) +
-  geom_point(aes(x = distance_traveled_mi, 
-                   y = race_percentage,
-                   col = race, fill = race)) +
-  facet_wrap(~ race)
-test2
-
-test3 <- ggplot(data = data_plot_race_distance_traveled) +
-  geom_boxplot(aes(x = distance_traveled_mi, 
-                   y = race_percentage,
-                   col = race, fill = race)) +
-  facet_wrap(~ race)
-test3
-```
 
 
 ## Race x site type
@@ -265,7 +242,7 @@ plot_data <- c(
 
 for (i in seq_along(plot_data)){
   saveRDS(object = get(plot_data[[i]]),
-          file = paste0("../../../../data_clean/2018_data_graphs_2_variable/2018_", 
+          file = paste0("../../../../data_clean/2018_data_graphs_comparison_variable/2018_", 
                         plot_data[[i]],
                         ".rds"))
 }
