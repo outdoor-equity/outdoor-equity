@@ -120,7 +120,7 @@ ui <- fluidPage(
                         
                         
                         # agency analysis output Id = agency_scat_col ----
-                        plotOutput(outputId = "agency_scat_col")
+                        plotOutput(outputId = "agency_hist_dist_travel")
              
                         ), # end of Agency Analysis tabPanel
                
