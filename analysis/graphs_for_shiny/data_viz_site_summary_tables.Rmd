@@ -1,0 +1,108 @@
+---
+title: "Site Analysis"
+author: "Clarissa"
+date: "3/18/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(lubridate)
+library(sf)
+library(tidycensus)
+library(patchwork)
+library(scales)
+library(tmap)
+library(vroom)
+library(paletteer)
+
+options(scipen = 999)
+
+# load script to pull and clean ACS data
+source("../functions/function_acs_race.R")
+source("../functions/function_acs_median_income.R")
+source("../functions/function_acs_transportation.R")
+source("../functions/function_acs_education.R")
+source("../functions/function_acs_language.R")
+```
+
+# Read in data
+
+```{r, message=FALSE, warning=FALSE}
+# read in joined data
+data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
+                            delim = ",") ## non-map graphs (no geometries)
+# data_ridb_acs_2018 <- readRDS(file = "../../../../data_clean/2018_joined_data.rds") ## maps (don't use RDS for non-map viz, too slow)
+
+# ACS CA data
+acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
+acs_subset_calculate_education(geography = "zcta", year = 2018, state = "California")
+acs_subset_calculate_language(geography = "zcta", state = "California")
+acs_subset_calculate_transportation(geography = "zcta", year = 2018, state = "California")
+acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = "California")
+
+# ACS US data
+# acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
+# acs_subset_calculate_education(geography = "zcta", year = 2018, state = NULL)
+```
+
+
+# Tables
+
+## Upper Pines, Yosemite
+
+```{r}
+## -- data wrangle -- ##
+data_subset_yosemite_upper_pines <- data_ridb_acs_2018 %>% 
+  filter(park == "Upper Pines") 
+
+agency = list(unique(data_subset_yosemite_upper_pines$agency))
+region = list(unique(data_subset_yosemite_upper_pines$regional_area))
+
+data_table_yosemite_upper_pines <- data.frame("agency" = agency[[1]], "region" = region[[1]])
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+
+
+```
+
+## Hope Valley, Humboldt-Toiyabe National Forest
+
+```{r}
+## -- data wrangle -- ##
+data_table_humboldt_hope_valley <- data_ridb_acs_2018 %>% 
+  filter(park == "Hope Valley") %>% 
+  group_by(customer_zip) %>% 
+  summarize(number_reservations = n()) %>% 
+  mutate(customer_zip = as.character(customer_zip))
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+
+
+```
+
+
+# Save plot all data to RDS
+
+```{r}
+plot_data <- c()
+
+for (i in seq_along(plot_data)){
+  saveRDS(object = get(plot_data[[i]]),
+          file = paste0("../../../../data_clean/2018_data_site_summary_tables/2018_", 
+                        plot_data[[i]],
+                        ".rds"))
+}
+```
