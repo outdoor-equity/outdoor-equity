@@ -57,7 +57,7 @@ zip_geometries_us <- get_acs(geography = "zcta", year = 2018, geometry = TRUE,
 ```
 
 
-# Visitor-shed for Channel Islands Scorpion
+# Visitor-shed for Upper Pines, Yosemite
 
 ```{r}
 ## -- data wrangle -- ##
@@ -67,13 +67,13 @@ data_map_yosemite_upper_pines <- data_ridb_acs_2018 %>%
   summarize(number_reservations = n()) %>% 
   mutate(customer_zip = as.character(customer_zip))
 
-data_map_geometries_ca <- zip_geometries_ca %>% 
+data_map_yosemite_upper_pines_geometries_ca <- zip_geometries_ca %>% 
   left_join(data_map_yosemite_upper_pines, by = c("zip_code" = "customer_zip")) %>% 
   mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
 
-data_map_geometries_us <- zip_geometries_us %>% 
-  left_join(data_map_yosemite_upper_pines, by = c("zip_code" = "customer_zip")) %>% 
-  mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
+# data_map_yosemite_upper_pines_geometries_us <- zip_geometries_us %>% 
+#   left_join(data_map_yosemite_upper_pines, by = c("zip_code" = "customer_zip")) %>% 
+#   mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
 
 ## -- create plot -- ##
 
@@ -97,12 +97,41 @@ tm_shape(data_map_geometries_ca) +
           n = 10) 
 ```
 
+# Visitor-shed for Hope Valley, Humboldt-Toiyabe National Forest
+
+```{r}
+## -- data wrangle -- ##
+data_map_humboldt_hope_valley <- data_ridb_acs_2018 %>% 
+  filter(park == "Hope Valley") %>% 
+  group_by(customer_zip) %>% 
+  summarize(number_reservations = n()) %>% 
+  mutate(customer_zip = as.character(customer_zip))
+
+data_map_humboldt_hope_valley_geometries_ca <- zip_geometries_ca %>% 
+  left_join(data_map_humboldt_hope_valley, by = c("zip_code" = "customer_zip")) %>% 
+  mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
+
+# data_map_humboldt_hope_valley_geometries_us <- zip_geometries_us %>% 
+#   left_join(data_map_humboldt_hope_valley, by = c("zip_code" = "customer_zip")) %>% 
+#   mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
+
+## -- create plot -- ##
+
+# interactive map of only CA ZIP codes
+tmap_mode("view")
+tm_shape(data_map_geometries_ca) +
+  tm_fill(col = "number_reservations",
+          palette = "PuRd",
+          style = "jenks",
+          n = 10) 
+```
+
 
 
 # Save plot all data to RDS
 
 ```{r}
-plot_data <- c("data_map_geometries_ca")
+plot_data <- c("data_map_yosemite_upper_pines_geometries_ca", "data_map_humboldt_hope_valley_geometries_ca")
 
 for (i in seq_along(plot_data)){
   saveRDS(object = get(plot_data[[i]]),
