@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
 
 library(tidyverse)
 library(here)
@@ -30,9 +30,8 @@ source("../functions/function_acs_education.R")
 source("../functions/function_acs_language.R")
 ```
 
-# Read in data
 
-```{r, message=FALSE, warning=FALSE}
+```{r load data, message=FALSE}
 # read in joined data
 data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
                             delim = ",") ## non-map graphs (no geometries)
@@ -96,7 +95,7 @@ data_table_humboldt_hope_valley <- data_ridb_acs_2018 %>%
 
 # Save plot all data to RDS
 
-```{r}
+```{r, eval=FALSE}
 plot_data <- c()
 
 for (i in seq_along(plot_data)){

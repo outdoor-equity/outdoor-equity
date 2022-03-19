@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 library(tidyverse)
 library(here)
@@ -30,9 +30,8 @@ options(scipen = 999)
 # source("../functions/function_acs_language.R")
 ```
 
-# Read in data
 
-```{r, message=FALSE, warning=FALSE}
+```{r load data, message=FALSE}
 # read in joined data
 data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
                             delim = ",") ## non-map graphs (no geometries)
@@ -64,7 +63,9 @@ zip_geometries_us <- get_acs(geography = "zcta", year = 2018, geometry = TRUE,
 data_map_yosemite_upper_pines <- data_ridb_acs_2018 %>% 
   filter(park == "Upper Pines") %>% 
   group_by(customer_zip) %>% 
-  summarize(number_reservations = n()) %>% 
+  summarize(number_reservations = n(),
+            facility_latitude = facility_latitude,
+            facility_longitude = facility_longitude) %>% 
   mutate(customer_zip = as.character(customer_zip))
 
 data_map_yosemite_upper_pines_geometries_ca <- zip_geometries_ca %>% 
@@ -90,11 +91,11 @@ data_map_yosemite_upper_pines_geometries_ca <- zip_geometries_ca %>%
 
 # interactive map of only CA ZIP codes
 tmap_mode("view")
-tm_shape(data_map_geometries_ca) +
+tm_shape(data_map_yosemite_upper_pines_geometries_ca) +
   tm_fill(col = "number_reservations",
           palette = "PuRd",
           style = "jenks",
-          n = 10) 
+          n = 10)
 ```
 
 # Visitor-shed for Hope Valley, Humboldt-Toiyabe National Forest
@@ -119,7 +120,7 @@ data_map_humboldt_hope_valley_geometries_ca <- zip_geometries_ca %>%
 
 # interactive map of only CA ZIP codes
 tmap_mode("view")
-tm_shape(data_map_geometries_ca) +
+tm_shape(data_map_humboldt_hope_valley_geometries_ca) +
   tm_fill(col = "number_reservations",
           palette = "PuRd",
           style = "jenks",
@@ -130,7 +131,7 @@ tm_shape(data_map_geometries_ca) +
 
 # Save plot all data to RDS
 
-```{r}
+```{r, eval=FALSE}
 plot_data <- c("data_map_yosemite_upper_pines_geometries_ca", "data_map_humboldt_hope_valley_geometries_ca")
 
 for (i in seq_along(plot_data)){

@@ -50,9 +50,9 @@ acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = "Cal
 ```
 
 
-# Graphs
+## Agency Analysis: Comparison Graphs
 
-## Race x distance traveled
+#### Race x distance traveled
 
 ```{r}
 ## -- data wrangle -- ##
@@ -119,7 +119,7 @@ plot_race_distance_traveled
 ```
 
 
-## Race x site type
+#### Race x site type
 
 ```{r}
 ## -- data wrangle -- ##
@@ -177,7 +177,7 @@ plot_race_site_type
 ```
 
 
-## Race x booking window
+#### Race x booking window
 
 ```{r}
 ## -- data wrangle -- ##
@@ -242,7 +242,7 @@ plot_race_booking_window
 ```
 
 
-## Race x daily cost
+#### Race x daily cost
 
 ```{r}
 ## -- data wrangle -- ##
@@ -308,7 +308,7 @@ plot_race_daily_cost
 ```
 
 
-## Race x length of stay
+#### Race x length of stay
 
 ```{r}
 ## -- data wrangle -- ##
@@ -372,7 +372,7 @@ plot_race_length_of_stay
 ```
 
 
-## Education x distance traveled
+#### Education x distance traveled
 
 ```{r}
 ## -- data wrangle -- ##
@@ -385,38 +385,16 @@ plot_race_length_of_stay
 # plot for shiny
 ```
 
-## Education x site type
+#### Education x site type
 
-## Education x booking window
+#### Education x booking window
 
-## Education x daily cost
+#### Education x daily cost
 
-## Education x length of stay
-
-
-## Transportation x distance traveled
-
-```{r}
-## -- data wrangle -- ##
+#### Education x length of stay
 
 
-## -- create plot -- ##
-
-# parameters
-
-# plot for shiny
-```
-
-## Transportation x site type
-
-## Transportation x booking window
-
-## Transportation x daily cost
-
-## Transportation x length of stay
-
-
-## Language x distance traveled
+#### Transportation x distance traveled
 
 ```{r}
 ## -- data wrangle -- ##
@@ -429,16 +407,16 @@ plot_race_length_of_stay
 # plot for shiny
 ```
 
-## Language x site type
+#### Transportation x site type
 
-## Language x booking window
+#### Transportation x booking window
 
-## Language x daily cost
+#### Transportation x daily cost
 
-## Language x length of stay
+#### Transportation x length of stay
 
 
-## Median-income x distance traveled
+#### Language x distance traveled
 
 ```{r}
 ## -- data wrangle -- ##
@@ -451,16 +429,38 @@ plot_race_length_of_stay
 # plot for shiny
 ```
 
-## Median-income x site type
+#### Language x site type
 
-## Median-income x booking window
+#### Language x booking window
 
-## Median-income x daily cost
+#### Language x daily cost
 
-## Median-income x length of stay
+#### Language x length of stay
 
 
-## Booking window x site type
+#### Median-income x distance traveled
+
+```{r}
+## -- data wrangle -- ##
+
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+```
+
+#### Median-income x site type
+
+#### Median-income x booking window
+
+#### Median-income x daily cost
+
+#### Median-income x length of stay
+
+
+#### Booking window x site type
 
 ```{r}
 ## -- data wrangle -- ##
@@ -477,21 +477,13 @@ data_plot_booking_window_site_type$aggregated_site_type <- with(data_plot_bookin
 # plot for shiny
 plot_booking_window_site_type <- ggplot(data = data_plot_booking_window_site_type) +
   geom_col(aes(y = aggregated_site_type,
-           x = mean_booking_window))
+           x = mean_booking_window), fill = "#009900FF")
 
 plot_booking_window_site_type
-
-plot_booking_window_site_type2 <- ggplot(data = data_ridb_acs_2018 %>% filter(booking_window > 0)) +
-  geom_boxplot(aes(x = booking_window, 
-                     #y = stat(count) / sum(count),
-                     fill = aggregated_site_type)) +
-  facet_wrap(~aggregated_site_type)
-
-plot_booking_window_site_type2
 ```
 
 
-## Booking window x distance traveled
+#### Booking window x distance traveled
 
 ```{r}
 ## -- data wrangle -- ##
@@ -507,7 +499,7 @@ plot_booking_window_site_type2
 
 
 
-# Save plot all data to RDS
+## Save plot all data to RDS
 
 ```{r, eval=FALSE}
 plot_data <- c("data_plot_race_distance_traveled")

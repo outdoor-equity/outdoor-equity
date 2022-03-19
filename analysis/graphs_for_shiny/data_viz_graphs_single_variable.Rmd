@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 library(tidyverse)
 library(here)
@@ -30,9 +30,8 @@ source("../functions/function_acs_education.R")
 source("../functions/function_acs_language.R")
 ```
 
-# Read in data
 
-```{r, message=FALSE, warning=FALSE}
+```{r load data, message=FALSE}
 # read in joined data
 data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
                             delim = ",")
@@ -51,9 +50,9 @@ acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = "Cal
 ```
 
 
-# RIDB data
+## Agency Analysis: Distribution Graphs
 
-## Distance traveled (histogram/density)
+#### Distance traveled
 
 ```{r}
 ## -- data wrangle -- ##
@@ -89,7 +88,7 @@ plot_hist_distance_traveled
 ```
 
 
-## Booking window (histogram/density)
+#### Booking window
 
 ```{r}
 ## -- data wrangle -- ##
@@ -136,7 +135,7 @@ plot_hist_booking_window
 ```
 
 
-## Daily cost per visitor (histogram/density)
+#### Daily cost per visitor
 
 ```{r}
 ## -- data wrangle -- ##
@@ -173,7 +172,7 @@ plot_hist_daily_cost_per_visitor
 ```
 
 
-## Length of Stay (histogram/density)
+#### Length of Stay
 
 ```{r}
 ## -- data wrangle -- ##
@@ -209,7 +208,7 @@ plot_hist_length_of_stay
 ```
 
 
-## Site Type (column)
+#### Site Type
 
 ```{r}
 ## -- data wrangle -- ##
@@ -252,11 +251,7 @@ plot_hist_site_type
 ```
 
 
-
-
-# ACS data
-
-## Race (column)
+#### Race
 
 ```{r}
 ## -- data wrangle -- ##
@@ -345,7 +340,7 @@ plot_col_race <-
 plot_col_race
 ```
 
-## Education (column)
+#### Education
 
 ```{r}
 ## -- data wrangle -- ##
@@ -445,7 +440,7 @@ plot_col_education
 ```
 
 
-## Language (histogram/density)
+#### Language
 
 ```{r}
 ## -- data wrangle -- ##
@@ -503,7 +498,7 @@ plot_density_language
 ```
 
 
-## Transportation (histogram/density)
+#### Transportation
 
 ```{r}
 ## -- data wrangle -- ##
@@ -561,7 +556,7 @@ plot_density_transportation
 ```
 
 
-## Median income (histogram/density)
+#### Median income
 
 ```{r}
 ## -- data wrangle -- ##
@@ -617,7 +612,7 @@ plot_density_median_income
 ```
 
 
-## Total reservations (by agency)
+#### Total reservations (by agency)
 
 ```{r}
 ## -- data wrangle -- ##
@@ -651,7 +646,7 @@ plot_bar_agency_park <-
 plot_bar_agency_park
 ```
 
-## Total Reservations (by agency)
+#### Total Reservations (by agency)
 
 ```{r}
 ## -- data wrangle -- ##
@@ -682,8 +677,9 @@ plot_bar_agency_visits
 ```
 
 
-# Save plot all data to RDS
-```{r}
+## Save plot all data to RDS
+
+```{r, eval=FALSE}
 plot_data <- c("data_plot_hist_distance_traveled", "data_plot_hist_boooking_window", 
                "data_plot_hist_daily_cost_per_visitor", "data_plot_hist_length_of_stay", 
                "data_plot_col_site_type", "data_plot_col_race", "data_plot_col_education", 
