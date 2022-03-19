@@ -1,0 +1,143 @@
+---
+title: "Visitor-shed maps"
+author: "Clarissa"
+date: "3/18/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(lubridate)
+library(sf)
+library(tidycensus)
+library(patchwork)
+library(scales)
+library(tmap)
+library(vroom)
+library(paletteer)
+
+options(scipen = 999)
+
+# load script to pull and clean ACS data
+# source("../functions/function_acs_race.R")
+# source("../functions/function_acs_median_income.R")
+# source("../functions/function_acs_transportation.R")
+# source("../functions/function_acs_education.R")
+# source("../functions/function_acs_language.R")
+```
+
+# Read in data
+
+```{r, message=FALSE, warning=FALSE}
+# read in joined data
+data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
+                            delim = ",") ## non-map graphs (no geometries)
+# data_ridb_acs_2018 <- readRDS(file = "../../../../data_clean/2018_joined_data.rds") ## maps (don't use RDS for non-map viz, too slow)
+
+# ACS CA race data
+zip_geometries_ca <- get_acs(geography = "zcta", year = 2018, geometry = TRUE, 
+                             state = "California",
+                             summary_var = "B01001_001",
+                             variables = c(male = "B01001_002")) %>% 
+  select(NAME, geometry) %>% 
+  mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>% 
+  select(zip_code, geometry)
+
+# ACS US race data
+zip_geometries_us <- get_acs(geography = "zcta", year = 2018, geometry = TRUE, 
+                             summary_var = "B01001_001",
+                             variables = c(male = "B01001_002")) %>% 
+  select(NAME, geometry) %>% 
+  mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>% 
+  select(zip_code, geometry)
+```
+
+
+# Visitor-shed for Upper Pines, Yosemite
+
+```{r}
+## -- data wrangle -- ##
+data_map_yosemite_upper_pines <- data_ridb_acs_2018 %>% 
+  filter(park == "Upper Pines") %>% 
+  group_by(customer_zip) %>% 
+  summarize(number_reservations = n()) %>% 
+  mutate(customer_zip = as.character(customer_zip))
+
+data_map_yosemite_upper_pines_geometries_ca <- zip_geometries_ca %>% 
+  left_join(data_map_yosemite_upper_pines, by = c("zip_code" = "customer_zip")) %>% 
+  mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
+
+# data_map_yosemite_upper_pines_geometries_us <- zip_geometries_us %>% 
+#   left_join(data_map_yosemite_upper_pines, by = c("zip_code" = "customer_zip")) %>% 
+#   mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
+
+## -- create plot -- ##
+
+# parameters
+
+# statics map of US for shiny CURRENTLY NOT WORKING
+# ggplot() +
+#   # geom_sf(data = zip_geometries_us,
+#   #         #fill = "#4d004b"
+#   #         ) +
+#   geom_sf(data = data_map_geometries_us,
+#           aes(fill = number_reservations)) +
+#   scale_fill_continuous(type = "viridis")
+
+# interactive map of only CA ZIP codes
+tmap_mode("view")
+tm_shape(data_map_geometries_ca) +
+  tm_fill(col = "number_reservations",
+          palette = "PuRd",
+          style = "jenks",
+          n = 10) 
+```
+
+# Visitor-shed for Hope Valley, Humboldt-Toiyabe National Forest
+
+```{r}
+## -- data wrangle -- ##
+data_map_humboldt_hope_valley <- data_ridb_acs_2018 %>% 
+  filter(park == "Hope Valley") %>% 
+  group_by(customer_zip) %>% 
+  summarize(number_reservations = n()) %>% 
+  mutate(customer_zip = as.character(customer_zip))
+
+data_map_humboldt_hope_valley_geometries_ca <- zip_geometries_ca %>% 
+  left_join(data_map_humboldt_hope_valley, by = c("zip_code" = "customer_zip")) %>% 
+  mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
+
+# data_map_humboldt_hope_valley_geometries_us <- zip_geometries_us %>% 
+#   left_join(data_map_humboldt_hope_valley, by = c("zip_code" = "customer_zip")) %>% 
+#   mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
+
+## -- create plot -- ##
+
+# interactive map of only CA ZIP codes
+tmap_mode("view")
+tm_shape(data_map_geometries_ca) +
+  tm_fill(col = "number_reservations",
+          palette = "PuRd",
+          style = "jenks",
+          n = 10) 
+```
+
+
+
+# Save plot all data to RDS
+
+```{r}
+plot_data <- c("data_map_yosemite_upper_pines_geometries_ca", "data_map_humboldt_hope_valley_geometries_ca")
+
+for (i in seq_along(plot_data)){
+  saveRDS(object = get(plot_data[[i]]),
+          file = paste0("../../../../data_clean/2018_data_map_visitorshed/2018_", 
+                        plot_data[[i]],
+                        ".rds"))
+}
+```
+
