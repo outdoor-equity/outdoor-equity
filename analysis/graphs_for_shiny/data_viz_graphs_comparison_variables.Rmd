@@ -101,8 +101,8 @@ plot_race_distance_traveled <- ggplot(data = data_plot_race_distance_traveled) +
            stat = "identity",
            position = "dodge")  +
   scale_fill_manual(values = racial_group_colors) +
-  labs(y = "Distance Traveled (miles)",
-       x = "Percentage (%)",
+  labs(x = "Distance Traveled (miles)",
+       y = "Percentage (%)",
        title = "Breakdown of Race of Home ZIP Codes vs. Distance Traveled",
        subtitle = "for Overnight Reservations in California \nvs. California Residents",
        caption = "Distance Traveled Quintiles: \n1 = less than 60.2 (with the lowest being 0.5), \n2 = 60.2 - 116.9, \n3 = 116.7 - 180.9, \n4 = 180.9 - 229.3, \n5 = above 229.3 (with the highest being 3613.7") +
@@ -120,9 +120,260 @@ plot_race_distance_traveled
 ```
 
 
-
-
 ## Race x site type
+
+```{r}
+## -- data wrangle -- ##
+data_plot_race_site_type <- data_ridb_acs_2018 %>% 
+  select(agency, regional_area, park, customer_zip, asian, black, hispanic_latinx, 
+         multiracial, native_american, other, pacific_islander, white,
+         aggregated_site_type) %>% 
+  group_by(aggregated_site_type) %>% 
+  summarize(white = (mean(white, na.rm = TRUE) * 100),
+            black = (mean(black, na.rm = TRUE) * 100),
+            asian = (mean(asian, na.rm = TRUE) * 100),
+            multiracial = (mean(multiracial, na.rm = TRUE) * 100),
+            other = (mean(other, na.rm = TRUE) * 100),
+            native_american = (mean(native_american, na.rm = TRUE) * 100),
+            pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
+            hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>% 
+  pivot_longer(cols = 2:9,
+               names_to = "race",
+               values_to = "race_percentage") %>% 
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race))
+         
+
+## -- create plot -- ##
+
+# parameters
+racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+
+# plot for shiny
+plot_race_site_type <- ggplot(data = data_plot_race_site_type) +
+  geom_col(aes(x = aggregated_site_type,
+               y = race_percentage,
+               fill = race),
+           stat = "identity",
+           position = "dodge")  +
+  scale_fill_manual(values = racial_group_colors) +
+  labs(x = "Site Types",
+       y = "Percentage (%)",
+       fill = "Race") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        plot.caption = element_text(hjust = -0)
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_race_site_type
+```
+
+
+## Race x booking window
+
+```{r}
+## -- data wrangle -- ##
+data_plot_race_booking_window_bins <- data_ridb_acs_2018 %>% 
+  select(agency, regional_area, park, customer_zip, asian, black, hispanic_latinx, 
+         multiracial, native_american, other, pacific_islander, white,
+         booking_window) %>% 
+  filter(booking_window >= 0) %>%
+  mutate(booking_window_bins = ntile(booking_window, 5)) 
+
+data_plot_race_booking_window <- data_plot_race_booking_window_bins %>% 
+  group_by(booking_window_bins) %>% 
+  summarize(white = (mean(white, na.rm = TRUE) * 100),
+            black = (mean(black, na.rm = TRUE) * 100),
+            asian = (mean(asian, na.rm = TRUE) * 100),
+            multiracial = (mean(multiracial, na.rm = TRUE) * 100),
+            other = (mean(other, na.rm = TRUE) * 100),
+            native_american = (mean(native_american, na.rm = TRUE) * 100),
+            pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
+            hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>% 
+  pivot_longer(cols = 2:9,
+               names_to = "race",
+               values_to = "race_percentage") %>% 
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race))
+  
+booking_window_bin_breaks <- quantile(data_plot_race_booking_window_bins$booking_window, prob = seq(0, 1, length = 6), type = 5)
+         
+
+## -- create plot -- ##
+
+# parameters
+racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+
+# plot for shiny
+plot_race_booking_window <- ggplot(data = data_plot_race_booking_window) +
+  geom_col(aes(x = booking_window_bins,
+               y = race_percentage,
+               fill = race),
+           stat = "identity",
+           position = "dodge")  +
+  scale_fill_manual(values = racial_group_colors) +
+  labs(x = "Booking window (days)",
+       y = "Percentage (%)",
+       fill = "Race",
+       caption = "Booking Window Quintiles: \n1 = less than 7 days, \n2 = 7 to 27 days, \n3 = 27 to 79 days (~2.5 months), \n4 = 79 to 142 days (~4.5 months), \n5 = above 142 (with the highest being 662 or 1.8 years)") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        plot.caption = element_text(hjust = -0)
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_race_booking_window
+```
+
+
+## Race x daily cost
+
+```{r}
+## -- data wrangle -- ##
+data_plot_race_daily_cost_bins <- data_ridb_acs_2018 %>% 
+  select(agency, regional_area, park, customer_zip, asian, black, hispanic_latinx, 
+         multiracial, native_american, other, pacific_islander, white,
+         daily_cost_per_visitor) %>% 
+  filter(daily_cost_per_visitor >= 0,
+         daily_cost_per_visitor != "Inf") %>%
+  mutate(daily_cost_per_visitor_bins = ntile(daily_cost_per_visitor, 5)) 
+
+data_plot_race_daily_cost <- data_plot_race_daily_cost_bins %>% 
+  group_by(daily_cost_per_visitor_bins) %>% 
+  summarize(white = (mean(white, na.rm = TRUE) * 100),
+            black = (mean(black, na.rm = TRUE) * 100),
+            asian = (mean(asian, na.rm = TRUE) * 100),
+            multiracial = (mean(multiracial, na.rm = TRUE) * 100),
+            other = (mean(other, na.rm = TRUE) * 100),
+            native_american = (mean(native_american, na.rm = TRUE) * 100),
+            pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
+            hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>% 
+  pivot_longer(cols = 2:9,
+               names_to = "race",
+               values_to = "race_percentage") %>% 
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race))
+  
+daily_cost_bin_breaks <- quantile(data_plot_race_daily_cost_bins$daily_cost_per_visitor, prob = seq(0, 1, length = 6), type = 5)
+         
+
+## -- create plot -- ##
+
+# parameters
+racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+
+# plot for shiny
+plot_race_daily_cost <- ggplot(data = data_plot_race_daily_cost) +
+  geom_col(aes(x = daily_cost_per_visitor_bins,
+               y = race_percentage,
+               fill = race),
+           stat = "identity",
+           position = "dodge")  +
+  scale_fill_manual(values = racial_group_colors) +
+  labs(x = "Daily cost per visitor ($)",
+       y = "Percentage (%)",
+       fill = "Race",
+       caption = "Daily Cost Quintiles: \n1 = less than $2.9, \n2 = $2.9 to $5, \n3 = $5 to $7.2, \n4 = $7.2 to $13, \n5 = above $13 (with the highest being $279)") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        plot.caption = element_text(hjust = -0)
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_race_daily_cost
+```
+
+
+## Race x length of stay
+
+```{r}
+## -- data wrangle -- ##
+data_plot_race_length_of_stay_bins <- data_ridb_acs_2018 %>% 
+  select(agency, regional_area, park, customer_zip, asian, black, hispanic_latinx, 
+         multiracial, native_american, other, pacific_islander, white,
+         length_of_stay) %>% 
+  mutate(length_of_stay_bins = ntile(length_of_stay, 5)) 
+
+data_plot_race_length_of_stay <- data_plot_race_length_of_stay_bins %>% 
+  group_by(length_of_stay_bins) %>% 
+  summarize(white = (mean(white, na.rm = TRUE) * 100),
+            black = (mean(black, na.rm = TRUE) * 100),
+            asian = (mean(asian, na.rm = TRUE) * 100),
+            multiracial = (mean(multiracial, na.rm = TRUE) * 100),
+            other = (mean(other, na.rm = TRUE) * 100),
+            native_american = (mean(native_american, na.rm = TRUE) * 100),
+            pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
+            hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>% 
+  pivot_longer(cols = 2:9,
+               names_to = "race",
+               values_to = "race_percentage") %>% 
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race))
+  
+length_of_stay_bin_breaks <- quantile(data_plot_length_of_stay_bins$length_of_stay, prob = seq(0, 1, length = 6), type = 5)
+         
+
+## -- create plot -- ##
+
+# parameters
+racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+
+# plot for shiny
+plot_race_length_of_stay <- ggplot(data = data_plot_race_length_of_stay) +
+  geom_col(aes(x = length_of_stay_bins,
+               y = race_percentage,
+               fill = race),
+           stat = "identity",
+           position = "dodge")  +
+  scale_fill_manual(values = racial_group_colors) +
+  labs(x = "Daily cost per visitor ($)",
+       y = "Percentage (%)",
+       fill = "Race",
+       caption = "Length of Stay Quintiles: \n1 = 1 day, \n2 = 1 to 2 days, \n3 = 2 days, \n4 = 2 to 3 days, \n5 = above 3 days (with the highest being 22 days)") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        plot.caption = element_text(hjust = -0)
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_race_length_of_stay
+```
+
+
+## Education x distance traveled
 
 ```{r}
 ## -- data wrangle -- ##
@@ -135,16 +386,6 @@ plot_race_distance_traveled
 # plot for shiny
 ```
 
-
-## Race x booking window
-
-## Race x daily cost
-
-## Race x length of stay
-
-
-## Education x distance traveled
-
 ## Education x site type
 
 ## Education x booking window
@@ -155,6 +396,17 @@ plot_race_distance_traveled
 
 
 ## Transportation x distance traveled
+
+```{r}
+## -- data wrangle -- ##
+
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+```
 
 ## Transportation x site type
 
@@ -167,6 +419,17 @@ plot_race_distance_traveled
 
 ## Language x distance traveled
 
+```{r}
+## -- data wrangle -- ##
+
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+```
+
 ## Language x site type
 
 ## Language x booking window
@@ -177,6 +440,17 @@ plot_race_distance_traveled
 
 
 ## Median-income x distance traveled
+
+```{r}
+## -- data wrangle -- ##
+
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+```
 
 ## Median-income x site type
 
