@@ -229,7 +229,7 @@ plot_booking_window_site_type2
 # parameters
 
 # plot for shiny
-ggplot(data = )
+
 ```
 
 
