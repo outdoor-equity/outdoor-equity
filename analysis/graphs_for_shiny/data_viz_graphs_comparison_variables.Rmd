@@ -105,10 +105,11 @@ plot_race_distance_traveled <- ggplot(data = data_plot_race_distance_traveled) +
        x = "Percentage (%)",
        title = "Breakdown of Race of Home ZIP Codes vs. Distance Traveled",
        subtitle = "for Overnight Reservations in California \nvs. California Residents",
-       caption = "Distance Travel Quintiles: 1 = less than 60.2 (with the lowest being 0.5), 2 = 60.2 - 116.9, 3 = 116.7 - 180.9, 4 = 180.9 - 229.3, 5 = above 229.3 (with the highest being 3613.7") +
+       caption = "Distance Traveled Quintiles: \n1 = less than 60.2 (with the lowest being 0.5), \n2 = 60.2 - 116.9, \n3 = 116.7 - 180.9, \n4 = 180.9 - 229.3, \n5 = above 229.3 (with the highest being 3613.7") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank(),
+        plot.caption = element_text(hjust = -0)
         # ## only needed for saving as image
         # axis.text = element_text(size = 20),
         # axis.title = element_text(size = 22, face = "bold"),
