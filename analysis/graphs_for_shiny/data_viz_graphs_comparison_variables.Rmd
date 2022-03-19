@@ -52,7 +52,7 @@ acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = "Cal
 
 ## Agency Analysis: Comparison Graphs
 
-#### Race x distance traveled
+#### Race x distance traveled (Option 1)
 
 ```{r}
 ## -- data wrangle -- ##
@@ -82,7 +82,8 @@ data_plot_race_distance_traveled <- data_plot_race_distance_traveled_bins %>%
                             replacement = " "),
          race = str_to_title(race))
   
-distance_traveled_bin_breaks <- quantile(data_plot_race_distance_traveled_bins$distance_traveled_mi, prob = seq(0, 1, length = 6), type = 5)
+distance_traveled_bin_breaks <- quantile(data_plot_race_distance_traveled_bins$distance_traveled_mi, 
+                                         prob = seq(0, 1, length = 6), type = 5)
          
 
 ## -- create plot -- ##
@@ -94,32 +95,55 @@ racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "M
 
 # plot for shiny
 plot_race_distance_traveled <- ggplot(data = data_plot_race_distance_traveled) +
-  geom_col(aes(x = distance_traveled_bins,
+  geom_col(aes(x = factor(distance_traveled_bins),
                y = race_percentage,
-               fill = race),
+               fill = reorder(race, race_percentage)),
            stat = "identity",
            position = "dodge")  +
   scale_fill_manual(values = racial_group_colors) +
+  scale_x_discrete(labels = c("1" = "0 - 60.2", "2" = "60.2 - 116.9", "3" = "116.9 - 180.9", 
+                              "4" = "180.9 - 299.3", "5" = "299.3 - \n3,613.7"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  geom_vline(xintercept = c(0.5, 1.5, 2.5, 3.5, 4.5), 
+             color = "lightgrey") +
   labs(x = "Distance Traveled (miles)",
        y = "Percentage (%)",
        title = "Breakdown of Race of Home ZIP Codes vs. Distance Traveled",
-       subtitle = "for Overnight Reservations in California \nvs. California Residents",
-       caption = "Distance Traveled Quintiles: \n1 = less than 60.2 (with the lowest being 0.5), \n2 = 60.2 - 116.9, \n3 = 116.7 - 180.9, \n4 = 180.9 - 229.3, \n5 = above 229.3 (with the highest being 3613.7") +
+       subtitle = "for Overnight Reservations in California",
+       fill = "Race") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        plot.caption = element_text(hjust = -0)
+        panel.grid.major.x = element_blank()
         # ## only needed for saving as image
         # axis.text = element_text(size = 20),
         # axis.title = element_text(size = 22, face = "bold"),
         # title = element_text(size = 24, face = "bold")
         )
-
 plot_race_distance_traveled
 ```
 
+#### Race x distance traveled (Option 2)
 
-#### Race x site type
+```{r}
+plot_race_distance_traveled_2 <- ggplot(data = data_plot_race_distance_traveled) +
+  geom_line(aes(x = factor(distance_traveled_bins),
+                y = race_percentage, 
+                group = race, col = race))  +
+  scale_color_manual(values = racial_group_colors) +
+  scale_x_discrete(labels = c("1" = "0 - 60.2", "2" = "60.2 - 116.9", "3" = "116.9 - 180.9", 
+                              "4" = "180.9 - 299.3", "5" = "299.3 - \n3,613.7"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  labs(x = "Distance Traveled (miles)",
+       y = "Percentage (%)",
+       title = "Breakdown of Race of Home ZIP Codes vs. Distance Traveled",
+       subtitle = "for Overnight Reservations in California",
+       color = "Race") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"))
+plot_race_distance_traveled_2
+```
+
+#### Race x site type (Option 1)
 
 ```{r}
 ## -- data wrangle -- ##
@@ -156,28 +180,52 @@ racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "M
 plot_race_site_type <- ggplot(data = data_plot_race_site_type) +
   geom_col(aes(x = aggregated_site_type,
                y = race_percentage,
-               fill = race),
+               fill = reorder(race, race_percentage)),
            stat = "identity",
            position = "dodge")  +
   scale_fill_manual(values = racial_group_colors) +
+  geom_vline(xintercept = c(0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5), 
+             color = "lightgrey") +
+  scale_x_discrete(limits = c("equestrian", "remote", "rv only", "rv or tent", "shelter", "tent only", "water"),
+                   labels = c("Equestrian", "Remote", "RV Only", "RV or Tent", "Shelter", "Tent Only", "Water")) +
   labs(x = "Site Types",
        y = "Percentage (%)",
-       fill = "Race") +
+       fill = "Race",
+       title = "Breakdown of Race of Home ZIP Codes vs. Site Type",
+       subtitle = "for Overnight Reservations in California") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        plot.caption = element_text(hjust = -0)
+        panel.grid.major.x = element_blank()
         # ## only needed for saving as image
         # axis.text = element_text(size = 20),
         # axis.title = element_text(size = 22, face = "bold"),
         # title = element_text(size = 24, face = "bold")
         )
-
 plot_race_site_type
 ```
 
+#### Race x site type (Option 2)
 
-#### Race x booking window
+```{r}
+plot_race_site_type_2 <- ggplot(data = data_plot_race_site_type) +
+  geom_line(aes(x = aggregated_site_type,
+                y = race_percentage,
+                group = race, col = race))  +
+  scale_color_manual(values = racial_group_colors)  +
+  scale_x_discrete(limits = c("equestrian", "remote", "rv only", "rv or tent", "shelter", "tent only", "water"),
+                   labels = c("Equestrian", "Remote", "RV Only", "RV or Tent", "Shelter", "Tent Only", "Water")) +
+  labs(x = "Site Types",
+       y = "Percentage (%)",
+       color = "Race",
+       title = "Breakdown of Race of Home ZIP Codes vs. Site Type",
+       subtitle = "for Overnight Reservations in California") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"))
+plot_race_site_type_2
+```
+
+
+#### Race x booking window (Option 1)
 
 ```{r}
 ## -- data wrangle -- ##
@@ -206,7 +254,8 @@ data_plot_race_booking_window <- data_plot_race_booking_window_bins %>%
                             replacement = " "),
          race = str_to_title(race))
   
-booking_window_bin_breaks <- quantile(data_plot_race_booking_window_bins$booking_window, prob = seq(0, 1, length = 6), type = 5)
+booking_window_bin_breaks <- quantile(data_plot_race_booking_window_bins$booking_window, 
+                                      prob = seq(0, 1, length = 6), type = 5)
          
 
 ## -- create plot -- ##
@@ -218,20 +267,26 @@ racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "M
 
 # plot for shiny
 plot_race_booking_window <- ggplot(data = data_plot_race_booking_window) +
-  geom_col(aes(x = booking_window_bins,
+  geom_col(aes(x = factor(booking_window_bins),
                y = race_percentage,
-               fill = race),
+               fill = reorder(race, race_percentage)),
            stat = "identity",
            position = "dodge")  +
   scale_fill_manual(values = racial_group_colors) +
-  labs(x = "Booking window (days)",
+  scale_x_discrete(labels = c("1" = "0 - 7 \n(days)", "2" = "7 - 27 \n(days)", 
+                              "3" = "1 - 2.5 \n(months)", "4" = "2.5 - 4.5 \n(months)", 
+                              "5" = "4.5 months - \n1.8 years"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  geom_vline(xintercept = c(0.5, 1.5, 2.5, 3.5, 4.5), 
+             color = "lightgrey") +
+  labs(x = "Booking window",
        y = "Percentage (%)",
-       fill = "Race",
-       caption = "Booking Window Quintiles: \n1 = less than 7 days, \n2 = 7 to 27 days, \n3 = 27 to 79 days (~2.5 months), \n4 = 79 to 142 days (~4.5 months), \n5 = above 142 (with the highest being 662 or 1.8 years)") +
+       title = "Breakdown of Race of Home ZIP Codes vs. Booking Window",
+       subtitle = "for Overnight Reservations in California",
+       fill = "Race") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        plot.caption = element_text(hjust = -0)
+        panel.grid.major.x = element_blank()
         # ## only needed for saving as image
         # axis.text = element_text(size = 20),
         # axis.title = element_text(size = 22, face = "bold"),
@@ -241,8 +296,32 @@ plot_race_booking_window <- ggplot(data = data_plot_race_booking_window) +
 plot_race_booking_window
 ```
 
+#### Race x booking window (Option 2)
 
-#### Race x daily cost
+```{r}
+plot_race_booking_window_2 <- ggplot(data = data_plot_race_booking_window) +
+  geom_line(aes(x = factor(booking_window_bins),
+               y = race_percentage,
+               group = race, col = race),
+           stat = "identity",
+           position = "dodge")  +
+  scale_color_manual(values = racial_group_colors) +
+  scale_x_discrete(labels = c("1" = "0 - 7 \n(days)", "2" = "7 - 27 \n(days)", 
+                              "3" = "1 - 2.5 \n(months)", "4" = "2.5 - 4.5 \n(months)", 
+                              "5" = "4.5 months - \n1.8 years"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  labs(x = "Booking window",
+       y = "Percentage (%)",
+       title = "Breakdown of Race of Home ZIP Codes vs. Booking Window",
+       subtitle = "for Overnight Reservations in California",
+       color = "Race") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"))
+plot_race_booking_window_2
+```
+
+
+#### Race x daily cost (Option 1)
 
 ```{r}
 ## -- data wrangle -- ##
@@ -272,7 +351,8 @@ data_plot_race_daily_cost <- data_plot_race_daily_cost_bins %>%
                             replacement = " "),
          race = str_to_title(race))
   
-daily_cost_bin_breaks <- quantile(data_plot_race_daily_cost_bins$daily_cost_per_visitor, prob = seq(0, 1, length = 6), type = 5)
+daily_cost_bin_breaks <- quantile(data_plot_race_daily_cost_bins$daily_cost_per_visitor, 
+                                  prob = seq(0, 1, length = 6), type = 5)
          
 
 ## -- create plot -- ##
@@ -284,20 +364,25 @@ racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "M
 
 # plot for shiny
 plot_race_daily_cost <- ggplot(data = data_plot_race_daily_cost) +
-  geom_col(aes(x = daily_cost_per_visitor_bins,
+  geom_col(aes(x = factor(daily_cost_per_visitor_bins),
                y = race_percentage,
-               fill = race),
+               fill = reorder(race, race_percentage)),
            stat = "identity",
            position = "dodge")  +
   scale_fill_manual(values = racial_group_colors) +
+  scale_x_discrete(labels = c("1" = "$0 - $2.90", "2" = "$2.90 - $5", "3" = "$5 - $7.20", 
+                              "4" = "$7.20 - $13", "5" = "$13 - $279"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  geom_vline(xintercept = c(0.5, 1.5, 2.5, 3.5, 4.5), 
+             color = "lightgrey") +
   labs(x = "Daily cost per visitor ($)",
        y = "Percentage (%)",
-       fill = "Race",
-       caption = "Daily Cost Quintiles: \n1 = less than $2.9, \n2 = $2.9 to $5, \n3 = $5 to $7.2, \n4 = $7.2 to $13, \n5 = above $13 (with the highest being $279)") +
+       title = "Breakdown of Race of Home ZIP Codes vs. Daily Cost per Visitor",
+       subtitle = "for Overnight Reservations in California",
+       fill = "Race") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        plot.caption = element_text(hjust = -0)
+        panel.grid.major.x = element_blank()
         # ## only needed for saving as image
         # axis.text = element_text(size = 20),
         # axis.title = element_text(size = 22, face = "bold"),
@@ -307,8 +392,29 @@ plot_race_daily_cost <- ggplot(data = data_plot_race_daily_cost) +
 plot_race_daily_cost
 ```
 
+#### Race x daily cost (Option 2)
 
-#### Race x length of stay
+```{r}
+plot_race_daily_cost_2 <- ggplot(data = data_plot_race_daily_cost) +
+  geom_line(aes(x = factor(daily_cost_per_visitor_bins),
+               y = race_percentage,
+               group = race, color = race))  +
+  scale_color_manual(values = racial_group_colors) +
+  scale_x_discrete(labels = c("1" = "$0 - $2.90", "2" = "$2.90 - $5", "3" = "$5 - $7.20", 
+                              "4" = "$7.20 - $13", "5" = "$13 - $279"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  labs(x = "Daily cost per visitor ($)",
+       y = "Percentage (%)",
+       title = "Breakdown of Race of Home ZIP Codes vs. Daily Cost per Visitor",
+       subtitle = "for Overnight Reservations in California",
+       color = "Race") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"))
+plot_race_daily_cost_2
+```
+
+
+#### Race x length of stay (Option 1)
 
 ```{r}
 ## -- data wrangle -- ##
@@ -336,7 +442,8 @@ data_plot_race_length_of_stay <- data_plot_race_length_of_stay_bins %>%
                             replacement = " "),
          race = str_to_title(race))
   
-length_of_stay_bin_breaks <- quantile(data_plot_race_length_of_stay_bins$length_of_stay, prob = seq(0, 1, length = 6), type = 5)
+length_of_stay_bin_breaks <- quantile(data_plot_race_length_of_stay_bins$length_of_stay, 
+                                      prob = seq(0, 1, length = 6), type = 5)
          
 
 ## -- create plot -- ##
@@ -348,20 +455,25 @@ racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "M
 
 # plot for shiny
 plot_race_length_of_stay <- ggplot(data = data_plot_race_length_of_stay) +
-  geom_col(aes(x = length_of_stay_bins,
+  geom_col(aes(x = factor(length_of_stay_bins),
                y = race_percentage,
-               fill = race),
+               fill = reorder(race, race_percentage)),
            stat = "identity",
            position = "dodge")  +
   scale_fill_manual(values = racial_group_colors) +
-  labs(x = "Daily cost per visitor ($)",
+  scale_x_discrete(labels = c("1" = "1 \nday", "2" = "1 - 2 \ndays", "3" = "2 \ndays", 
+                              "4" = "2 -3 \ndays", "5" = "3 - 22 \ndays"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  geom_vline(xintercept = c(0.5, 1.5, 2.5, 3.5, 4.5), 
+             color = "lightgrey") +
+  labs(x = "Length of Stay",
        y = "Percentage (%)",
-       fill = "Race",
-       caption = "Length of Stay Quintiles: \n1 = 1 day, \n2 = 1 to 2 days, \n3 = 2 days, \n4 = 2 to 3 days, \n5 = above 3 days (with the highest being 22 days)") +
+       title = "Breakdown of Race of Home ZIP Codes vs. Length of Stay",
+       subtitle = "for Overnight Reservations in California",
+       fill = "Race") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        plot.caption = element_text(hjust = -0)
+        panel.grid.major.x = element_blank()
         # ## only needed for saving as image
         # axis.text = element_text(size = 20),
         # axis.title = element_text(size = 22, face = "bold"),
@@ -371,55 +483,562 @@ plot_race_length_of_stay <- ggplot(data = data_plot_race_length_of_stay) +
 plot_race_length_of_stay
 ```
 
+#### Race x length of stay (Option 2)
 
-#### Education x distance traveled
+```{r}
+plot_race_length_of_stay_2 <- ggplot(data = data_plot_race_length_of_stay) +
+  geom_line(aes(x = factor(length_of_stay_bins),
+               y = race_percentage,
+               group = race, col = race))  +
+  scale_color_manual(values = racial_group_colors) +
+  scale_x_discrete(labels = c("1" = "1 \nday", "2" = "1 - 2 \ndays", "3" = "2 \ndays", 
+                              "4" = "2 -3 \ndays", "5" = "3 - 22 \ndays"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  labs(x = "Length of Stay",
+       y = "Percentage (%)",
+       title = "Breakdown of Race of Home ZIP Codes vs. Length of Stay",
+       subtitle = "for Overnight Reservations in California",
+       color = "Race") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"))
+
+plot_race_length_of_stay_2
+```
+
+
+#### Education x distance traveled (Option 1)
 
 ```{r}
 ## -- data wrangle -- ##
+data_plot_education_distance_traveled_bins <- data_ridb_acs_2018 %>% 
+  select(agency, regional_area, park, customer_zip, college, hs_GED_or_below, 
+         master_or_above, some_college, distance_traveled_m) %>% 
+  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+  drop_na(distance_traveled_mi) %>% 
+  mutate(distance_traveled_bins = ntile(distance_traveled_mi, 5)) 
 
+data_plot_education_distance_traveled <- data_plot_education_distance_traveled_bins %>% 
+  group_by(distance_traveled_bins) %>% 
+  summarize(college = (mean(college, na.rm = TRUE) * 100),
+            hs_GED_or_below = (mean(hs_GED_or_below, na.rm = TRUE) * 100),
+            master_or_above = (mean(master_or_above, na.rm = TRUE) * 100),
+            some_college = (mean(some_college, na.rm = TRUE) * 100)) %>% 
+  pivot_longer(cols = 2:5,
+               names_to = "education",
+               values_to = "education_percentage") %>% 
+  mutate(education = factor(education, 
+                               levels = c("hs_GED_or_below", "some_college",
+                                          "college", "master_or_above")),
+         education = str_replace(string = education,
+                            pattern = "hs_GED_or_below",
+                            replacement = "High school, GED, or below"),
+         education = str_replace(string = education,
+                            pattern = "some_college",
+                            replacement = "Some College"),
+         education = str_replace(string = education,
+                            pattern = "college",
+                            replacement = "Associates or bachelors degree"),
+         education = str_replace(string = education,
+                            pattern = "master_or_above",
+                            replacement = "Masters degree or higher"))
+  
+distance_traveled_bin_breaks <- quantile(data_plot_race_distance_traveled_bins$distance_traveled_mi, 
+                                         prob = seq(0, 1, length = 6), type = 5)
+         
 
 ## -- create plot -- ##
 
 # parameters
 
 # plot for shiny
+plot_education_distance_traveled <- ggplot(data = data_plot_education_distance_traveled) +
+  geom_col(aes(x = factor(distance_traveled_bins),
+               y = education_percentage,
+               fill = reorder(education, education_percentage)),
+           stat = "identity",
+           position = "dodge")  +
+  scale_fill_viridis_d() +
+  scale_x_discrete(labels = c("1" = "0 - 60.2", "2" = "60.2 - 116.9", "3" = "116.9 - 180.9", 
+                              "4" = "180.9 - \n299.3", "5" = "299.3 - \n3,613.7"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  geom_vline(xintercept = c(0.5, 1.5, 2.5, 3.5, 4.5), 
+             color = "lightgrey") +
+  labs(x = "Distance Traveled (miles)",
+       y = "Percentage (%)",
+       title = "Breakdown of Levels of Education in Home ZIP Codes vs. Distance Traveled",
+       subtitle = "for Overnight Reservations in California",
+       fill = "Education") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.x = element_blank()
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_education_distance_traveled
 ```
 
-#### Education x site type
+#### Education x distance traveled (Option 2)
 
-#### Education x booking window
+```{r}
+plot_education_distance_traveled_2 <- ggplot(data = data_plot_education_distance_traveled) +
+  geom_line(aes(x = factor(distance_traveled_bins),
+               y = education_percentage,
+               group = education, col = education))  +
+  scale_color_viridis_d() +
+  scale_x_discrete(labels = c("1" = "0 - 60.2", "2" = "60.2 - 116.9", "3" = "116.9 - 180.9", 
+                              "4" = "180.9 - \n299.3", "5" = "299.3 - \n3,613.7"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  labs(x = "Distance Traveled (miles)",
+       y = "Percentage (%)",
+       title = "Breakdown of Levels of Education in Home ZIP Codes vs. Distance Traveled",
+       subtitle = "for Overnight Reservations in California",
+       color = "Education") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"))
 
-#### Education x daily cost
+plot_education_distance_traveled_2
+```
 
-#### Education x length of stay
+
+#### Education x site type (Option 1)
+
+```{r}
+## -- data wrangle -- ##
+data_plot_education_site_type <- data_ridb_acs_2018 %>% 
+  select(agency, regional_area, park, customer_zip, college, hs_GED_or_below, 
+         master_or_above, some_college, aggregated_site_type) %>% 
+  group_by(aggregated_site_type) %>% 
+  summarize(college = (mean(college, na.rm = TRUE) * 100),
+            hs_GED_or_below = (mean(hs_GED_or_below, na.rm = TRUE) * 100),
+            master_or_above = (mean(master_or_above, na.rm = TRUE) * 100),
+            some_college = (mean(some_college, na.rm = TRUE) * 100)) %>% 
+  pivot_longer(cols = 2:5,
+               names_to = "education",
+               values_to = "education_percentage") %>% 
+  mutate(education = factor(education, 
+                               levels = c("hs_GED_or_below", "some_college",
+                                          "college", "master_or_above")),
+         education = str_replace(string = education,
+                            pattern = "hs_GED_or_below",
+                            replacement = "High school, GED, or below"),
+         education = str_replace(string = education,
+                            pattern = "some_college",
+                            replacement = "Some College"),
+         education = str_replace(string = education,
+                            pattern = "college",
+                            replacement = "Associates or bachelors degree"),
+         education = str_replace(string = education,
+                            pattern = "master_or_above",
+                            replacement = "Masters degree or higher"))
+         
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+plot_education_site_type_1 <- ggplot(data = data_plot_education_site_type) +
+  geom_col(aes(x = aggregated_site_type,
+               y = education_percentage,
+               fill = reorder(education, education_percentage)),
+           stat = "identity",
+           position = "dodge")  +
+  scale_fill_viridis_d() +
+  geom_vline(xintercept = c(0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5), 
+             color = "lightgrey") +
+  scale_x_discrete(limits = c("equestrian", "remote", "rv only", "rv or tent", "shelter", "tent only", "water"),
+                   labels = c("Equestrian", "Remote", "RV Only", "RV or Tent", "Shelter", "Tent Only", "Water")) +
+  labs(x = "Site Types",
+       y = "Percentage (%)",
+       fill = "Education",
+       title = "Breakdown of Levels of Education in Home ZIP Codes vs. Site Type",
+       subtitle = "for Overnight Reservations in California") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.x = element_blank())
+plot_education_site_type_1
+```
+
+#### Education x site type (Option 2)
+
+```{r}
+plot_education_site_type_2 <- ggplot(data = data_plot_education_site_type) +
+  geom_line(aes(x = aggregated_site_type,
+                y = education_percentage, 
+                group = education, col = education))  +
+  scale_color_viridis_d() +
+  scale_x_discrete(limits = c("equestrian", "remote", "rv only", "rv or tent", "shelter", "tent only", "water"),
+                   labels = c("Equestrian", "Remote", "RV Only", "RV or Tent", "Shelter", "Tent Only", "Water")) +
+  labs(x = "Site Types",
+       y = "Percentage (%)",
+       fill = "Education",
+       title = "Breakdown of Levels of Education in Home ZIP Codes vs. Site Type",
+       subtitle = "for Overnight Reservations in California") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"))
+plot_education_site_type_2
+```
+
+
+#### Education x booking window (Option 1)
+
+```{r}
+## -- data wrangle -- ##
+data_plot_education_booking_window_bins <- data_ridb_acs_2018 %>% 
+  select(agency, regional_area, park, customer_zip, college, hs_GED_or_below, 
+         master_or_above, some_college, booking_window) %>% 
+  mutate(booking_window_bins = ntile(booking_window, 5)) 
+
+data_plot_education_booking_window <- data_plot_education_booking_window_bins %>% 
+  group_by(booking_window_bins) %>% 
+  summarize(college = (mean(college, na.rm = TRUE) * 100),
+            hs_GED_or_below = (mean(hs_GED_or_below, na.rm = TRUE) * 100),
+            master_or_above = (mean(master_or_above, na.rm = TRUE) * 100),
+            some_college = (mean(some_college, na.rm = TRUE) * 100)) %>% 
+  pivot_longer(cols = 2:5,
+               names_to = "education",
+               values_to = "education_percentage") %>% 
+  mutate(education = factor(education, 
+                               levels = c("hs_GED_or_below", "some_college",
+                                          "college", "master_or_above")),
+         education = str_replace(string = education,
+                            pattern = "hs_GED_or_below",
+                            replacement = "High school, GED, or below"),
+         education = str_replace(string = education,
+                            pattern = "some_college",
+                            replacement = "Some College"),
+         education = str_replace(string = education,
+                            pattern = "college",
+                            replacement = "Associates or bachelors degree"),
+         education = str_replace(string = education,
+                            pattern = "master_or_above",
+                            replacement = "Masters degree or higher"))
+  
+booking_window_bin_breaks <- quantile(data_plot_education_booking_window_bins$booking_window, 
+                                      prob = seq(0, 1, length = 6), type = 5)
+         
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+plot_education_booking_window <- ggplot(data = data_plot_education_booking_window) +
+  geom_col(aes(x = factor(booking_window_bins),
+               y = education_percentage,
+               fill = reorder(education, education_percentage)),
+           stat = "identity",
+           position = "dodge")  +
+  scale_fill_viridis_d() +
+  scale_x_discrete(labels = c("1" = "0 - 7 \n(days)", "2" = "7 - 27 \n(days)", 
+                              "3" = "1 - 2.5 \n(months)", "4" = "2.5 - 4.5 \n(months)", 
+                              "5" = "4.5 months - \n1.8 years"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  geom_vline(xintercept = c(0.5, 1.5, 2.5, 3.5, 4.5), 
+             color = "lightgrey") +
+  labs(x = "Booking window",
+       y = "Percentage (%)",
+       title = "Breakdown of Levels of Education in Home ZIP Codes vs. Booking Window",
+       subtitle = "for Overnight Reservations in California",
+       fill = "Education") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.x = element_blank()
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_education_booking_window
+```
+
+#### Education x booking window (Option 2)
+
+```{r}
+plot_education_booking_window_2 <- ggplot(data = data_plot_education_booking_window) +
+  geom_line(aes(x = factor(booking_window_bins),
+               y = education_percentage,
+               group = education, col = education))  +
+  scale_color_viridis_d() +
+  scale_x_discrete(labels = c("1" = "0 - 7 \n(days)", "2" = "7 - 27 \n(days)", 
+                              "3" = "1 - 2.5 \n(months)", "4" = "2.5 - 4.5 \n(months)", 
+                              "5" = "4.5 months - \n1.8 years"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  labs(x = "Booking window",
+       y = "Percentage (%)",
+       title = "Breakdown of Levels of Education in Home ZIP Codes vs. Booking Window",
+       subtitle = "for Overnight Reservations in California",
+       color = "Education") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"))
+plot_education_booking_window_2
+```
+
+
+#### Education x daily cost (Option 1)
+
+```{r}
+## -- data wrangle -- ##
+data_plot_education_daily_cost_bins <- data_ridb_acs_2018 %>% 
+  select(agency, regional_area, park, customer_zip, college, hs_GED_or_below, 
+         master_or_above, some_college, daily_cost_per_visitor) %>% 
+  mutate(daily_cost_per_visitor_bins = ntile(daily_cost_per_visitor, 5)) 
+
+data_plot_education_daily_cost <- data_plot_education_daily_cost_bins %>% 
+  group_by(daily_cost_per_visitor_bins) %>% 
+  summarize(college = (mean(college, na.rm = TRUE) * 100),
+            hs_GED_or_below = (mean(hs_GED_or_below, na.rm = TRUE) * 100),
+            master_or_above = (mean(master_or_above, na.rm = TRUE) * 100),
+            some_college = (mean(some_college, na.rm = TRUE) * 100)) %>% 
+  pivot_longer(cols = 2:5,
+               names_to = "education",
+               values_to = "education_percentage") %>% 
+  mutate(education = factor(education, 
+                               levels = c("hs_GED_or_below", "some_college",
+                                          "college", "master_or_above")),
+         education = str_replace(string = education,
+                            pattern = "hs_GED_or_below",
+                            replacement = "High school, GED, or below"),
+         education = str_replace(string = education,
+                            pattern = "some_college",
+                            replacement = "Some College"),
+         education = str_replace(string = education,
+                            pattern = "college",
+                            replacement = "Associates or bachelors degree"),
+         education = str_replace(string = education,
+                            pattern = "master_or_above",
+                            replacement = "Masters degree or higher"))
+  
+daily_cost_bin_breaks <- quantile(data_plot_education_daily_cost_bins$daily_cost_per_visitor, 
+                                  prob = seq(0, 1, length = 6), type = 5)
+         
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+plot_education_daily_cost <- ggplot(data = data_plot_education_daily_cost) +
+  geom_col(aes(x = factor(daily_cost_per_visitor_bins),
+               y = education_percentage,
+               fill = reorder(education, education_percentage)),
+           stat = "identity",
+           position = "dodge")  +
+  scale_fill_viridis_d() +
+  scale_x_discrete(labels = c("1" = "$0 - $2.90", "2" = "$2.90 - $5", "3" = "$5 - $7.20", 
+                              "4" = "$7.20 - $13", "5" = "$13 - $279"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  geom_vline(xintercept = c(0.5, 1.5, 2.5, 3.5, 4.5), 
+             color = "lightgrey") +
+  labs(x = "Daily cost per visitor ($)",
+       y = "Percentage (%)",
+       title = "Breakdown of Levels of Education in Home ZIP Codes vs. Daily Cost per Visitor",
+       subtitle = "for Overnight Reservations in California",
+       fill = "Education") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.x = element_blank()
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_race_daily_cost
+```
+
+#### Education x daily cost (Option 2)
+
+```{r}
+plot_education_daily_cost_2 <- ggplot(data = data_plot_education_daily_cost) +
+  geom_line(aes(x = factor(daily_cost_per_visitor_bins),
+               y = education_percentage,
+               group = education, col = education))  +
+  scale_color_viridis_d() +
+  scale_x_discrete(labels = c("1" = "$0 - $2.90", "2" = "$2.90 - $5", "3" = "$5 - $7.20", 
+                              "4" = "$7.20 - $13", "5" = "$13 - $279"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  labs(x = "Daily cost per visitor ($)",
+       y = "Percentage (%)",
+       title = "Breakdown of Levels of Education in Home ZIP Codes vs. Daily Cost per Visitor",
+       subtitle = "for Overnight Reservations in California",
+       color = "Education") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"))
+
+plot_race_daily_cost_2
+```
+
+
+#### Education x length of stay (Option 1)
+
+```{r}
+## -- data wrangle -- ##
+data_plot_education_length_of_stay_bins <- data_ridb_acs_2018 %>% 
+  select(agency, regional_area, park, customer_zip, college, hs_GED_or_below, 
+         master_or_above, some_college, length_of_stay) %>% 
+  mutate(length_of_stay_bins = ntile(length_of_stay, 5)) 
+
+data_plot_education_length_of_stay <- data_plot_education_length_of_stay_bins %>% 
+  group_by(length_of_stay_bins) %>% 
+  summarize(college = (mean(college, na.rm = TRUE) * 100),
+            hs_GED_or_below = (mean(hs_GED_or_below, na.rm = TRUE) * 100),
+            master_or_above = (mean(master_or_above, na.rm = TRUE) * 100),
+            some_college = (mean(some_college, na.rm = TRUE) * 100)) %>% 
+  pivot_longer(cols = 2:5,
+               names_to = "education",
+               values_to = "education_percentage") %>% 
+  mutate(education = factor(education, 
+                               levels = c("hs_GED_or_below", "some_college",
+                                          "college", "master_or_above")),
+         education = str_replace(string = education,
+                            pattern = "hs_GED_or_below",
+                            replacement = "High school, GED, or below"),
+         education = str_replace(string = education,
+                            pattern = "some_college",
+                            replacement = "Some College"),
+         education = str_replace(string = education,
+                            pattern = "college",
+                            replacement = "Associates or bachelors degree"),
+         education = str_replace(string = education,
+                            pattern = "master_or_above",
+                            replacement = "Masters degree or higher"))
+  
+length_of_stay_bin_breaks <- quantile(data_plot_education_length_of_stay_bins$length_of_stay, 
+                                      prob = seq(0, 1, length = 6), type = 5)
+         
+
+## -- create plot -- ##
+
+# parameters
+
+# plot for shiny
+plot_education_length_of_stay <- ggplot(data = data_plot_education_length_of_stay) +
+  geom_col(aes(x = factor(length_of_stay_bins),
+               y = education_percentage,
+               fill = reorder(education, education_percentage)),
+           stat = "identity",
+           position = "dodge")  +
+  scale_fill_viridis_d() +
+  scale_x_discrete(labels = c("1" = "1 \nday", "2" = "1 - 2 \ndays", "3" = "2 \ndays", 
+                              "4" = "2 -3 \ndays", "5" = "3 - 22 \ndays"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  geom_vline(xintercept = c(0.5, 1.5, 2.5, 3.5, 4.5), 
+             color = "lightgrey") +
+  labs(x = "Length of Stay",
+       y = "Percentage (%)",
+       title = "Breakdown of Levels of Education in Home ZIP Codes vs. Length of Stay",
+       subtitle = "for Overnight Reservations in California",
+       fill = "Education") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.x = element_blank()
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+
+plot_education_length_of_stay
+```
+
+#### Education x length of stay (Option 2)
+
+```{r}
+plot_education_length_of_stay <- ggplot(data = data_plot_education_length_of_stay) +
+  geom_line(aes(x = factor(length_of_stay_bins),
+               y = education_percentage,
+               group = education, col = education))  +
+  scale_color_viridis_d() +
+  scale_x_discrete(labels = c("1" = "1 \nday", "2" = "1 - 2 \ndays", "3" = "2 \ndays", 
+                              "4" = "2 -3 \ndays", "5" = "3 - 22 \ndays"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  labs(x = "Length of Stay",
+       y = "Percentage (%)",
+       title = "Breakdown of Levels of Education in Home ZIP Codes vs. Length of Stay",
+       subtitle = "for Overnight Reservations in California",
+       color = "Education") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"))
+
+plot_education_length_of_stay
+```
 
 
 #### Transportation x distance traveled
 
 ```{r}
 ## -- data wrangle -- ##
+data_plot_transportation_distance_traveled_bins <- data_ridb_acs_2018 %>% 
+  select(agency, regional_area, park, customer_zip, no_vehicle, distance_traveled_m) %>% 
+  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+  drop_na(distance_traveled_mi) %>% 
+  mutate(distance_traveled_bins = ntile(distance_traveled_mi, 5)) 
 
+data_plot_transportation_distance_traveled <- data_plot_transportation_distance_traveled_bins %>% 
+  group_by(distance_traveled_bins) %>% 
+  summarize(no_vehicle = (mean(no_vehicle, na.rm = TRUE) * 100)) %>% 
+  pivot_longer(cols = 2,
+               names_to = "transportation",
+               values_to = "transportation_percentage") %>% 
+  mutate(race = str_replace(string = transportation,
+                            pattern = "no_vehicle",
+                            replacement = "No Access to Personal Vehicle"))
+  
+distance_traveled_bin_breaks <- quantile(data_plot_transportation_distance_traveled_bins$distance_traveled_mi, 
+                                         prob = seq(0, 1, length = 6), type = 5)
+         
 
 ## -- create plot -- ##
 
 # parameters
 
 # plot for shiny
+plot_transportation_distance_traveled <- ggplot(data = data_plot_transportation_distance_traveled) +
+  geom_col(aes(x = factor(distance_traveled_bins),
+               y = transportation_percentage),
+           stat = "identity",
+           position = "dodge",
+           fill = "#440154")  +
+  scale_x_discrete(labels = c("1" = "0 - 60.2", "2" = "60.2 - 116.9", "3" = "116.9 - 180.9", 
+                              "4" = "180.9 - 299.3", "5" = "299.3 - \n3,613.7"), 
+                   breaks = c("1", "2", "3", "4", "5")) +
+  geom_vline(xintercept = c(0.5, 1.5, 2.5, 3.5, 4.5), 
+             color = "lightgrey") +
+  labs(x = "Distance Traveled (miles)",
+       y = "Percentage (%)",
+       title = "Breakdown of Lack of Access to Personal Vehicle Home ZIP Codes \nvs. Distance Traveled",
+       subtitle = "for Overnight Reservations in California") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.x = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+plot_transportation_distance_traveled
 ```
+
 
 #### Transportation x site type
 
-#### Transportation x booking window
-
-#### Transportation x daily cost
-
-#### Transportation x length of stay
-
-
-#### Language x distance traveled
-
 ```{r}
 ## -- data wrangle -- ##
+data_plot_transportation_site_type_bins <- data_ridb_acs_2018 %>% 
+  select(agency, regional_area, park, customer_zip, no_vehicle, aggregated_site_type) %>% 
+  group_by(aggregated_site_type) %>% 
+  summarize(no_vehicle = (mean(no_vehicle, na.rm = TRUE) * 100)) %>% 
+  pivot_longer(cols = 2,
+               names_to = "transportation",
+               values_to = "transportation_percentage") %>% 
+  mutate(transportation = str_replace(string = transportation,
+                            pattern = "no_vehicle",
+                            replacement = "No Access to Personal Vehicle"))
 
 
 ## -- create plot -- ##
@@ -427,37 +1046,59 @@ plot_race_length_of_stay
 # parameters
 
 # plot for shiny
+plot_transportation_site_type <- ggplot(data = data_plot_transportation_site_type_bins) +
+  geom_col(aes(x = aggregated_site_type,
+               y = transportation_percentage),
+           stat = "identity",
+           position = "dodge",
+           fill = "#440154")  +
+  geom_vline(xintercept = c(0.5, 1.5, 2.5, 3.5, 4.5), 
+             color = "lightgrey") +
+  labs(x = "Site Type",
+       y = "Percentage (%)",
+       title = "Breakdown of Lack of Access to Personal Vehicle Home ZIP Codes \nvs. Distance Traveled",
+       subtitle = "for Overnight Reservations in California") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.x = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
+plot_transportation_site_type
 ```
 
-#### Language x site type
 
-#### Language x booking window
+#### Transportation 
 
-#### Language x daily cost
+Similar graphs to those above would exist for:
 
-#### Language x length of stay
+* Transportation x booking window
+* Transportation x daily cost
+* Transportation x length of stay
+
+
+#### Language 
+
+Similar graphs to those above would exist for:
+
+* Language x distance traveled
+* Language x site type
+* Language x booking window
+* Language x daily cost
+* Language x length of stay
 
 
 #### Median-income x distance traveled
 
-```{r}
-## -- data wrangle -- ##
+Similar graphs to those above would exist for:
 
-
-## -- create plot -- ##
-
-# parameters
-
-# plot for shiny
-```
-
-#### Median-income x site type
-
-#### Median-income x booking window
-
-#### Median-income x daily cost
-
-#### Median-income x length of stay
+* Median-income x distance traveled
+* Median-income x site type
+* Median-income x booking window
+* Median-income x daily cost
+* Median-income x length of stay
 
 
 #### Booking window x site type
@@ -467,8 +1108,8 @@ plot_race_length_of_stay
 data_plot_booking_window_site_type <- data_ridb_acs_2018 %>% 
   #select(agency, regional_area, park, booking_window, aggregated_site_type) %>% 
   group_by(aggregated_site_type) %>% 
-  summarise(mean_booking_window = mean(booking_window, na.rm = TRUE))
-data_plot_booking_window_site_type$aggregated_site_type <- with(data_plot_booking_window_site_type, reorder(aggregated_site_type, mean_booking_window))
+  summarise(mean_booking_window = mean(booking_window, na.rm = TRUE)) %>% 
+  mutate(aggregated_site_type = str_to_title(aggregated_site_type))
 
 ## -- create plot -- ##
 
@@ -476,33 +1117,38 @@ data_plot_booking_window_site_type$aggregated_site_type <- with(data_plot_bookin
 
 # plot for shiny
 plot_booking_window_site_type <- ggplot(data = data_plot_booking_window_site_type) +
-  geom_col(aes(y = aggregated_site_type,
-           x = mean_booking_window), fill = "#009900FF")
+  geom_col(aes(y = reorder(aggregated_site_type, mean_booking_window),
+           x = mean_booking_window), fill = "#009900FF") +
+  labs(x = "Booking Window (days)",
+       y = "",
+       title = "Booking Window vs. Distance Traveled",
+       subtitle = "for Overnight Reservations in California") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.x = element_blank(),
+        # ## only needed for saving as image
+        # axis.text = element_text(size = 20),
+        # axis.title = element_text(size = 22, face = "bold"),
+        # title = element_text(size = 24, face = "bold")
+        )
 
 plot_booking_window_site_type
 ```
 
 
 #### Booking window x distance traveled
-
-```{r}
-## -- data wrangle -- ##
-
-
-## -- create plot -- ##
-
-# parameters
-
-# plot for shiny
-
-```
-
-
+Similar graphs to those above would exist for booking window x distance traveled
 
 ## Save plot all data to RDS
 
 ```{r, eval=FALSE}
-plot_data <- c("data_plot_race_distance_traveled")
+plot_data <- c("data_plot_race_distance_traveled", "data_plot_race_site_type", 
+               "data_plot_race_booking_window", "data_plot_race_daily_cost", 
+               "data_plot_race_length_of_stay", "data_plot_education_distance_traveled", 
+               "data_plot_education_site_type", "data_plot_education_booking_window", 
+               "data_plot_education_daily_cost", "data_plot_education_length_of_stay", 
+               "data_plot_transportation_distance_traveled", "data_plot_transportation_site_type_bins", 
+               "data_plot_booking_window_site_type")
 
 for (i in seq_along(plot_data)){
   saveRDS(object = get(plot_data[[i]]),
