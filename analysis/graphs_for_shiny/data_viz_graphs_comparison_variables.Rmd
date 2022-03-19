@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
 
 library(tidyverse)
 library(here)
@@ -30,9 +30,8 @@ source("../functions/function_acs_education.R")
 source("../functions/function_acs_language.R")
 ```
 
-# Read in data
 
-```{r, message=FALSE, warning=FALSE}
+```{r load data, message=FALSE}
 # read in joined data
 data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
                             delim = ",") ## non-map graphs (no geometries)
@@ -337,7 +336,7 @@ data_plot_race_length_of_stay <- data_plot_race_length_of_stay_bins %>%
                             replacement = " "),
          race = str_to_title(race))
   
-length_of_stay_bin_breaks <- quantile(data_plot_length_of_stay_bins$length_of_stay, prob = seq(0, 1, length = 6), type = 5)
+length_of_stay_bin_breaks <- quantile(data_plot_race_length_of_stay_bins$length_of_stay, prob = seq(0, 1, length = 6), type = 5)
          
 
 ## -- create plot -- ##
@@ -510,7 +509,7 @@ plot_booking_window_site_type2
 
 # Save plot all data to RDS
 
-```{r}
+```{r, eval=FALSE}
 plot_data <- c("data_plot_race_distance_traveled")
 
 for (i in seq_along(plot_data)){
