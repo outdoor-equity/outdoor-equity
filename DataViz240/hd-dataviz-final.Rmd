@@ -157,18 +157,23 @@ ggplot(data = data_clean_combined_2018, aes(x = mean_median_income)) +
 # map testing
 
 ```{r}
-test <- readRDS("../../../data_clean/2018_joined_data_test.rds")
+#test <- readRDS("../../../data_clean/2018_joined_data.rds")
+ca_geom <- readRDS("../shiny/outdoor-equity-app/oe_app/data/data_ca_geom.rds")
 ```
 
 ```{r}
 test_map <- test %>% 
-  group_by(regional_area, park, agency) %>% 
+  group_by(regional_area, agency) %>% 
   summarize(count = n())
 ```
 
 ```{r}
+tmap_mode("plot")
+tm_shape(ca_geom) +
+  tm_polygons() +
 tm_shape(test_map) +
-  tm_symbols(shape = "agency")
+  tm_symbols(shape = "agency",
+             size = 0.3)
 ```
 
 

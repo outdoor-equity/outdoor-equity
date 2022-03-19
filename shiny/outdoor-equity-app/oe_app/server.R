@@ -67,6 +67,34 @@ server <- function(input, output){
               panel.grid.major.y = element_blank())
       
     } # end of race plot ----
+    
+    # render dist traveled x race column comp ----   
+
+    # if statement for dist traveled x race ----
+    if(input$scat_ridb_vars == "race"){
+
+      # parameters
+      racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                               "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                               "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+      
+      # plot for shiny
+      ggplot(data = data_comp_dist_travel_race) +
+        geom_col(aes(x = distance_traveled_bins,
+                     y = race_percentage,
+                     fill = race),
+                 stat = "identity",
+                 position = "dodge")  +
+        scale_fill_manual(values = racial_group_colors) +
+        labs(y = "Distance Traveled (miles)",
+             x = "Percentage (%)",
+             caption = "Distance Travel Quintiles: 1 = less than 60.2 (with the lowest being 0.5), 2 = 60.2 - 116.9, 3 = 116.7 - 180.9, 4 = 180.9 - 229.3, 5 = above 229.3 (with the highest being 3613.7") +
+        theme_minimal() +
+        theme(plot.background = element_rect("white"),
+              panel.grid.major.y = element_blank())
+      
+    } # end of if statement for dist traveled x race column comp
+
   
   ## RENDERING SITE ANALYSIS PLOTS ## ----
     
