@@ -63,14 +63,21 @@ zip_geometries_us <- get_acs(geography = "zcta", year = 2018, geometry = TRUE,
 data_map_yosemite_upper_pines <- data_ridb_acs_2018 %>% 
   filter(park == "Upper Pines") %>% 
   group_by(customer_zip) %>% 
-  summarize(number_reservations = n(),
-            facility_latitude = facility_latitude,
-            facility_longitude = facility_longitude) %>% 
+  summarize(number_reservations = n()) %>% 
   mutate(customer_zip = as.character(customer_zip))
 
 data_map_yosemite_upper_pines_geometries_ca <- zip_geometries_ca %>% 
   left_join(data_map_yosemite_upper_pines, by = c("zip_code" = "customer_zip")) %>% 
   mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
+
+data_map_yosemite_upper_pines_geom <- data_ridb_acs_2018 %>% 
+  filter(park == "Upper Pines") %>% 
+  group_by(agency, regional_area, park) %>% 
+  summarise(facility_latitude = median(facility_latitude),
+            facility_longitude = median(facility_longitude)) %>% 
+  st_as_sf(coords = c("facility_latitude", "facility_longitude"),
+           crs = 4326) %>% 
+  st_transform(crs = 4269) # using NAD83 because measured in meters
 
 # data_map_yosemite_upper_pines_geometries_us <- zip_geometries_us %>% 
 #   left_join(data_map_yosemite_upper_pines, by = c("zip_code" = "customer_zip")) %>% 
@@ -95,7 +102,10 @@ tm_shape(data_map_yosemite_upper_pines_geometries_ca) +
   tm_fill(col = "number_reservations",
           palette = "PuRd",
           style = "jenks",
-          n = 10)
+          n = 10) +
+  tm_shape(data_map_yosemite_upper_pines_geom) +
+  tm_dots(col = "#009900FF", size = 0.1, alpha = 0.75,
+          id = "park")
 ```
 
 # Visitor-shed for Hope Valley, Humboldt-Toiyabe National Forest
@@ -112,6 +122,15 @@ data_map_humboldt_hope_valley_geometries_ca <- zip_geometries_ca %>%
   left_join(data_map_humboldt_hope_valley, by = c("zip_code" = "customer_zip")) %>% 
   mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
 
+data_map_humboldt_hope_valley_geom <- data_ridb_acs_2018 %>% 
+  filter(park == "Hope Valley") %>% 
+  group_by(agency, regional_area, park) %>% 
+  summarise(facility_latitude = median(facility_latitude),
+            facility_longitude = median(facility_longitude)) %>% 
+  st_as_sf(coords = c("facility_latitude", "facility_longitude"),
+           crs = 4326) %>% 
+  st_transform(crs = 4269) # using NAD83 because measured in meters
+
 # data_map_humboldt_hope_valley_geometries_us <- zip_geometries_us %>% 
 #   left_join(data_map_humboldt_hope_valley, by = c("zip_code" = "customer_zip")) %>% 
 #   mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
@@ -124,7 +143,10 @@ tm_shape(data_map_humboldt_hope_valley_geometries_ca) +
   tm_fill(col = "number_reservations",
           palette = "PuRd",
           style = "jenks",
-          n = 10) 
+          n = 10) +
+  tm_shape(data_map_humboldt_hope_valley_geom) +
+  tm_dots(col = "#009900FF", size = 0.1, alpha = 0.75,
+          id = "park")
 ```
 
 
