@@ -1,6 +1,21 @@
 library(tidyverse)
 library(here)
 
+select_analysis <- function(){
+  
+  selectizeInput(inputId = "analysis",
+               label = "2. What kind of analysis do you want to see?",
+               # conditional panel options / "id's" ---- 
+               choices = c(Comparison = "compare", Distribution = "hist"),
+               multiple = FALSE,
+               options = list(
+                 placeholder = "Select an analysis type",
+                 onInitialize = I('function() { this.setValue(""); }')
+               ))
+}
+
+
+
 # parameters
 racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
                          "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
