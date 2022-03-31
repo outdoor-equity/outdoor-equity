@@ -25,7 +25,6 @@ options(scipen = 999)
 # load script to pull and clean ACS data
 source("../functions/function_acs_race.R")
 source("../functions/function_acs_median_income.R")
-source("../functions/function_acs_transportation.R")
 source("../functions/function_acs_education.R")
 source("../functions/function_acs_language.R")
 ```
@@ -36,17 +35,6 @@ source("../functions/function_acs_language.R")
 data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
                             delim = ",") ## non-map graphs (no geometries)
 # data_ridb_acs_2018 <- readRDS(file = "../../../../data_clean/2018_joined_data.rds") ## maps (don't use RDS for non-map viz, too slow)
-
-# ACS CA data
-acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
-acs_subset_calculate_education(geography = "zcta", year = 2018, state = "California")
-acs_subset_calculate_language(geography = "zcta", state = "California")
-acs_subset_calculate_transportation(geography = "zcta", year = 2018, state = "California")
-acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = "California")
-
-# ACS US data
-# acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
-# acs_subset_calculate_education(geography = "zcta", year = 2018, state = NULL)
 ```
 
 

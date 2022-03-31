@@ -30,12 +30,17 @@ acs_subset_calculate_race <-
     df_percent <- 
       df %>% 
       group_by(zip_code, race) %>% 
-      summarise(percent = estimate / summary_est)
+      summarise(estimate = sum(estimate),
+                moe = sum(moe),
+                summary_est = unique(summary_est),
+                summary_moe = unique(summary_moe),
+                percent = estimate / summary_est)
     # create column for each percentage for each group (pivot wider)
     # necessary to be able to left_join() with RIDB data
     df_percent_wider <- 
       df_percent %>% 
-      select(zip_code, race, percent) %>% 
+      select(zip_code, summary_est, race, percent) %>% 
+      rename(zip_code_population = summary_est) %>% 
       pivot_wider(names_from = "race",
                   values_from = "percent")
     

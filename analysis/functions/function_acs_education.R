@@ -59,9 +59,10 @@ acs_subset_calculate_education <-
     # necessary to be able to left_join() with RIDB data
     df_percent_wider <- 
       df_percent %>% 
-      select(zip_code, education, percent) %>% 
-      pivot_wider(names_from = "education",
-                  values_from = "percent")
+      select(zip_code, summary_est, education, percent) %>% 
+      rename(zip_code_population = summary_est) %>% 
+      pivot_wider(names_from = education,
+                  values_from = percent)
     
     # create df
     if (is.null(state)) {

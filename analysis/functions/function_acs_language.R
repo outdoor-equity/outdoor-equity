@@ -31,7 +31,8 @@ acs_subset_calculate_language <-
     # necessary to be able to left_join() with RIDB data
     df_percent_wider <- 
       df_percent %>% 
-      select(zip_code, language, percent) %>% 
+      select(zip_code, summary_est, language, percent) %>% 
+      rename(zip_code_population = summary_est) %>% 
       pivot_wider(names_from = "language",
                   values_from = "percent") %>% 
       mutate(not_english_only = 1 - english_only)
