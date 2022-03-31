@@ -2,7 +2,10 @@
 title: "Data Viz for Shiny App"
 author: "Clarissa"
 date: "3/16/2022"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
@@ -30,7 +33,7 @@ source("../functions/function_acs_language.R")
 ```
 
 
-```{r load data, message=FALSE}
+```{r load data}
 # read in joined data
 data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
                             delim = ",")
@@ -45,16 +48,12 @@ data_acs_2018_median_income_California <- data_acs_2018_median_income_California
   left_join(y = data_acs_2018_education_percent_California,
             by = "zip_code") %>% 
   select(zip_code, median_income, zip_code_population)
-
-# ACS US data
-# acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
-# acs_subset_calculate_education(geography = "zcta", year = 2018, state = NULL)
 ```
 
 
 ## Agency Analysis: Distribution Graphs
 
-#### Distance traveled
+### Distance traveled
 
 ```{r}
 ## -- data wrangle -- ##
@@ -90,7 +89,7 @@ plot_hist_distance_traveled
 ```
 
 
-#### Booking window
+### Booking window
 
 ```{r}
 ## -- data wrangle -- ##
@@ -137,7 +136,7 @@ plot_hist_booking_window
 ```
 
 
-#### Daily cost per visitor
+### Daily cost per visitor
 
 ```{r}
 ## -- data wrangle -- ##
@@ -174,7 +173,7 @@ plot_hist_daily_cost_per_visitor
 ```
 
 
-#### Length of Stay
+### Length of Stay
 
 ```{r}
 ## -- data wrangle -- ##
@@ -210,7 +209,7 @@ plot_hist_length_of_stay
 ```
 
 
-#### Site Type
+### Site Type
 
 ```{r}
 ## -- data wrangle -- ##
@@ -253,7 +252,7 @@ plot_hist_site_type
 ```
 
 
-#### Race
+### Race
 
 ```{r}
 ## -- data wrangle -- ##
@@ -350,7 +349,7 @@ plot_col_race <-
 plot_col_race
 ```
 
-#### Education
+### Education
 
 ```{r}
 ## -- data wrangle -- ##
@@ -454,7 +453,7 @@ plot_col_education
 ```
 
 
-#### Language
+### Language
 CA census (grey) not yet weighted by population
 
 ```{r}
@@ -514,7 +513,7 @@ plot_density_language
 
 
 
-#### Median income
+### Median income
 CA census (grey) not yet weighted by population
 
 ```{r}
@@ -571,7 +570,7 @@ plot_density_median_income
 ```
 
 
-#### Total reservations (by agency)
+### Total reservations (by agency)
 
 ```{r}
 ## -- data wrangle -- ##
@@ -605,7 +604,7 @@ plot_bar_agency_park <-
 plot_bar_agency_park
 ```
 
-#### Total Reservations (by agency)
+### Total Reservations (by agency)
 
 ```{r}
 ## -- data wrangle -- ##
@@ -636,9 +635,9 @@ plot_bar_agency_visits
 ```
 
 
+```{r, eval=FALSE}
 ## Save plot all data to RDS
 
-```{r, eval=FALSE}
 plot_data <- c("data_plot_hist_distance_traveled", "data_plot_hist_boooking_window", 
                "data_plot_hist_daily_cost_per_visitor", "data_plot_hist_length_of_stay", 
                "data_plot_col_site_type", "data_plot_col_race", "data_plot_col_education", 
