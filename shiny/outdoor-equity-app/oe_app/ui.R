@@ -13,7 +13,7 @@ ui <- fluidPage(
   # navbarPage structure ----
   navbarPage(
     # title of nav bar and title of tab in web browser 
-    "Visulize RIDB Data",
+    "Visualize RIDB Data",
     
     # About tab ----
     navbarMenu("About",
@@ -49,7 +49,7 @@ ui <- fluidPage(
                             titlePanel("Visualize a variable distribution"),
                             # agency input ----
                             selectizeInput(inputId = "agency_single",
-                                           label = "1. Select an agency:",
+                                           label = "1. Select an agency",
                                            choices = c("BOR", "NPS", "USACE", "USFS"),
                                            multiple = TRUE,
                                            options = list(
@@ -60,7 +60,7 @@ ui <- fluidPage(
 
                             # admin input ----
                             selectizeInput(inputId = "admin_unit_single",
-                                           label = "2. Select an Administrative Unit",
+                                           label = "2. Select an administrative unit",
                                            choices = admin_units,
                                            multiple = TRUE,
                                            options = list(
@@ -75,7 +75,7 @@ ui <- fluidPage(
                                                        "Race" = "race"),
                                            multiple = FALSE,
                                            options = list(
-                                             placeholder = "Type to select a variable",
+                                             placeholder = "Type to search for a variable",
                                              onInitialize = I('function() { this.setValue(""); }')
                                            )) # end of step 3 select variable ----
                             
@@ -102,7 +102,7 @@ ui <- fluidPage(
                             titlePanel("Comparison Analysis"),
                             # agency input ----
                             selectizeInput(inputId = "agency_compare",
-                                           label = "1. Select an agency:",
+                                           label = "1. Select an agency",
                                            choices = c("BOR", "NPS", "USACE", "USFS"),
                                            multiple = TRUE,
                                            options = list(
@@ -113,7 +113,7 @@ ui <- fluidPage(
                             
                             # admin input ----
                             selectizeInput(inputId = "admin_unit_compare",
-                                           label = "2. Select an Administrative Unit",
+                                           label = "2. Select an administrative unit",
                                            choices = admin_units,
                                            multiple = TRUE,
                                            options = list(
@@ -123,23 +123,23 @@ ui <- fluidPage(
                             
                             # compare first input ----
                             selectizeInput(inputId = "compare_first",
-                                           label = "3. Pick first variable",
+                                           label = "3. Select the first variable",
                                            choices = c("Distance traveled" = "distance_traveled_mi",
                                                        "Race" = "race"),
                                            multiple = FALSE,
                                            options = list(
-                                             placeholder = "Type to select a variable",
+                                             placeholder = "Type to search for a variable",
                                              onInitialize = I('function() { this.setValue(""); }')
                                            )), # end of step 3 compare first variable ----
                             
                             # compare second input ----
                             selectizeInput(inputId = "compare_second",
-                                           label = "4. Pick a second variable to compare",
+                                           label = "4. Select a second variable to compare",
                                            choices = c("Distance traveled" = "distance_traveled_mi",
                                                        "Race" = "race"),
                                            multiple = FALSE,
                                            options = list(
-                                             placeholder = "Type to select a variable",
+                                             placeholder = "Type to search for a variable",
                                              onInitialize = I('function() { this.setValue(""); }')
                                            )) # end of step 3 compare first variable ----
                             
@@ -150,13 +150,60 @@ ui <- fluidPage(
                             
                             plotOutput(outputId = "agency_analysis")
                         
-                        ) # end of main panel
+                        ) # end of main panel ----
                         ) # end of sidebar layout ----
                         ), # end of agency / site comparison analysis ----
 
                # Reservable Site Analysis ----
-               tabPanel(title = "Reservable Site Analysis") # end of Reservable Site Analysis ----
-               
+               tabPanel(title = "Reservable Site Analysis",
+                        fluid = TRUE,
+                        # sidebar layout ----
+                        sidebarLayout(
+                          # reservable site analysis side bar panel ----
+                          sidebarPanel(
+                            
+                            titlePanel("Visualize a Reservable Site"),
+                            # site agency input ----
+                            selectizeInput(inputId = "agency_site",
+                                           label = "1. Select an agency",
+                                           choices = c("BOR", "NPS", "USACE", "USFS"),
+                                           multiple = TRUE,
+                                           options = list(
+                                             placeholder = "Type to search for an agency",
+                                             # Note(HD) when created set a value for the input to an empty string
+                                             onInitialize = I('function() { this.setValue(""); }')
+                                           )), # end of step 1 select an agency ----
+                            
+                            # site admin input ----
+                            selectizeInput(inputId = "admin_site",
+                                           label = "2. Select an administrative unit",
+                                           choices = admin_units,
+                                           multiple = TRUE,
+                                           options = list(
+                                             placeholder = "Type to search for an admin unit",
+                                             onInitialize = I('function() { this.setValue(""); }')
+                                           )), # end of step 2 select an admin unit ----
+                            
+                            # select a site input ----
+                            selectizeInput(inputId = "site",
+                                           label = "3. Select a reservable site",
+                                           choices = sites,
+                                           multiple = FALSE,
+                                           options = list(
+                                             placeholder = "Type to search for a reservable site",
+                                             onInitialize = I('function() { this.setValue(""); }')
+                                           )), # end of step 3 select a site ----
+                            
+                          ), # end of reservable site sidebar panel ----
+                          
+                          mainPanel(
+                            
+                            plotOutput(outputId = "agency_analysis")
+                            
+                          ) # end of main panel for site ----
+                        ) # end of sidebar layout ----
+                        ) # end of Reservable Site Analysis ----
+
                ), # end of Analysis tab ----
     
     # Data Download ----
