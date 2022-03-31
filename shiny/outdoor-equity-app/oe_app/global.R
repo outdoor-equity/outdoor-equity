@@ -18,7 +18,7 @@ library(patchwork)
 library(scales)
 library(paletteer)
 
-source("r/inputs.R")
+#source("r/inputs.R")
 
 # import data ---- 
 data_joined_2018 <- readRDS("data/data_joined_2018.rds")
