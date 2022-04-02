@@ -1,6 +1,9 @@
 library(tidyverse)
 library(here)
 
+
+DT::datatable(data_joined_2018)
+
 select_analysis <- function(){
   
   selectizeInput(inputId = "analysis",

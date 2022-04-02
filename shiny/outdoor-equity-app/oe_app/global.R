@@ -18,6 +18,7 @@ library(sf)
 library(patchwork)
 library(scales)
 library(paletteer)
+library(DT)
 
 # import data ---- 
 ## CA prototype joined 2018 data ----

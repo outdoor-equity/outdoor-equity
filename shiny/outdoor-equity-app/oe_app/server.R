@@ -1,13 +1,22 @@
 # server instructions ----
 server <- function(input, output){
+  ## REACTIVE DATA FRAMES ----
   
-  ## REACTIVE DATA FRAMES ## ----
-  # dist traveled df ----
+  ### data download ----
+  # data_download_df <- reactive({
+  #   data_joined_2018 %>% 
+  #     filter(agency %in% input$agency,
+  #            regional_area %in% input$admin_unit,
+  #            park %in% input$site)
+  #   
+  # })
+  # 
+  ### dist traveled df ----
   distance_traveled_df <- reactive({
     data_hist_distance_traveled %>% filter(agency %in% input$agency)
   })
   
-  # race df ----
+  ### race df ----
   # NEED TO ADD AGENCY IF WE WANT IT TO BE REACTIVE 
   # race_df <- reactive({
   #   data_hist_race %>% filter(agency %in% input$agency)
@@ -15,11 +24,19 @@ server <- function(input, output){
 
   
   
-  ## RENDERING AGENCY ANALYSIS PLOTS ## ----
-  # render dist traveled hist ----
+  ## RENDERING OUTPUTS  ----
+  
+  #### data download ----
+  # Note(HD) Data too large to put in DT table?
+  # output$data_download <- DT:renderDataTable({
+  #   DT::datatable(data_download_df())
+  #   
+  # })
+  # 
+  #### dist traveled hist ----
   output$agency_analysis <- renderPlot({
     
-    # if statement for dist traveled ----
+    # if statement for dist traveled
     if(input$agency_hist_vars == "distance_traveled_mi"){
       
       hist_colors <- c("#009900FF")
@@ -36,9 +53,9 @@ server <- function(input, output){
         theme(plot.background = element_rect("white"),
               panel.grid.major.y = element_blank())
       
-    } # end of if statement for dist traveled ----
+    } # end of if statement for dist traveled
     
-    # else if for race hist ----
+    # else if for race hist
     else if(input$agency_hist_vars == "race"){
       
       # parameters
@@ -66,11 +83,11 @@ server <- function(input, output){
         theme(plot.background = element_rect("white"),
               panel.grid.major.y = element_blank())
       
-    } # end of race plot ----
+    } # end of race plot
     
-    # render dist traveled x race column comp ----   
+    # render dist traveled x race column comp
 
-    # if statement for dist traveled x race ----
+    # if statement for dist traveled x race
     if(input$scat_ridb_vars == "race"){
 
       # parameters
@@ -95,16 +112,13 @@ server <- function(input, output){
       
     } # end of if statement for dist traveled x race column comp
 
-  
-  ## RENDERING SITE ANALYSIS PLOTS ## ----
     
   
     
     
   })
   
-  
-  ### OLD render hist ### ----
+  ### OLD render hist ----
     # output$agency_hist_dist_travel <- renderPlot({
     #   # all if else statements live inside renderPlot{}
     # 

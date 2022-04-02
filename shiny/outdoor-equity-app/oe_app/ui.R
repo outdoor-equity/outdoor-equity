@@ -173,6 +173,7 @@ ui <- fluidPage(
              
              titlePanel("Create a subsetted dataset to download"),
              # Note (HD) each fluidRow has a default width of 12
+             # Note (HD) should figure out if wellPanel is doable
              fluidRow(
                # Note (HD) box width defaults 6
                box(
@@ -186,9 +187,13 @@ ui <- fluidPage(
                         select_admin_unit()),
                  column(width = 4,
                         select_site())
-               )
+               ) # EO box
+             ), # EO fluidRow
+             
+             ### OP data download ----
+             DT::dataTableOutput(outputId = "data_download")
                
-             ) # EO fluidRow
+             
 
              ) ## EO Data Download ----
     
