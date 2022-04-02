@@ -55,8 +55,7 @@ ui <- fluidPage(
                             # variable input
                             selectizeInput(inputId = "vars_single",
                                            label = "3. Pick a variable to see its distribution",
-                                           choices = c("Distance traveled" = "distance_traveled_mi",
-                                                       "Race" = "race"),
+                                           choices = agency_hist_vars,
                                            multiple = FALSE,
                                            options = list(
                                              placeholder = "Type to search for a variable",
