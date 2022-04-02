@@ -16,7 +16,7 @@ ui <- fluidPage(
     "Visualize RIDB Data",
     
     ## About tab ----
-    navbarMenu("About",
+    navbarMenu("About", icon = icon("info-circle"),
                
                tabPanel(title = "Background",
                         # Note(HD): need . in front of file path for relative path
@@ -36,7 +36,7 @@ ui <- fluidPage(
                )), ## EO About tab ----
     
     ## Analysis tab ---- 
-    navbarMenu("Analysis",
+    navbarMenu("Analysis", icon = icon("chart-bar"),
                
                ### SO distribution / single variable analysis ----
                tabPanel(title = "Agency/ Site Single Variable Analysis",
@@ -46,7 +46,7 @@ ui <- fluidPage(
                         sidebarLayout(
                           # distribution analysis side bar panel
                           sidebarPanel(
-                            
+                            width = 3,
                             titlePanel("Visualize a variable distribution"),
                             # agency input
                             select_agency(),
@@ -79,11 +79,11 @@ ui <- fluidPage(
                         fluid = TRUE,
                         
                         # comparison sidebar layout
+                        titlePanel("Comparison Analysis"),
                         sidebarLayout(
                           # comparison analysis side bar panel
                           sidebarPanel(
                             
-                            titlePanel("Comparison Analysis"),
                             # agency input
                             select_agency(),
                             # admin input
@@ -166,7 +166,7 @@ ui <- fluidPage(
                ), ## EO Analysis tab ----
     
     ## Data Download ----
-    tabPanel("Data Download",
+    tabPanel("Data Download", icon = icon("download-alt", lib = "glyphicon"),
              "Tables of data go here") ## EO Data Download ----
     
   ) # EO navbarPage
