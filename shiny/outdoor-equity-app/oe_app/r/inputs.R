@@ -1,4 +1,4 @@
-# select agency ----
+# SEL agency ----
 # used in (1) distribution / single variable analysis; 
 # (2) comparison / multiple variable analysis; 
 # (3) site analysis / maps
@@ -16,7 +16,7 @@ select_agency <- function(){
 }
 
 
-# select admin unit ----
+# SEL admin unit ----
 # used in (1) distribution / single variable analysis; 
 # (2) comparison / multiple variable analysis; 
 # (3) site analysis / maps
