@@ -58,7 +58,7 @@ ui <- fluidPage(
                             # variable input
                             selectizeInput(inputId = "vars_single",
                                            label = "3. Pick a variable to see its distribution",
-                                           choices = agency_hist_vars,
+                                           choices = dist_vars,
                                            multiple = FALSE,
                                            options = list(
                                              placeholder = "Type to search for a variable",
@@ -191,7 +191,7 @@ ui <- fluidPage(
              ), # EO fluidRow
              
              ### OP data download ----
-             DT::dataTableOutput(outputId = "data_download")
+             #DT::dataTableOutput(outputId = "data_download")
                
              
 
