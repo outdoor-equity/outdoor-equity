@@ -1,6 +1,9 @@
 # # UI ----
 ui <- fluidPage(
   
+  # use shiny dashboard elements in shiny
+  useShinydashboard(),
+  
   # set theme ----
   theme = bs_theme(bootswatch = "minty"),
   
@@ -167,7 +170,27 @@ ui <- fluidPage(
     
     ## Data Download ----
     tabPanel("Data Download", icon = icon("download-alt", lib = "glyphicon"),
-             "Tables of data go here") ## EO Data Download ----
+             
+             titlePanel("Create a subsetted dataset to download"),
+             # Note (HD) each fluidRow has a default width of 12
+             fluidRow(
+               # Note (HD) box width defaults 6
+               box(
+                 width = 12,
+                 title = "Test",
+                 status = "primary",
+                 solidHeader = TRUE,
+                 column(width = 4,
+                        select_agency()),
+                 column(width = 4,
+                        select_admin_unit()),
+                 column(width = 4,
+                        select_site())
+               )
+               
+             ) # EO fluidRow
+
+             ) ## EO Data Download ----
     
   ) # EO navbarPage
   
