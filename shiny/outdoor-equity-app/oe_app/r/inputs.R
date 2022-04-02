@@ -1,12 +1,19 @@
-select_analysis <- function(){
+# select agency ----
+# used in (1) distribution / single variable analysis; 
+# (2) comparison / multiple variable analysis; 
+# (3) site analysis / maps
+
+select_agency <- function(){
   
-  selectizeInput(inputId = "analysis",
-                 label = "2. What kind of analysis do you want to see?",
-                 # conditional panel options / "id's" ---- 
-                 choices = c(Comparison = "compare", Distribution = "hist"),
-                 multiple = FALSE,
+  selectizeInput(inputId = "agency",
+                 label = "Select an agency",
+                 choices = ca_agency,
+                 multiple = TRUE,
                  options = list(
-                   placeholder = "Select an analysis type",
+                   placeholder = "Type to search for an agency",
+                   # Note(HD) when created set a value for the input to an empty string
                    onInitialize = I('function() { this.setValue(""); }')
-                 ))
+                 )) 
 }
+
+
