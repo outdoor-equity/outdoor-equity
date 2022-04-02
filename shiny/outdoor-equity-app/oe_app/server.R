@@ -122,4 +122,4 @@ server <- function(input, output){
     #   } # end of if input$agency_hist_vars statement 
     # })
 
-}
+} # EO server 
