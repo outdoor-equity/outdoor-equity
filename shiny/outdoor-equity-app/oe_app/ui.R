@@ -32,6 +32,7 @@ ui <- fluidPage(
                tabPanel(title = "Metadata",
                         # Note(HD): need to change this to a rmd file to include DT table
                         includeMarkdown("./text/metadata-about.md")
+                        
                )), # end of About tab ----
     
     # Analysis tab ---- 
@@ -164,15 +165,16 @@ ui <- fluidPage(
                             
                             titlePanel("Visualize a Reservable Site"),
                             # site agency input ----
-                            selectizeInput(inputId = "agency_site",
-                                           label = "1. Select an agency",
-                                           choices = c("BOR", "NPS", "USACE", "USFS"),
-                                           multiple = TRUE,
-                                           options = list(
-                                             placeholder = "Type to search for an agency",
-                                             # Note(HD) when created set a value for the input to an empty string
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )), # end of step 1 select an agency ----
+                            select_agency(),
+                            # selectizeInput(inputId = "agency_site",
+                            #                label = "1. Select an agency",
+                            #                choices = c("BOR", "NPS", "USACE", "USFS"),
+                            #                multiple = TRUE,
+                            #                options = list(
+                            #                  placeholder = "Type to search for an agency",
+                            #                  # Note(HD) when created set a value for the input to an empty string
+                            #                  onInitialize = I('function() { this.setValue(""); }')
+                            #                )), # end of step 1 select an agency ----
                             
                             # site admin input ----
                             selectizeInput(inputId = "admin_site",
