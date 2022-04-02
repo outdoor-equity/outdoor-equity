@@ -34,4 +34,23 @@ select_admin_unit <- function(){
 }
 
 
+# SEL site ----
+# used in (1) distribution / single variable analysis; 
+# (2) comparison / multiple variable analysis; 
+# (3) site analysis / maps
+select_site <- function(){
+  
+  selectizeInput(inputId = "site",
+                 label = "Select a reservable site",
+                 choices = sites,
+                 multiple = TRUE,
+                 options = list(
+                   placeholder = "Type to search for a reservable site",
+                   # Note(HD) when created set a value for the input to an empty string
+                   onInitialize = I('function() { this.setValue(""); }')
+                 )) 
+ 
+}
+
+
 
