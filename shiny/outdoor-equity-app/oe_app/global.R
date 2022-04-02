@@ -1,4 +1,4 @@
-## HOW TO DEPLOY APP ##
+# HOW TO DEPLOY APP ----
 # use function deployApp()
 # deployApp("/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/oe_app")
 
@@ -18,11 +18,13 @@ library(patchwork)
 library(scales)
 library(paletteer)
 
-#source("r/inputs.R")
-
 # import data ---- 
+## CA prototype joined 2018 data ----
 data_joined_2018 <- readRDS("data/data_joined_2018.rds")
 data_hist_distance_traveled <- readRDS("data/data_hist_distance_traveled.rds")
+
+# source input functions ----
+source("r/inputs.R")
 
 # agency analysis race hist
 data_hist_race <- readRDS("data/2018_data_plot_col_race.rds")
@@ -35,58 +37,24 @@ data_ca_geom <- readRDS("data/data_ca_geom.rds")
 # data_comb_CAmap <- readRDS("data/data_combined_CAmap_2018.rds")
 # data_reg_comb <- readRDS("data/data_regional_combined_2018.rds")
 
+# CA prototype objects ----
+# use in R scripts, ui or server
+
+## CA agency list ----
+ca_agency <- as.vector(unique(data_joined_2018$agency))
+
+## CA admin units ----
+admin_units <- as.vector(unique(data_joined_2018$regional_area))
+
+## CA reservable sites ----
+sites <- as.vector(unique(data_joined_2018$park))
+
 
 ## PRETTY NAMES here to reference in ui or server ----
-# variables from 2018_joined_data.rds 
+# variables from 2018_joined_data.rds
 
-# reservable sites (park) ----
-# site analysis park list
-data_joined_park <- readRDS("data/data_joined_park.rds")
-sites <- as.vector(data_joined_park$park)
 
-# admin units ---- 
-admin_units <-  c("Eldorado National Forest",
-                  "Inyo National Forest",
-                  "Los Padres National Forest",
-                  "Plumas National Forest",
-                  "San Bernardino National Forest",
-                  "Tahoe National Forest",
-                  "Humboldt-Toiyabe National Forest",
-                  "Sierra National Forest",
-                  "Lassen National Forest",
-                  "Six Rivers National Forest",
-                  "Shasta-Trinity National Forest",
-                  "Yosemite National Park",
-                  "Sequoia & Kings Canyon National Parks",
-                  "Joshua Tree National Park",
-                  "Golden Gate National Recreation Area",
-                  "Channel Islands National Park",
-                  "Lake Tahoe Basin National Forest", 
-                  "Sequoia National Forest",
-                  "Cleveland National Forest",
-                  "Lassen Volcanic National Park",
-                  "Point Reyes National Seashore",
-                  "Hensley Lake",
-                  "Lake Mendocino",
-                  "New Hogan Lake",
-                  "Angeles National Forest",
-                  "New Melones",
-                  "Klamath National Forest",
-                  "Mendocino National Forest",
-                  "Sequoia & Kings Canyon National Park",
-                  "Whiskeytown National Recreation Area",
-                  "Stanislaus National Forest",
-                  "Success Lake",
-                  "Pine Flat Lake", 
-                  "Lake Kaweah",
-                  "Modoc National Forest",
-                  "Eastman Lake",
-                  "Pinnacles National Park",
-                  "Death Valley National Park",
-                  "Lake Sonoma",
-                  "Black Butte Lake",
-                  "Santa Monica Mountains National Recreation Area",
-                  "East Park & Stoney Gorge Reservoirs")
+
 
 
 agency_hist_vars <- c("Booking window" = "booking_window",
