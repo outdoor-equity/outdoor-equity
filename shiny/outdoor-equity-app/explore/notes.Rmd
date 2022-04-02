@@ -13,9 +13,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 agency 
 
+# List of output id's
+
+data_download
+
 # Shortcuts 
 
 TO = title of
 SO = start of 
 EO = end of
 SEL = select
+OP = output
+IP = input
