@@ -1,6 +1,5 @@
 # # UI ----
 ui <- fluidPage(
-  
   # use shiny dashboard elements in shiny
   useShinydashboard(),
   
@@ -88,7 +87,15 @@ ui <- fluidPage(
                           sidebarPanel(
                             
                             # agency input
-                            select_agency(),
+                            selectizeInput(inputId = "agency",
+                                           label = "Select an agency",
+                                           choices = ca_agency,
+                                           multiple = TRUE,
+                                           options = list(
+                                             placeholder = "Type to search for an agency",
+                                             # Note(HD) when created set a value for the input to an empty string
+                                             onInitialize = I('function() { this.setValue(""); }')
+                                           )),
                             # admin input
                             select_admin_unit(),
                             # comparison first var
@@ -136,15 +143,7 @@ ui <- fluidPage(
                             # site agency input
                             select_agency(),
                             # site admin input
-                            selectizeInput(inputId = "admin_site",
-                                           label = "2. Select an administrative unit",
-                                           choices = admin_units,
-                                           multiple = TRUE,
-                                           options = list(
-                                             placeholder = "Type to search for an admin unit",
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )), # end of step 2 select an admin unit
-                            
+                            select_admin_unit(),
                             # select a site input 
                             selectizeInput(inputId = "site",
                                            label = "3. Select a reservable site",

@@ -1,14 +1,15 @@
 # server instructions ----
-server <- function(input, output){
+server <- function(input, output, session){
+
   ## REACTIVE DATA FRAMES ----
   
   ### data download ----
   # data_download_df <- reactive({
-  #   data_joined_2018 %>% 
+  #   data_joined_2018 %>%
   #     filter(agency %in% input$agency,
   #            regional_area %in% input$admin_unit,
   #            park %in% input$site)
-  #   
+  # 
   # })
   # 
   ### dist traveled df ----
@@ -41,17 +42,17 @@ server <- function(input, output){
   #     
   #     hist_colors <- c("#009900FF")
   #     
-  #     # plot for shiny app
-  #     ggplot(data = distance_traveled_df()) +
-  #       geom_histogram(aes(x = distance_traveled_mi),
-  #                      fill = hist_colors) +
-  #       scale_x_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 500), 
-  #                          minor_breaks = seq(0, 3000, 250)) +
-  #       labs(x = "Distance traveled (miles)",
-  #            y = "") +
-  #       theme_minimal() +
-  #       theme(plot.background = element_rect("white"),
-  #             panel.grid.major.y = element_blank())
+      # plot for shiny app
+      # ggplot(data = distance_traveled_df()) +
+      #   geom_histogram(aes(x = distance_traveled_mi),
+      #                  fill = hist_colors) +
+      #   scale_x_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 500),
+      #                      minor_breaks = seq(0, 3000, 250)) +
+      #   labs(x = "Distance traveled (miles)",
+      #        y = "") +
+      #   theme_minimal() +
+      #   theme(plot.background = element_rect("white"),
+      #         panel.grid.major.y = element_blank())
   #     
   #   } # end of if statement for dist traveled
   #   

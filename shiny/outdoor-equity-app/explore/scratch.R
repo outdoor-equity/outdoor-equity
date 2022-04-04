@@ -1,6 +1,22 @@
 library(tidyverse)
 library(here)
 
+ggplot(data = data_joined_2018, aes(x = number_of_people)) + 
+  geom_histogram()
+
+test <- data_joined_2018 %>% 
+  filter(agency == "USFS")
+
+admin_test <- as.vector(unique(test$regional_area))
+
+# admin unit choices
+admin_unit_choices <- {
+  "USFS": admin_test
+}
+
+admin_unit_choices[input.agency]
+
+
 
 DT::datatable(data_joined_2018)
 

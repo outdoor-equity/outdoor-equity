@@ -9,6 +9,48 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# code from naoh
+
+```{r}
+library(shiny)
+library(reactlog)
+reactlog::reactlog_enable()
+
+options(shiny.reactlog = TRUE)
+
+  output$agency_analysis <- renderPlot({
+    
+    ggplot(data = data_joined_2018, aes(x = number_of_people)) + 
+      geom_histogram()
+    
+  })
+  
+  eventReactive(input$vars_single, {
+    cat("Showing", input$vars_single, "rows\n")
+    print(paste0("You have chosen: ", input$vars_single))
+  })
+  
+  observeEvent(input$vars_single, {
+    cat("Showing", input$vars_single, "rows\n")
+    print(paste0("You have chosen: ", input$vars_single))
+  })
+  # update input choices using observe ----
+  # observeEvent(input$agency, {
+  #   print(paste0("You have chosen: ", input$agency))
+  #   test <- data_joined_2018 %>% 
+  #     filter(agency %in% input$agency)
+  #   
+  #   admin_test <- as.vector(unique(test$regional_area))
+  #   
+  #   updateSelectizeInput(session, "agency",
+  #     choices = admin_test
+  #   )
+  #   
+  # })
+```
+
+
+
 # List of input id's
 
 agency 
