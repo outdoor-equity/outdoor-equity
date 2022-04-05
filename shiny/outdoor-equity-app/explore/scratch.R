@@ -1,7 +1,7 @@
 library(tidyverse)
 library(here)
 
-ggplot(data = data_joined_2018, aes(x = number_of_people)) + 
+ggplot(data = data_test, aes(x = length_of_stay)) + 
   geom_histogram()
 
 test <- data_joined_2018 %>% 

@@ -69,7 +69,7 @@ ui <- fluidPage(
                           # distribution main panel aka visual?
                           mainPanel(
                             
-                            plotOutput(outputId = "agency_analysis")
+                            plotOutput(outputId = "vars_single_plot")
                             
                           ) # EO distribution main panel
                         ) # EO distribution sidebar layout
@@ -87,15 +87,7 @@ ui <- fluidPage(
                           sidebarPanel(
                             
                             # agency input
-                            selectizeInput(inputId = "agency",
-                                           label = "Select an agency",
-                                           choices = ca_agency,
-                                           multiple = TRUE,
-                                           options = list(
-                                             placeholder = "Type to search for an agency",
-                                             # Note(HD) when created set a value for the input to an empty string
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )),
+                            select_agency(),
                             # admin input
                             select_admin_unit(),
                             # comparison first var
@@ -125,7 +117,7 @@ ui <- fluidPage(
                           # comparison main panel aka visual?
                           mainPanel(
                             
-                            plotOutput(outputId = "agency_analysis")
+                            plotOutput(outputId = "compare_plot")
                         
                         ) # EO comparison main panel
                         ) # EO comparison sidebar layout
@@ -145,21 +137,14 @@ ui <- fluidPage(
                             # site admin input
                             select_admin_unit(),
                             # select a site input 
-                            selectizeInput(inputId = "site",
-                                           label = "3. Select a reservable site",
-                                           choices = sites,
-                                           multiple = FALSE,
-                                           options = list(
-                                             placeholder = "Type to search for a reservable site",
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )), # end of step 3 select a site
+                            select_site(),
                             
                           ), # EO site sidebar panel
                           
                           # site main panel aka visual?
                           mainPanel(
                             
-                            plotOutput(outputId = "agency_analysis")
+                            plotOutput(outputId = "site_plot")
                             
                           ) # EO site main panel
                         ) # EO site sidebar layout
