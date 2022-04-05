@@ -51,9 +51,9 @@ ui <- fluidPage(
                             width = 3,
                             titlePanel("Visualize a variable distribution"),
                             # agency input
-                            select_agency(),
+                            select_agency(locationId = "single_var"),
                             # admin input
-                            select_admin_unit(),
+                            select_admin_unit(locationId = "single_var"),
                             # variable input
                             selectizeInput(inputId = "vars_single",
                                            label = "3. Pick a variable to see its distribution",
@@ -87,27 +87,9 @@ ui <- fluidPage(
                           sidebarPanel(
                             
                             # agency input
-                            #select_agency(),
-                            selectizeInput(inputId = "agency",
-                                           label = "Select an agency",
-                                           choices = ca_agency,
-                                           multiple = TRUE,
-                                           options = list(
-                                             placeholder = "Type to search for an agency",
-                                             # Note(HD) when created set a value for the input to an empty string
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )),
+                            select_agency(locationId = "compare"),
                             # admin input
-                            #select_admin_unit(),
-                            selectizeInput(inputId = "admin_unit",
-                                           label = "Select an administrative unit",
-                                           choices = admin_units,
-                                           multiple = TRUE,
-                                           options = list(
-                                             placeholder = "Type to search for an admin unit",
-                                             # Note(HD) when created set a value for the input to an empty string
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )), 
+                            select_admin_unit(locationId = "compare"),
                             # comparison first var
                             selectizeInput(inputId = "compare_first",
                                            label = "3. Select the first variable",
@@ -151,11 +133,11 @@ ui <- fluidPage(
                             
                             titlePanel("Visualize a Reservable Site"),
                             # site agency input
-                            select_agency(),
+                            select_agency(locationId = "site"),
                             # site admin input
-                            select_admin_unit(),
+                            select_admin_unit(locationId = "site"),
                             # select a site input 
-                            select_site(),
+                            select_site(locationId = "map"),
                             
                           ), # EO site sidebar panel
                           
@@ -184,11 +166,11 @@ ui <- fluidPage(
                  status = "primary",
                  solidHeader = TRUE,
                  column(width = 4,
-                        select_agency()),
+                        select_agency(locationId = "data_download")),
                  column(width = 4,
-                        select_admin_unit()),
+                        select_admin_unit(locationId = "data_download")),
                  column(width = 4,
-                        select_site())
+                        select_site(locationId = "data_download"))
                ) # EO box
              ), # EO fluidRow
              
