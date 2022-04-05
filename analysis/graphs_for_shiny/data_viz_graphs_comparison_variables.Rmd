@@ -1108,6 +1108,7 @@ plot_data <- c("data_plot_race_distance_traveled", "data_plot_race_site_type",
                "data_plot_education_daily_cost", "data_plot_education_length_of_stay", 
                "data_plot_booking_window_site_type")
 
+
 for (i in seq_along(plot_data)){
   saveRDS(object = get(plot_data[[i]]),
           file = paste0("../../../../data_clean/2018_data_graphs_comparison_variables/2018_", 

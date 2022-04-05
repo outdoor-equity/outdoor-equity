@@ -57,7 +57,7 @@ data_acs_2018_median_income_California <- data_acs_2018_median_income_California
 
 ```{r}
 ## -- data wrangle -- ##
-data_plot_hist_distance_traveled <- data_ridb_acs_2018 %>% 
+data_plot_distance_traveled <- data_ridb_acs_2018 %>% 
   mutate(distance_traveled_mi = distance_traveled_m * 0.000621371)
 
 ## -- create plot -- ##
@@ -66,8 +66,8 @@ data_plot_hist_distance_traveled <- data_ridb_acs_2018 %>%
 hist_colors <- c("#009900FF")
 
 # plot for shiny app
-plot_hist_distance_traveled <-
-  ggplot(data = data_plot_hist_distance_traveled) +
+plot_distance_traveled <-
+  ggplot(data = data_plot_distance_traveled) +
   geom_histogram(aes(x = distance_traveled_mi),
                  fill = hist_colors) +
   scale_y_continuous(labels = comma) +
@@ -84,8 +84,7 @@ plot_hist_distance_traveled <-
         # axis.title = element_text(size = 22, face = "bold"),
         # title = element_text(size = 24, face = "bold")
         )
-
-plot_hist_distance_traveled
+plot_distance_traveled
 ```
 
 
@@ -93,7 +92,7 @@ plot_hist_distance_traveled
 
 ```{r}
 ## -- data wrangle -- ##
-data_plot_hist_boooking_window <- data_ridb_acs_2018 %>% 
+data_plot_boooking_window <- data_ridb_acs_2018 %>% 
   filter(booking_window > 0,
          booking_window < 510)
 
@@ -103,8 +102,8 @@ data_plot_hist_boooking_window <- data_ridb_acs_2018 %>%
 hist_colors <- c("#009900FF")
 
 # plot for shiny app
-plot_hist_booking_window <-
-  ggplot(data = data_plot_hist_boooking_window) +
+plot_booking_window <-
+  ggplot(data = data_plot_boooking_window) +
   geom_histogram(aes(x = booking_window),
                  binwidth = 7,
                  fill = hist_colors) +
@@ -131,8 +130,7 @@ plot_hist_booking_window <-
         # axis.title = element_text(size = 22, face = "bold"),
         # title = element_text(size = 24, face = "bold")
         )
-
-plot_hist_booking_window
+plot_booking_window
 ```
 
 
@@ -140,7 +138,7 @@ plot_hist_booking_window
 
 ```{r}
 ## -- data wrangle -- ##
-data_plot_hist_daily_cost_per_visitor <- data_ridb_acs_2018 %>% 
+data_plot_daily_cost_per_visitor <- data_ridb_acs_2018 %>% 
   filter(daily_cost_per_visitor != "Inf",
          daily_cost_per_visitor <= 50)
 
@@ -150,8 +148,8 @@ data_plot_hist_daily_cost_per_visitor <- data_ridb_acs_2018 %>%
 hist_colors <- c("#009900FF")
 
 # plot for shiny app
-plot_hist_daily_cost_per_visitor <-
-  ggplot(data = data_plot_hist_daily_cost_per_visitor) +
+plot_daily_cost_per_visitor <-
+  ggplot(data = data_plot_daily_cost_per_visitor) +
   geom_histogram(aes(x = daily_cost_per_visitor),
                  fill = hist_colors) +
   labs(x = "Daily cost per visitor ($)",
@@ -168,8 +166,7 @@ plot_hist_daily_cost_per_visitor <-
         # axis.title = element_text(size = 22, face = "bold"),
         # title = element_text(size = 24, face = "bold")
         )
-
-plot_hist_daily_cost_per_visitor
+plot_daily_cost_per_visitor
 ```
 
 
@@ -177,7 +174,7 @@ plot_hist_daily_cost_per_visitor
 
 ```{r}
 ## -- data wrangle -- ##
-data_plot_hist_length_of_stay <- data_ridb_acs_2018
+data_plot_length_of_stay <- data_ridb_acs_2018
 
 ## -- create plot -- ##
 
@@ -185,8 +182,8 @@ data_plot_hist_length_of_stay <- data_ridb_acs_2018
 hist_colors <- c("#009900FF")
 
 # plot for shiny app
-plot_hist_length_of_stay <-
-  ggplot(data = data_plot_hist_length_of_stay) +
+plot_length_of_stay <-
+  ggplot(data = data_plot_length_of_stay) +
   geom_histogram(aes(x = length_of_stay),
                  binwidth = 1,
                  fill = hist_colors) +
@@ -204,8 +201,7 @@ plot_hist_length_of_stay <-
         # axis.title = element_text(size = 22, face = "bold"),
         # title = element_text(size = 24, face = "bold")
         )
-
-plot_hist_length_of_stay
+plot_length_of_stay
 ```
 
 
@@ -213,14 +209,14 @@ plot_hist_length_of_stay
 
 ```{r}
 ## -- data wrangle -- ##
-data_plot_col_site_type <- data_ridb_acs_2018 %>% 
+data_plot_site_type <- data_ridb_acs_2018 %>% 
   group_by(aggregated_site_type) %>% 
   summarise(count = n()) %>% 
   mutate(aggregated_site_type = factor(aggregated_site_type, 
                                        levels = c("shelter", "rv only", "rv or tent",
                                                   "tent only", "remote", "equestrian",
                                                   "water")))
-data_plot_col_site_type$aggregated_site_type <- with(data_plot_col_site_type, reorder(aggregated_site_type, count))
+data_plot_site_type$aggregated_site_type <- with(data_plot_site_type, reorder(aggregated_site_type, count))
 
  
 ## -- create plot -- ##
@@ -229,11 +225,11 @@ data_plot_col_site_type$aggregated_site_type <- with(data_plot_col_site_type, re
 hist_colors <- c("#009900FF")
 
 # plot for shiny app
-plot_hist_site_type <-
-  ggplot(data = data_plot_col_site_type) +
+plot_site_type <-
+  ggplot(data = data_plot_site_type) +
   geom_col(aes(x = count,
                y = aggregated_site_type),
-                 fill = hist_colors) +
+           fill = hist_colors) +
   scale_x_continuous(labels = comma) +
   labs(x = "Number of Sites",
        y = "Types of Sites",
@@ -247,8 +243,7 @@ plot_hist_site_type <-
         # axis.title = element_text(size = 22, face = "bold"),
         # title = element_text(size = 24, face = "bold")
         )
-
-plot_hist_site_type
+plot_site_type
 ```
 
 
@@ -258,7 +253,7 @@ plot_hist_site_type
 ## -- data wrangle -- ##
 
 # reservations in CA
-data_plot_col_race_ridb <- data_ridb_acs_2018 %>%
+data_plot_race_ridb <- data_ridb_acs_2018 %>%
   summarize(white = (mean(white, na.rm = TRUE) * 100),
             black = (mean(black, na.rm = TRUE) * 100),
             asian = (mean(asian, na.rm = TRUE) * 100),
@@ -272,10 +267,10 @@ data_plot_col_race_ridb <- data_ridb_acs_2018 %>%
                             pattern = "_",
                             replacement = " "),
          race = str_to_title(race))
-data_plot_col_race_ridb$race <- with(data_plot_col_race_ridb, reorder(race, race_percent_average))
+data_plot_race_ridb$race <- with(data_plot_race_ridb, reorder(race, race_percent_average))
 
 # CA population
-data_plot_col_race_ca <- data_acs_2018_race_percent_California %>%
+data_plot_race_ca <- data_acs_2018_race_percent_California %>%
   summarize(white = (weighted.mean(white, zip_code_population, 
                                    na.rm = TRUE) * 100),
             black = (weighted.mean(black,  zip_code_population,
@@ -297,11 +292,11 @@ data_plot_col_race_ca <- data_acs_2018_race_percent_California %>%
                             pattern = "_",
                             replacement = " "),
          race = str_to_title(race))
-data_plot_col_race_ca$race <- with(data_plot_col_race_ca, reorder(race, race_percent_average))
+data_plot_race_ca$race <- with(data_plot_race_ca, reorder(race, race_percent_average))
 
 # join data for plotting
-data_plot_col_race <- data_plot_col_race_ridb %>% 
-  left_join(y = data_plot_col_race_ca,
+data_plot_race <- data_plot_race_ridb %>% 
+  left_join(y = data_plot_race_ca,
             by = c("race"),
             suffix = c("_ridb", "_ca")) %>% 
   rename(RIDB = race_percent_average_ridb,
@@ -317,8 +312,8 @@ data_plot_col_race <- data_plot_col_race_ridb %>%
 groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
 
 # plot for shiny app
-plot_col_race <- 
-  ggplot(data = data_plot_col_race) +
+plot_race <- 
+  ggplot(data = data_plot_race) +
   geom_col(aes(x = race_percent_average,
                y = race,
                fill = data_source),
@@ -345,8 +340,7 @@ plot_col_race <-
         # axis.title = element_text(size = 22, face = "bold"),
         # title = element_text(size = 24, face = "bold")
         )
-
-plot_col_race
+plot_race
 ```
 
 ### Education
@@ -355,7 +349,7 @@ plot_col_race
 ## -- data wrangle -- ##
 
 # reservations in CA
-data_plot_col_education_ridb <- data_ridb_acs_2018 %>%
+data_plot_education_ridb <- data_ridb_acs_2018 %>%
   summarize(hs_GED_or_below = (mean(hs_GED_or_below, na.rm = TRUE) * 100),
             some_college = (mean(some_college, na.rm = TRUE) * 100),
             college = (mean(college, na.rm = TRUE) * 100),
@@ -375,7 +369,7 @@ data_plot_col_education_ridb <- data_ridb_acs_2018 %>%
                             replacement = "Masters degree or higher"))
 
 # CA population
-data_plot_col_education_ca <- data_acs_2018_education_percent_California %>%
+data_plot_education_ca <- data_acs_2018_education_percent_California %>%
   summarize(hs_GED_or_below = (weighted.mean(hs_GED_or_below, zip_code_population, 
                                              na.rm = TRUE) * 100),
             some_college = (weighted.mean(some_college, zip_code_population, 
@@ -399,8 +393,8 @@ data_plot_col_education_ca <- data_acs_2018_education_percent_California %>%
                             replacement = "Masters degree or higher"))
 
 # join data for plotting
-data_plot_col_education <- data_plot_col_education_ridb %>% 
-  left_join(y = data_plot_col_education_ca,
+data_plot_education <- data_plot_education_ridb %>% 
+  left_join(y = data_plot_education_ca,
             by = c("education"),
             suffix = c("_ridb", "_ca")) %>% 
   rename(RIDB = education_percent_average_ridb,
@@ -420,8 +414,8 @@ data_plot_col_education <- data_plot_col_education_ridb %>%
 groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
 
 # plot for shiny app
-plot_col_education <- 
-  ggplot(data = data_plot_col_education) +
+plot_education <- 
+  ggplot(data = data_plot_education) +
   geom_col(aes(x = education_percent_average,
                y = education,
                fill = data_source),
@@ -448,8 +442,7 @@ plot_col_education <-
         # axis.title = element_text(size = 22, face = "bold"),
         # title = element_text(size = 24, face = "bold")
         )
-
-plot_col_education
+plot_education
 ```
 
 
@@ -460,14 +453,14 @@ CA census (grey) not yet weighted by population
 ## -- data wrangle -- ##
 
 # reservations in CA
-data_plot_density_language_ridb <- data_ridb_acs_2018 %>%
+data_plot_language_ridb <- data_ridb_acs_2018 %>%
   select(agency, regional_area, park, customer_zip, not_english_only, english_only) %>% 
   mutate(not_english_only = not_english_only * 100,
          english_only = english_only * 100) %>% 
   drop_na(not_english_only, english_only)
 
 # CA population
-data_plot_density_language_ca <- data_acs_2020_language_percent_California %>%
+data_plot_language_ca <- data_acs_2020_language_percent_California %>%
   select(zip_code, not_english_only, english_only) %>% 
   mutate(not_english_only = not_english_only * 100,
          english_only = english_only * 100) %>% 
@@ -480,14 +473,14 @@ data_plot_density_language_ca <- data_acs_2020_language_percent_California %>%
 groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
 
 # plot for shiny app
-plot_density_language <- ggplot() +
-  geom_histogram(data = data_plot_density_language_ca,
+plot_language <- ggplot() +
+  geom_histogram(data = data_plot_language_ca,
                  aes(x = not_english_only,
                      y = stat(count) / sum(count),
                      bins = 10),
                  fill = groups_colors_ridb_ca[[2]],
                  alpha = 0.75) +
-  geom_histogram(data = data_plot_density_language_ridb,
+  geom_histogram(data = data_plot_language_ridb,
                  aes(x = not_english_only,
                      y = stat(count) / sum(count),
                      bins = 10),
@@ -507,8 +500,7 @@ plot_density_language <- ggplot() +
         # axis.title = element_text(size = 22, face = "bold"),
         # title = element_text(size = 24, face = "bold")
         )
-
-plot_density_language
+plot_language
 ```
 
 
@@ -520,11 +512,11 @@ CA census (grey) not yet weighted by population
 ## -- data wrangle -- ##
 
 # reservations in CA
-data_plot_density_median_income_ridb <- data_ridb_acs_2018 %>%
+data_plot_median_income_ridb <- data_ridb_acs_2018 %>%
   select(agency, regional_area, park, customer_zip, median_income)
 
 # CA population
-data_plot_density_median_income_ca <- data_acs_2018_median_income_California %>%
+data_plot_median_income_ca <- data_acs_2018_median_income_California %>%
   select(zip_code, median_income)
 
 
@@ -534,14 +526,14 @@ data_plot_density_median_income_ca <- data_acs_2018_median_income_California %>%
 groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
 
 # plot for shiny app
-plot_density_median_income <- ggplot() +
-  geom_histogram(data = data_plot_density_median_income_ca,
+plot_median_income <- ggplot() +
+  geom_histogram(data = data_plot_median_income_ca,
                  aes(x = median_income,
                      y = stat(count) / sum(count),
                      bins = 10),
                  fill = groups_colors_ridb_ca[[2]], 
                  alpha = 0.75) +
-  geom_histogram(data = data_plot_density_median_income_ridb,
+  geom_histogram(data = data_plot_median_income_ridb,
                  aes(x = median_income,
                      y = stat(count) / sum(count),
                      bins = 10), 
@@ -565,8 +557,7 @@ plot_density_median_income <- ggplot() +
         # axis.title = element_text(size = 22, face = "bold"),
         # title = element_text(size = 24, face = "bold")
         )
-
-plot_density_median_income
+plot_median_income
 ```
 
 
@@ -575,15 +566,15 @@ plot_density_median_income
 ```{r}
 ## -- data wrangle -- ##
 
-data_plot_bar_agency_park <- data_ridb_acs_2018 %>% 
+data_plot_agency_park <- data_ridb_acs_2018 %>% 
   group_by(agency, park) %>% 
   summarise(count = n())
 
 ## -- create plot -- ##
 
 # plot for shiny app
-plot_bar_agency_park <- 
-  ggplot(data_plot_bar_agency_park) +
+plot_agency_site <- 
+  ggplot(data_plot_agency_park) +
   geom_bar(aes(y = fct_infreq(agency, )), fill = "#009900FF") +
   scale_y_discrete(labels = c("BOR" = "Bureau of Reclamation", "NPS" = "National Park Service", 
                               "USACE" = "US Army Corps of Engineers", "USFS" = "US Forest Service")) +
@@ -600,8 +591,7 @@ plot_bar_agency_park <-
         # axis.title = element_text(size = 14, face = "bold"),
         # title = element_text(size = 16, face = "bold")
         )
-
-plot_bar_agency_park
+plot_agency_site
 ```
 
 ### Total Reservations (by agency)
@@ -612,7 +602,7 @@ plot_bar_agency_park
 ## -- create plot -- ##
 
 # plot for shiny app
-plot_bar_agency_visits <- 
+plot_agency_visits <- 
   ggplot(data = data_ridb_acs_2018) +
   geom_bar(aes(y = fct_infreq(agency)), fill = "#009900FF") +
   scale_y_discrete(labels = c("BOR" = "Bureau of Reclamation", "NPS" = "National Park Service", 
@@ -630,20 +620,19 @@ plot_bar_agency_visits <-
         # axis.title = element_text(size = 14, face = "bold"),
         # title = element_text(size = 16, face = "bold")
         )
-
-plot_bar_agency_visits
+plot_agency_visits
 ```
 
 
 ```{r, eval=FALSE}
 ## Save plot all data to RDS
 
-plot_data <- c("data_plot_hist_distance_traveled", "data_plot_hist_boooking_window", 
-               "data_plot_hist_daily_cost_per_visitor", "data_plot_hist_length_of_stay", 
-               "data_plot_col_site_type", "data_plot_col_race", "data_plot_col_education", 
-               "data_plot_density_language_ridb", "data_plot_density_language_ca",
-               "data_plot_density_median_income_ridb", "data_plot_density_median_income_ca", 
-               "data_plot_bar_agency_park")
+plot_data <- c("data_plot_distance_traveled", "data_plot_boooking_window", 
+               "data_plot_daily_cost_per_visitor", "data_plot_length_of_stay", 
+               "data_plot_site_type", "data_plot_race", 
+               "data_plot_education", "data_plot_language_ca", 
+               "data_plot_language_ridb", "data_plot_median_income_ca",
+               "data_plot_median_income_ridb", "data_plot_agency_park")
 
 for (i in seq_along(plot_data)){
   saveRDS(object = get(plot_data[[i]]),
