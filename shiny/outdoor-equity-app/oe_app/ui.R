@@ -87,9 +87,27 @@ ui <- fluidPage(
                           sidebarPanel(
                             
                             # agency input
-                            select_agency(),
+                            #select_agency(),
+                            selectizeInput(inputId = "agency",
+                                           label = "Select an agency",
+                                           choices = ca_agency,
+                                           multiple = TRUE,
+                                           options = list(
+                                             placeholder = "Type to search for an agency",
+                                             # Note(HD) when created set a value for the input to an empty string
+                                             onInitialize = I('function() { this.setValue(""); }')
+                                           )),
                             # admin input
-                            select_admin_unit(),
+                            #select_admin_unit(),
+                            selectizeInput(inputId = "admin_unit",
+                                           label = "Select an administrative unit",
+                                           choices = admin_units,
+                                           multiple = TRUE,
+                                           options = list(
+                                             placeholder = "Type to search for an admin unit",
+                                             # Note(HD) when created set a value for the input to an empty string
+                                             onInitialize = I('function() { this.setValue(""); }')
+                                           )), 
                             # comparison first var
                             selectizeInput(inputId = "compare_first",
                                            label = "3. Select the first variable",

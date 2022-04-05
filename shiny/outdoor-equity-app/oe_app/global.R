@@ -9,6 +9,7 @@ library(shinyWidgets)
 library(tidycensus)
 library(shiny)
 library(shinydashboard)
+library(reactlog)
 library(leaflet)
 library(tidyverse)
 library(tmap)
@@ -19,6 +20,8 @@ library(patchwork)
 library(scales)
 library(paletteer)
 library(DT)
+
+reactlog_enable()
 
 # import data ---- 
 ## CA prototype joined 2018 data ----
