@@ -9,6 +9,7 @@ library(shinyWidgets)
 library(tidycensus)
 library(shiny)
 library(shinydashboard)
+library(reactlog)
 library(leaflet)
 library(tidyverse)
 library(tmap)
@@ -20,18 +21,11 @@ library(scales)
 library(paletteer)
 library(DT)
 
+reactlog_enable()
+
 # import data ---- 
 ## CA prototype joined 2018 data ----
 data_joined_2018 <- readRDS("data/data_joined_2018.rds")
-data_hist_distance_traveled <- readRDS("data/data_hist_distance_traveled.rds")
-# agency analysis race hist
-data_hist_race <- readRDS("data/2018_data_plot_col_race.rds")
-# agency analysis comp dist travel x race 
-data_comp_dist_travel_race <- readRDS("data/data_comp_dist_travel_race.rds")
-# data need to create regional map for site analysis
-data_ca_geom <- readRDS("data/data_ca_geom.rds")
-# data_comb_CAmap <- readRDS("data/data_combined_CAmap_2018.rds")
-# data_reg_comb <- readRDS("data/data_regional_combined_2018.rds")
 
 # source input functions ----
 source("r/inputs.R")

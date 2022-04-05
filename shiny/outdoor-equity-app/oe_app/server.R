@@ -1,5 +1,22 @@
+
 # server instructions ----
 server <- function(input, output, session){
+  
+# observeEvent press agency
+  observeEvent(input$agency, {
+    
+    print(paste0("You have chosen: ", input$agency))
+    
+    test <- data_joined_2018 %>%
+      filter(agency %in% input$agency)
+    
+    admin_test <- as.vector(unique(test$regional_area))
+    
+    updateSelectizeInput(session, "admin_unit",
+                         choices = admin_test
+    )
+    
+  })
 
   ## REACTIVE DATA FRAMES ----
   

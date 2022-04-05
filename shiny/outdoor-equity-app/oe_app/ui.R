@@ -69,7 +69,7 @@ ui <- fluidPage(
                           # distribution main panel aka visual?
                           mainPanel(
                             
-                            plotOutput(outputId = "agency_analysis")
+                            plotOutput(outputId = "vars_single_plot")
                             
                           ) # EO distribution main panel
                         ) # EO distribution sidebar layout
@@ -87,6 +87,7 @@ ui <- fluidPage(
                           sidebarPanel(
                             
                             # agency input
+                            #select_agency(),
                             selectizeInput(inputId = "agency",
                                            label = "Select an agency",
                                            choices = ca_agency,
@@ -97,7 +98,16 @@ ui <- fluidPage(
                                              onInitialize = I('function() { this.setValue(""); }')
                                            )),
                             # admin input
-                            select_admin_unit(),
+                            #select_admin_unit(),
+                            selectizeInput(inputId = "admin_unit",
+                                           label = "Select an administrative unit",
+                                           choices = admin_units,
+                                           multiple = TRUE,
+                                           options = list(
+                                             placeholder = "Type to search for an admin unit",
+                                             # Note(HD) when created set a value for the input to an empty string
+                                             onInitialize = I('function() { this.setValue(""); }')
+                                           )), 
                             # comparison first var
                             selectizeInput(inputId = "compare_first",
                                            label = "3. Select the first variable",
@@ -125,7 +135,7 @@ ui <- fluidPage(
                           # comparison main panel aka visual?
                           mainPanel(
                             
-                            plotOutput(outputId = "agency_analysis")
+                            plotOutput(outputId = "compare_plot")
                         
                         ) # EO comparison main panel
                         ) # EO comparison sidebar layout
@@ -145,21 +155,14 @@ ui <- fluidPage(
                             # site admin input
                             select_admin_unit(),
                             # select a site input 
-                            selectizeInput(inputId = "site",
-                                           label = "3. Select a reservable site",
-                                           choices = sites,
-                                           multiple = FALSE,
-                                           options = list(
-                                             placeholder = "Type to search for a reservable site",
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )), # end of step 3 select a site
+                            select_site(),
                             
                           ), # EO site sidebar panel
                           
                           # site main panel aka visual?
                           mainPanel(
                             
-                            plotOutput(outputId = "agency_analysis")
+                            plotOutput(outputId = "site_plot")
                             
                           ) # EO site main panel
                         ) # EO site sidebar layout
