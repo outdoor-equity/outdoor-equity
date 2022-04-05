@@ -1,5 +1,7 @@
-# user interface ----
+# # UI ----
 ui <- fluidPage(
+  # use shiny dashboard elements in shiny
+  useShinydashboard(),
   
   # set theme ----
   theme = bs_theme(bootswatch = "minty"),
@@ -12,116 +14,91 @@ ui <- fluidPage(
   
   # navbarPage structure ----
   navbarPage(
-    # title of nav bar and title of tab in web browser 
+    # TO nav bar and TO tab in web browser 
     "Visualize RIDB Data",
     
-    # About tab ----
-    navbarMenu("About",
+    ## About tab ----
+    navbarMenu("About", icon = icon("info-circle"),
                
                tabPanel(title = "Background",
                         # Note(HD): need . in front of file path for relative path
                         includeMarkdown("./text/background-about.md")
-               ), # end of Background tabPanel
+               ), # EO Background tabPanel
                
                
                tabPanel(title = "User Guide",
                         includeMarkdown("./text/userGuide-about.md")
-               ), # end of User Guide tabPanel
+               ), # EO User Guide tabPanel
                
                
                tabPanel(title = "Metadata",
                         # Note(HD): need to change this to a rmd file to include DT table
                         includeMarkdown("./text/metadata-about.md")
-               )), # end of About tab ----
+                        
+               )), ## EO About tab ----
     
-    # Analysis tab ---- 
-    navbarMenu("Analysis",
+    ## Analysis tab ---- 
+    navbarMenu("Analysis", icon = icon("chart-bar"),
                
-               # Agency Analysis dist ----
+               ### SO distribution / single variable analysis ----
                tabPanel(title = "Agency/ Site Single Variable Analysis",
                         fluid = TRUE, # (HD) not sure what this argument does
                         
-                        # sidebar layout ----
+                        # distribution sidebar layout
                         sidebarLayout(
-                          # agency analysis side bar panel ----
+                          # distribution analysis side bar panel
                           sidebarPanel(
-                            
+                            width = 3,
                             titlePanel("Visualize a variable distribution"),
-                            # agency input ----
-                            selectizeInput(inputId = "agency_single",
-                                           label = "1. Select an agency",
-                                           choices = c("BOR", "NPS", "USACE", "USFS"),
-                                           multiple = TRUE,
-                                           options = list(
-                                             placeholder = "Type to search for an agency",
-                                             # Note(HD) when created set a value for the input to an empty string
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )), # end of step 1 select an agency ----
-
-                            # admin input ----
-                            selectizeInput(inputId = "admin_unit_single",
-                                           label = "2. Select an administrative unit",
-                                           choices = admin_units,
-                                           multiple = TRUE,
-                                           options = list(
-                                             placeholder = "Type to search for an admin unit",
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )), # end of step 2 select an admin unit ----
-
-                            # variable input ----
+                            # agency input
+                            select_agency(),
+                            # admin input
+                            select_admin_unit(),
+                            # variable input
                             selectizeInput(inputId = "vars_single",
                                            label = "3. Pick a variable to see its distribution",
-                                           choices = c("Distance traveled" = "distance_traveled_mi",
-                                                       "Race" = "race"),
+                                           choices = dist_vars,
                                            multiple = FALSE,
                                            options = list(
                                              placeholder = "Type to search for a variable",
                                              onInitialize = I('function() { this.setValue(""); }')
-                                           )) # end of step 3 select variable ----
+                                           )) # end of step 3 select variable
                             
-                          ), # end of sidebar panel ----
+                          ), # EO distribution sidebar panel
                           
-                          # main panel aka visual? ----
+                          # distribution main panel aka visual?
                           mainPanel(
                             
                             plotOutput(outputId = "agency_analysis")
                             
-                          ) # end of mainPanel ----
-                        ) # end of sidebar layout ----
+                          ) # EO distribution main panel
+                        ) # EO distribution sidebar layout
                         
-                        ), # end of agency / site single var analysis ----
+                        ), #### EO distribution / single variable analysis ----
                
+               ### SO comparison / multiple variable analysis ----
                tabPanel(title = "Agency/ Site Comparison Analysis",
                         fluid = TRUE,
                         
-                        # sidebar layout ----
+                        # comparison sidebar layout
+                        titlePanel("Comparison Analysis"),
                         sidebarLayout(
-                          # agency analysis side bar panel ----
+                          # comparison analysis side bar panel
                           sidebarPanel(
                             
-                            titlePanel("Comparison Analysis"),
-                            # agency input ----
-                            selectizeInput(inputId = "agency_compare",
-                                           label = "1. Select an agency",
-                                           choices = c("BOR", "NPS", "USACE", "USFS"),
+                            # agency input
+                            selectizeInput(inputId = "agency",
+                                           label = "Select an agency",
+                                           choices = ca_agency,
                                            multiple = TRUE,
                                            options = list(
                                              placeholder = "Type to search for an agency",
                                              # Note(HD) when created set a value for the input to an empty string
                                              onInitialize = I('function() { this.setValue(""); }')
-                                           )), # end of step 1 select an agency ----
-                            
-                            # admin input ----
-                            selectizeInput(inputId = "admin_unit_compare",
-                                           label = "2. Select an administrative unit",
-                                           choices = admin_units,
-                                           multiple = TRUE,
-                                           options = list(
-                                             placeholder = "Type to search for an admin unit",
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )), # end of step 2 select an admin unit ----
-                            
-                            # compare first input ----
+                                           )),
+                            # admin input
+                            select_admin_unit(),
+                            # comparison first var
                             selectizeInput(inputId = "compare_first",
                                            label = "3. Select the first variable",
                                            choices = c("Distance traveled" = "distance_traveled_mi",
@@ -130,9 +107,9 @@ ui <- fluidPage(
                                            options = list(
                                              placeholder = "Type to search for a variable",
                                              onInitialize = I('function() { this.setValue(""); }')
-                                           )), # end of step 3 compare first variable ----
+                                           )), # end of step 3 compare first var
                             
-                            # compare second input ----
+                            # comparison second var 
                             selectizeInput(inputId = "compare_second",
                                            label = "4. Select a second variable to compare",
                                            choices = c("Distance traveled" = "distance_traveled_mi",
@@ -141,50 +118,33 @@ ui <- fluidPage(
                                            options = list(
                                              placeholder = "Type to search for a variable",
                                              onInitialize = I('function() { this.setValue(""); }')
-                                           )) # end of step 3 compare first variable ----
+                                           )) # end of step 4 compare second var 
                             
-                          ), # end of sidebar panel ----
+                          ), # EO comparison sidebar panel
                           
-                          # main panel aka visual? ----
+                          # comparison main panel aka visual?
                           mainPanel(
                             
                             plotOutput(outputId = "agency_analysis")
                         
-                        ) # end of main panel ----
-                        ) # end of sidebar layout ----
-                        ), # end of agency / site comparison analysis ----
+                        ) # EO comparison main panel
+                        ) # EO comparison sidebar layout
+                        ), #### EO comparison / multiple variable analysis ----
 
-               # Reservable Site Analysis ----
+               ### SO site analysis / maps ----
                tabPanel(title = "Reservable Site Analysis",
                         fluid = TRUE,
-                        # sidebar layout ----
+                        # site sidebar layout
                         sidebarLayout(
-                          # reservable site analysis side bar panel ----
+                          # site side bar panel
                           sidebarPanel(
                             
                             titlePanel("Visualize a Reservable Site"),
-                            # site agency input ----
-                            selectizeInput(inputId = "agency_site",
-                                           label = "1. Select an agency",
-                                           choices = c("BOR", "NPS", "USACE", "USFS"),
-                                           multiple = TRUE,
-                                           options = list(
-                                             placeholder = "Type to search for an agency",
-                                             # Note(HD) when created set a value for the input to an empty string
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )), # end of step 1 select an agency ----
-                            
-                            # site admin input ----
-                            selectizeInput(inputId = "admin_site",
-                                           label = "2. Select an administrative unit",
-                                           choices = admin_units,
-                                           multiple = TRUE,
-                                           options = list(
-                                             placeholder = "Type to search for an admin unit",
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )), # end of step 2 select an admin unit ----
-                            
-                            # select a site input ----
+                            # site agency input
+                            select_agency(),
+                            # site admin input
+                            select_admin_unit(),
+                            # select a site input 
                             selectizeInput(inputId = "site",
                                            label = "3. Select a reservable site",
                                            choices = sites,
@@ -192,25 +152,50 @@ ui <- fluidPage(
                                            options = list(
                                              placeholder = "Type to search for a reservable site",
                                              onInitialize = I('function() { this.setValue(""); }')
-                                           )), # end of step 3 select a site ----
+                                           )), # end of step 3 select a site
                             
-                          ), # end of reservable site sidebar panel ----
+                          ), # EO site sidebar panel
                           
+                          # site main panel aka visual?
                           mainPanel(
                             
                             plotOutput(outputId = "agency_analysis")
                             
-                          ) # end of main panel for site ----
-                        ) # end of sidebar layout ----
-                        ) # end of Reservable Site Analysis ----
+                          ) # EO site main panel
+                        ) # EO site sidebar layout
+                        ) #### EO site analysis / maps ----
 
-               ), # end of Analysis tab ----
+               ), ## EO Analysis tab ----
     
-    # Data Download ----
-    tabPanel("Data Download",
-             "Tables of data go here") # end of Data Download ----
+    ## Data Download ----
+    tabPanel("Data Download", icon = icon("download-alt", lib = "glyphicon"),
+             
+             titlePanel("Create a subsetted dataset to download"),
+             # Note (HD) each fluidRow has a default width of 12
+             # Note (HD) should figure out if wellPanel is doable
+             fluidRow(
+               # Note (HD) box width defaults 6
+               box(
+                 width = 12,
+                 title = "Test",
+                 status = "primary",
+                 solidHeader = TRUE,
+                 column(width = 4,
+                        select_agency()),
+                 column(width = 4,
+                        select_admin_unit()),
+                 column(width = 4,
+                        select_site())
+               ) # EO box
+             ), # EO fluidRow
+             
+             ### OP data download ----
+             #DT::dataTableOutput(outputId = "data_download")
+               
+             
+
+             ) ## EO Data Download ----
     
-  ) # end of navbarPage ----
+  ) # EO navbarPage
   
-  
-) # end of fluid page ----
+) # EO fluid page
