@@ -11,8 +11,8 @@ RIDB_calculate_pre2018 <-
              booking_window = as.numeric(difftime(start_date, order_date), units = "days"),
              daily_cost_per_visitor = (total_paid / number_of_people) / length_of_stay,
              # create column for administrative unit
-             regional_area = case_when(agency == "USFS" ~ parent_location,
-                                       agency %in% c("NPS", "BOR", "USACE") ~ region_description),
+             admin_unit = case_when(agency == "USFS" ~ parent_location,
+                                    agency %in% c("NPS", "BOR", "USACE") ~ region_description),
              # aggregate site type
              aggregated_site_type = 
                case_when(site_type %in% c("walk to",
@@ -37,24 +37,24 @@ RIDB_calculate_pre2018 <-
                          site_type %in% c("tent only nonelectric",
                                           "group tent only area nonelectric",
                                           "tent only electric") ~ "tent only")
-             ) %>% # close mutate for creating new variables
+      ) %>% # close mutate for creating new variables
       select(!c("parent_location", "region_description", "site_type")) %>% # (CB) I think this is repetitive, remove?
-      select("agency", "regional_area", "park", "aggregated_site_type", "facility_state", 
+      select("agency", "admin_unit", "park", "aggregated_site_type", "facility_state", 
              "facility_longitude", "facility_latitude", "customer_zip", "total_paid", 
              "start_date", "end_date", "order_date", "number_of_people", 
              "length_of_stay", "booking_window", "daily_cost_per_visitor") %>% 
       # update values
       mutate(
-        regional_area = str_replace(string = regional_area,
-                                    pattern = paste(c("NF - FS", "NF -FS", "NF- FS", 
-                                                      "NF-FS", "-FS", " - FS"), 
-                                                    collapse = "|"),
-                                    replacement = "National Forest"),
-        regional_area = str_to_title(regional_area),
-        regional_area = str_replace(string = regional_area,
-                                    pattern = "And",
-                                    replacement = "&"),
         # update park values (generic)
+        admin_unit = str_replace(string = admin_unit,
+                                 pattern = paste(c("NF - FS", "NF -FS", "NF- FS", 
+                                                   "NF-FS", "-FS", " - FS"), 
+                                                 collapse = "|"),
+                                 replacement = "National Forest"),
+        admin_unit = str_to_title(admin_unit),
+        admin_unit = str_replace(string = admin_unit,
+                                 pattern = "And",
+                                 replacement = "&"),
         park = str_remove(string = park,
                           pattern = paste(c("\\(.*", " \\(.*",
                                             "---.*", " ---.*",
@@ -78,7 +78,7 @@ RIDB_calculate_pre2018 <-
         park = str_remove(string = park,
                           pattern = paste(c(" - Angeles Nf", " -Hwy"), 
                                           collapse = "|"))
-        ) # close mutate for update values
+      ) # close mutate for update values
     
     ## calculate distance traveled
     # bootstrap geometries and reproject to NAD 83
@@ -88,9 +88,9 @@ RIDB_calculate_pre2018 <-
       st_transform(crs = 4269) # using NAD83 because measured in meters
     # get centroid of geometries for all US ZIP codes 
     df_zip_centroids_us <- get_acs(geography = "zcta", year = 2018, geometry = TRUE, 
-                                summary_var = "B01001_001",
-                                survey = "acs5",
-                                variables = c(male = "B01001_002")) %>% 
+                                   summary_var = "B01001_001",
+                                   survey = "acs5",
+                                   variables = c(male = "B01001_002")) %>% 
       select(NAME, geometry) %>% 
       mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>% 
       select(zip_code, geometry) %>% 
