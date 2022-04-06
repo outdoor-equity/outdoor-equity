@@ -1,6 +1,34 @@
 library(tidyverse)
 library(here)
+library(collections)
 
+# testing creating a dictionary with collections ----
+admin_unit_dict <- function(x){
+  
+  au_choices <- collections::Dict$new()
+  
+}
+
+test_adminUnit_choices <- dict(items = NULL,
+                               keys = au_choices("USFS"))
+
+
+au_choices <- function(selAgency){
+  
+  au_df <- data_joined_2018 %>% 
+    filter(agency == selAgency)
+  
+  au_value <- as.vector(unique(au_df$regional_area))
+  
+  au_value
+}
+
+
+
+
+
+
+# plot test
 ggplot(data = data_test, aes(x = length_of_stay)) + 
   geom_histogram()
 
@@ -44,7 +72,7 @@ selectizeInput(inputId = "compare_first",
                options = list(
                  placeholder = "Type to search for a variable",
                  onInitialize = I('function() { this.setValue(""); }')
-               )), # end of step 3 compare first var
+               )) # end of step 3 compare first var
 
 # comparison second var 
 selectizeInput(inputId = "compare_second",
