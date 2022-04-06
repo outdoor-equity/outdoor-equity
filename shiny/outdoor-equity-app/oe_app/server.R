@@ -2,10 +2,6 @@
 # server instructions ----
 server <- function(input, output, session){
   
-  # select_au <- reactiveValues(admin_unit = NULL)
-  # 
-  # observeEvent(input$agency_visitorsheds, selected$admin_unit <- ())
-  
   # OE for agency -> admin unit change ----
   # empty dictionary with empty key value agency
   # reactive element bc writing an observeEvent for the selected object
