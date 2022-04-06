@@ -1,8 +1,8 @@
 
 join_ridb_acs_data <- 
   function(ridb_df, acs_df_race, acs_df_education, 
-           acs_df_median_income, acs_df_transportation,
-           acs_df_language, output_df_string){
+           acs_df_median_income, acs_df_language, 
+           output_df_string){
     # join input dfs
     df <- 
       left_join(x = ridb_df,
@@ -11,8 +11,6 @@ join_ridb_acs_data <-
       left_join(y = acs_df_education,
                 by = c("customer_zip" = "zip_code")) %>% 
       left_join(y = acs_df_median_income,
-                by = c("customer_zip" = "zip_code")) %>% 
-      left_join(y = acs_df_transportation,
                 by = c("customer_zip" = "zip_code")) %>% 
       left_join(y = acs_df_language,
                 by = c("customer_zip" = "zip_code"))

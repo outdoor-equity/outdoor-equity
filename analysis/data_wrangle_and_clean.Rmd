@@ -28,7 +28,6 @@ source("functions/function_ridb_variable_calculate-pre2018.R")
 # ACS functions
 source("functions/function_acs_race.R")
 source("functions/function_acs_median_income.R")
-source("functions/function_acs_transportation.R")
 source("functions/function_acs_education.R")
 source("functions/function_acs_language.R")
 
@@ -70,7 +69,6 @@ RIDB_calculate_pre2018(input_df_name = data_ridb_2018, output_df_name = "data_ri
 # read in, subset, and clean census data
 acs_subset_calculate_race(geography = "zcta", year = 2018, state = NULL)
 acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = NULL)
-acs_subset_calculate_transportation(geography = "zcta", year = 2018, state = NULL)
 acs_subset_calculate_education(geography = "zcta", year = 2018, state = NULL)
 acs_subset_calculate_language(geography = "zcta", state = NULL)
 ```
@@ -83,7 +81,6 @@ join_ridb_acs_data(ridb_df = data_ridb_2018,
                    acs_df_race = data_acs_2018_race_percent,
                    acs_df_education = data_acs_2018_education_percent,
                    acs_df_median_income = data_acs_2018_median_income,
-                   acs_df_transportation = data_acs_2018_transportation_percent,
                    acs_df_language = data_acs_2020_language_percent,
                    output_df_string = "data_combined_2018")
 ```
@@ -103,8 +100,8 @@ joined_park_summary(input_df_name = data_combined_2018,
 ```{r}
 # full dataset (RIDB and ACS joined)
 write.csv(x = data_combined_2018, 
-            file = "../../../data_clean/2018_joined_data.csv", 
-            row.names = FALSE)
+          file = "../../../data_clean/2018_joined_data.csv", 
+          row.names = FALSE)
 
 # dataset summarized to `park` level (RIDB and ACS joined)
 write.csv(x = data_combined_park_summary_2018, 
