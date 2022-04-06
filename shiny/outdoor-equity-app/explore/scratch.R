@@ -1,6 +1,34 @@
 library(tidyverse)
 library(here)
+library(collections)
 
+# testing creating a dictionary with collections ----
+admin_unit_dict <- function(x){
+  
+  au_choices <- collections::Dict$new()
+  
+}
+
+test_adminUnit_choices <- dict(items = NULL,
+                               keys = au_choices("USFS"))
+
+
+au_choices <- function(selAgency){
+  
+  au_df <- data_joined_2018 %>% 
+    filter(agency == selAgency)
+  
+  au_value <- as.vector(unique(au_df$regional_area))
+  
+  au_value
+}
+
+
+
+
+
+
+# plot test
 ggplot(data = data_test, aes(x = length_of_stay)) + 
   geom_histogram()
 
@@ -34,6 +62,28 @@ select_analysis <- function(){
 }
 
 
+
+# OLD INPUTS ----
+selectizeInput(inputId = "compare_first",
+               label = "3. Select the first variable",
+               choices = c("Distance traveled" = "distance_traveled_mi",
+                           "Race" = "race"),
+               multiple = FALSE,
+               options = list(
+                 placeholder = "Type to search for a variable",
+                 onInitialize = I('function() { this.setValue(""); }')
+               )) # end of step 3 compare first var
+
+# comparison second var 
+selectizeInput(inputId = "compare_second",
+               label = "4. Select a second variable to compare",
+               choices = c("Distance traveled" = "distance_traveled_mi",
+                           "Race" = "race"),
+               multiple = FALSE,
+               options = list(
+                 placeholder = "Type to search for a variable",
+                 onInitialize = I('function() { this.setValue(""); }')
+               )) # end of step 4 compare second var 
 
 # parameters
 racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
@@ -144,6 +194,7 @@ combined_2018 <- readRDS(here::here("../../data_clean/2018_joined_data.csv"))
 
 ggplot(data = combined_2018, aes(x = mean_booking_window)) +
   geom_histogram()
+
 ## TO DO ## ----
 
 # need to figure out why these variables won't show up on app. how do I give one condition id to multiple options?
