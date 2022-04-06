@@ -35,6 +35,28 @@ select_analysis <- function(){
 
 
 
+# OLD INPUTS ----
+selectizeInput(inputId = "compare_first",
+               label = "3. Select the first variable",
+               choices = c("Distance traveled" = "distance_traveled_mi",
+                           "Race" = "race"),
+               multiple = FALSE,
+               options = list(
+                 placeholder = "Type to search for a variable",
+                 onInitialize = I('function() { this.setValue(""); }')
+               )), # end of step 3 compare first var
+
+# comparison second var 
+selectizeInput(inputId = "compare_second",
+               label = "4. Select a second variable to compare",
+               choices = c("Distance traveled" = "distance_traveled_mi",
+                           "Race" = "race"),
+               multiple = FALSE,
+               options = list(
+                 placeholder = "Type to search for a variable",
+                 onInitialize = I('function() { this.setValue(""); }')
+               )) # end of step 4 compare second var 
+
 # parameters
 racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
                          "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
@@ -144,6 +166,7 @@ combined_2018 <- readRDS(here::here("../../data_clean/2018_joined_data.csv"))
 
 ggplot(data = combined_2018, aes(x = mean_booking_window)) +
   geom_histogram()
+
 ## TO DO ## ----
 
 # need to figure out why these variables won't show up on app. how do I give one condition id to multiple options?

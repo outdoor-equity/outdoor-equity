@@ -40,115 +40,94 @@ ui <- fluidPage(
     ## Analysis tab ---- 
     navbarMenu("Analysis", icon = icon("chart-bar"),
                
-               ### SO distribution / single variable analysis ----
-               tabPanel(title = "Agency/ Site Single Variable Analysis",
+               ### SO data summary ----
+               tabPanel(title = "Data Summary",
                         fluid = TRUE, # (HD) not sure what this argument does
                         
-                        # distribution sidebar layout
+                        titlePanel("Visualize a data summary"),
+                        # data summary sidebar layout
                         sidebarLayout(
-                          # distribution analysis side bar panel
+                          # data summary analysis side bar panel
                           sidebarPanel(
                             width = 3,
-                            titlePanel("Visualize a variable distribution"),
                             # agency input
-                            select_agency(locationId = "single_var"),
+                            select_agency(locationId = "summary"),
                             # admin input
-                            select_admin_unit(locationId = "single_var"),
-                            # variable input
-                            selectizeInput(inputId = "vars_single",
-                                           label = "3. Pick a variable to see its distribution",
-                                           choices = dist_vars,
-                                           multiple = FALSE,
-                                           options = list(
-                                             placeholder = "Type to search for a variable",
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )) # end of step 3 select variable
+                            select_admin_unit(locationId = "summary"),
+                            # site input
+                            select_site(locationId = "summary"),
+                            # data source input
+                            select_data_source(),
                             
-                          ), # EO distribution sidebar panel
+                          ), # EO data summary sidebar panel
                           
-                          # distribution main panel aka visual?
+                          # data summary main panel aka visual
                           mainPanel(
                             
-                            plotOutput(outputId = "vars_single_plot")
+                            plotOutput(outputId = "data_summary_plot")
                             
-                          ) # EO distribution main panel
-                        ) # EO distribution sidebar layout
+                          ) # EO data summary main panel
+                        ) # EO data summary sidebar layout
                         
-                        ), #### EO distribution / single variable analysis ----
+                        ), #### EO data summary ----
                
-               ### SO comparison / multiple variable analysis ----
-               tabPanel(title = "Agency/ Site Comparison Analysis",
+               ### SO data relationships ----
+               tabPanel(title = "Data Relationships",
                         fluid = TRUE,
                         
-                        # comparison sidebar layout
-                        titlePanel("Comparison Analysis"),
+                        titlePanel("Visualize a relationship"),
+                        # data relationships sidebar layout
                         sidebarLayout(
-                          # comparison analysis side bar panel
+                          # data relationships analysis side bar panel
                           sidebarPanel(
                             
                             # agency input
-                            select_agency(locationId = "compare"),
+                            select_agency(locationId = "relationships"),
                             # admin input
-                            select_admin_unit(locationId = "compare"),
-                            # comparison first var
-                            selectizeInput(inputId = "compare_first",
-                                           label = "3. Select the first variable",
-                                           choices = c("Distance traveled" = "distance_traveled_mi",
-                                                       "Race" = "race"),
-                                           multiple = FALSE,
-                                           options = list(
-                                             placeholder = "Type to search for a variable",
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )), # end of step 3 compare first var
-                            
-                            # comparison second var 
-                            selectizeInput(inputId = "compare_second",
-                                           label = "4. Select a second variable to compare",
-                                           choices = c("Distance traveled" = "distance_traveled_mi",
-                                                       "Race" = "race"),
-                                           multiple = FALSE,
-                                           options = list(
-                                             placeholder = "Type to search for a variable",
-                                             onInitialize = I('function() { this.setValue(""); }')
-                                           )) # end of step 4 compare second var 
-                            
-                          ), # EO comparison sidebar panel
-                          
-                          # comparison main panel aka visual?
-                          mainPanel(
-                            
-                            plotOutput(outputId = "compare_plot")
-                        
-                        ) # EO comparison main panel
-                        ) # EO comparison sidebar layout
-                        ), #### EO comparison / multiple variable analysis ----
+                            select_admin_unit(locationId = "relationships"),
+                            # site input
+                            select_site(locationId = "relationships"),
+                            # data relationship input
+                            select_data_relationship()
 
-               ### SO site analysis / maps ----
-               tabPanel(title = "Reservable Site Analysis",
-                        fluid = TRUE,
-                        # site sidebar layout
-                        sidebarLayout(
-                          # site side bar panel
-                          sidebarPanel(
-                            
-                            titlePanel("Visualize a Reservable Site"),
-                            # site agency input
-                            select_agency(locationId = "site"),
-                            # site admin input
-                            select_admin_unit(locationId = "site"),
-                            # select a site input 
-                            select_site(locationId = "map"),
-                            
-                          ), # EO site sidebar panel
+                          ), # EO data relationships sidebar panel
                           
-                          # site main panel aka visual?
+                          # data relationships main panel aka visual
                           mainPanel(
                             
-                            plotOutput(outputId = "site_plot")
+                            plotOutput(outputId = "data_relationships_plot")
+                        
+                        ) # EO data relationships main panel
+                        ) # EO data relationships sidebar layout
+                        ), #### EO data relationships ----
+
+               ### SO visitorsheds ----
+               tabPanel(title = "Visitorsheds",
+                        fluid = TRUE,
+                        
+                        titlePanel("Visualize a visitorshed"),
+                        # visitorsheds sidebar layout
+                        sidebarLayout(
+                          # visitorsheds side bar panel
+                          sidebarPanel(
+                          
+                            # agency input
+                            select_agency(locationId = "visitorsheds"),
+                            # admin input
+                            select_admin_unit(locationId = "visitorsheds"),
+                            # site input 
+                            select_site(locationId = "visitorsheds"),
                             
-                          ) # EO site main panel
-                        ) # EO site sidebar layout
-                        ) #### EO site analysis / maps ----
+                          ), # EO visitorsheds sidebar panel
+                          
+                          # visitorsheds main panel aka visual
+                          mainPanel(
+                            
+                            plotOutput(outputId = "visitorsheds_plot")
+                            
+                          ) # EO visitorsheds main panel
+                        ) # EO visitorsheds sidebar layout
+                        ) #### EO visitorsheds ----
 
                ), ## EO Analysis tab ----
     

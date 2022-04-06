@@ -6,9 +6,9 @@ server <- function(input, output, session){
   # reactive element bc writing an observeEvent for the selected object
   selected <- reactiveValues(agency = NULL)
   
-  observeEvent(input$agency_single_var, selected$agency <- (input$agency_single_var))
-  observeEvent(input$agency_compare, selected$agency <- (input$agency_compare))
-  observeEvent(input$agency_site, selected$agency <- (input$agency_site))
+  observeEvent(input$agency_summary, selected$agency <- (input$agency_summary))
+  observeEvent(input$agency_relationships, selected$agency <- (input$agency_relationships))
+  observeEvent(input$agency_visitorsheds, selected$agency <- (input$agency_visitorsheds))
   observeEvent(input$agency_data_download, selected$agency <- (input$agency_data_download))
   
 # observeEvent press agency
@@ -21,7 +21,7 @@ observeEvent(selected$agency, {
 
   admin_test <- as.vector(unique(test$regional_area))
 
-  updateSelectizeInput(session, "admin_unit_single_var",
+  updateSelectizeInput(session, "admin_unit_summary",
                        choices = admin_test
   )
 
@@ -36,7 +36,7 @@ observeEvent(selected$agency, {
   
   admin_test <- as.vector(unique(test$regional_area))
   
-  updateSelectizeInput(session, "admin_unit_compare",
+  updateSelectizeInput(session, "admin_unit_relationships",
                        choices = admin_test
   )
   
@@ -51,7 +51,7 @@ observeEvent(selected$agency, {
   
   admin_test <- as.vector(unique(test$regional_area))
   
-  updateSelectizeInput(session, "admin_unit_site",
+  updateSelectizeInput(session, "admin_unit_visitorsheds",
                        choices = admin_test
   )
   
