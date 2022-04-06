@@ -9,6 +9,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+New things:
+- can't reuse inputId's for different pages.
+
 # removed from imported data
 ```{r}
 data_hist_distance_traveled <- readRDS("data/data_hist_distance_traveled.rds")

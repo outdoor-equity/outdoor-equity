@@ -2,21 +2,77 @@
 # server instructions ----
 server <- function(input, output, session){
   
+  # empty dictionary with empty key value agency
+  # reactive element bc writing an observeEvent for the selected object
+  selected <- reactiveValues(agency = NULL)
+  
+  observeEvent(input$agency_single_var, selected$agency <- (input$agency_single_var))
+  observeEvent(input$agency_compare, selected$agency <- (input$agency_compare))
+  observeEvent(input$agency_site, selected$agency <- (input$agency_site))
+  observeEvent(input$agency_data_download, selected$agency <- (input$agency_data_download))
+  
 # observeEvent press agency
-  observeEvent(input$agency, {
-    
-    print(paste0("You have chosen: ", input$agency))
-    
-    test <- data_joined_2018 %>%
-      filter(agency %in% input$agency)
-    
-    admin_test <- as.vector(unique(test$regional_area))
-    
-    updateSelectizeInput(session, "admin_unit",
-                         choices = admin_test
-    )
-    
-  })
+observeEvent(selected$agency, {
+
+  print(paste0("You have chosen: ", selected$agency))
+
+  test <- data_joined_2018 %>%
+    filter(agency %in% selected$agency)
+
+  admin_test <- as.vector(unique(test$regional_area))
+
+  updateSelectizeInput(session, "admin_unit_single_var",
+                       choices = admin_test
+  )
+
+})
+
+observeEvent(selected$agency, {
+  
+  print(paste0("You have chosen: ", selected$agency))
+  
+  test <- data_joined_2018 %>%
+    filter(agency %in% selected$agency)
+  
+  admin_test <- as.vector(unique(test$regional_area))
+  
+  updateSelectizeInput(session, "admin_unit_compare",
+                       choices = admin_test
+  )
+  
+})
+
+observeEvent(selected$agency, {
+  
+  print(paste0("You have chosen: ", selected$agency))
+  
+  test <- data_joined_2018 %>%
+    filter(agency %in% selected$agency)
+  
+  admin_test <- as.vector(unique(test$regional_area))
+  
+  updateSelectizeInput(session, "admin_unit_site",
+                       choices = admin_test
+  )
+  
+})
+
+observeEvent(selected$agency, {
+  
+  print(paste0("You have chosen: ", selected$agency))
+  
+  test <- data_joined_2018 %>%
+    filter(agency %in% selected$agency)
+  
+  admin_test <- as.vector(unique(test$regional_area))
+  
+  updateSelectizeInput(session, "admin_unit_data_download",
+                       choices = admin_test
+  )
+  
+})
+
+
 
   ## REACTIVE DATA FRAMES ----
   
