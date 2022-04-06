@@ -49,6 +49,13 @@ data_acs_2018_median_income_California <- data_acs_2018_median_income_California
             by = "zip_code") %>% 
   select(zip_code, median_income, zip_code_population)
 ```
+```{r}
+start_time <- Sys.time()
+# the code you're running
+end_time <- Sys.time()
+time_taken <- end_time - start_time
+time_taken
+```
 
 
 ## Agency Analysis: Distribution Graphs
@@ -58,7 +65,8 @@ data_acs_2018_median_income_California <- data_acs_2018_median_income_California
 ```{r}
 ## -- data wrangle -- ##
 data_plot_distance_traveled <- data_ridb_acs_2018 %>% 
-  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371)
+  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+  select(agency, admin_unit, park, distance_traveled_mi)
 
 ## -- create plot -- ##
 
@@ -94,7 +102,8 @@ plot_distance_traveled
 ## -- data wrangle -- ##
 data_plot_boooking_window <- data_ridb_acs_2018 %>% 
   filter(booking_window > 0,
-         booking_window < 510)
+         booking_window < 510) %>% 
+  select(agency, admin_unit, park, booking_window)
 
 ## -- create plot -- ##
 
@@ -140,7 +149,8 @@ plot_booking_window
 ## -- data wrangle -- ##
 data_plot_daily_cost_per_visitor <- data_ridb_acs_2018 %>% 
   filter(daily_cost_per_visitor != "Inf",
-         daily_cost_per_visitor <= 50)
+         daily_cost_per_visitor <= 50) %>% 
+  select(agency, admin_unit, park, daily_cost_per_visitor)
 
 ## -- create plot -- ##
 
@@ -174,7 +184,8 @@ plot_daily_cost_per_visitor
 
 ```{r}
 ## -- data wrangle -- ##
-data_plot_length_of_stay <- data_ridb_acs_2018
+data_plot_length_of_stay <- data_ridb_acs_2018 %>% 
+  select(agency, admin_unit, park, length_of_stay)
 
 ## -- create plot -- ##
 
@@ -210,13 +221,7 @@ plot_length_of_stay
 ```{r}
 ## -- data wrangle -- ##
 data_plot_site_type <- data_ridb_acs_2018 %>% 
-  group_by(aggregated_site_type) %>% 
-  summarise(count = n()) %>% 
-  mutate(aggregated_site_type = factor(aggregated_site_type, 
-                                       levels = c("shelter", "rv only", "rv or tent",
-                                                  "tent only", "remote", "equestrian",
-                                                  "water")))
-data_plot_site_type$aggregated_site_type <- with(data_plot_site_type, reorder(aggregated_site_type, count))
+  select(agency, admin_unit, park, aggregated_site_type)
 
  
 ## -- create plot -- ##
@@ -226,9 +231,11 @@ hist_colors <- c("#009900FF")
 
 # plot for shiny app
 plot_site_type <-
-  ggplot(data = data_plot_site_type) +
+  ggplot(data = data_plot_site_type %>% 
+           group_by(aggregated_site_type) %>% 
+           summarise(count = n())) +
   geom_col(aes(x = count,
-               y = aggregated_site_type),
+               y = reorder(aggregated_site_type, count)),
            fill = hist_colors) +
   scale_x_continuous(labels = comma) +
   labs(x = "Number of Sites",
@@ -267,7 +274,6 @@ data_plot_race_ridb <- data_ridb_acs_2018 %>%
                             pattern = "_",
                             replacement = " "),
          race = str_to_title(race))
-data_plot_race_ridb$race <- with(data_plot_race_ridb, reorder(race, race_percent_average))
 
 # CA population
 data_plot_race_ca <- data_acs_2018_race_percent_California %>%
@@ -292,7 +298,6 @@ data_plot_race_ca <- data_acs_2018_race_percent_California %>%
                             pattern = "_",
                             replacement = " "),
          race = str_to_title(race))
-data_plot_race_ca$race <- with(data_plot_race_ca, reorder(race, race_percent_average))
 
 # join data for plotting
 data_plot_race <- data_plot_race_ridb %>% 
@@ -315,13 +320,13 @@ groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
 plot_race <- 
   ggplot(data = data_plot_race) +
   geom_col(aes(x = race_percent_average,
-               y = race,
+               y = reorder(race, race_percent_average),
                fill = data_source),
            stat = "identity",
            position = "dodge") +
   scale_fill_manual(values = groups_colors_ridb_ca) +  
   geom_text(aes(x = race_percent_average,
-                y = race,
+                y = reorder(race, race_percent_average),
                 label = paste0(round(race_percent_average, 1), "%"),
                 col = data_source), 
             position = position_dodge(width = 1), 
