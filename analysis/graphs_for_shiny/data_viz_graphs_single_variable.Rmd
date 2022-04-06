@@ -33,6 +33,10 @@ source("../functions/function_acs_language.R")
 ```
 
 
+```{r}
+start_time <- Sys.time()
+```
+
 ```{r load data}
 # read in joined data
 data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
@@ -49,13 +53,7 @@ data_acs_2018_median_income_California <- data_acs_2018_median_income_California
             by = "zip_code") %>% 
   select(zip_code, median_income, zip_code_population)
 ```
-```{r}
-start_time <- Sys.time()
-# the code you're running
-end_time <- Sys.time()
-time_taken <- end_time - start_time
-time_taken
-```
+
 
 
 ## Agency Analysis: Distribution Graphs
@@ -459,7 +457,7 @@ CA census (grey) not yet weighted by population
 
 # reservations in CA
 data_plot_language_ridb <- data_ridb_acs_2018 %>%
-  select(agency, regional_area, park, customer_zip, not_english_only, english_only) %>% 
+  select(agency, admin_unit, park, customer_zip, not_english_only, english_only) %>% 
   mutate(not_english_only = not_english_only * 100,
          english_only = english_only * 100) %>% 
   drop_na(not_english_only, english_only)
@@ -518,7 +516,7 @@ CA census (grey) not yet weighted by population
 
 # reservations in CA
 data_plot_median_income_ridb <- data_ridb_acs_2018 %>%
-  select(agency, regional_area, park, customer_zip, median_income)
+  select(agency, admin_unit, park, customer_zip, median_income)
 
 # CA population
 data_plot_median_income_ca <- data_acs_2018_median_income_California %>%
@@ -627,6 +625,14 @@ plot_agency_visits <-
         )
 plot_agency_visits
 ```
+
+
+```{r}
+end_time <- Sys.time()
+time_taken <- end_time - start_time
+time_taken
+```
+
 
 
 ```{r, eval=FALSE}

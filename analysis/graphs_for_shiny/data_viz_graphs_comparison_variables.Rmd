@@ -27,6 +27,11 @@ options(scipen = 999)
 ```
 
 
+```{r}
+start_time <- Sys.time()
+```
+
+
 ```{r load data}
 # read in joined data
 data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
@@ -44,7 +49,7 @@ data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv"
 ```{r}
 ## -- data wrangle -- ##
 data_plot_race_distance_traveled_bins <- data_ridb_acs_2018 %>% 
-  select(agency, regional_area, park, customer_zip, asian, black, hispanic_latinx, 
+  select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
          multiracial, native_american, other, pacific_islander, white,
          distance_traveled_m) %>% 
   mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
@@ -87,13 +92,11 @@ plot_race_distance_traveled <- ggplot(data = data_plot_race_distance_traveled) +
                fill = race)) +
   facet_wrap(~race, scales = "free_x") +
   scale_fill_manual(values = racial_group_colors) +
-  scale_x_discrete(labels = c("1" = "0 - 60.2 miles", "2" = "60.2 - 116.9 miles", 
-                              "3" = "116.9 - 180.9 miles", "4" = "180.9 - 299.3 miles", 
-                              "5" = "299.3 - 3,613.7 miles")#, 
-                   #breaks = c("1", "2", "3", "4", "5")
-                   ) +
-  # geom_vline(xintercept = c(0.5, 1.5, 2.5, 3.5, 4.5), 
-  #            color = "lightgrey") +
+  scale_x_discrete(labels = c("1" = "0 - 60 mi", 
+                              "2" = "60 - 117 mi", 
+                              "3" = "117 - 181 mi", 
+                              "4" = "181 - 299 mi", 
+                              "5" = "299 - 3,614 mi")) + 
   labs(x = "Distance Traveled (miles)",
        y = "Percentage (%)",
        title = "Breakdown of Race of Home ZIP Codes vs. Distance Traveled",
@@ -115,7 +118,7 @@ plot_race_distance_traveled
 
 ```{r, fig.width=5, fig.height=3}
 # data
-test <- data_plot_race_distance_traveled_bins %>% 
+data_plot_race_distance_traveled_2 <- data_plot_race_distance_traveled_bins %>% 
   select(asian, black, hispanic_latinx, multiracial, native_american, 
          other, pacific_islander, white, distance_traveled_bins) %>% 
   pivot_longer(cols = 1:8,
@@ -124,11 +127,59 @@ test <- data_plot_race_distance_traveled_bins %>%
   mutate(race = str_replace(string = race,
                             pattern = "_",
                             replacement = " "),
-         race = str_to_title(race))
+         race = str_to_title(race)) %>% 
+  filter(!is.na(race_percentage))
 
 # plot
+
+## working on for loop
+# races <- c("Asian", "Black"#, "Hispanic Latinx", 
+#            # "Multiracial", "Native American", "Other", 
+#            # "Pacific Islander", "White"
+#            )
+# 
+# for (i in seq_along(races)){
+#   
+#   data <- data_plot_race_distance_traveled_2 %>% 
+#              filter(race == paste(races[[i]]))
+#   
+#   breaks <- data %>% 
+#     group_by(distance_traveled_bins) %>% 
+#     summarize(quartile = quantile(race_percentage)) %>% 
+#     filter(quartile == max(quartile))
+#   
+#   print(
+#     ggplot(data = data) +
+#       geom_boxplot(aes(x = factor(distance_traveled_bins),
+#                        y = race_percentage * 100, 
+#                        fill = race),
+#                    varwidth = TRUE, outlier.shape = NA) +
+#       coord_flip() +
+#       scale_fill_manual(values = racial_group_colors) +
+#       scale_x_discrete(labels = c("1" = "0 - 60 mi", 
+#                                   "2" = "60 - 117 mi", 
+#                                   "3" = "117 - 181 mi", 
+#                                   "4" = "181 - 299 mi", 
+#                                   "5" = "299 - 3,614 mi")) +
+#       scale_y_continuous(limits = c(0, paste((breaks %>% 
+#                                                filter(race == paste(races[[i]])))[[2]])
+#                                     ),
+#                          breaks = seq(0, paste(round(max(breaks$quartile), 2) * 100), 10),
+#                          minor_breaks = seq(0, paste(round(max(breaks$quartile), 2) * 100), 5),
+#                          sec.axis = dup_axis()) +
+#       labs(x = "Distance Traveled (miles)",
+#            y = "Percentage (%)",
+#            title = "Asian",
+#            subtitle = "Breakdown of Race of Home ZIP Codes \nvs. Distance Traveled \nfor Overnight Reservations in California") +
+#       theme_minimal() +
+#       theme(legend.position = "none",
+#             plot.background = element_rect("white"),
+#             panel.grid.major.y = element_blank()) +
+#       coord_flip())
+# }
+
 test_plot_asian <- 
-  ggplot(data = test %>% filter(race == "Asian")) +
+  ggplot(data = data_plot_race_distance_traveled_2 %>% filter(race == "Asian")) +
   geom_boxplot(aes(x = factor(distance_traveled_bins),
                    y = race_percentage * 100, 
                    fill = race),
@@ -153,7 +204,7 @@ test_plot_asian <-
 test_plot_asian
 
 test_plot_black <- 
-  ggplot(data = test %>% filter(race == "Black")) +
+  ggplot(data = data_plot_race_distance_traveled_2 %>% filter(race == "Black")) +
   geom_boxplot(aes(x = factor(distance_traveled_bins),
                    y = race_percentage * 100, 
                    fill = race),
@@ -178,7 +229,7 @@ test_plot_black <-
 test_plot_black
 
 test_plot_latinx <- 
-  ggplot(data = test %>% filter(race == "Hispanic Latinx")) +
+  ggplot(data = data_plot_race_distance_traveled_2 %>% filter(race == "Hispanic Latinx")) +
   geom_boxplot(aes(x = factor(distance_traveled_bins),
                    y = race_percentage * 100, 
                    fill = race),
@@ -203,7 +254,7 @@ test_plot_latinx <-
 test_plot_latinx
 
 test_plot_multi <- 
-  ggplot(data = test %>% filter(race == "Multiracial")) +
+  ggplot(data = data_plot_race_distance_traveled_2 %>% filter(race == "Multiracial")) +
   geom_boxplot(aes(x = factor(distance_traveled_bins),
                    y = race_percentage * 100, 
                    fill = race),
@@ -228,7 +279,7 @@ test_plot_multi <-
 test_plot_multi
 
 test_plot_native_amer <- 
-  ggplot(data = test %>% filter(race == "Native American")) +
+  ggplot(data = data_plot_race_distance_traveled_2 %>% filter(race == "Native American")) +
   geom_boxplot(aes(x = factor(distance_traveled_bins),
                    y = race_percentage * 100, 
                    fill = race),
@@ -253,7 +304,7 @@ test_plot_native_amer <-
 test_plot_native_amer
 
 test_plot_other <- 
-  ggplot(data = test %>% filter(race == "Other")) +
+  ggplot(data = data_plot_race_distance_traveled_2 %>% filter(race == "Other")) +
   geom_boxplot(aes(x = factor(distance_traveled_bins),
                    y = race_percentage * 100, 
                    fill = race),
@@ -278,7 +329,7 @@ test_plot_other <-
 test_plot_other
 
 test_plot_pac_islander <- 
-  ggplot(data = test %>% filter(race == "Pacific Islander")) +
+  ggplot(data = data_plot_race_distance_traveled_2 %>% filter(race == "Pacific Islander")) +
   geom_boxplot(aes(x = factor(distance_traveled_bins),
                    y = race_percentage * 100, 
                    fill = race),
@@ -303,7 +354,7 @@ test_plot_pac_islander <-
 test_plot_pac_islander
 
 test_plot_white <- 
-  ggplot(data = test %>% filter(race == "White")) +
+  ggplot(data = data_plot_race_distance_traveled_2 %>% filter(race == "White")) +
   geom_boxplot(aes(x = factor(distance_traveled_bins),
                    y = race_percentage * 100, 
                    fill = race),
@@ -327,6 +378,7 @@ test_plot_white <-
   coord_flip()
 test_plot_white
 ```
+
 
 
 #### (Option 3)
@@ -1096,6 +1148,13 @@ plot_booking_window_site_type
 
 ### Booking window x distance traveled
 Similar graphs to those above would exist for booking window x distance traveled
+
+
+```{r}
+end_time <- Sys.time()
+time_taken <- end_time - start_time
+time_taken
+```
 
 
 ```{r, eval=FALSE}
