@@ -1,11 +1,11 @@
 # SEL agency ----
-# used in (1) data summary; (2) data relationships; (3) visitorsheds
-select_agency <- function(locationId){
+# used in (1) data summary; (2) data relationships; (3) visitorsheds; (4) data download
+select_agency <- function(locationId, isMultiple = TRUE){
   
   selectizeInput(inputId = paste("agency", locationId, sep = "_"),
                  label = "Select an agency",
                  choices = ca_agency,
-                 multiple = TRUE,
+                 multiple = isMultiple,
                  options = list(
                    placeholder = "Type to search for an agency",
                    # Note(HD) when created set a value for the input to an empty string
@@ -15,13 +15,13 @@ select_agency <- function(locationId){
 
 
 # SEL admin unit ----
-# used in (1) data summary; (2) data relationships; (3) visitorsheds
-select_admin_unit <- function(locationId){
+# used in (1) data summary; (2) data relationships; (3) visitorsheds; (4) data download
+select_admin_unit <- function(locationId, isMultiple = TRUE){
   
   selectizeInput(inputId = paste("admin_unit", locationId, sep = "_"),
                  label = "Select an administrative unit",
                  choices = admin_units,
-                 multiple = TRUE,
+                 multiple = isMultiple,
                  options = list(
                    placeholder = "Type to search for a National Park, Forest, or Public Land",
                    # Note(HD) when created set a value for the input to an empty string
@@ -31,13 +31,13 @@ select_admin_unit <- function(locationId){
 
 
 # SEL site ----
-# used in (1) data summary; (2) data relationships; (3) visitorsheds
-select_site <- function(locationId){
+# used in (1) data summary; (2) data relationships; (3) visitorsheds; (4) data download
+select_site <- function(locationId, isMultiple = TRUE){
   
   selectizeInput(inputId = paste("site", locationId, sep = "_"),
                  label = "Select a reservable site",
                  choices = sites,
-                 multiple = TRUE,
+                 multiple = isMultiple,
                  options = list(
                    placeholder = "Type to search for a reservable site",
                    # Note(HD) when created set a value for the input to an empty string

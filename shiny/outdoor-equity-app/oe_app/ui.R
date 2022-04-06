@@ -112,11 +112,14 @@ ui <- fluidPage(
                           sidebarPanel(
                           
                             # agency input
-                            select_agency(locationId = "visitorsheds"),
+                            select_agency(locationId = "visitorsheds",
+                                          isMultiple = FALSE),
                             # admin input
-                            select_admin_unit(locationId = "visitorsheds"),
+                            select_admin_unit(locationId = "visitorsheds",
+                                              isMultiple = FALSE),
                             # site input 
-                            select_site(locationId = "visitorsheds"),
+                            select_site(locationId = "visitorsheds",
+                                        isMultiple = FALSE),
                             
                           ), # EO visitorsheds sidebar panel
                           

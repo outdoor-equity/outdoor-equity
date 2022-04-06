@@ -104,3 +104,4 @@ EO = end of
 SEL = select
 OP = output
 IP = input
+OE = observe event
