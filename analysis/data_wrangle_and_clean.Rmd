@@ -135,6 +135,17 @@ saveRDS(object = data_combined_park_summary_2018_geometry,
         file = "../../../data_clean/2018_joined_data_site_summary.rds")
 ```
 
+```{r}
+## TEST
+
+# full dataset (RIDB and ACS joined)
+saveRDS(object = data_combined_2018_geometry,
+        file = "../shiny/outdoor-equity-app/oe_app/data/2018_joined_data.rds")
+
+# dataset summarized to `park` level (RIDB and ACS joined)
+saveRDS(object = data_combined_park_summary_2018_geometry,
+        file = "../shiny/outdoor-equity-app/oe_app/data/2018_joined_data_site_summary.rds")
+```
 
 
 

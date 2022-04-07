@@ -7,13 +7,14 @@ RIDB_subset_pre2018 <- function(full_file_path, state_abbrev, year) {
     janitor::clean_names() %>% 
     # filter for state
     filter(facility_state == state_abbrev) %>%
+    # filter for use type
+    filter(use_type == "Overnight") %>% 
     # select variables
     select(c("agency",
              "parent_location",
              "region_description",
              "park",
-             "site_type", 
-             "use_type",
+             "site_type",
              "facility_state", 
              "facility_longitude", 
              "facility_latitude",
@@ -32,17 +33,15 @@ RIDB_subset_pre2018 <- function(full_file_path, state_abbrev, year) {
                              "anchorage",
                              "picnic",
                              "entry point",
-                             "trailhead")) %>% 
-    filter(use_type == "Overnight") %>%
+                             "trailhead")) %>%
     # filter out invalid ZIP codes
-    mutate(customer_zip = str_remove(string = customer_zip,
-                                     pattern = paste(c("[:punct:]",
-                                                       "[:symbol:]"),
-                                                     collapse = "|")),
-           customer_zip = str_extract(string = customer_zip,
-                                      pattern = "[:digit:]{5}")) %>% 
-    # remove use type column
-    select(!use_type)
+    filter(str_detect(string = customer_zip, 
+                      pattern = "^[:digit:]{5}(?!.)") | 
+             str_detect(string = customer_zip, 
+                        pattern = "^[:digit:]{5}(?=-)")) %>% 
+    filter(!customer_zip %in% c("00000", "99999")) %>% 
+    mutate(customer_zip = str_extract(string = customer_zip,
+                                      pattern = "[:digit:]{5}"))
   
   # create df
   assign(paste0("data_ridb_", year), data.frame(df), envir = .GlobalEnv)
