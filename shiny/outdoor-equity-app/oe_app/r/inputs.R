@@ -9,7 +9,7 @@ select_agency <- function(locationId, isMultiple = TRUE){
                  options = list(
                    placeholder = "Type to search for an agency",
                    # Note(HD) when created set a value for the input to an empty string
-                   onInitialize = I('function() { this.setValue("BOR"); }')
+                   onInitialize = I('function() { this.setValue("USACE"); }')
                  )) 
 }
 
@@ -47,7 +47,7 @@ select_site <- function(locationId, isMultiple = TRUE){
 
 # SEL data summary ----
 # used in (1) data summary
-select_data_source <- function(){
+select_data_summary <- function(){
   
 selectizeInput(inputId = "data_summary",
                label = "Select a variable to visualize",
@@ -56,11 +56,11 @@ selectizeInput(inputId = "data_summary",
                            "Education", 
                            "Language", 
                            "Median Income"),
-               selected = "Booking Window", # Note(HD): This isn't working?
                multiple = FALSE,
                options = list(
                  placeholder = "Type to search for a variable",
-                 onInitialize = I('function() { this.setValue(""); }')
+                 # Note(HD) need to make setValue part of the function
+                 onInitialize = I('function() { this.setValue("Booking Window"); }')
                ))
 }
 
