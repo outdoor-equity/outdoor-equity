@@ -3,11 +3,32 @@ library(here)
 library(collections)
 
 # testing creating a dictionary with collections ----
-admin_unit_dict <- function(x){
+
+au_test <- data_joined_2018 %>% 
+  filter(regional_area %in% c("Yosemite National Park", "Eldorado National Forest"))
+
+au_vector <- as.vector(unique(au_test$regional_area))
+
+for (i in seq_along(au_vector)){
+  # pulling out each admin unit
+  x <- au_test %>% filter(regional_area == au_vector[[i]]) # double brackets pulls out "raw" value??
+  # 
+  y <- unique(x$park)
+  
+  
+  
+}
+
+admin_unit_dict <-  function(x) {
   
   au_choices <- collections::Dict$new()
   
+  for (name in names(x)) d$set(name, x[, name])
+  
+  return(d)
+  
 }
+
 
 test_adminUnit_choices <- dict(items = NULL,
                                keys = au_choices("USFS"))
