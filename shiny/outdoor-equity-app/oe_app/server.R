@@ -73,11 +73,50 @@ observeEvent(selected$agency, {
   
 })
 
+# REACTIVE DATA FRAMES ----
 
-
-  ## REACTIVE DATA FRAMES ----
+booking_window_df <- reactive({
+  data_plot_boooking_window %>% 
+    filter(agency %in% input$agency_summary)
   
-  ### data download ----
+})
+
+# RENDER PLOTS ----
+
+output$data_summary_plot <- renderPlot({
+  
+  hist_colors <- c("#009900FF")
+  
+  # plot for shiny app
+  ggplot(data = booking_window_df()) + # reactive df
+    geom_histogram(aes(x = booking_window),
+                   binwidth = 7,
+                   fill = hist_colors) +
+    labs(x = "Days elapsed from order to visit (each bar = 1 week)",
+         y = "",
+         title = "Distribution of Booking Windows for input$data_summary",
+         subtitle = "Overnight Reservations in California in 2018") +
+    scale_x_continuous(limits = c(0, 510), 
+                       breaks = seq(0, 510, by = 30)) +
+    scale_y_continuous(labels = comma) +
+    geom_vline(xintercept = 180, 
+               linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", label = "6 months", 
+             x = 210, y = 65000) +
+    geom_vline(xintercept = 360, 
+               linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", label = "1 year", 
+             x = 380, y = 65000) +
+    theme_minimal() +
+    theme(plot.background = element_rect("white"),
+          panel.grid.major.y = element_blank())
+  
+}) ## EO data_summary_plot booking window ----
+
+
+  ## REACTIVE DATA FRAMES
+  
+  ### data download
   # data_download_df <- reactive({
   #   data_joined_2018 %>%
   #     filter(agency %in% input$agency,
@@ -86,12 +125,12 @@ observeEvent(selected$agency, {
   # 
   # })
   # 
-  ### dist traveled df ----
+  ### dist traveled df
   # distance_traveled_df <- reactive({
   #   data_hist_distance_traveled %>% filter(agency %in% input$agency)
   # })
   # 
-  # ### race df ----
+  # ### race df
   # # NEED TO ADD AGENCY IF WE WANT IT TO BE REACTIVE 
   # # race_df <- reactive({
   # #   data_hist_race %>% filter(agency %in% input$agency)
@@ -99,16 +138,16 @@ observeEvent(selected$agency, {
   # 
   # 
   # 
-  # ## RENDERING OUTPUTS  ----
+  # ## RENDERING OUTPUTS
   # 
-  # #### data download ----
+  # #### data download
   # # Note(HD) Data too large to put in DT table?
   # # output$data_download <- DT:renderDataTable({
   # #   DT::datatable(data_download_df())
   # #   
   # # })
   # # 
-  # #### dist traveled hist ----
+  # #### dist traveled hist
   # output$agency_analysis <- renderPlot({
   #   
   #   # if statement for dist traveled
@@ -193,7 +232,7 @@ observeEvent(selected$agency, {
   #   
   # })
   # 
-  ### OLD render hist ----
+  ### OLD render hist
     # output$agency_hist_dist_travel <- renderPlot({
     #   # all if else statements live inside renderPlot{}
     # 

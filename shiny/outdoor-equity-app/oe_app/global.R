@@ -25,8 +25,10 @@ library(collections)
 reactlog_enable()
 
 # import data ---- 
-## CA prototype joined 2018 data ----
-data_joined_2018 <- readRDS("data/data_joined_2018.rds")
+## CA prototype joined 2018 ----
+data_joined_2018 <- readRDS("data/2018_joined_data.rds")
+## booking window ----
+data_plot_boooking_window <- readRDS("data/2018_data_plot_boooking_window.rds")
 
 # source input functions ----
 source("r/inputs.R")
