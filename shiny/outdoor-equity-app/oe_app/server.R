@@ -20,7 +20,7 @@ observeEvent(selected$agency, {
   test <- data_joined_2018 %>%
     filter(agency %in% selected$agency)
 
-  admin_test <- as.vector(unique(test$regional_area))
+  admin_test <- as.vector(unique(test$admin_unit))
 
   updateSelectizeInput(session, "admin_unit_summary",
                        choices = admin_test
@@ -35,7 +35,7 @@ observeEvent(selected$agency, {
   test <- data_joined_2018 %>%
     filter(agency %in% selected$agency)
   
-  admin_test <- as.vector(unique(test$regional_area))
+  admin_test <- as.vector(unique(test$admin_unit))
   
   updateSelectizeInput(session, "admin_unit_relationships",
                        choices = admin_test
@@ -50,7 +50,7 @@ observeEvent(selected$agency, {
   test <- data_joined_2018 %>%
     filter(agency %in% selected$agency)
   
-  admin_test <- as.vector(unique(test$regional_area))
+  admin_test <- as.vector(unique(test$admin_unit))
   
   updateSelectizeInput(session, "admin_unit_visitorsheds",
                        choices = admin_test
@@ -65,7 +65,7 @@ observeEvent(selected$agency, {
   test <- data_joined_2018 %>%
     filter(agency %in% selected$agency)
   
-  admin_test <- as.vector(unique(test$regional_area))
+  admin_test <- as.vector(unique(test$admin_unit))
   
   updateSelectizeInput(session, "admin_unit_data_download",
                        choices = admin_test
@@ -73,45 +73,126 @@ observeEvent(selected$agency, {
   
 })
 
+# OE for admin unit -> site change ----
+# empty dictionary with empty key value admin_unit
+# reactive element bc writing an observeEvent for the selected object
+selected_au <- reactiveValues(admin_unit = NULL)
+
+observeEvent(input$admin_unit_summary, selected_au$admin_unit <- (input$admin_unit_summary))
+observeEvent(input$admin_unit_relationships, selected_au$admin_unit <- (input$admin_unit_relationships))
+observeEvent(input$admin_unit_visitorsheds, selected_au$admin_unit <- (input$admin_unit_visitorsheds))
+observeEvent(input$admin_unit_data_download, selected_au$admin_unit <- (input$admin_unit_data_download))
+
+# observeEvent press admin_unit
+observeEvent(selected_au$admin_unit, {
+  
+  print(paste0("You have chosen: ", selected_au$admin_unit))
+  
+  au <- data_joined_2018 %>%
+    filter(admin_unit %in% selected_au$admin_unit)
+  
+  park_test <- as.vector(unique(au$park))
+  
+  updateSelectizeInput(session, "site_summary",
+                       choices = park_test
+  )
+  
+})
+
+observeEvent(selected_au$admin_unit, {
+  
+  print(paste0("You have chosen: ", selected_au$admin_unit))
+  
+  au <- data_joined_2018 %>%
+    filter(admin_unit %in% selected_au$admin_unit)
+  
+  park_test <- as.vector(unique(au$park))
+  
+  updateSelectizeInput(session, "site_relationships",
+                       choices = park_test
+  )
+  
+})
+
+observeEvent(selected_au$admin_unit, {
+  
+  print(paste0("You have chosen: ", selected_au$admin_unit))
+  
+  au <- data_joined_2018 %>%
+    filter(admin_unit %in% selected_au$admin_unit)
+  
+  park_test <- as.vector(unique(au$park))
+  
+  updateSelectizeInput(session, "site_visitorsheds",
+                       choices = park_test
+  )
+  
+})
+
+observeEvent(selected_au$admin_unit, {
+  
+  print(paste0("You have chosen: ", selected_au$admin_unit))
+  
+  au <- data_joined_2018 %>%
+    filter(admin_unit %in% selected_au$admin_unit)
+  
+  park_test <- as.vector(unique(au$park))
+  
+  updateSelectizeInput(session, "site_data_download",
+                       choices = park_test
+  )
+  
+})
+## EO OE agency, admin unit, and site ----
+
 # REACTIVE DATA FRAMES ----
 
 booking_window_df <- reactive({
-  data_plot_boooking_window %>% 
-    filter(agency %in% input$agency_summary)
-  
+  data_plot_boooking_window %>%
+    filter(agency %in% input$agency_summary,
+           admin_unit %in% input$admin_unit_summary,
+           park %in% input$site_summary)
+
 })
 
 # RENDER PLOTS ----
 
 output$data_summary_plot <- renderPlot({
-  
-  hist_colors <- c("#009900FF")
-  
-  # plot for shiny app
-  ggplot(data = booking_window_df()) + # reactive df
-    geom_histogram(aes(x = booking_window),
-                   binwidth = 7,
-                   fill = hist_colors) +
-    labs(x = "Days elapsed from order to visit (each bar = 1 week)",
-         y = "",
-         title = "Distribution of Booking Windows for input$data_summary",
-         subtitle = "Overnight Reservations in California in 2018") +
-    scale_x_continuous(limits = c(0, 510), 
-                       breaks = seq(0, 510, by = 30)) +
-    scale_y_continuous(labels = comma) +
-    geom_vline(xintercept = 180, 
-               linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", label = "6 months", 
-             x = 210, y = 65000) +
-    geom_vline(xintercept = 360, 
-               linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", label = "1 year", 
-             x = 380, y = 65000) +
-    theme_minimal() +
-    theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank())
-  
+
+  # SO if statement for booking window
+    if(input$data_summary == "Booking Window"){
+
+      hist_colors <- c("#009900FF")
+
+      # plot for shiny app
+      ggplot(data = booking_window_df()) + # reactive df
+        geom_histogram(aes(x = booking_window),
+                       binwidth = 7,
+                       fill = hist_colors) +
+        labs(x = "Days elapsed from order to visit (each bar = 1 week)",
+             y = "Number of reservations",
+             title = paste("Booking Window for", input$agency_summary), # Note(HD) call name for multiple selections
+             subtitle = "Overnight Reservations in California in 2018") +
+        scale_x_continuous(limits = c(0, 510),
+                           breaks = seq(0, 510, by = 30)) +
+        scale_y_continuous(labels = comma) +
+        geom_vline(xintercept = 180,
+                   linetype = "dashed", size = .3, alpha = .5) +
+        annotate("text", label = "6 months", # Note(HD) need to make y dynamic
+                 x = 210, y = 10000) +
+        geom_vline(xintercept = 360,
+                   linetype = "dashed", size = .3, alpha = .5) +
+        annotate("text", label = "1 year",
+                 x = 380, y = 10000) + # Note(HD) need to make y dynamic
+        theme_minimal() +
+        theme(plot.background = element_rect("white"),
+              panel.grid.major.y = element_blank())
+
+    } ## EO if statement booking window
+
 }) ## EO data_summary_plot booking window ----
+
+
 
 
   ## REACTIVE DATA FRAMES
