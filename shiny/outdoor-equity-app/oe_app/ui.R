@@ -57,7 +57,7 @@ ui <- fluidPage(
                             # site input
                             select_site(locationId = "summary"),
                             # data source input
-                            select_data_source(),
+                            select_data_summary(),
                             
                           ), # EO data summary sidebar panel
                           
