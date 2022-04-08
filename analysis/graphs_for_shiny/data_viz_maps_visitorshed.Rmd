@@ -19,8 +19,11 @@ library(tmap)
 library(vroom)
 library(paletteer)
 library(scales)
+library(tigris)
 
 options(scipen = 999)
+
+tmap_mode("view")
 ```
 
 
@@ -82,7 +85,7 @@ df_states_fips_zip_codes <- df_states_zip_codes %>%
 
 ```{r}
 ## -- data wrangle -- ##
-data_stat_map_yosemite_upper_pines <- data_ridb_acs_2018 %>% 
+data_map_us_yosemite_upper_pines <- data_ridb_acs_2018 %>% 
   filter(park == "Upper Pines") %>% 
   left_join(y = df_states_fips_zip_codes,
             by = c("customer_zip" = "zipcode")) %>% 
@@ -90,29 +93,57 @@ data_stat_map_yosemite_upper_pines <- data_ridb_acs_2018 %>%
   summarize(number_reservations = n()) %>% 
   filter(!is.na(zip_state_abbr))
 
-data_stat_map_yosemite_upper_pines_geometries_us <- 
+data_map_us_yosemite_upper_pines_geometries_us <- 
   state_geometries_us %>% 
-  left_join(y = data_stat_map_yosemite_upper_pines,
+  left_join(y = data_map_us_yosemite_upper_pines,
             by = c("fips" = "zip_fips"))
-  
+
 
 ## -- create plot -- ##
 
-
-
-ggplot() +
-  geom_sf(data = data_stat_map_yosemite_upper_pines_geometries_us,
-          aes(fill = number_reservations)) +
-  scale_fill_continuous(type = "viridis", 
-                        label = scales::comma,
-                        name = "Number of visits")
+tm_shape(data_map_us_yosemite_upper_pines_geometries_us) +
+  tm_borders(col = "grey", alpha = 0.5) +
+  tm_fill(col = "number_reservations",
+          title = "Number of Visits",
+          palette = "YlGn",
+          n = 10, 
+          style = "jenks",
+          id = "zip_state_abbr", 
+          popup.vars = c("Total Visits" = "number_reservations")) +
+  tm_view(set.view = c(-101.834335, 40.022356, 3))
 ```
 
 
 # Visitor-shed for Hope Valley, Humboldt-Toiyabe National Forest
 
 ```{r}
+## -- data wrangle -- ##
+data_map_us_humboldt_hope_valley <- data_ridb_acs_2018 %>% 
+  filter(park == "Hope Valley") %>% 
+  left_join(y = df_states_fips_zip_codes,
+            by = c("customer_zip" = "zipcode")) %>% 
+  group_by(zip_state_abbr, zip_fips) %>% 
+  summarize(number_reservations = n()) %>% 
+  filter(!is.na(zip_state_abbr))
 
+data_map_us_humboldt_hope_valley_geometries_us <- 
+  state_geometries_us %>% 
+  left_join(y = data_map_us_humboldt_hope_valley,
+            by = c("fips" = "zip_fips"))
+
+
+## -- create plot -- ##
+
+tm_shape(data_map_us_humboldt_hope_valley_geometries_us) +
+  tm_borders(col = "grey", alpha = 0.5) +
+  tm_fill(col = "number_reservations",
+          title = "Number of Visits",
+          palette = "YlGn",
+          n = 10, 
+          style = "jenks",
+          id = "zip_state_abbr", 
+          popup.vars = c("Total Visits" = "number_reservations")) +
+  tm_view(set.view = c(-101.834335, 40.022356, 3))
 ```
 
 
@@ -121,37 +152,39 @@ ggplot() +
 
 ```{r}
 ## -- data wrangle -- ##
-data_int_map_yosemite_upper_pines <- data_ridb_acs_2018 %>% 
+data_map_ca_yosemite_upper_pines <- data_ridb_acs_2018 %>% 
   filter(park == "Upper Pines") %>% 
   group_by(customer_zip) %>% 
   summarize(number_reservations = n()) %>% 
   mutate(customer_zip = as.character(customer_zip))
 
-data_int_map_yosemite_upper_pines_zip_geometries_ca <- zip_geometries_ca %>% 
-  left_join(data_int_map_yosemite_upper_pines, by = c("zip_code" = "customer_zip")) %>% 
+data_map_ca_yosemite_upper_pines_zip_geometries_ca <- zip_geometries_ca %>% 
+  left_join(data_map_ca_yosemite_upper_pines, by = c("zip_code" = "customer_zip")) %>% 
   mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
 
-data_int_map_yosemite_upper_pines_geom <- data_ridb_acs_2018 %>% 
+data_map_ca_yosemite_upper_pines_geom <- data_ridb_acs_2018 %>% 
   filter(park == "Upper Pines") %>% 
-  group_by(agency, regional_area, park) %>% 
+  group_by(agency, admin_unit, park) %>% 
   summarise(facility_latitude = median(facility_latitude),
             facility_longitude = median(facility_longitude)) %>% 
   st_as_sf(coords = c("facility_latitude", "facility_longitude"),
            crs = 4326) %>% 
   st_transform(crs = 4269) # using NAD83 because measured in meters
 
+
 ## -- create plot -- ##
 
-# interactive map of only CA ZIP codes
-tmap_mode("view")
-tm_shape(data_int_map_yosemite_upper_pines_zip_geometries_ca) +
+tm_shape(data_map_ca_yosemite_upper_pines_zip_geometries_ca) +
   tm_fill(col = "number_reservations",
+          title = "Number of Visits",
           palette = "PuRd",
           style = "jenks",
-          n = 10) +
-  tm_shape(data_int_map_yosemite_upper_pines_geom) +
-  tm_dots(col = "#009900FF", size = 0.1, alpha = 0.75,
-          id = "park")
+          n = 10, 
+          popup.vars = c("Total Visits" = "number_reservations")) +
+  tm_shape(data_map_ca_yosemite_upper_pines_geom) +
+  tm_dots(col = "#009900FF", size = 0.1, alpha = 0.9,
+          id = "park") +
+  tm_view(set.view = c(-119.559917, 37.061753, 6))
 ```
 
 
@@ -159,41 +192,41 @@ tm_shape(data_int_map_yosemite_upper_pines_zip_geometries_ca) +
 
 ```{r}
 ## -- data wrangle -- ##
-data_map_humboldt_hope_valley <- data_ridb_acs_2018 %>% 
+data_map_ca_humboldt_hope_valley <- data_ridb_acs_2018 %>% 
   filter(park == "Hope Valley") %>% 
   group_by(customer_zip) %>% 
   summarize(number_reservations = n()) %>% 
   mutate(customer_zip = as.character(customer_zip))
 
-data_map_humboldt_hope_valley_geometries_ca <- zip_geometries_ca %>% 
-  left_join(data_map_humboldt_hope_valley, by = c("zip_code" = "customer_zip")) %>% 
+data_map_ca_humboldt_hope_valley_geometries_ca <- zip_geometries_ca %>% 
+  left_join(data_map_ca_humboldt_hope_valley, by = c("zip_code" = "customer_zip")) %>% 
   mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
 
-data_map_humboldt_hope_valley_geom <- data_ridb_acs_2018 %>% 
+data_map_ca_humboldt_hope_valley_geom <- data_ridb_acs_2018 %>% 
   filter(park == "Hope Valley") %>% 
-  group_by(agency, regional_area, park) %>% 
+  group_by(agency, admin_unit, park) %>% 
   summarise(facility_latitude = median(facility_latitude),
             facility_longitude = median(facility_longitude)) %>% 
   st_as_sf(coords = c("facility_latitude", "facility_longitude"),
            crs = 4326) %>% 
   st_transform(crs = 4269) # using NAD83 because measured in meters
 
-# data_map_humboldt_hope_valley_geometries_us <- zip_geometries_us %>% 
-#   left_join(data_map_humboldt_hope_valley, by = c("zip_code" = "customer_zip")) %>% 
-#   mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
 
 ## -- create plot -- ##
 
-# interactive map of only CA ZIP codes
-tmap_mode("view")
-tm_shape(data_map_humboldt_hope_valley_geometries_ca) +
+tm_shape(data_map_ca_humboldt_hope_valley_geometries_ca) +
   tm_fill(col = "number_reservations",
+          title = "Number of Visits",
           palette = "PuRd",
           style = "jenks",
-          n = 10) +
-  tm_shape(data_map_humboldt_hope_valley_geom) +
+          n = 10, 
+          popup.vars = c("Total Visits" = "number_reservations")) +
+  tm_shape(data_map_ca_humboldt_hope_valley_geom) +
   tm_dots(col = "#009900FF", size = 0.1, alpha = 0.75,
-          id = "park")
+          id = "park",
+          popup.vars = c("Agency" = "agency", "Admin Unit" = "admin_unit", 
+                         "Park" = "park")) +
+  tm_view(set.view = c(-119.559917, 37.061753, 6))
 ```
 
 
@@ -201,7 +234,9 @@ tm_shape(data_map_humboldt_hope_valley_geometries_ca) +
 # Save plot all data to RDS
 
 ```{r, eval=FALSE}
-plot_data <- c("data_map_yosemite_upper_pines_geometries_ca", "data_map_humboldt_hope_valley_geometries_ca")
+plot_data <- c("data_map_us_yosemite_upper_pines_geometries_us", "data_map_us_humboldt_hope_valley_geometries_us",
+               "data_map_ca_yosemite_upper_pines_zip_geometries_ca", "data_map_ca_yosemite_upper_pines_geom",
+               "data_map_ca_humboldt_hope_valley_geometries_ca", "data_map_ca_humboldt_hope_valley_geom")
 
 for (i in seq_along(plot_data)){
   saveRDS(object = get(plot_data[[i]]),
