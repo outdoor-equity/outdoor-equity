@@ -57,14 +57,15 @@ ui <- fluidPage(
                             # site input
                             select_site(locationId = "summary"),
                             # data source input
-                            select_data_source(),
+                            select_data_summary(),
                             
                           ), # EO data summary sidebar panel
                           
                           # data summary main panel aka visual
                           mainPanel(
                             
-                            plotOutput(outputId = "data_summary_plot")
+                            plotOutput(outputId = "data_summary_plot") %>% 
+                              withSpinner(color="#0dc5c1")
                             
                           ) # EO data summary main panel
                         ) # EO data summary sidebar layout
@@ -79,6 +80,7 @@ ui <- fluidPage(
                         # data relationships sidebar layout
                         sidebarLayout(
                           # data relationships analysis side bar panel
+                          # IMPORTANT NOTE(HD) MAKE SIDEBAR PANEL HORIZONTAL ----
                           sidebarPanel(
                             
                             # agency input
@@ -95,7 +97,8 @@ ui <- fluidPage(
                           # data relationships main panel aka visual
                           mainPanel(
                             
-                            plotOutput(outputId = "data_relationships_plot")
+                            plotOutput(outputId = "data_relationships_plot") %>% 
+                              withSpinner(color="#0dc5c1")
                         
                         ) # EO data relationships main panel
                         ) # EO data relationships sidebar layout
@@ -125,8 +128,33 @@ ui <- fluidPage(
                           
                           # visitorsheds main panel aka visual
                           mainPanel(
+                  
+                            fluidRow(
+                              
+                              box(
+                                tmapOutput(outputId = "usVisitorshed_plot") %>% 
+                                  withSpinner(color="#0dc5c1"),
+                                width = 6,
+                                title = "US Visitorshed"
+                              ), # EO box US map
+                              
+                              box(
+                                tmapOutput(outputId = "caVisitorshed_plot") %>% 
+                                  withSpinner(color="#0dc5c1"),
+                                with = 6,
+                                title = "California Visitorshed"
+                              ) # EO box site map
+                            ), # EO fluidRow maps
                             
-                            plotOutput(outputId = "visitorsheds_plot")
+                            fluidRow(
+                              
+                              box(
+                                #DTOutput(outputId = "") %>% withSpinner(color="#0dc5c1"),
+                                width = 12,
+                                title = "Reservable Site Summary"
+                              ) # EO box summary table
+                            ) # EO fluidRow summary table
+
                             
                           ) # EO visitorsheds main panel
                         ) # EO visitorsheds sidebar layout
@@ -138,29 +166,30 @@ ui <- fluidPage(
     tabPanel("Data Download", icon = icon("download-alt", lib = "glyphicon"),
              
              titlePanel("Create a subsetted dataset to download"),
-             # Note (HD) each fluidRow has a default width of 12
-             # Note (HD) should figure out if wellPanel is doable
-             fluidRow(
-               # Note (HD) box width defaults 6
-               box(
-                 width = 12,
-                 title = "Test",
-                 status = "primary",
-                 solidHeader = TRUE,
-                 column(width = 4,
-                        select_agency(locationId = "data_download")),
-                 column(width = 4,
-                        select_admin_unit(locationId = "data_download")),
-                 column(width = 4,
-                        select_site(locationId = "data_download"))
-               ) # EO box
-             ), # EO fluidRow
-             
-             ### OP data download ----
-             #DT::dataTableOutput(outputId = "data_download")
+             # data download sidebar layout
+             sidebarLayout(
+               # data download sidebar panel
+               sidebarPanel(
+                 # select agency
+                 select_agency(locationId = "data_download"),
+                 # select admin_unit
+                 select_admin_unit(locationId = "data_download"),
+                 # select reservable site
+                 select_site(locationId = "data_download")), # EO side panel data download
                
-             
-
+               mainPanel(
+                 
+                 fluidRow(
+                   box(
+                     #plotOutput(outputId = ) %>% withSpinner(color="#0dc5c1"),
+                     width = 12,
+                     title = "Table of data to download"
+                   ) # EO box
+                 ) # EO fluidRow box data download
+                 
+               ) # EO main panel data download 
+                 
+               ) # EO sidebar layout data download
              ) ## EO Data Download ----
     
   ) # EO navbarPage

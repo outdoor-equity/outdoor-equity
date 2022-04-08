@@ -2,12 +2,65 @@ library(tidyverse)
 library(here)
 library(collections)
 
+# creating booking window plot + reactive df
+booking_window_df <- `2018_data_plot_boooking_window` %>% 
+    filter(agency %in% "USFS")
+
+# parameters
+hist_colors <- c("#009900FF")
+
+# plot for shiny app
+ggplot(data = booking_window_df) + # reactive df
+  geom_histogram(aes(x = booking_window),
+                 binwidth = 7,
+                 fill = hist_colors) +
+  labs(x = "Days elapsed from order to visit (each bar = 1 week)",
+       y = "",
+       title = "Distribution of Booking Windows for",
+       subtitle = "Overnight Reservations in California in 2018") +
+  scale_x_continuous(limits = c(0, 510), 
+                     breaks = seq(0, 510, by = 30)) +
+  scale_y_continuous(labels = comma) +
+  geom_vline(xintercept = 180, 
+             linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", label = "6 months", 
+           x = 210, y = 65000) +
+  geom_vline(xintercept = 360, 
+             linetype = "dashed", size = .3, alpha = .5) +
+  annotate("text", label = "1 year", 
+           x = 380, y = 65000) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank())
+
+
 # testing creating a dictionary with collections ----
-admin_unit_dict <- function(x){
+
+au_test <- data_joined_2018 %>% 
+  filter(regional_area %in% c("Yosemite National Park", "Eldorado National Forest"))
+
+au_vector <- as.vector(unique(au_test$regional_area))
+
+for (i in seq_along(au_vector)){
+  # pulling out each admin unit
+  x <- au_test %>% filter(regional_area == au_vector[[i]]) # double brackets pulls out "raw" value??
+  # 
+  y <- unique(x$park)
+  
+  
+  
+}
+
+admin_unit_dict <-  function(x) {
   
   au_choices <- collections::Dict$new()
   
+  for (name in names(x)) d$set(name, x[, name])
+  
+  return(d)
+  
 }
+
 
 test_adminUnit_choices <- dict(items = NULL,
                                keys = au_choices("USFS"))

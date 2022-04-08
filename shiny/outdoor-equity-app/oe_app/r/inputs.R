@@ -9,7 +9,7 @@ select_agency <- function(locationId, isMultiple = TRUE){
                  options = list(
                    placeholder = "Type to search for an agency",
                    # Note(HD) when created set a value for the input to an empty string
-                   onInitialize = I('function() { this.setValue(""); }')
+                   onInitialize = I('function() { this.setValue("NPS"); }')
                  )) 
 }
 
@@ -45,18 +45,22 @@ select_site <- function(locationId, isMultiple = TRUE){
                  ))
 }
 
-# SEL data source ----
+# SEL data summary ----
 # used in (1) data summary
-select_data_source <- function(){
+select_data_summary <- function(){
   
-selectizeInput(inputId = "data_source",
-               label = "Select a dataset to visualize",
-               choices = c("RIDB", "US Census"),
-               selected = "RIDB",
+selectizeInput(inputId = "data_summary",
+               label = "Select a variable to visualize",
+               choices = c("Booking Window", 
+                           "Race", 
+                           "Education", 
+                           "Language", 
+                           "Median Income"),
                multiple = FALSE,
                options = list(
-                 placeholder = "RIDB or US Census data?",
-                 onInitialize = I('function() { this.setValue(""); }')
+                 placeholder = "Type to search for a variable",
+                 # Note(HD) need to make setValue part of the function
+                 onInitialize = I('function() { this.setValue("Booking Window"); }')
                ))
 }
 
