@@ -30,6 +30,10 @@ reactlog_enable()
 data_joined_2018 <- readRDS("data/2018_joined_data.rds")
 ## booking window ----
 data_plot_boooking_window <- readRDS("data/2018_data_plot_boooking_window.rds")
+## yosemite visitorsheds ----
+data_yosemite_upper_pines_geom <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_geom.rds")
+data_zip_geometries_ca <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_zip_geometries_ca.rds")
+data_geometries_us <- readRDS("data/2018_data_map_us_yosemite_upper_pines_geometries_us.rds")
 
 # source input functions ----
 source("r/inputs.R")
