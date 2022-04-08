@@ -114,7 +114,7 @@ plot_race_distance_traveled <- ggplot(data = data_plot_race_distance_traveled) +
 plot_race_distance_traveled
 ```
 
-#### (Option 2)
+#### (Option 2.1)
 
 ```{r, fig.width=5, fig.height=3}
 ## -- data wrangle -- ##
@@ -133,52 +133,45 @@ data_plot_race_distance_traveled_2 <- data_plot_race_distance_traveled_bins %>%
 
 ## -- create plot -- ##
 
-##need to create function to be able to run for loop??
-
-## working on for loop
-# races <- c("Asian", "Black"#, "Hispanic Latinx", 
-#            # "Multiracial", "Native American", "Other", 
+# plot_race_distance_traveled_2 <- function(data, race, breaks, x_major, x_minor){
+#   ggplot(data = data) +
+#     geom_boxplot(aes(x = factor(distance_traveled_bins),
+#                      y = race_percentage * 100,
+#                      fill = race),
+#                  varwidth = TRUE, outlier.shape = NA) +
+#     coord_flip() +
+#     scale_fill_manual(values = racial_group_colors) +
+#     scale_x_discrete(labels = c("1" = "0 - 60 mi",
+#                                 "2" = "60 - 117 mi",
+#                                 "3" = "117 - 181 mi",
+#                                 "4" = "181 - 299 mi",
+#                                 "5" = "299 - 3,614 mi")) +
+#     scale_y_continuous(limits = c(0, breaks),
+#                        breaks = seq(0, breaks, x_major),
+#                        minor_breaks = seq(0, breaks, x_minor),
+#                        sec.axis = dup_axis()) +
+#     labs(x = "Distance Traveled (miles)",
+#          y = "Percentage (%)",
+#          title = paste(race),
+#          subtitle = "Race of Home ZIP Codes \nvs. Distance Traveled \nfor Overnight Reservations in California") +
+#     theme_minimal() +
+#     theme(legend.position = "none",
+#           plot.background = element_rect("white"),
+#           panel.grid.major.y = element_blank())
+# }
+# 
+# races <- c("Asian", "Black"#, "Hispanic Latinx",
+#            # "Multiracial", "Native American", "Other",
 #            # "Pacific Islander", "White"
 #            )
 # 
 # for (i in seq_along(races)){
-#   
-#   data <- data_plot_race_distance_traveled_2 %>% 
+# 
+#   data <- data_plot_race_distance_traveled_2 %>%
 #              filter(race == paste(races[[i]]))
-#   
-#   breaks <- data %>% 
-#     group_by(distance_traveled_bins) %>% 
-#     summarize(quartile = quantile(race_percentage)) %>% 
-#     filter(quartile == max(quartile))
-#   
-#   print(
-#     ggplot(data = data) +
-#       geom_boxplot(aes(x = factor(distance_traveled_bins),
-#                        y = race_percentage * 100, 
-#                        fill = race),
-#                    varwidth = TRUE, outlier.shape = NA) +
-#       coord_flip() +
-#       scale_fill_manual(values = racial_group_colors) +
-#       scale_x_discrete(labels = c("1" = "0 - 60 mi", 
-#                                   "2" = "60 - 117 mi", 
-#                                   "3" = "117 - 181 mi", 
-#                                   "4" = "181 - 299 mi", 
-#                                   "5" = "299 - 3,614 mi")) +
-#       scale_y_continuous(limits = c(0, paste((breaks %>% 
-#                                                filter(race == paste(races[[i]])))[[2]])
-#                                     ),
-#                          breaks = seq(0, paste(round(max(breaks$quartile), 2) * 100), 10),
-#                          minor_breaks = seq(0, paste(round(max(breaks$quartile), 2) * 100), 5),
-#                          sec.axis = dup_axis()) +
-#       labs(x = "Distance Traveled (miles)",
-#            y = "Percentage (%)",
-#            title = "Asian",
-#            subtitle = "Breakdown of Race of Home ZIP Codes \nvs. Distance Traveled \nfor Overnight Reservations in California") +
-#       theme_minimal() +
-#       theme(legend.position = "none",
-#             plot.background = element_rect("white"),
-#             panel.grid.major.y = element_blank()) +
-#       coord_flip())
+# 
+#   print(plot_race_distance_traveled_2(race = races[[i]], data = data,
+#                                       breaks = 60, x_major = 10, x_minor = 5))
 # }
 
 test_plot_asian <- 
@@ -380,6 +373,76 @@ test_plot_white <-
         panel.grid.major.y = element_blank()) +
   coord_flip()
 test_plot_white
+
+## try binning by racial percentage (y axis) and have the boxplot show distribution of distnace traveled (x axis)
+```
+
+
+#### (Option 2.2)
+
+```{r}
+## try binning by racial percentage (y axis) and have the boxplot show distribution of distnace traveled (x axis)
+
+## -- data wrangle -- ##
+test_race_bins_white <- data_ridb_acs_2018 %>% 
+  select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
+         multiracial, native_american, other, pacific_islander, white,
+         distance_traveled_m) %>% 
+  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+  drop_na(distance_traveled_mi) %>% 
+  pivot_longer(5:12,
+               names_to = "race",
+               values_to = "race_percentage") %>% 
+  filter(race == "white") %>% 
+  mutate(race_percent_bins = ntile(race_percentage, 5)) %>% 
+  drop_na(race_percentage)
+
+test_race_bins_breaks_white <- quantile(test_race_bins_white$race_percentage, 
+                                         prob = seq(0, 1, length = 6), type = 5)
+
+# test_2 <- test_race_bins %>% 
+#   select(asian, black, hispanic_latinx, multiracial, native_american, 
+#          other, pacific_islander, white, distance_traveled_mi) %>% 
+#   pivot_longer(cols = 1:8,
+#                names_to = "race",
+#                values_to = "race_percentage") %>% 
+#   mutate(race = str_replace(string = race,
+#                             pattern = "_",
+#                             replacement = " "),
+#          race = str_to_title(race)) %>% 
+#   filter(!is.na(race_percentage))
+
+
+## -- create plot -- ##
+
+ggplot(data = test_race_bins_white) +
+  geom_boxplot(aes(x = factor(race_percent_bins),
+                   y = distance_traveled_mi, 
+                   fill = race),
+               varwidth = TRUE, outlier.shape = NA) +
+  scale_fill_manual(values = racial_group_colors) +
+  scale_x_discrete(labels = c("1" = paste("0 -", round(test_race_bins_breaks_white[[2]], 2)), 
+                              "2" = paste(round(test_race_bins_breaks_white[[2]], 2), "-", 
+                                          round(test_race_bins_breaks_white[[3]], 2)), 
+                              "3" = paste(round(test_race_bins_breaks_white[[3]], 2), "-", 
+                                          round(test_race_bins_breaks_white[[4]], 2)),
+                              "4" = paste(round(test_race_bins_breaks_white[[4]], 2), "-", 
+                                          round(test_race_bins_breaks_white[[5]], 2)), 
+                              "5" = paste(round(test_race_bins_breaks_white[[5]], 2), "-", 
+                                          round(test_race_bins_breaks_white[[6]], 2)))) +
+  # scale_y_continuous(limits = c(0, 100),
+  #                    breaks = seq(0, 100, 10),
+  #                    minor_breaks = seq(0, 100, 5),
+  #                    sec.axis = dup_axis()) +
+  # labs(x = "Distance Traveled (miles)",
+  #      y = "Percentage (%)",
+  #      title = "White",
+  #      subtitle = "Breakdown of Race of Home ZIP Codes \nvs. Distance Traveled \nfor Overnight Reservations in California") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank()) +
+  coord_flip()
 ```
 
 
@@ -400,9 +463,11 @@ data_plot_race_distance_traveled_3 <- data_plot_race_distance_traveled_bins %>%
   mutate(race = str_replace(string = race,
                             pattern = "_",
                             replacement = " "),
-         race = str_to_title(race))
+         race = str_to_title(race)) %>% 
+  filter(race_estimate > 0)
 
-
+## group_by race and sum race_estimate to and add to single variable table --- use as a check
+## thinking about using this for things that don't 
 
 ## -- create plot -- ##
 
@@ -433,6 +498,14 @@ plot_race_distance_traveled_3 <- ggplot(data = data_plot_race_distance_traveled_
         panel.grid.major.x = element_blank())
 
 plot_race_distance_traveled_3
+
+## look at weighted density plots
+
+ggplot(data_plot_race_distance_traveled_3, aes(distance_traveled_mi)) + 
+  geom_histogram(
+    aes(weights=race_estimate)
+    ) + 
+  facet_wrap(~race, scales = "free")
 ```
 
 
