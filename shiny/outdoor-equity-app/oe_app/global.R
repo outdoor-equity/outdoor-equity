@@ -9,6 +9,7 @@ library(tidycensus)
 library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
+library(shinycssloaders) # loading icon 
 library(reactlog)
 #library(leaflet)
 library(tidyverse)

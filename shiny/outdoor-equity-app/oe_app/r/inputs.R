@@ -9,7 +9,7 @@ select_agency <- function(locationId, isMultiple = TRUE){
                  options = list(
                    placeholder = "Type to search for an agency",
                    # Note(HD) when created set a value for the input to an empty string
-                   onInitialize = I('function() { this.setValue("USACE"); }')
+                   onInitialize = I('function() { this.setValue("NPS"); }')
                  )) 
 }
 
