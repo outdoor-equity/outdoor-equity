@@ -413,7 +413,7 @@ data_plot_race_distance_traveled_3 <- data_plot_race_distance_traveled_bins %>%
 ```{r}
 ## -- data wrangle -- ##
 data_plot_race_site_type <- data_ridb_acs_2018 %>% 
-  select(agency, regional_area, park, customer_zip, asian, black, hispanic_latinx, 
+  select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
          multiracial, native_american, other, pacific_islander, white,
          aggregated_site_type) %>% 
   group_by(aggregated_site_type) %>% 
@@ -483,7 +483,7 @@ Combination of bar chart with lighter box plot on top
 ```{r}
 ## -- data wrangle -- ##
 data_plot_race_booking_window_bins <- data_ridb_acs_2018 %>% 
-  select(agency, regional_area, park, customer_zip, asian, black, hispanic_latinx, 
+  select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
          multiracial, native_american, other, pacific_islander, white,
          booking_window) %>% 
   filter(booking_window >= 0) %>%
@@ -563,7 +563,7 @@ Combination of bar chart with lighter box plot on top
 ```{r}
 ## -- data wrangle -- ##
 data_plot_race_daily_cost_bins <- data_ridb_acs_2018 %>% 
-  select(agency, regional_area, park, customer_zip, asian, black, hispanic_latinx, 
+  select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
          multiracial, native_american, other, pacific_islander, white,
          daily_cost_per_visitor) %>% 
   filter(daily_cost_per_visitor >= 0,
@@ -642,7 +642,7 @@ Combination of bar chart with lighter box plot on top
 ```{r}
 ## -- data wrangle -- ##
 data_plot_race_length_of_stay_bins <- data_ridb_acs_2018 %>% 
-  select(agency, regional_area, park, customer_zip, asian, black, hispanic_latinx, 
+  select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
          multiracial, native_american, other, pacific_islander, white,
          length_of_stay) %>% 
   mutate(length_of_stay_bins = ntile(length_of_stay, 5)) 
@@ -719,7 +719,7 @@ Combination of bar chart with lighter box plot on top
 ```{r}
 ## -- data wrangle -- ##
 data_plot_education_distance_traveled_bins <- data_ridb_acs_2018 %>% 
-  select(agency, regional_area, park, customer_zip, college, hs_GED_or_below, 
+  select(agency, admin_unit, park, customer_zip, college, hs_GED_or_below, 
          master_or_above, some_college, distance_traveled_m) %>% 
   mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
   drop_na(distance_traveled_mi) %>% 
@@ -802,7 +802,7 @@ Combination of bar chart with lighter box plot on top
 ```{r}
 ## -- data wrangle -- ##
 data_plot_education_site_type <- data_ridb_acs_2018 %>% 
-  select(agency, regional_area, park, customer_zip, college, hs_GED_or_below, 
+  select(agency, admin_unit, park, customer_zip, college, hs_GED_or_below, 
          master_or_above, some_college, aggregated_site_type) %>% 
   group_by(aggregated_site_type) %>% 
   summarize(college = (mean(college, na.rm = TRUE) * 100),
@@ -873,7 +873,7 @@ Combination of bar chart with lighter box plot on top
 ```{r}
 ## -- data wrangle -- ##
 data_plot_education_booking_window_bins <- data_ridb_acs_2018 %>% 
-  select(agency, regional_area, park, customer_zip, college, hs_GED_or_below, 
+  select(agency, admin_unit, park, customer_zip, college, hs_GED_or_below, 
          master_or_above, some_college, booking_window) %>% 
   mutate(booking_window_bins = ntile(booking_window, 5)) 
 
@@ -955,7 +955,7 @@ Combination of bar chart with lighter box plot on top
 ```{r}
 ## -- data wrangle -- ##
 data_plot_education_daily_cost_bins <- data_ridb_acs_2018 %>% 
-  select(agency, regional_area, park, customer_zip, college, hs_GED_or_below, 
+  select(agency, admin_unit, park, customer_zip, college, hs_GED_or_below, 
          master_or_above, some_college, daily_cost_per_visitor) %>% 
   mutate(daily_cost_per_visitor_bins = ntile(daily_cost_per_visitor, 5)) 
 
@@ -1035,7 +1035,7 @@ Combination of bar chart with lighter box plot on top
 ```{r}
 ## -- data wrangle -- ##
 data_plot_education_length_of_stay_bins <- data_ridb_acs_2018 %>% 
-  select(agency, regional_area, park, customer_zip, college, hs_GED_or_below, 
+  select(agency, admin_unit, park, customer_zip, college, hs_GED_or_below, 
          master_or_above, some_college, length_of_stay) %>% 
   mutate(length_of_stay_bins = ntile(length_of_stay, 5)) 
 
@@ -1136,7 +1136,7 @@ Similar graphs to those above would exist for:
 ```{r}
 ## -- data wrangle -- ##
 data_plot_booking_window_site_type <- data_ridb_acs_2018 %>% 
-  #select(agency, regional_area, park, booking_window, aggregated_site_type) %>% 
+  #select(agency, admin_unit, park, booking_window, aggregated_site_type) %>% 
   group_by(aggregated_site_type) %>% 
   summarise(mean_booking_window = mean(booking_window, na.rm = TRUE)) %>% 
   mutate(aggregated_site_type = str_to_title(aggregated_site_type))

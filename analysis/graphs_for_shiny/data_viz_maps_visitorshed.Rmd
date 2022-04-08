@@ -242,9 +242,10 @@ time_taken
 ```
 
 
-# Save plot all data to RDS
 
 ```{r, eval=FALSE}
+## Save plot data to RDS
+
 plot_data <- c("data_map_us_yosemite_upper_pines_geometries_us", "data_map_us_humboldt_hope_valley_geometries_us",
                "data_map_ca_yosemite_upper_pines_zip_geometries_ca", "data_map_ca_yosemite_upper_pines_geom",
                "data_map_ca_humboldt_hope_valley_geometries_ca", "data_map_ca_humboldt_hope_valley_geom")
