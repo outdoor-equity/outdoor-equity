@@ -389,7 +389,7 @@ test_plot_white
 ```{r}
 ## -- data wrangle -- ##
 data_plot_race_distance_traveled_3 <- data_plot_race_distance_traveled_bins %>% 
-  # filter(park == "Upper Pines") %>% 
+  filter(park == "Upper Pines") %>% 
   group_by(customer_zip, distance_traveled_mi, asian, black, hispanic_latinx, 
          multiracial, native_american, other, pacific_islander, white) %>% 
   summarise(visits = n()) %>% 
