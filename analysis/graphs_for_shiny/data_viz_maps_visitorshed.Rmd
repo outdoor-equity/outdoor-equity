@@ -81,6 +81,11 @@ df_states_fips_zip_codes <- df_states_zip_codes %>%
 ```
 
 
+```{r}
+start_time <- Sys.time()
+```
+
+
 # Visitor-shed for Upper Pines, Yosemite
 
 ```{r}
@@ -229,6 +234,12 @@ tm_shape(data_map_ca_humboldt_hope_valley_geometries_ca) +
   tm_view(set.view = c(-119.559917, 37.061753, 6))
 ```
 
+
+```{r}
+end_time <- Sys.time()
+time_taken <- end_time - start_time
+time_taken
+```
 
 
 # Save plot all data to RDS
