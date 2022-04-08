@@ -125,8 +125,31 @@ ui <- fluidPage(
                           
                           # visitorsheds main panel aka visual
                           mainPanel(
+                  
+                            fluidRow(
+                              
+                              box(
+                                tmapOutput(outputId = "usVisitorshed_plot"),
+                                width = 6,
+                                title = "US Visitorshed"
+                              ), # EO box US map
+                              
+                              box(
+                                tmapOutput(outputId = "caVisitorshed_plot"),
+                                with = 6,
+                                title = "California Visitorshed"
+                              ) # EO box site map
+                            ), # EO fluidRow maps
                             
-                            plotOutput(outputId = "visitorsheds_plot")
+                            fluidRow(
+                              
+                              box(
+                                #DTOutput(outputId = ""),
+                                width = 12,
+                                title = "Reservable Site Summary"
+                              ) # EO box summary table
+                            ) # EO fluidRow summary table
+
                             
                           ) # EO visitorsheds main panel
                         ) # EO visitorsheds sidebar layout
