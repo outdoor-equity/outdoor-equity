@@ -34,6 +34,8 @@ data_plot_boooking_window <- readRDS("data/2018_data_plot_boooking_window.rds")
 data_yosemite_upper_pines_geom <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_geom.rds")
 data_zip_geometries_ca <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_zip_geometries_ca.rds")
 data_geometries_us <- readRDS("data/2018_data_map_us_yosemite_upper_pines_geometries_us.rds")
+## race dist travel comparison ----
+data_race_dist_travel <- readRDS("data/2018_data_plot_race_distance_traveled.rds")
 
 # source input functions ----
 source("r/inputs.R")

@@ -157,6 +157,45 @@ booking_window_df <- reactive({
 
 # RENDER PLOTS ----
 
+## data_relationships_plot NO REACTIVE
+output$data_relationships_plot <- renderPlot({
+  
+  # parameters
+  racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                           "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                           "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+  
+  # plot for shiny
+  ggplot(data = data_race_dist_travel) +
+    geom_col(aes(x = factor(distance_traveled_bins),
+                 y = race_percentage,
+                 fill = race)) +
+    facet_wrap(~race, scales = "free_x") +
+    scale_fill_manual(values = racial_group_colors) +
+    scale_x_discrete(labels = c("1" = "0 - 60 mi", 
+                                "2" = "60 - 117 mi", 
+                                "3" = "117 - 181 mi", 
+                                "4" = "181 - 299 mi", 
+                                "5" = "299 - 3,614 mi")) + 
+    labs(x = "Distance Traveled (miles)",
+         y = "Percentage (%)",
+         title = "Breakdown of Race of Home ZIP Codes vs. Distance Traveled",
+         subtitle = "for Overnight Reservations in California") +
+    theme_minimal() +
+    theme(legend.position = "none",
+          plot.background = element_rect("white"),
+          panel.grid.major.x = element_blank()
+          # ## only needed for saving as image
+          # axis.text = element_text(size = 20),
+          # axis.title = element_text(size = 22, face = "bold"),
+          # title = element_text(size = 24, face = "bold")
+    ) +
+    coord_flip()
+  
+})
+
+
+## visitorshed yosemite YES REACTIVE ----
 output$caVisitorshed_plot <- renderTmap({
   
   tm_shape(data_zip_geometries_ca) +
