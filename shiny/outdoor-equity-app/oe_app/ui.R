@@ -79,6 +79,7 @@ ui <- fluidPage(
                         # data relationships sidebar layout
                         sidebarLayout(
                           # data relationships analysis side bar panel
+                          # IMPORTANT NOTE(HD) MAKE SIDEBAR PANEL HORIZONTAL ----
                           sidebarPanel(
                             
                             # agency input
