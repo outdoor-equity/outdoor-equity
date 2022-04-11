@@ -1,29 +1,28 @@
 
+# agency_to_admin_unit_dict
+# admin_units_to_site_dict
+
 # server instructions ----
 server <- function(input, output, session){
-  
-  # OE for agency -> admin unit change ----
-  # empty dictionary with empty key value agency
-  # reactive element bc writing an observeEvent for the selected object
-  # selected <- reactiveValues(agency = NULL)
-  # 
-  # observeEvent(input$agency_summary, selected$agency_summary <- (input$agency_summary))
-  # observeEvent(input$agency_relationships, selected$agency_relationships <- (input$agency_relationships))
-  # observeEvent(input$agency_visitorsheds, selected$agency_visitorsheds <- (input$agency_visitorsheds))
-  # observeEvent(input$agency_data_download, selected$agency_data_download <- (input$agency_data_download))
   
 # observeEvent press agency
 observeEvent(input$agency_summary, {
 
   print(paste0("You have chosen: ", input$agency_summary))
+  
+  print(class(input$agency_summary))
 
-  test <- data_joined_2018 %>%
-    filter(agency %in% input$agency_summary)
+  choices <- list()
+  
+  for (i in seq_along(input$agency_summary)){
+    
+    choices <- append(choices, agency_to_admin_unit_dict$get(input$agency_summary[[i]]))
+    
+  }
 
-  admin_test <- as.vector(unique(test$admin_unit))
-
+  # Note(HD): alphabetical order of choices
   updateSelectizeInput(session, "admin_unit_summary",
-                       choices = admin_test 
+                       choices = choices  
   )
 
 })
