@@ -48,7 +48,7 @@ source("r/inputs.R")
 ca_agency <- as.vector(unique(data_joined_2018$agency))
 
 ## CA admin units ----
-admin_units <- as.vector(unique(data_joined_2018$regional_area))
+admin_units <- as.vector(unique(data_joined_2018$admin_unit))
 
 ## CA reservable sites ----
 sites <- as.vector(unique(data_joined_2018$park))
@@ -107,3 +107,32 @@ booking_scat_var <- c("Booking window" = "median_booking_window")
 
 agency_comp_scat_vars <- c("Distance traveled" = "distance_traveled_m",
                            "Site Type" = "aggregated_site_type")
+
+## DICTIONARY ----
+
+# use keys() to view all the keys in the dict
+# use get() to get specific values from a specific key
+
+### agency to admin units ----
+agency_to_admin_unit_dict <- dict()
+
+for (i in seq_along(ca_agency)){
+  # pull out each agency
+  ag_df <- data_joined_2018 %>% filter(agency == ca_agency[[i]]) 
+  # pull out each admin unit
+  value_vector <- unique(ag_df$admin_unit)
+  
+  agency_to_admin_unit_dict$set(ca_agency[[i]], value_vector)
+} # EO admin unit dictionary
+
+### admin unit to sites ----
+admin_units_to_site_dict <- dict()
+
+for (i in seq_along(admin_units)){
+  # pull out each admin unit
+  au_df <- data_joined_2018 %>% filter(admin_unit == admin_units[[i]]) 
+  # pull out each park
+  value_vector <- unique(au_df$park)
+  
+  admin_units_to_site_dict$set(admin_units[[i]], value_vector)
+} # EO admin unit dictionary
