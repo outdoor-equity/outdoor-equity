@@ -54,53 +54,111 @@ data_acs_2018_median_income_California <- data_acs_2018_median_income_California
 ```{r}
 ## -- data wrangle -- ##
 data_plot_distance_traveled_all <- data_ridb_acs_2018 %>% 
-  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
-  select(agency, admin_unit, park, distance_traveled_mi)
-
-data_plot_distance_traveled_under500 <- data_ridb_acs_2018 %>% 
+  filter(park == "Holiday Group Campground") %>% 
   mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
   select(agency, admin_unit, park, distance_traveled_mi) %>% 
-  filter(distance_traveled_mi < 500)
+  filter(!is.na(distance_traveled_mi))
+
+quant_80 <- quantile(x = data_plot_distance_traveled_all$distance_traveled_mi,
+                     probs = seq(0, 1, 0.1))[[9]] %>% round(0)
+
+data_plot_distance_traveled_under80th_quant <- data_ridb_acs_2018 %>% 
+  filter(park == "Holiday Group Campground") %>%  
+  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+  select(agency, admin_unit, park, distance_traveled_mi) %>% 
+  filter(distance_traveled_mi < quant_80 & distance_traveled_mi > 0)
+
+split_all <- data.frame(table(cut(x = data_plot_distance_traveled_all$distance_traveled_mi, 
+                                       breaks = seq(0, 
+                                                    round(max(data_plot_distance_traveled_all$distance_traveled_mi), 0),
+                                                    round(max(data_plot_distance_traveled_all$distance_traveled_mi), 0) / 100))))
+split_under_80th <- data.frame(table(cut(x = data_plot_distance_traveled_under80th_quant$distance_traveled_mi, 
+                                         breaks = seq(0, 
+                                                      quant_80, 
+                                                      10))))
 
 ## -- create plot -- ##
 
 # parameters
-hist_colors <- c("#009900FF")
+hist_colors <- c("#009900FF", "#00c000")
 
 # plot_1 for shiny app
+center_bin <- round((max(data_plot_distance_traveled_all$distance_traveled_mi) / 100) / 5) * 5
+x_limits <- c(0, round(max(data_plot_distance_traveled_all$distance_traveled_mi) / 5) * 5)
+x_breaks <- seq(0, round(max(data_plot_distance_traveled_all$distance_traveled_mi) / 5) * 5, 
+                center_bin * 10)
+
 plot_distance_traveled_1 <-
   ggplot(data = data_plot_distance_traveled_all) +
-  geom_histogram(aes(x = distance_traveled_mi),
-                 fill = hist_colors) +
-  scale_y_continuous(labels = comma) +
+  geom_histogram(aes(x = distance_traveled_mi,
+                     text = paste0(scales::comma(round(..count.. / nrow(data_plot_distance_traveled_all), 2) * 100), 
+                                   "% of all reservations traveled between ", xmin, " and ", xmax, " miles",
+                                   "<br>Number of Reservations: ", scales::comma(..count..))),
+                 binwidth = center_bin * 2,
+                 center = center_bin,
+                 fill = hist_colors[[1]], 
+                 col = hist_colors[[2]], size = 0.05) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_continuous(limits = x_limits#, 
+                     #breaks = x_breaks
+                     ) +
   labs(x = "Distance traveled (miles)",
        y = "",
-       title = "Distribution of Distance Traveled to ",
-       subtitle = "Overnight Reservations in California in 2018") +
-  scale_x_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 500), minor_breaks = seq(0, 3000, 250)) +
+       title = "Distance Traveled from Home to Site for <br>Overnight Reservations in California in 2018") +
+  annotate("text", 
+           x = round(max(data_plot_distance_traveled_all$distance_traveled_mi) / 2, 0), 
+           y = (max(split_all$Freq) - min(split_all$Freq)) / 2,
+           label = paste0("80% of reservations to \nCalifornia overnight sites in ",
+                          deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
+                          "\n traveled less than ", quant_80, " miles.")) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank())
 
+
 # plot_2 for shiny app
-plot_distance_traveled_2 <- ggplot(data_plot_distance_traveled_under500) +
-  geom_histogram(aes(x = distance_traveled_mi),
-                 fill = hist_colors) +
-  scale_y_continuous(labels = comma) +
+center_bin <- round((max(data_plot_distance_traveled_under80th_quant$distance_traveled_mi) / 10) / 5) * 5
+x_max <- round(max(data_plot_distance_traveled_under80th_quant$distance_traveled_mi) / 5) * 5
+x_limits <- c(0, x_max)
+x_breaks <- c(0, x_max, (center_bin))
+
+plot_distance_traveled_2 <- 
+  ggplot(data_plot_distance_traveled_under80th_quant) +
+  geom_histogram(aes(x = distance_traveled_mi,
+                     text = paste0(scales::comma(round(..count.. / nrow(data_plot_distance_traveled_all), 2) * 100), 
+                                   "% of all reservations traveled between ", xmin, " and ", xmax, " miles",
+                                   "<br>Number of Reservations: ", scales::comma(..count..))),
+                 binwidth = center_bin * 2,
+                 center = center_bin,
+                 fill = hist_colors,
+                 #fill = replace(rep(hist_colors[[1]], nrow(split_under_80th)), which.max(split_under_80th$Freq), hist_colors[[2]]), 
+                 col = hist_colors[[2]], size = 0.05) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_continuous(limits = x_limits#,
+                     #breaks = x_breaks
+                     ) +
   labs(x = "Distance traveled (miles)",
        y = "",
-       title = "Breakdown of Distance Traveled to Reservations for",
-       subtitle = "Overnight Reservations in California in 2018") +
-  #scale_x_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 500), minor_breaks = seq(0, 3000, 250)) +
+       title = "Distance Traveled from Home to Site for <br>Overnight Reservations in California in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank())
 ```
 
-```{r}
-perc_under500 <- 
-  nrow(data_plot_distance_traveled_under500) / nrow(data_plot_distance_traveled_all)
 
+
+```{r}
+ggplotly(plot_distance_traveled_1,
+         tooltip = list("text"))
+```
+
+
+```{r}
+ggplotly(plot_distance_traveled_2,
+         tooltip = list("text"))
+```
+
+```{r, eval=FALSE}
 data_400to500 <- data_plot_distance_traveled_under500 %>% 
          filter(distance_traveled_mi > 400 & distance_traveled_mi < 500)
 perc_400to500 <- nrow(data_400to500) / nrow(data_plot_distance_traveled_all)
@@ -129,11 +187,7 @@ data_under50 <- data_plot_distance_traveled_under500 %>%
          filter(distance_traveled_mi < 50)
 perc_under50 <- 
   nrow(data_under50) / nrow(data_plot_distance_traveled_all)
-```
 
-`r 100 - (round(perc_under_500, 2) * 100)`% of reservations to California overnight sites in `r deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_")` traveled over `r deparse(substitute(perc_under_500)) %>% str_remove(".*_")` miles.
-
-```{r}
 data_list <- c("perc_400to500", "perc_300to400", "perc_200to300", 
                "perc_100to200", "perc_50to100")
 sentence_list <- list()
@@ -155,61 +209,6 @@ for (i in seq_along(data_list)){
 }
 ```
 
-`r sentence_list[[1]]`
-
-`r sentence_list[[2]]`
-
-`r sentence_list[[3]]`
-
-**`r sentence_list[[4]]`**
-
-`r sentence_list[[5]]`
-
-`r round(perc_under_50, 2) * 100`% of reservations to California overnight sites in `r deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_")` traveled less than `r deparse(substitute(perc_under_50)) %>% str_remove(".*_")` miles.
-
-```{r}
-# color parameters
-
-
-# interactive plot for shiny app
-test <- ggplot(group = 1, text = "test") +
-  geom_histogram(data = data_under50,
-                 aes(x = distance_traveled_mi),
-                 fill = "#edf8e9") +
-  geom_histogram(data = data_50to100,
-                 aes(x = distance_traveled_mi),
-                 fill = "#c7e9c0") +
-  geom_histogram(data = data_100to200,
-                 aes(x = distance_traveled_mi),
-                 fill = "#a1d99b") +
-  geom_histogram(data = data_200to300,
-                 aes(x = distance_traveled_mi),
-                 fill = "#74c476") +
-  geom_histogram(data = data_300to400,
-                 aes(x = distance_traveled_mi),
-                 fill = "#31a354") +
-  geom_histogram(data = data_400to500,
-                 aes(x = distance_traveled_mi),
-                 fill = "#006d2c") +
-  scale_y_continuous(labels = comma) +
-  labs(x = "Distance traveled (miles)",
-       y = "",
-       title = "Breakdown of Distance Traveled to Reservations for",
-       subtitle = "Overnight Reservations in California in 2018") +
-  theme_minimal() +
-  theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank())
-
-ggplotly(test, tooltip = "text")
-```
-
-
-
-```{r}
-ggplotly(plot_distance_traveled_1)
-
-plot_distance_traveled_2
-```
 
 
 
