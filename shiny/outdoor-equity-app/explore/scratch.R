@@ -2,6 +2,13 @@ library(tidyverse)
 library(here)
 library(collections)
 
+for (i in colnames(data_joined_2018)) {
+  
+  return(class(data_joined_2018$i))
+  return(length(unique(data_joined_2018$i)))
+  
+}
+
 # creating booking window plot + reactive df
 booking_window_df <- `2018_data_plot_boooking_window` %>% 
     filter(agency %in% "USFS")
@@ -36,30 +43,38 @@ ggplot(data = booking_window_df) + # reactive df
 
 # testing creating a dictionary with collections ----
 
-au_test <- data_joined_2018 %>% 
-  filter(regional_area %in% c("Yosemite National Park", "Eldorado National Forest"))
+au_test_values <- c("Yosemite National Park", "Eldorado National Forest")
 
-au_vector <- as.vector(unique(au_test$regional_area))
+au_test_df <- data_joined_2018 %>% 
+  filter(admin_unit %in% au_test_values)
+
+# start here for dictionary
+au_vector <- as.vector(unique(au_test_df$admin_unit))
+
+au_dict <- dict()
 
 for (i in seq_along(au_vector)){
-  # pulling out each admin unit
-  x <- au_test %>% filter(regional_area == au_vector[[i]]) # double brackets pulls out "raw" value??
-  # 
-  y <- unique(x$park)
+  # pull out each admin unit
+  au_df <- au_test_df %>% filter(admin_unit == au_vector[[i]]) 
+  # pull out each park
+  value_vector <- unique(au_df$park)
   
-  
-  
-}
+  au_dict$set(au_vector[[i]], value_vector)
+} # end here for dictionary
 
-admin_unit_dict <-  function(x) {
-  
-  au_choices <- collections::Dict$new()
-  
-  for (name in names(x)) d$set(name, x[, name])
-  
-  return(d)
-  
-}
+# use keys() to view all the keys in the dict
+# use get() to get specific values from a specific key
+
+
+
+
+
+
+
+
+
+
+
 
 
 test_adminUnit_choices <- dict(items = NULL,
