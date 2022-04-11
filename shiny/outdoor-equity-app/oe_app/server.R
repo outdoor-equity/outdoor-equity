@@ -5,24 +5,23 @@
 # server instructions ----
 server <- function(input, output, session){
   
-# observeEvent press agency
+# OE press agency 
 observeEvent(input$agency_summary, {
 
   print(paste0("You have chosen: ", input$agency_summary))
-  
   print(class(input$agency_summary))
 
-  choices <- list()
+  choices <- vector()
   
   for (i in seq_along(input$agency_summary)){
     
     choices <- append(choices, agency_to_admin_unit_dict$get(input$agency_summary[[i]]))
-    
+
   }
 
   # Note(HD): alphabetical order of choices
   updateSelectizeInput(session, "admin_unit_summary",
-                       choices = choices  
+                       choices = sort(choices)
   )
 
 })
