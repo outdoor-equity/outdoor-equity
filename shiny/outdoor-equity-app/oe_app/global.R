@@ -123,7 +123,7 @@ for (i in seq_along(ca_agency)){
   value_vector <- unique(ag_df$admin_unit)
   
   agency_to_admin_unit_dict$set(ca_agency[[i]], value_vector)
-} # EO admin unit dictionary
+} # EO agency to admin unit dictionary
 
 ### admin unit to sites ----
 admin_units_to_site_dict <- dict()
@@ -135,4 +135,4 @@ for (i in seq_along(admin_units)){
   value_vector <- unique(au_df$park)
   
   admin_units_to_site_dict$set(admin_units[[i]], value_vector)
-} # EO admin unit dictionary
+} # EO admin unit to site dictionary
