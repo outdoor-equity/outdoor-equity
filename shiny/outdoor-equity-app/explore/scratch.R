@@ -2,6 +2,22 @@ library(tidyverse)
 library(here)
 library(collections)
 
+
+choices <- vector()
+
+for (i in seq_along(admin_units)){
+  
+  choices <- append(choices,
+                    admin_units_to_site_dict$get(input$admin_units[[i]]))
+  
+}
+
+updateSelectizeInput(session, "site_visitorsheds",
+                     choices = sort(choices))
+
+
+
+
 for (i in colnames(data_joined_2018)) {
   
   return(class(data_joined_2018$i))

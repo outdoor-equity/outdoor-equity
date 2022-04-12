@@ -24,12 +24,6 @@ library(vroom)
 library(paletteer)
 
 options(scipen = 999)
-
-# load script to pull and clean ACS data
-source("../functions/function_acs_race.R")
-source("../functions/function_acs_median_income.R")
-source("../functions/function_acs_education.R")
-source("../functions/function_acs_language.R")
 ```
 
 
@@ -44,14 +38,9 @@ data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv"
 # data_ridb_acs_2018 <- readRDS(file = "../../../../data_clean/2018_joined_data.rds") # don't use RDS for non-map viz
 
 # ACS CA data
-acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
-acs_subset_calculate_education(geography = "zcta", year = 2018, state = "California")
-acs_subset_calculate_language(geography = "zcta", state = "California")
-acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = "California")
-data_acs_2018_median_income_California <- data_acs_2018_median_income_California %>% 
-  left_join(y = data_acs_2018_education_percent_California,
-            by = "zip_code") %>% 
-  select(zip_code, median_income, zip_code_population)
+data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
+                            delim = ",")
+
 ```
 
 
@@ -274,22 +263,22 @@ data_plot_race_ridb <- data_ridb_acs_2018 %>%
          race = str_to_title(race))
 
 # CA population
-data_plot_race_ca <- data_acs_2018_race_percent_California %>%
-  summarize(white = (weighted.mean(white, zip_code_population, 
+data_plot_race_ca <- data_ca_acs_2018 %>%
+  summarize(white = (weighted.mean(white, mean_zip_code_population, 
                                    na.rm = TRUE) * 100),
-            black = (weighted.mean(black,  zip_code_population,
+            black = (weighted.mean(black,  mean_zip_code_population,
                                    na.rm = TRUE) * 100),
-            asian = (weighted.mean(asian, zip_code_population, 
+            asian = (weighted.mean(asian, mean_zip_code_population, 
                                    na.rm = TRUE) * 100),
-            multiracial = (weighted.mean(multiracial, zip_code_population, 
+            multiracial = (weighted.mean(multiracial, mean_zip_code_population, 
                                 na.rm = TRUE) * 100),
-            other = (weighted.mean(other, zip_code_population, 
+            other = (weighted.mean(other, mean_zip_code_population, 
                                    na.rm = TRUE) * 100),
-            native_american = (weighted.mean(native_american, zip_code_population, 
+            native_american = (weighted.mean(native_american, mean_zip_code_population, 
                                              na.rm = TRUE) * 100),
-            pacific_islander = (weighted.mean(pacific_islander, zip_code_population, 
+            pacific_islander = (weighted.mean(pacific_islander, mean_zip_code_population, 
                                               na.rm = TRUE) * 100),
-            hispanic_latinx = (weighted.mean(hispanic_latinx, zip_code_population, 
+            hispanic_latinx = (weighted.mean(hispanic_latinx, mean_zip_code_population, 
                                              na.rm = TRUE) * 100)) %>%
   pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
   mutate(race = str_replace(string = race,
@@ -367,14 +356,14 @@ data_plot_education_ridb <- data_ridb_acs_2018 %>%
                             replacement = "Masters degree or higher"))
 
 # CA population
-data_plot_education_ca <- data_acs_2018_education_percent_California %>%
-  summarize(hs_GED_or_below = (weighted.mean(hs_GED_or_below, zip_code_population, 
+data_plot_education_ca <- data_ca_acs_2018 %>%
+  summarize(hs_GED_or_below = (weighted.mean(hs_GED_or_below, mean_zip_code_population, 
                                              na.rm = TRUE) * 100),
-            some_college = (weighted.mean(some_college, zip_code_population, 
+            some_college = (weighted.mean(some_college, mean_zip_code_population, 
                                           na.rm = TRUE) * 100),
-            college = (weighted.mean(college, zip_code_population, 
+            college = (weighted.mean(college, mean_zip_code_population, 
                                      na.rm = TRUE) * 100),
-            master_or_above = (weighted.mean(master_or_above, zip_code_population, 
+            master_or_above = (weighted.mean(master_or_above, mean_zip_code_population, 
                                              na.rm = TRUE) * 100))  %>%
   pivot_longer(cols = 1:4, names_to = "education", values_to = "education_percent_average") %>% 
   mutate(education = str_replace(string = education,
@@ -458,7 +447,7 @@ data_plot_language_ridb <- data_ridb_acs_2018 %>%
   drop_na(not_english_only, english_only)
 
 # CA population
-data_plot_language_ca <- data_acs_2020_language_percent_California %>%
+data_plot_language_ca <- data_ca_acs_2018 %>%
   select(zip_code, not_english_only, english_only) %>% 
   mutate(not_english_only = not_english_only * 100,
          english_only = english_only * 100) %>% 
@@ -514,7 +503,7 @@ data_plot_median_income_ridb <- data_ridb_acs_2018 %>%
   select(agency, admin_unit, park, customer_zip, median_income)
 
 # CA population
-data_plot_median_income_ca <- data_acs_2018_median_income_California %>%
+data_plot_median_income_ca <- data_ca_acs_2018 %>%
   select(zip_code, median_income)
 
 

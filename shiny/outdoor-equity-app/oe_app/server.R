@@ -1,151 +1,237 @@
-
-# agency_to_admin_unit_dict
-# admin_units_to_site_dict
-
 # server instructions ----
 server <- function(input, output, session){
   
-# observeEvent press agency
+# SO OE press agency ----
+## SO press agency on summary page ----
 observeEvent(input$agency_summary, {
 
+  # Note(HD): these print statements are temporary 
   print(paste0("You have chosen: ", input$agency_summary))
-  
   print(class(input$agency_summary))
 
-  choices <- list()
+  # create choices based on dictionary
+  choices <- vector()
   
   for (i in seq_along(input$agency_summary)){
     
-    choices <- append(choices, agency_to_admin_unit_dict$get(input$agency_summary[[i]]))
-    
+    choices <- append(choices, 
+                      agency_to_admin_unit_dict$get(input$agency_summary[[i]]))
   }
 
-  # Note(HD): alphabetical order of choices
+  # update input with new choices
   updateSelectizeInput(session, "admin_unit_summary",
-                       choices = choices  
-  )
+                       choices = sort(choices)
+  ) # EO update choices 
 
-})
+}) ## EO OE press agency on summary page
 
+## SO press agency on relationships page ----
 observeEvent(input$agency_relationships, {
   
   print(paste0("You have chosen: ", input$agency_relationships))
+  print(class(input$agency_relationships))
   
-  test <- data_joined_2018 %>%
-    filter(agency %in% input$agency_relationships)
+  choices <- vector()
   
-  admin_test <- as.vector(unique(test$admin_unit))
+  for (i in seq_along(input$agency_relationships)){
+    
+    choices <- append(choices,
+                      agency_to_admin_unit_dict$get(input$agency_relationships[[i]]))
+  }
   
   updateSelectizeInput(session, "admin_unit_relationships",
-                       choices = admin_test
+                       choices = sort(choices)
   )
   
-})
+}) ## EO OE press agency on relationships page
 
+## SO press agency on visitorsheds page ----
 observeEvent(input$agency_visitorsheds, {
-  
-  print(paste0("You have chosen: ", input$agency_visitorsheds))
-  
-  test <- data_joined_2018 %>%
-    filter(agency %in% input$agency_visitorsheds)
-  
-  admin_test <- as.vector(unique(test$admin_unit))
-  
-  updateSelectizeInput(session, "admin_unit_visitorsheds",
-                       choices = admin_test
-  )
-  
-})
 
+  print(paste0("You have chosen: ", input$agency_visitorsheds))
+  print(class(input$agency_visitorsheds))
+
+  choices <- vector()
+
+  for (i in seq_along(input$agency_visitorsheds)){
+
+    choices <- append(choices,
+                      agency_to_admin_unit_dict$get(input$agency_visitorsheds[[i]]))
+  }
+
+  updateSelectizeInput(session, "admin_unit_visitorsheds",
+                       choices = sort(choices)
+  )
+
+}) ## EO OE press agency on visitorsheds page
+
+## SO press agency on data download page ----
 observeEvent(input$agency_data_download, {
   
   print(paste0("You have chosen: ", input$agency_data_download))
+  print(class(input$agency_data_download))
   
-  test <- data_joined_2018 %>%
-    filter(agency %in% input$agency_data_download)
+  choices <- vector()
   
-  admin_test <- as.vector(unique(test$admin_unit))
+  for (i in seq_along(input$agency_data_download)){
+    
+    choices <- append(choices,
+                      agency_to_admin_unit_dict$get(input$agency_data_download[[i]]))
+  }
   
   updateSelectizeInput(session, "admin_unit_data_download",
-                       choices = admin_test
+                       choices = sort(choices)
   )
   
-})
-
-# OE for admin unit -> site change ----
-# empty dictionary with empty key value admin_unit
-# reactive element bc writing an observeEvent for the selected object
-selected_au <- reactiveValues(admin_unit = NULL)
-
-observeEvent(input$admin_unit_summary, selected_au$admin_unit <- (input$admin_unit_summary))
-observeEvent(input$admin_unit_relationships, selected_au$admin_unit <- (input$admin_unit_relationships))
-observeEvent(input$admin_unit_visitorsheds, selected_au$admin_unit <- (input$admin_unit_visitorsheds))
-observeEvent(input$admin_unit_data_download, selected_au$admin_unit <- (input$admin_unit_data_download))
-
-# observeEvent press admin_unit
-observeEvent(selected_au$admin_unit, {
+}) ## EO press agency on data download page
   
-  print(paste0("You have chosen: ", selected_au$admin_unit))
   
-  au <- data_joined_2018 %>%
-    filter(admin_unit %in% selected_au$admin_unit)
+# SO OE press admin unit ----
+## SO press admin_unit on summary page ----
+observeEvent(input$admin_unit_summary, {
   
-  park_test <- as.vector(unique(au$park))
+  print(paste0("You have chosen: ", input$admin_unit_summary))
+  print(class(input$admin_unit_summary))
+  
+  choices <- vector()
+  
+  for (i in seq_along(input$admin_unit_summary)){
+    
+    choices <- append(choices,
+                      admin_units_to_site_dict$get(input$admin_unit_summary[i]))
+  }
   
   updateSelectizeInput(session, "site_summary",
-                       choices = park_test
+                       choices = sort(choices)
   )
   
-})
+}) ## EO press admin unit on summary page
 
-observeEvent(selected_au$admin_unit, {
-  
-  print(paste0("You have chosen: ", selected_au$admin_unit))
-  
-  au <- data_joined_2018 %>%
-    filter(admin_unit %in% selected_au$admin_unit)
-  
-  park_test <- as.vector(unique(au$park))
-  
+## SO press admin unit on relationships page ----
+observeEvent(input$admin_unit_relationships, {
+
+  print(paste0("You have chosen: ", input$admin_unit_relationships))
+  print(class(input$admin_unit_relationships))
+
+  choices <- vector()
+
+  for (i in seq_along(input$admin_unit_relationships)){
+
+    choices <- append(choices,
+                      admin_units_to_site_dict$get(input$admin_unit_relationships[[i]]))
+  }
+
   updateSelectizeInput(session, "site_relationships",
-                       choices = park_test
+                       choices = sort(choices)
   )
-  
-})
 
-observeEvent(selected_au$admin_unit, {
+}) ## EO press admin unit on relationships page
   
-  print(paste0("You have chosen: ", selected_au$admin_unit))
-  
-  au <- data_joined_2018 %>%
-    filter(admin_unit %in% selected_au$admin_unit)
-  
-  park_test <- as.vector(unique(au$park))
-  
-  updateSelectizeInput(session, "site_visitorsheds",
-                       choices = park_test
-  )
-  
-})
+## SO press admin unit on visitorsheds page ----
+  # observeEvent(input$admin_unit_visitorsheds, {
+  #   
+  #   print(paste0("You have chosen: ", input$admin_unit_visitorsheds))
+  #   print(class(input$admin_unit_visitorsheds))
+  #   
+  #   choices <- vector()
+  #   
+  #   for (i in seq_along(input$admin_unit_visitorsheds)){
+  #     
+  #     choices <- append(choices,
+  #                       admin_units_to_site_dict$get(input$admin_unit_visitorsheds[[i]]))
+  #     
+  #   }
+  #   
+  #   updateSelectizeInput(session, "site_visitorsheds",
+  #                        choices = sort(choices))
+  #   
+  # })
 
-observeEvent(selected_au$admin_unit, {
+## SO press admin unit on visitorsheds page ----
+# observeEvent(input$admin_unit_visitorsheds, {
+#   
+#   print(paste0("You have chosen: ", input$admin_unit_visitorsheds))
+#   print(class(input$admin_unit_visitorsheds))
+#   
+#   choices <- vector()
+#   
+#   for (i in seq_along(input$admin_unit_visitorsheds)){
+#     
+#     choices <- append(choices,
+#                       admin_units_to_site_dict$get(input$admin_unit_visitorsheds[[i]]))
+#     }
+#   
+#   updateSelectizeInput(session, "site_visitorsheds",
+#                        choices = sort(choices)
+#                        )
+#   }) ## EO press admin unit on visitorsheds page    
   
-  print(paste0("You have chosen: ", selected_au$admin_unit))
-  
-  au <- data_joined_2018 %>%
-    filter(admin_unit %in% selected_au$admin_unit)
-  
-  park_test <- as.vector(unique(au$park))
-  
+
+## SO press admin unit on visitorsheds page ----
+# observeEvent(input$admin_unit_visitorsheds, {
+# 
+#   print(paste0("You have chosen: ", input$admin_unit_visitorsheds))
+#   print(class(input$admin_unit_visitorsheds))
+# 
+#   choices <- vector()
+# 
+#   for (i in seq_along(input$admin_unit_visitorsheds)){
+# 
+#     choices <- append(choices,
+#                       admin_units_to_site_dict$get(input$admin_unit_visitorsheds[[i]]))
+#   }
+# 
+#   updateSelectizeInput(session, "site_visitorsheds",
+#                        choices = sort(choices)
+#   )
+# 
+# }) ## EO press admin unit on visitorsheds page
+
+# ## SO press admin unit on data download page ----
+observeEvent(input$admin_unit_data_download, {
+
+  print(paste0("You have chosen: ", input$admin_unit_data_download))
+  print(class(input$admin_unit_data_download))
+
+  choices <- vector()
+
+  for (i in seq_along(input$admin_unit_data_download)){
+
+    choices <- append(choices,
+                      admin_units_to_site_dict$get(input$admin_unit_data_download[[i]]))
+  }
+
   updateSelectizeInput(session, "site_data_download",
-                       choices = park_test
+                       choices = sort(choices)
   )
-  
-})
-## EO OE agency, admin unit, and site ----
+
+}) ## EO press admin unit on data download page
+
 
 # REACTIVE DATA FRAMES ----
 
+## race RDF ----
+race_df <- reactive ({
+  data_joined_2018 %>% 
+    filter(agency %in% input$agency_summary,
+           admin_unit %in% input$admin_unit_summary,
+           park %in% input$site_summary) %>% 
+    summarize(white = (mean(white, na.rm = TRUE) * 100),
+              black = (mean(black, na.rm = TRUE) * 100),
+              asian = (mean(asian, na.rm = TRUE) * 100),
+              multiracial = (mean(multiracial, na.rm = TRUE) * 100),
+              other = (mean(other, na.rm = TRUE) * 100),
+              native_american = (mean(native_american, na.rm = TRUE) * 100),
+              pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
+              hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>%
+    pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
+    mutate(race = str_replace(string = race,
+                              pattern = "_",
+                              replacement = " "),
+           race = str_to_title(race))
+})
+  
+## booking window RDF ----
 booking_window_df <- reactive({
   data_plot_boooking_window %>%
     filter(agency %in% input$agency_summary,
@@ -155,6 +241,7 @@ booking_window_df <- reactive({
 })
 
 # RENDER PLOTS ----
+
 
 ## data_relationships_plot NO REACTIVE
 output$data_relationships_plot <- renderPlot({
@@ -229,7 +316,7 @@ output$usVisitorshed_plot <- renderTmap({
 
 output$data_summary_plot <- renderPlot({
 
-  # SO if statement for booking window
+  # SO if statement for booking window ----
     if(input$data_summary == "Booking Window"){
 
       hist_colors <- c("#009900FF")
@@ -259,11 +346,38 @@ output$data_summary_plot <- renderPlot({
               panel.grid.major.y = element_blank())
 
     } ## EO if statement booking window
+  
+  ## race plot ----
+  else if(input$data_summary == "Race"){
+    
+    ggplot(data = race_df()) +
+      geom_col(aes(x = race_percent_average,
+                   y = reorder(race, race_percent_average)),
+               stat = "identity") +
+      scale_fill_manual(values = groups_colors_ridb_ca) +  
+      geom_text(aes(x = race_percent_average,
+                    y = reorder(race, race_percent_average),
+                    label = paste0(round(race_percent_average, 1), "%")), 
+                position = position_dodge(width = 1), 
+                hjust = -0.1, size = 4) +
+      scale_color_manual(values = groups_colors_ridb_ca) +
+      labs(x = "Percentage (%)",
+           y = "",
+           title = "Racial Breakdown of ZIP Codes in 2018",
+           subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
+      scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
+      theme_minimal() +
+      theme(plot.background = element_rect("white"),
+            panel.grid.major.y = element_blank()
+      )
+    
+    
+  } ## EO of race plot
 
 }) ## EO data_summary_plot booking window ----
 
 
-
+# OLD ----
 
   ## REACTIVE DATA FRAMES
   
