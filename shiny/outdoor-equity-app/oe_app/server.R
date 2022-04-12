@@ -187,8 +187,31 @@ observeEvent(input$admin_unit_data_download, {
 
 }) ## EO press admin unit on data download page
 
+
 # REACTIVE DATA FRAMES ----
 
+## race RDF ----
+race_df <- reactive ({
+  data_joined_2018 %>% 
+    filter(agency %in% input$agency_summary,
+           admin_unit %in% input$admin_unit_summary,
+           park %in% input$site_summary) %>% 
+    summarize(white = (mean(white, na.rm = TRUE) * 100),
+              black = (mean(black, na.rm = TRUE) * 100),
+              asian = (mean(asian, na.rm = TRUE) * 100),
+              multiracial = (mean(multiracial, na.rm = TRUE) * 100),
+              other = (mean(other, na.rm = TRUE) * 100),
+              native_american = (mean(native_american, na.rm = TRUE) * 100),
+              pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
+              hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>%
+    pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
+    mutate(race = str_replace(string = race,
+                              pattern = "_",
+                              replacement = " "),
+           race = str_to_title(race))
+})
+  
+## booking window RDF ----
 booking_window_df <- reactive({
   data_plot_boooking_window %>%
     filter(agency %in% input$agency_summary,
@@ -198,6 +221,7 @@ booking_window_df <- reactive({
 })
 
 # RENDER PLOTS ----
+
 
 ## data_relationships_plot NO REACTIVE
 output$data_relationships_plot <- renderPlot({
@@ -272,7 +296,7 @@ output$usVisitorshed_plot <- renderTmap({
 
 output$data_summary_plot <- renderPlot({
 
-  # SO if statement for booking window
+  # SO if statement for booking window ----
     if(input$data_summary == "Booking Window"){
 
       hist_colors <- c("#009900FF")
@@ -302,6 +326,33 @@ output$data_summary_plot <- renderPlot({
               panel.grid.major.y = element_blank())
 
     } ## EO if statement booking window
+  
+  ## race plot ----
+  else if(input$data_summary == "Race"){
+    
+    ggplot(data = race_df()) +
+      geom_col(aes(x = race_percent_average,
+                   y = reorder(race, race_percent_average)),
+               stat = "identity") +
+      scale_fill_manual(values = groups_colors_ridb_ca) +  
+      geom_text(aes(x = race_percent_average,
+                    y = reorder(race, race_percent_average),
+                    label = paste0(round(race_percent_average, 1), "%")), 
+                position = position_dodge(width = 1), 
+                hjust = -0.1, size = 4) +
+      scale_color_manual(values = groups_colors_ridb_ca) +
+      labs(x = "Percentage (%)",
+           y = "",
+           title = "Racial Breakdown of ZIP Codes in 2018",
+           subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
+      scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
+      theme_minimal() +
+      theme(plot.background = element_rect("white"),
+            panel.grid.major.y = element_blank()
+      )
+    
+    
+  } ## EO of race plot
 
 }) ## EO data_summary_plot booking window ----
 
