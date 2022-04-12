@@ -141,7 +141,8 @@ write.csv(x = data_combined_park_summary_2018,
 
 # all acs vars joined
 write.csv(x = acs_all,
-          "../../../data_clean/2018_ca_acs_all.csv")
+          "../../../data_clean/2018_ca_acs_all.csv",
+          row.names = FALSE)
 ```
 
 ## Save to RDS
