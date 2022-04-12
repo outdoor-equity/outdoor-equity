@@ -655,7 +655,9 @@ ggplot(data = test_race_white) +
         plot.background = element_rect("white"),
         panel.grid.major.y = element_blank())
 ```
-```{r}
+
+
+```{r, eval = FALSE}
 # ridgeplot attempt
 ggplot(data = test_race_white) +
   geom_density_ridges(aes(x = distance_traveled_mi,
@@ -800,11 +802,6 @@ plot_race_site_type <- ggplot(data = data_plot_race_site_type) +
 plot_race_site_type
 ```
 
-#### (Option 2)
-Box plots similar to above
-
-#### (Option 3)
-Combination of bar chart with lighter box plot on top
 
 
 ### Race x booking window 
@@ -879,11 +876,7 @@ plot_race_booking_window <- ggplot(data = data_plot_race_booking_window) +
 plot_race_booking_window
 ```
 
-#### (Option 2)
-Box plots similar to above
 
-#### (Option 3)
-Combination of bar chart with lighter box plot on top
 
 
 
@@ -959,11 +952,7 @@ plot_race_daily_cost <- ggplot(data = data_plot_race_daily_cost) +
 plot_race_daily_cost
 ```
 
-#### (Option 2)
-Box plots similar to above
 
-#### (Option 3)
-Combination of bar chart with lighter box plot on top
 
 
 ### Race x length of stay 
@@ -1035,12 +1024,6 @@ plot_race_length_of_stay <- ggplot(data = data_plot_race_length_of_stay) +
 
 plot_race_length_of_stay
 ```
-
-#### (Option 2)
-Box plots similar to above
-
-#### (Option 3)
-Combination of bar chart with lighter box plot on top
 
 
 
@@ -1119,11 +1102,7 @@ plot_education_distance_traveled <- ggplot(data = data_plot_education_distance_t
 plot_education_distance_traveled
 ```
 
-####(Option 2)
-Box plots similar to above
 
-#### (Option 3)
-Combination of bar chart with lighter box plot on top
 
 
 ### Education x site type 
@@ -1189,11 +1168,7 @@ plot_education_site_type_1 <- ggplot(data = data_plot_education_site_type) +
 plot_education_site_type_1
 ```
 
-#### (Option 2)
-Box plots similar to above
 
-#### (Option 3)
-Combination of bar chart with lighter box plot on top
 
 
 
@@ -1271,11 +1246,7 @@ plot_education_booking_window <- ggplot(data = data_plot_education_booking_windo
 plot_education_booking_window
 ```
 
-#### (Option 2)
-Box plots similar to above
 
-#### (Option 3)
-Combination of bar chart with lighter box plot on top
 
 
 
@@ -1352,11 +1323,6 @@ plot_education_daily_cost <- ggplot(data = data_plot_education_daily_cost) +
 plot_education_daily_cost
 ```
 
-#### (Option 2)
-Box plots similar to above
-
-#### (Option 3)
-Combination of bar chart with lighter box plot on top
 
 
 ### Education x length of stay 
@@ -1432,11 +1398,7 @@ plot_education_length_of_stay <- ggplot(data = data_plot_education_length_of_sta
 plot_education_length_of_stay
 ```
 
-#### (Option 2)
-Box plots similar to above
 
-#### (Option 3)
-Combination of bar chart with lighter box plot on top
 
 
 
