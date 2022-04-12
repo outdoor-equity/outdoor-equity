@@ -47,22 +47,22 @@ observeEvent(input$agency_relationships, {
 
 ## SO press agency on visitorsheds page ----
 observeEvent(input$agency_visitorsheds, {
-  
+
   print(paste0("You have chosen: ", input$agency_visitorsheds))
   print(class(input$agency_visitorsheds))
-  
+
   choices <- vector()
-  
+
   for (i in seq_along(input$agency_visitorsheds)){
-    
+
     choices <- append(choices,
                       agency_to_admin_unit_dict$get(input$agency_visitorsheds[[i]]))
   }
-  
+
   updateSelectizeInput(session, "admin_unit_visitorsheds",
                        choices = sort(choices)
   )
-  
+
 }) ## EO OE press agency on visitorsheds page
 
 ## SO press agency on data download page ----
@@ -126,6 +126,26 @@ observeEvent(input$admin_unit_relationships, {
   )
 
 }) ## EO press admin unit on relationships page
+  
+## SO press admin unit on visitorsheds page ----
+  # observeEvent(input$admin_unit_visitorsheds, {
+  #   
+  #   print(paste0("You have chosen: ", input$admin_unit_visitorsheds))
+  #   print(class(input$admin_unit_visitorsheds))
+  #   
+  #   choices <- vector()
+  #   
+  #   for (i in seq_along(input$admin_unit_visitorsheds)){
+  #     
+  #     choices <- append(choices,
+  #                       admin_units_to_site_dict$get(input$admin_unit_visitorsheds[[i]]))
+  #     
+  #   }
+  #   
+  #   updateSelectizeInput(session, "site_visitorsheds",
+  #                        choices = sort(choices))
+  #   
+  # })
 
 ## SO press admin unit on visitorsheds page ----
 # observeEvent(input$admin_unit_visitorsheds, {
