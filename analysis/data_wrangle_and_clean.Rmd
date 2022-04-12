@@ -85,6 +85,37 @@ join_ridb_acs_data(ridb_df = data_ridb_2018,
                    output_df_string = "data_combined_2018")
 ```
 
+# Join all Census data
+
+```{r}
+acs_subset_calculate_race(geography = "zcta", year = 2018, state = "California")
+acs_subset_calculate_education(geography = "zcta", year = 2018, state = "California")
+acs_subset_calculate_language(geography = "zcta", state = "California")
+acs_subset_calculate_median_income(geography = "zcta", year = 2018, state = "California")
+```
+
+```{r}
+acs_all <- left_join(x = data_acs_2018_education_percent_California,
+                     y = data_acs_2018_median_income_California,
+                     by = "zip_code")
+
+acs_all <- acs_all %>%
+  left_join(x = acs_all,
+            y = data_acs_2018_race_percent_California,
+            by = "zip_code")
+
+acs_all <- acs_all %>%
+  left_join(x = acs_all,
+            y = data_acs_2020_language_percent_California,
+            by = "zip_code")
+
+acs_all <- acs_all %>% 
+  mutate(mean_zip_code_population = rowMeans(acs_all[,c(2,8,17)])) %>% 
+  select(-c("zip_code_population.x", 
+            "zip_code_population.y",
+            "zip_code_population"))
+```
+
 
 # Summarize joined data to park level
 
@@ -107,6 +138,10 @@ write.csv(x = data_combined_2018,
 write.csv(x = data_combined_park_summary_2018, 
           "../../../data_clean/2018_joined_data_site_summary.csv", 
           row.names = FALSE)
+
+# all acs vars joined
+write.csv(x = acs_all,
+          "../../../data_clean/2018_ca_acs_all.csv")
 ```
 
 ## Save to RDS
@@ -145,6 +180,10 @@ saveRDS(object = data_combined_2018_geometry,
 # dataset summarized to `park` level (RIDB and ACS joined)
 saveRDS(object = data_combined_park_summary_2018_geometry,
         file = "../shiny/outdoor-equity-app/oe_app/data/2018_joined_data_site_summary.rds")
+
+# all acs vars joined
+saveRDS(object = acs_all,
+        file = "../shiny/outdoor-equity-app/oe_app/data/2018_ca_acs_all.rds")
 ```
 
 
