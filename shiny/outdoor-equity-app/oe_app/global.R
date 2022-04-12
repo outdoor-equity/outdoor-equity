@@ -38,10 +38,10 @@ data_geometries_us <- readRDS("data/2018_data_map_us_yosemite_upper_pines_geomet
 data_race_dist_travel <- readRDS("data/2018_data_plot_race_distance_traveled.rds")
 
 # source input functions ----
-source("r/inputs.R")
+source("r/inputs/inputs.R")
 
 
-# CA prototype objects ----
+# CA objects ----
 # use in R scripts, ui or server
 
 ## CA agency list ----
