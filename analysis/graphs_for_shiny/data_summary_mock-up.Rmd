@@ -56,15 +56,9 @@ data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv"
 ```{r}
 ## -- data wrangle -- ##
 data_plot_distance_traveled_all <- data_ridb_acs_2018 %>% 
-  #filter(park == "Upper Pines") %>% 
-  #filter(park == "Crane Valley") %>% 
-  #filter(park == "Navajo Flats Campground") %>% 
   mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
   select(agency, admin_unit, park, distance_traveled_mi) %>% 
   filter(!is.na(distance_traveled_mi))
-
-quant_80 <- quantile(x = data_plot_distance_traveled_all$distance_traveled_mi,
-                     probs = seq(0, 1, 0.1))[[9]] %>% round(0)
 
 
 ## -- create plot -- ##
@@ -82,7 +76,8 @@ center_bin <-
   } else {
     0.5
   }
-
+quant_80 <- quantile(x = data_plot_distance_traveled_all$distance_traveled_mi,
+                     probs = seq(0, 1, 0.1))[[9]] %>% round(0)
 split_all <- data.frame(table(cut(x = data_plot_distance_traveled_all$distance_traveled_mi, 
                                        breaks = seq(0, 
                                                     x_max,
@@ -100,14 +95,15 @@ plot_distance_traveled_1 <-
                  col = hist_colors[[2]], size = 0.05) +
   scale_x_continuous(limits = c(0, x_max)) +
   scale_y_continuous(labels = scales::comma) +
-  annotate(geom = "text", 
-           x = x_max / 3, 
-           y = (max(split_all$Freq) - min(split_all$Freq)) / 2,
+  annotate(geom = "text",
+           x = x_max * (2/3),
+           y = (max(split_all$Freq)) * (3/4),
            label = paste0("80% of reservations to \nCalifornia overnight sites in ",
                           deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
-                          "\n traveled less than ", quant_80, " miles.")) +
+                          "\n traveled less than ", quant_80, " miles."),
+           color = "red") +
   geom_vline(xintercept = quant_80,
-             linetype = "dashed", alpha = 0.5) +
+             linetype = "dashed", alpha = 0.5, color = "red") +
   labs(x = "Distance traveled (miles)",
        y = "",
        title = "Distance Traveled from Home to Site for <br>Overnight Reservations in California in 2018") +
@@ -129,15 +125,13 @@ ggplotly(plot_distance_traveled_1,
 
 ```{r}
 ## -- data wrangle -- ##
-data_plot_distance_traveled_all <- data_ridb_acs_2018 %>% 
+data_plot_distance_traveled_upperpines <- data_ridb_acs_2018 %>% 
   filter(park == "Upper Pines") %>% 
-  #filter(park == "Crane Valley") %>% 
-  #filter(park == "Navajo Flats Campground") %>% 
   mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
   select(agency, admin_unit, park, distance_traveled_mi) %>% 
   filter(!is.na(distance_traveled_mi))
 
-quant_80 <- quantile(x = data_plot_distance_traveled_all$distance_traveled_mi,
+quant_80 <- quantile(x = data_plot_distance_traveled_upperpines$distance_traveled_mi,
                      probs = seq(0, 1, 0.1))[[9]] %>% round(0)
 
 ## -- create plot -- ##
@@ -146,25 +140,25 @@ quant_80 <- quantile(x = data_plot_distance_traveled_all$distance_traveled_mi,
 hist_colors <- c("#009900FF", "#00c000")
 
 # plot_1 for shiny app
-x_max <- (round(max(data_plot_distance_traveled_all$distance_traveled_mi) / 5) * 5) + 5 # max x rounded to nearest 5
+x_max <- (round(max(data_plot_distance_traveled_upperpines$distance_traveled_mi) / 5) * 5) + 5 # max x rounded to nearest 5
 center_bin <- 
-  if (max(data_plot_distance_traveled_all$distance_traveled_mi) > 100) {
-    round((max(data_plot_distance_traveled_all$distance_traveled_mi) / 100) / 5) * 5
-  } else if (max(data_plot_distance_traveled_all$distance_traveled_mi) > 10) {
-    round((max(data_plot_distance_traveled_all$distance_traveled_mi) / 10) / 5) * 5
+  if (max(data_plot_distance_traveled_upperpines$distance_traveled_mi) > 100) {
+    round((max(data_plot_distance_traveled_upperpines$distance_traveled_mi) / 100) / 5) * 5
+  } else if (max(data_plot_distance_traveled_upperpines$distance_traveled_mi) > 10) {
+    round((max(data_plot_distance_traveled_upperpines$distance_traveled_mi) / 10) / 5) * 5
   } else {
     0.5
   }
 
-split_all <- data.frame(table(cut(x = data_plot_distance_traveled_all$distance_traveled_mi, 
+split_all <- data.frame(table(cut(x = data_plot_distance_traveled_upperpines$distance_traveled_mi, 
                                        breaks = seq(0, 
                                                     x_max,
                                                     center_bin * 2))))
 
-plot_distance_traveled_1 <-
-  ggplot(data = data_plot_distance_traveled_all) +
+plot_distance_traveled_upperpines <-
+  ggplot(data = data_plot_distance_traveled_upperpines) +
   geom_histogram(aes(x = distance_traveled_mi,
-                     text = paste0(scales::comma(round(..count.. / nrow(data_plot_distance_traveled_all), 2) * 100), 
+                     text = paste0(scales::comma(round(..count.. / nrow(data_plot_distance_traveled_upperpines), 2) * 100), 
                                    "% of all reservations traveled between ", xmin, " and ", xmax, " miles",
                                    "<br>(", scales::comma(..count..), " reservations)")),
                  binwidth = center_bin * 2,
@@ -174,13 +168,14 @@ plot_distance_traveled_1 <-
   scale_x_continuous(limits = c(0, x_max)) +
   scale_y_continuous(labels = scales::comma) +
   annotate(geom = "text", 
-           x = x_max / 3, 
-           y = (max(split_all$Freq) - min(split_all$Freq)) / 2,
+           x = x_max * (2/3),
+           y = (max(split_all$Freq)) * (3/4),
            label = paste0("80% of reservations to \nCalifornia overnight sites in ",
                           deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
-                          "\n traveled less than ", quant_80, " miles.")) +
+                          "\n traveled less than ", quant_80, " miles."),
+           color = "red") +
   geom_vline(xintercept = quant_80,
-             linetype = "dashed", alpha = 0.5) +
+             linetype = "dashed", alpha = 0.5, color = "red") +
   labs(x = "Distance traveled (miles)",
        y = "",
        title = "Distance Traveled from Home to Site for <br>Overnight Reservations in California in 2018") +
@@ -191,7 +186,7 @@ plot_distance_traveled_1 <-
 
 
 ```{r}
-ggplotly(plot_distance_traveled_1,
+ggplotly(plot_distance_traveled_upperpines,
          tooltip = list("text"))
 ```
 
@@ -200,15 +195,13 @@ ggplotly(plot_distance_traveled_1,
 
 ```{r}
 ## -- data wrangle -- ##
-data_plot_distance_traveled_all <- data_ridb_acs_2018 %>% 
-  #filter(park == "Upper Pines") %>% 
+data_plot_distance_traveled_cranevalley <- data_ridb_acs_2018 %>% 
   filter(park == "Crane Valley") %>% 
-  #filter(park == "Navajo Flats Campground") %>% 
   mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
   select(agency, admin_unit, park, distance_traveled_mi) %>% 
   filter(!is.na(distance_traveled_mi))
 
-quant_80 <- quantile(x = data_plot_distance_traveled_all$distance_traveled_mi,
+quant_80 <- quantile(x = data_plot_distance_traveled_cranevalley$distance_traveled_mi,
                      probs = seq(0, 1, 0.1))[[9]] %>% round(0)
 
 ## -- create plot -- ##
@@ -217,25 +210,25 @@ quant_80 <- quantile(x = data_plot_distance_traveled_all$distance_traveled_mi,
 hist_colors <- c("#009900FF", "#00c000")
 
 # plot_1 for shiny app
-x_max <- (round(max(data_plot_distance_traveled_all$distance_traveled_mi) / 5) * 5) + 5 # max x rounded to nearest 5
+x_max <- (round(max(data_plot_distance_traveled_cranevalley$distance_traveled_mi) / 5) * 5) + 10 # max x rounded to nearest 5
 center_bin <- 
-  if (max(data_plot_distance_traveled_all$distance_traveled_mi) > 100) {
-    round((max(data_plot_distance_traveled_all$distance_traveled_mi) / 100) / 5) * 5
-  } else if (max(data_plot_distance_traveled_all$distance_traveled_mi) > 10) {
-    round((max(data_plot_distance_traveled_all$distance_traveled_mi) / 10) / 5) * 5
+  if (max(data_plot_distance_traveled_cranevalley$distance_traveled_mi) > 100) {
+    round((max(data_plot_distance_traveled_cranevalley$distance_traveled_mi) / 100) / 5) * 5
+  } else if (max(data_plot_distance_traveled_cranevalley$distance_traveled_mi) > 10) {
+    round((max(data_plot_distance_traveled_cranevalley$distance_traveled_mi) / 10) / 5) * 5
   } else {
     0.5
   }
 
-split_all <- data.frame(table(cut(x = data_plot_distance_traveled_all$distance_traveled_mi, 
+split_all <- data.frame(table(cut(x = data_plot_distance_traveled_cranevalley$distance_traveled_mi, 
                                        breaks = seq(0, 
                                                     x_max,
                                                     center_bin * 2))))
 
-plot_distance_traveled_1 <-
-  ggplot(data = data_plot_distance_traveled_all) +
+plot_distance_traveled_cranevalley <-
+  ggplot(data = data_plot_distance_traveled_cranevalley) +
   geom_histogram(aes(x = distance_traveled_mi,
-                     text = paste0(scales::comma(round(..count.. / nrow(data_plot_distance_traveled_all), 2) * 100), 
+                     text = paste0(scales::comma(round(..count.. / nrow(data_plot_distance_traveled_cranevalley), 2) * 100), 
                                    "% of all reservations traveled between ", xmin, " and ", xmax, " miles",
                                    "<br>(", scales::comma(..count..), " reservations)")),
                  binwidth = center_bin * 2,
@@ -245,13 +238,14 @@ plot_distance_traveled_1 <-
   scale_x_continuous(limits = c(0, x_max)) +
   scale_y_continuous(labels = scales::comma) +
   annotate(geom = "text", 
-           x = x_max / 3, 
-           y = (max(split_all$Freq) - min(split_all$Freq)) / 2,
+           x = x_max * (2/3),
+           y = (max(split_all$Freq)) * (3/4),
            label = paste0("80% of reservations to \nCalifornia overnight sites in ",
                           deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
-                          "\n traveled less than ", quant_80, " miles.")) +
+                          "\n traveled less than ", quant_80, " miles."), 
+           color = "red") +
   geom_vline(xintercept = quant_80,
-             linetype = "dashed", alpha = 0.5) +
+             linetype = "dashed", alpha = 0.5, color = "red") +
   labs(x = "Distance traveled (miles)",
        y = "",
        title = "Distance Traveled from Home to Site for <br>Overnight Reservations in California in 2018") +
@@ -262,7 +256,7 @@ plot_distance_traveled_1 <-
 
 
 ```{r}
-ggplotly(plot_distance_traveled_1,
+ggplotly(plot_distance_traveled_cranevalley,
          tooltip = list("text"))
 ```
 
@@ -272,10 +266,85 @@ ggplotly(plot_distance_traveled_1,
 
 ```{r}
 ## -- data wrangle -- ##
-data_plot_distance_traveled_all <- data_ridb_acs_2018 %>% 
-  #filter(park == "Upper Pines") %>% 
-  #filter(park == "Crane Valley") %>% 
+data_plot_distance_traveled_navajoflats <- data_ridb_acs_2018 %>% 
   filter(park == "Navajo Flats Campground") %>% 
+  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+  select(agency, admin_unit, park, distance_traveled_mi) %>% 
+  filter(!is.na(distance_traveled_mi))
+
+quant_80 <- quantile(x = data_plot_distance_traveled_navajoflats$distance_traveled_mi,
+                     probs = seq(0, 1, 0.1))[[9]] %>% round(0)
+
+
+## -- create plot -- ##
+
+# parameters
+hist_colors <- c("#009900FF", "#00c000")
+
+# plot_1 for shiny app
+x_max <- (round(max(data_plot_distance_traveled_navajoflats$distance_traveled_mi) / 5) * 5) + 5 # max x rounded to nearest 5
+center_bin <- 
+  if (max(data_plot_distance_traveled_navajoflats$distance_traveled_mi) > 100) {
+    round((max(data_plot_distance_traveled_navajoflats$distance_traveled_mi) / 100) / 5) * 5
+  } else if (max(data_plot_distance_traveled_navajoflats$distance_traveled_mi) > 50) {
+    round((max(data_plot_distance_traveled_navajoflats$distance_traveled_mi) / 10) / 5) * 5
+  } else {
+    0.5
+  }
+
+split_all <- data.frame(table(cut(x = data_plot_distance_traveled_navajoflats$distance_traveled_mi, 
+                                       breaks = seq(0, 
+                                                    x_max,
+                                                    center_bin * 2))))
+
+plot_distance_traveled_navajoflats <-
+  ggplot(data = data_plot_distance_traveled_navajoflats) +
+  geom_histogram(aes(x = distance_traveled_mi,
+                     text = paste0(scales::comma(round(..count.. / nrow(data_plot_distance_traveled_navajoflats), 2) * 100), 
+                                   "% of all reservations traveled between ", xmin, " and ", xmax, " miles",
+                                   "<br>(", scales::comma(..count..), " reservations)"), 
+                     color = "red"),
+                 binwidth = center_bin * 2,
+                 center = center_bin,
+                 fill = hist_colors[[1]], 
+                 col = hist_colors[[2]], size = 0.05, color = "red") +
+  scale_x_continuous(limits = c(0, x_max)) +
+  scale_y_continuous(labels = scales::comma) +
+  annotate(geom = "text", 
+           x = x_max * (2/3),
+           y = (max(split_all$Freq)) * (3/4),
+           label = paste0("80% of reservations to \nCalifornia overnight sites in ",
+                          deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
+                          "\n traveled less than ", quant_80, " miles."), 
+           color = "red") +
+  geom_vline(xintercept = quant_80,
+             linetype = "dashed", alpha = 0.5, color = "red") +
+  labs(x = "Distance traveled (miles)",
+       y = "",
+       title = "Distance Traveled from Home to Site for <br>Overnight Reservations in California in 2018") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank())
+```
+
+
+```{r}
+ggplotly(plot_distance_traveled_navajoflats,
+         tooltip = list("text"))
+```
+
+
+
+
+
+
+
+
+
+```{r, eval=FALSE}
+
+## -- data wrangle -- ##
+data_plot_distance_traveled_all <- data_ridb_acs_2018 %>% 
   mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
   select(agency, admin_unit, park, distance_traveled_mi) %>% 
   filter(!is.na(distance_traveled_mi))
@@ -289,40 +358,31 @@ quant_80 <- quantile(x = data_plot_distance_traveled_all$distance_traveled_mi,
 # parameters
 hist_colors <- c("#009900FF", "#00c000")
 
-# plot_1 for shiny app
-x_max <- (round(max(data_plot_distance_traveled_all$distance_traveled_mi) / 5) * 5) + 5 # max x rounded to nearest 5
-center_bin <- 
-  if (max(data_plot_distance_traveled_all$distance_traveled_mi) > 100) {
-    round((max(data_plot_distance_traveled_all$distance_traveled_mi) / 100) / 5) * 5
-  } else if (max(data_plot_distance_traveled_all$distance_traveled_mi) > 50) {
-    round((max(data_plot_distance_traveled_all$distance_traveled_mi) / 10) / 5) * 5
-  } else {
-    0.5
-  }
 
-split_all <- data.frame(table(cut(x = data_plot_distance_traveled_all$distance_traveled_mi, 
-                                       breaks = seq(0, 
-                                                    x_max,
-                                                    center_bin * 2))))
-
-plot_distance_traveled_1 <-
+test <-
   ggplot(data = data_plot_distance_traveled_all) +
-  geom_histogram(aes(x = distance_traveled_mi,
-                     text = paste0(scales::comma(round(..count.. / nrow(data_plot_distance_traveled_all), 2) * 100), 
-                                   "% of all reservations traveled between ", xmin, " and ", xmax, " miles",
-                                   "<br>(", scales::comma(..count..), " reservations)")),
-                 binwidth = center_bin * 2,
-                 center = center_bin,
-                 fill = hist_colors[[1]], 
-                 col = hist_colors[[2]], size = 0.05) +
-  scale_x_continuous(limits = c(0, x_max)) +
+  geom_bar(aes(x = distance_traveled_mi#,
+               # text = paste0(scales::comma(round(..count.. / nrow(data_plot_distance_traveled_all), 2) * 100), 
+               #               "% of all reservations traveled between ", xmin, " and ", xmax, " miles",
+               #               "<br>(", scales::comma(..count..), " reservations)")
+               ),
+           
+           # binwidth = center_bin * 2,
+           # center = center_bin,
+           fill = hist_colors[[1]], 
+           col = hist_colors[[2]], size = 0.05) +
+  scale_x_binned() +
   scale_y_continuous(labels = scales::comma) +
-  annotate(geom = "text", 
-           x = x_max / 3, 
-           y = (max(split_all$Freq) - min(split_all$Freq)) / 2,
-           label = paste0("80% of reservations to \nCalifornia overnight sites in ",
-                          deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
-                          "\n traveled less than ", quant_80, " miles.")) +
+  annotate(geom = "text",
+           x = ,
+           y = ,
+  )
+annotate(geom = "text", 
+         x = x_max / 3, 
+         y = (max(split_all$Freq) - min(split_all$Freq)) / 2,
+         label = paste0("80% of reservations to \nCalifornia overnight sites in ",
+                        deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
+                        "\n traveled less than ", quant_80, " miles.")) +
   geom_vline(xintercept = quant_80,
              linetype = "dashed", alpha = 0.5) +
   labs(x = "Distance traveled (miles)",
@@ -333,14 +393,8 @@ plot_distance_traveled_1 <-
         panel.grid.major.y = element_blank())
 ```
 
-
-```{r}
-ggplotly(plot_distance_traveled_1,
+```{r, eval=FALSE}
+ggplotly(test,
          tooltip = list("text"))
 ```
-
-
-
-
-
 
