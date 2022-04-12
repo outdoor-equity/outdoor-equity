@@ -131,7 +131,7 @@ ggplotly(plot_asian,
 
 
 
-```{r}
+```{r, eval=FALSE}
 ## -- data wrangle -- ##
 data_plot_race_distance_traveled_bins <- data_ridb_acs_2018 %>% 
   select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
@@ -225,7 +225,7 @@ ggplotly(plot_race_distance_traveled,
 
 #### (Option 2.1)
 
-```{r, fig.width=5, fig.height=3}
+```{r, fig.width=5, fig.height=3, eval=FALSE}
 ## -- data wrangle -- ##
 data_plot_race_distance_traveled_2 <- data_plot_race_distance_traveled_bins %>% 
   select(asian, black, hispanic_latinx, multiracial, native_american, 
@@ -489,7 +489,7 @@ test_plot_white
 
 #### (Option 2.2)
 
-```{r}
+```{r, eval=FALSE}
 ## try binning by racial percentage (y axis) and have the boxplot show distribution of distnace traveled (x axis)
 
 ## -- data wrangle -- ##
@@ -766,7 +766,7 @@ ggplot(data = test_race_white) +
 
 #### (Option 3)
 
-```{r}
+```{r, eval=FALSE}
 ## -- data wrangle -- ##
 data_plot_race_distance_traveled_3 <- data_plot_race_distance_traveled_bins %>% 
   filter(park == "Upper Pines") %>% 
@@ -1147,7 +1147,7 @@ data_plot_education_distance_traveled <- data_plot_education_distance_traveled_b
                             pattern = "master_or_above",
                             replacement = "Masters degree or higher"))
   
-distance_traveled_bin_breaks <- quantile(data_plot_race_distance_traveled_bins$distance_traveled_mi, 
+distance_traveled_bin_breaks <- quantile(data_plot_education_distance_traveled_bins$distance_traveled_mi, 
                                          prob = seq(0, 1, length = 6), type = 5)
          
 
