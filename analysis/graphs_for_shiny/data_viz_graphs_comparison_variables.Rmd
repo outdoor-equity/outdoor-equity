@@ -22,6 +22,8 @@ library(scales)
 library(tmap)
 library(vroom)
 library(paletteer)
+library(ggridges)
+library(plotly)
 
 options(scipen = 999)
 ```
@@ -37,6 +39,9 @@ start_time <- Sys.time()
 data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
                             delim = ",") ## non-map graphs (no geometries)
 # data_ridb_acs_2018 <- readRDS(file = "../../../../data_clean/2018_joined_data.rds") ## maps (don't use RDS for non-map viz, too slow)
+
+data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
+                          delim = ",")
 ```
 
 
@@ -56,6 +61,9 @@ data_plot_race_distance_traveled_bins <- data_ridb_acs_2018 %>%
   drop_na(distance_traveled_mi) %>% 
   mutate(distance_traveled_bins = ntile(distance_traveled_mi, 5)) 
 
+distance_traveled_bin_breaks <- quantile(data_plot_race_distance_traveled_bins$distance_traveled_mi, 
+                                         prob = seq(0, 1, length = 6), type = 5)
+
 data_plot_race_distance_traveled <- data_plot_race_distance_traveled_bins %>% 
   group_by(distance_traveled_bins) %>% 
   summarize(white = (mean(white, na.rm = TRUE) * 100),
@@ -72,11 +80,34 @@ data_plot_race_distance_traveled <- data_plot_race_distance_traveled_bins %>%
   mutate(race = str_replace(string = race,
                             pattern = "_",
                             replacement = " "),
-         race = str_to_title(race))
+         race = str_to_title(race)) %>% 
+  mutate(distance_traveled_bins = case_when(distance_traveled_bins == 1 ~ paste0(round(distance_traveled_bin_breaks, 0)[[1]], 
+                                                                                 " - ",
+                                                                                 round(distance_traveled_bin_breaks, 0)[[2]],
+                                                                                 " mi"), 
+                                            distance_traveled_bins == 2 ~ paste0(round(distance_traveled_bin_breaks, 0)[[2]], 
+                                                                                 " - ",
+                                                                                 round(distance_traveled_bin_breaks, 0)[[3]],
+                                                                                 " mi"), 
+                                            distance_traveled_bins == 3 ~ paste0(round(distance_traveled_bin_breaks, 0)[[3]], 
+                                                                                 " - ",
+                                                                                 round(distance_traveled_bin_breaks, 0)[[4]],
+                                                                                 " mi"), 
+                                            distance_traveled_bins == 4 ~ paste0(round(distance_traveled_bin_breaks, 0)[[4]], 
+                                                                                 " - ",
+                                                                                 round(distance_traveled_bin_breaks, 0)[[5]],
+                                                                                 " mi"), 
+                                            distance_traveled_bins == 5 ~ paste0(round(distance_traveled_bin_breaks, 0)[[5]], 
+                                                                                 " - ",
+                                                                                 round(distance_traveled_bin_breaks, 0)[[6]],
+                                                                                 " mi")), 
+         distance_traveled_bins = factor(distance_traveled_bins, levels = c(
+           paste0(round(distance_traveled_bin_breaks, 0)[[1]], " - ", round(distance_traveled_bin_breaks, 0)[[2]], " mi"), 
+           paste0(round(distance_traveled_bin_breaks, 0)[[2]], " - ", round(distance_traveled_bin_breaks, 0)[[3]], " mi"),
+           paste0(round(distance_traveled_bin_breaks, 0)[[3]], " - ", round(distance_traveled_bin_breaks, 0)[[4]], " mi"),
+           paste0(round(distance_traveled_bin_breaks, 0)[[4]], " - ", round(distance_traveled_bin_breaks, 0)[[5]], " mi"),
+           paste0(round(distance_traveled_bin_breaks, 0)[[5]], " - ", round(distance_traveled_bin_breaks, 0)[[6]], " mi"))))
   
-distance_traveled_bin_breaks <- quantile(data_plot_race_distance_traveled_bins$distance_traveled_mi, 
-                                         prob = seq(0, 1, length = 6), type = 5)
-         
 
 ## -- create plot -- ##
 
@@ -87,16 +118,14 @@ racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "M
 
 # plot for shiny
 plot_race_distance_traveled <- ggplot(data = data_plot_race_distance_traveled) +
-  geom_col(aes(x = factor(distance_traveled_bins),
+  geom_col(aes(x = distance_traveled_bins,
                y = race_percentage,
-               fill = race)) +
+               fill = race,
+               text = paste0("Reservations that traveled from ", distance_traveled_bins, 
+                             "<br> live in communities with ", round(race_percentage, 2), "% ", race, " folks on average.")
+           )) +
   facet_wrap(~race, scales = "free_x") +
   scale_fill_manual(values = racial_group_colors) +
-  scale_x_discrete(labels = c("1" = "0 - 60 mi", 
-                              "2" = "60 - 117 mi", 
-                              "3" = "117 - 181 mi", 
-                              "4" = "181 - 299 mi", 
-                              "5" = "299 - 3,614 mi")) + 
   labs(x = "Distance Traveled (miles)",
        y = "Percentage (%)",
        title = "Distance Traveled Compared to Racial Breakdown of Home",
@@ -106,7 +135,9 @@ plot_race_distance_traveled <- ggplot(data = data_plot_race_distance_traveled) +
         plot.background = element_rect("white"),
         panel.grid.major.x = element_blank()) +
   coord_flip()
-plot_race_distance_traveled
+
+ggplotly(plot_race_distance_traveled,
+         tooltip = list("text"))
 ```
 
 #### (Option 2.1)
@@ -379,6 +410,21 @@ test_plot_white
 ## try binning by racial percentage (y axis) and have the boxplot show distribution of distnace traveled (x axis)
 
 ## -- data wrangle -- ##
+data_ca_acs_2018_average <- data_ca_acs_2018 %>% 
+  select(zip_code, asian, black, hispanic_latinx, 
+         multiracial, native_american, other, pacific_islander, white) %>% 
+  summarise(asian = mean(asian, na.rm = TRUE),
+            black = mean(black, na.rm = TRUE),
+            hispanic_latinx = mean(hispanic_latinx, na.rm = TRUE), 
+            multiracial = mean(multiracial, na.rm = TRUE),
+            native_american = mean(native_american, na.rm = TRUE),
+            other = mean(other, na.rm = TRUE),
+            pacific_islander = mean(pacific_islander, na.rm = TRUE),
+            white = mean(white, na.rm = TRUE)) %>% 
+  pivot_longer(cols = 1:8,
+               names_to = "race",
+               values_to = "ca_race_mean")
+
 test_race_bins <- data_ridb_acs_2018 %>% 
   select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
          multiracial, native_american, other, pacific_islander, white,
@@ -388,262 +434,247 @@ test_race_bins <- data_ridb_acs_2018 %>%
   pivot_longer(5:12,
                names_to = "race",
                values_to = "race_percentage") %>% 
+  left_join(y = data_ca_acs_2018_average,
+            by = "race") %>% 
+  mutate(above_race_average = case_when(race_percentage > ca_race_mean ~ 1,
+                                        race_percentage < ca_race_mean ~ 0)) %>% 
   mutate(race = str_replace(string = race,
                             pattern = "_",
                             replacement = " "),
          race = str_to_title(race)) %>% 
-  mutate(race_percent_bins = ntile(race_percentage, 5)) %>% 
-  drop_na(race_percentage)
+  drop_na(race_percentage, above_race_average)
 
 racial_groups <- c("Other", "Pacific Islander", "Multiracial", "Asian", 
                    "Black", "White", "Native American", "Hispanic Latinx")
-
 racial_groups_names <- c("other", "pacific_islander", "multiracial", "asian", 
                    "black", "white", "native_american", "hispanic_latinx")
 
 for (i in seq_along(racial_groups)){
   df <- test_race_bins %>% filter(race == racial_groups[[i]])
-  
-  df_bins <- quantile(test_race_bins$race_percentage, 
-                      prob = seq(0, 1, length = 6), type = 5)
-  for (name in seq_along(racial_groups_names)){
-    
-    assign(paste0("test_race_", racial_groups_names[[i]]), data.frame(df), envir = .GlobalEnv)
-    assign(paste0("test_race_bins_breaks_", racial_groups_names[[i]]), data.frame(df_bins), envir = .GlobalEnv)
+  for (j in seq_along(racial_groups_names)) {
+  assign(paste0("test_race_", racial_groups_names[[i]]), data.frame(df), envir = .GlobalEnv)
   }
 }
 
+# parameters
+racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+
 ## -- create plot -- ##
-
+# asian
 ggplot(data = test_race_asian) +
-  geom_boxplot(aes(x = factor(race_percent_bins),
-                   y = distance_traveled_mi, 
+  geom_boxplot(aes(x = factor(above_race_average),
+                   y = distance_traveled_mi,
                    fill = race),
-               varwidth = TRUE, outlier.shape = NA) +
-  scale_fill_manual(values = racial_group_colors) +
-  scale_x_discrete(labels = c("1" = paste("0 -", 
-                                          round(test_race_bins_breaks_asian[2, 1], 2)), 
-                              "2" = paste(round(test_race_bins_breaks_asian[2, 1], 2), "-", 
-                                          round(test_race_bins_breaks_asian[3, 1], 2)), 
-                              "3" = paste(round(test_race_bins_breaks_asian[3, 1], 2), "-", 
-                                          round(test_race_bins_breaks_asian[4, 1], 2), "-", 
-                                          round(test_race_bins_breaks_asian[5, 1], 2)), 
-                              "5" = paste(round(test_race_bins_breaks_asian[5, 1], 2), "-", 
-                                          round(test_race_bins_breaks_asian[6, 1], 2)))) +
-  scale_y_continuous(limits = c(0, 2000),
-                     breaks = seq(0, 2000, 200),
+               varwidth = TRUE, 
+               outlier.shape = NA
+               ) +
+  coord_flip() +
+  scale_fill_manual(values = racial_group_colors) + 
+  scale_x_discrete(labels = c("1" = "Above CA Average", "0" = "Below CA Average")) +
+  scale_y_continuous(limits = c(0, 1000),
+                     breaks = seq(0, 1000, 100),
+                     minor_breaks = seq(0, 1000, 50),
                      sec.axis = dup_axis()) +
-  labs(y = "Distance Traveled (miles)",
-       x = "Percentage of Racial Group(%)",
-       title = "White",
+  labs(x = "Distance Traveled (miles)",
+       #y = "Percentage (%)",
+       title = "Asian",
        subtitle = "Distance Traveled Compared to Racial Breakdown of Home \nfor Overnight Reservations in California") +
   theme_minimal() +
   theme(legend.position = "none",
         plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank()) +
-  coord_flip()
+        panel.grid.major.y = element_blank())
 
+# black
 ggplot(data = test_race_black) +
-  geom_boxplot(aes(x = factor(race_percent_bins),
-                   y = distance_traveled_mi, 
+  geom_boxplot(aes(x = factor(above_race_average),
+                   y = distance_traveled_mi,
                    fill = race),
-               varwidth = TRUE, outlier.shape = NA) +
-  scale_fill_manual(values = racial_group_colors) +
-  scale_x_discrete(labels = c("1" = paste("0 -", 
-                                          round(test_race_bins_breaks_black[2, 1], 2)), 
-                              "2" = paste(round(test_race_bins_breaks_black[2, 1], 2), "-", 
-                                          round(test_race_bins_breaks_black[3, 1], 2)), 
-                              "3" = paste(round(test_race_bins_breaks_black[3, 1], 2), "-", 
-                                          round(test_race_bins_breaks_black[4, 1], 2)),
-                              "4" = paste(round(test_race_bins_breaks_black[4, 1], 2), "-", 
-                                          round(test_race_bins_breaks_black[5, 1], 2)), 
-                              "5" = paste(round(test_race_bins_breaks_black[5, 1], 2), "-", 
-                                          round(test_race_bins_breaks_black[6, 1], 2)))) +
-  scale_y_continuous(limits = c(0, 2000),
-                     breaks = seq(0, 2000, 200),
+               varwidth = TRUE, 
+               outlier.shape = NA
+               ) +
+  coord_flip() +
+  scale_fill_manual(values = racial_group_colors) + 
+  scale_x_discrete(labels = c("1" = "Above CA Average", "0" = "Below CA Average")) +
+  scale_y_continuous(limits = c(0, 800),
+                     breaks = seq(0, 800, 100),
+                     minor_breaks = seq(0, 800, 50),
                      sec.axis = dup_axis()) +
-  labs(y = "Distance Traveled (miles)",
-       x = "Percentage of Racial Group(%)",
-       title = "White",
+  labs(x = "Distance Traveled (miles)",
+       #y = "Percentage (%)",
+       title = "Black",
        subtitle = "Distance Traveled Compared to Racial Breakdown of Home \nfor Overnight Reservations in California") +
   theme_minimal() +
   theme(legend.position = "none",
         plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank()) +
-  coord_flip()
+        panel.grid.major.y = element_blank())
 
+
+# hispanic_latinx
 ggplot(data = test_race_hispanic_latinx) +
-  geom_boxplot(aes(x = factor(race_percent_bins),
-                   y = distance_traveled_mi, 
+  geom_boxplot(aes(x = factor(above_race_average),
+                   y = distance_traveled_mi,
                    fill = race),
-               varwidth = TRUE, outlier.shape = NA) +
-  scale_fill_manual(values = racial_group_colors) +
-  scale_x_discrete(labels = c("1" = paste("0 -", 
-                                          round(test_race_bins_breaks_hispanic_latinx[2, 1], 2)), 
-                              "2" = paste(round(test_race_bins_breaks_hispanic_latinx[2, 1], 2), "-", 
-                                          round(test_race_bins_breaks_hispanic_latinx[3, 1], 2)), 
-                              "3" = paste(round(test_race_bins_breaks_hispanic_latinx[3, 1], 2), "-", 
-                                          round(test_race_bins_breaks_hispanic_latinx[4, 1], 2)),
-                              "4" = paste(round(test_race_bins_breaks_hispanic_latinx[4, 1], 2), "-", 
-                                          round(test_race_bins_breaks_hispanic_latinx[5, 1], 2)), 
-                              "5" = paste(round(test_race_bins_breaks_hispanic_latinx[5, 1], 2), "-", 
-                                          round(test_race_bins_breaks_hispanic_latinx[6, 1], 2)))) +
-  # scale_y_continuous(limits = c(0, 2000),
-  #                    breaks = seq(0, 2000, 200),
-  #                    sec.axis = dup_axis()) +
-  labs(y = "Distance Traveled (miles)",
-       x = "Percentage of Racial Group(%)",
-       title = "White",
+               varwidth = TRUE, 
+               outlier.shape = NA
+               ) +
+  coord_flip() +
+  scale_fill_manual(values = racial_group_colors) + 
+  scale_x_discrete(labels = c("1" = "Above CA Average", "0" = "Below CA Average")) +
+  scale_y_continuous(limits = c(0, 700),
+                     breaks = seq(0, 700, 100),
+                     minor_breaks = seq(0, 700, 50),
+                     sec.axis = dup_axis()) +
+  labs(x = "Distance Traveled (miles)",
+       #y = "Percentage (%)",
+       title = "Hispanic Latinx",
        subtitle = "Distance Traveled Compared to Racial Breakdown of Home \nfor Overnight Reservations in California") +
   theme_minimal() +
   theme(legend.position = "none",
         plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank()) +
-  coord_flip()
+        panel.grid.major.y = element_blank())
 
+# multiracial
 ggplot(data = test_race_multiracial) +
-  geom_boxplot(aes(x = factor(race_percent_bins),
-                   y = distance_traveled_mi, 
+  geom_boxplot(aes(x = factor(above_race_average),
+                   y = distance_traveled_mi,
                    fill = race),
-               varwidth = TRUE, outlier.shape = NA) +
-  scale_fill_manual(values = racial_group_colors) +
-  # scale_x_discrete(labels = c("1" = paste("0 -", round(test_race_bins_breaks_multiracial[[2]], 2)), 
-  #                             "2" = paste(round(test_race_bins_breaks_multiracial[2, 1], 2), "-", 
-  #                                         round(test_race_bins_breaks_multiracial[3, 1], 2)), 
-  #                             "3" = paste(round(test_race_bins_breaks_multiracial[3, 1], 2), "-", 
-  #                                         round(test_race_bins_breaks_multiracial[4, 1], 2)),
-  #                             "4" = paste(round(test_race_bins_breaks_multiracial[4, 1], 2), "-", 
-  #                                         round(test_race_bins_breaks_multiracial[5, 1], 2)), 
-  #                             "5" = paste(round(test_race_bins_breaks_multiracial[5, 1], 2), "-", 
-  #                                         round(test_race_bins_breaks_multiracial[6, 1], 2)))) +
-  # scale_y_continuous(limits = c(0, 2000),
-  #                    breaks = seq(0, 2000, 200),
-  #                    sec.axis = dup_axis()) +
-  labs(y = "Distance Traveled (miles)",
-       x = "Percentage of Racial Group(%)",
-       title = "White",
+               varwidth = TRUE, 
+               outlier.shape = NA
+               ) +
+  coord_flip() +
+  scale_fill_manual(values = racial_group_colors) + 
+  scale_x_discrete(labels = c("1" = "Above CA Average", "0" = "Below CA Average")) +
+  scale_y_continuous(limits = c(0, 800),
+                     breaks = seq(0, 800, 100),
+                     minor_breaks = seq(0, 800, 50),
+                     sec.axis = dup_axis()) +
+  labs(x = "Distance Traveled (miles)",
+       #y = "Percentage (%)",
+       title = "Multiracial",
        subtitle = "Distance Traveled Compared to Racial Breakdown of Home \nfor Overnight Reservations in California") +
   theme_minimal() +
   theme(legend.position = "none",
         plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank()) +
-  coord_flip()
+        panel.grid.major.y = element_blank())
 
+# native_american
 ggplot(data = test_race_native_american) +
-  geom_boxplot(aes(x = factor(race_percent_bins),
-                   y = distance_traveled_mi, 
+  geom_boxplot(aes(x = factor(above_race_average),
+                   y = distance_traveled_mi,
                    fill = race),
-               varwidth = TRUE, outlier.shape = NA) +
-  scale_fill_manual(values = racial_group_colors) +
-  scale_x_discrete(labels = c("1" = paste("0 -", 
-                                          round(test_race_bins_breaks_native_american[2, 1], 2)), 
-                              "2" = paste(round(test_race_bins_breaks_native_american[2, 1], 2), "-", 
-                                          round(test_race_bins_breaks_native_american[3, 1], 2)), 
-                              "3" = paste(round(test_race_bins_breaks_native_american[3, 1], 2), "-", 
-                                          round(test_race_bins_breaks_native_american[4, 1], 2)),
-                              "4" = paste(round(test_race_bins_breaks_native_american[4, 1], 2), "-", 
-                                          round(test_race_bins_breaks_native_american[5, 1], 2)), 
-                              "5" = paste(round(test_race_bins_breaks_native_american[5, 1], 2), "-", 
-                                          round(test_race_bins_breaks_native_american[6, 1], 2)))) +
-  # scale_y_continuous(limits = c(0, 2000),
-  #                    breaks = seq(0, 2000, 200),
-  #                    sec.axis = dup_axis()) +
-  labs(y = "Distance Traveled (miles)",
-       x = "Percentage of Racial Group(%)",
-       title = "White",
+               varwidth = TRUE, 
+               outlier.shape = NA
+               ) +
+  coord_flip() +
+  scale_fill_manual(values = racial_group_colors) + 
+  scale_x_discrete(labels = c("1" = "Above CA Average", "0" = "Below CA Average")) +
+  scale_y_continuous(limits = c(0, 1000),
+                     breaks = seq(0, 1000, 100),
+                     minor_breaks = seq(0, 1000, 50),
+                     sec.axis = dup_axis()) +
+  labs(x = "Distance Traveled (miles)",
+       #y = "Percentage (%)",
+       title = "Native American",
        subtitle = "Distance Traveled Compared to Racial Breakdown of Home \nfor Overnight Reservations in California") +
   theme_minimal() +
   theme(legend.position = "none",
         plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank()) +
-  coord_flip()
+        panel.grid.major.y = element_blank())
 
+# other
 ggplot(data = test_race_other) +
-  geom_boxplot(aes(x = factor(race_percent_bins),
-                   y = distance_traveled_mi, 
+  geom_boxplot(aes(x = factor(above_race_average),
+                   y = distance_traveled_mi,
                    fill = race),
-               varwidth = TRUE, outlier.shape = NA) +
-  scale_fill_manual(values = racial_group_colors) +
-  scale_x_discrete(labels = c("1" = paste("0 -", 
-                                          round(test_race_bins_breaks_other[2, 1], 2)), 
-                              "2" = paste(round(test_race_bins_breaks_other[2, 1], 2), "-", 
-                                          round(test_race_bins_breaks_other[3, 1], 2)), 
-                              "3" = paste(round(test_race_bins_breaks_other[3, 1], 2), "-", 
-                                          round(test_race_bins_breaks_other[4, 1], 2)),
-                              "4" = paste(round(test_race_bins_breaks_other[4, 1], 2), "-", 
-                                          round(test_race_bins_breaks_other[5, 1], 2)), 
-                              "5" = paste(round(test_race_bins_breaks_other[5, 1], 2), "-", 
-                                          round(test_race_bins_breaks_other[6, 1], 2)))) +
-  # scale_y_continuous(limits = c(0, 2000),
-  #                    breaks = seq(0, 2000, 200),
-  #                    sec.axis = dup_axis()) +
-  labs(y = "Distance Traveled (miles)",
-       x = "Percentage of Racial Group(%)",
-       title = "White",
+               varwidth = TRUE, 
+               outlier.shape = NA
+               ) +
+  coord_flip() +
+  scale_fill_manual(values = racial_group_colors) + 
+  scale_x_discrete(labels = c("1" = "Above CA Average", "0" = "Below CA Average")) +
+  scale_y_continuous(limits = c(0, 700),
+                     breaks = seq(0, 700, 100),
+                     minor_breaks = seq(0, 700, 50),
+                     sec.axis = dup_axis()) +
+  labs(x = "Distance Traveled (miles)",
+       #y = "Percentage (%)",
+       title = "Other Race or Races",
        subtitle = "Distance Traveled Compared to Racial Breakdown of Home \nfor Overnight Reservations in California") +
   theme_minimal() +
   theme(legend.position = "none",
         plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank()) +
-  coord_flip()
+        panel.grid.major.y = element_blank())
 
+# pacific_islander
 ggplot(data = test_race_pacific_islander) +
-  geom_boxplot(aes(x = factor(race_percent_bins),
-                   y = distance_traveled_mi, 
+  geom_boxplot(aes(x = factor(above_race_average),
+                   y = distance_traveled_mi,
                    fill = race),
-               varwidth = TRUE, outlier.shape = NA) +
-  scale_fill_manual(values = racial_group_colors) +
-  scale_x_discrete(labels = c("1" = paste("0 -", 
-                                          round(test_race_bins_breaks_pacific_islander[2, 1], 2)), 
-                              "2" = paste(round(test_race_bins_breaks_pacific_islander[2, 1], 2), "-", 
-                                          round(test_race_bins_breaks_pacific_islander[3, 1], 2)), 
-                              "3" = paste(round(test_race_bins_breaks_pacific_islander[3, 1], 2), "-", 
-                                          round(test_race_bins_breaks_pacific_islander[4, 1], 2)),
-                              "4" = paste(round(test_race_bins_breaks_pacific_islander[4, 1], 2), "-", 
-                                          round(test_race_bins_breaks_pacific_islander[5, 1], 2)), 
-                              "5" = paste(round(test_race_bins_breaks_pacific_islander[5, 1], 2), "-", 
-                                          round(test_race_bins_breaks_pacific_islander[6, 1], 2)))) +
-  # scale_y_continuous(limits = c(0, 2000),
-  #                    breaks = seq(0, 2000, 200),
-  #                    sec.axis = dup_axis()) +
-  labs(y = "Distance Traveled (miles)",
-       x = "Percentage of Racial Group(%)",
-       title = "White",
+               varwidth = TRUE, 
+               outlier.shape = NA
+               ) +
+  coord_flip() +
+  scale_fill_manual(values = racial_group_colors) + 
+  scale_x_discrete(labels = c("1" = "Above CA Average", "0" = "Below CA Average")) +
+  scale_y_continuous(limits = c(0, 700),
+                     breaks = seq(0, 700, 100),
+                     minor_breaks = seq(0, 700, 50),
+                     sec.axis = dup_axis()) +
+  labs(x = "Distance Traveled (miles)",
+       #y = "Percentage (%)",
+       title = "Pacific Islander",
        subtitle = "Distance Traveled Compared to Racial Breakdown of Home \nfor Overnight Reservations in California") +
   theme_minimal() +
   theme(legend.position = "none",
         plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank()) +
-  coord_flip()
+        panel.grid.major.y = element_blank())
 
+# white
 ggplot(data = test_race_white) +
-  geom_boxplot(aes(x = factor(race_percent_bins),
-                   y = distance_traveled_mi, 
+  geom_boxplot(aes(x = factor(above_race_average),
+                   y = distance_traveled_mi,
                    fill = race),
-               varwidth = TRUE, outlier.shape = NA) +
-  scale_fill_manual(values = racial_group_colors) +
-  scale_x_discrete(labels = c("1" = paste("0 -", 
-                                          round(test_race_bins_breaks_white[2, 1], 2)), 
-                              "2" = paste(round(test_race_bins_breaks_white[2, 1], 2), "-", 
-                                          round(test_race_bins_breaks_white[3, 1], 2)), 
-                              "3" = paste(round(test_race_bins_breaks_white[3, 1], 2), "-", 
-                                          round(test_race_bins_breaks_white[4, 1], 2)),
-                              "4" = paste(round(test_race_bins_breaks_white[4, 1], 2), "-", 
-                                          round(test_race_bins_breaks_white[5, 1], 2)), 
-                              "5" = paste(round(test_race_bins_breaks_white[5, 1], 2), "-", 
-                                          round(test_race_bins_breaks_white[6, 1], 2)))) +
-  # scale_y_continuous(limits = c(0, 2000),
-  #                    breaks = seq(0, 2000, 200),
-  #                    sec.axis = dup_axis()) +
-  labs(y = "Distance Traveled (miles)",
-       x = "Percentage of Racial Group(%)",
+               varwidth = TRUE, 
+               outlier.shape = NA
+               ) +
+  coord_flip() +
+  scale_fill_manual(values = racial_group_colors) + 
+  scale_x_discrete(labels = c("1" = "Above CA Average", "0" = "Below CA Average")) +
+  scale_y_continuous(limits = c(0, 900),
+                     breaks = seq(0, 900, 100),
+                     minor_breaks = seq(0, 900, 50),
+                     sec.axis = dup_axis()) +
+  labs(x = "Distance Traveled (miles)",
+       #y = "Percentage (%)",
        title = "White",
        subtitle = "Distance Traveled Compared to Racial Breakdown of Home \nfor Overnight Reservations in California") +
   theme_minimal() +
   theme(legend.position = "none",
         plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank()) +
-  coord_flip()
+        panel.grid.major.y = element_blank())
+```
+```{r}
+# ridgeplot attempt
+ggplot(data = test_race_white) +
+  geom_density_ridges(aes(x = distance_traveled_mi,
+                          y = factor(above_race_average),
+                          fill = race), position = "dodge") +
+  scale_fill_manual(values = racial_group_colors) #+ 
+  # scale_x_discrete(labels = c("1" = "Above CA Average", "0" = "Below CA Average")) +
+  # scale_y_continuous(limits = c(0, 900),
+  #                    breaks = seq(0, 900, 100),
+  #                    minor_breaks = seq(0, 900, 50),
+  #                    sec.axis = dup_axis()) +
+  # labs(x = "Distance Traveled (miles)",
+  #      #y = "Percentage (%)",
+  #      title = "White",
+  #      subtitle = "Distance Traveled Compared to Racial Breakdown of Home \nfor Overnight Reservations in California") +
+  # theme_minimal() +
+  # theme(legend.position = "none",
+  #       plot.background = element_rect("white"),
+  #       panel.grid.major.y = element_blank())
 ```
 
 
