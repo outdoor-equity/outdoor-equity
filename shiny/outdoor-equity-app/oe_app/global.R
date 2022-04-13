@@ -40,6 +40,13 @@ data_race_dist_travel <- readRDS("data/2018_data_plot_race_distance_traveled.rds
 # source input functions ----
 source("r/inputs/inputs.R")
 
+# source summary rdf functions ----
+source("r/summary_plots/dist_travel_rdf.R")
+
+# source summary plot functions ----
+source("r/summary_plots/dist_travel_plot.R")
+
+
 
 # CA objects ----
 # use in R scripts, ui or server
@@ -53,33 +60,36 @@ admin_units <- as.vector(unique(data_joined_2018$admin_unit))
 ## CA reservable sites ----
 sites <- as.vector(unique(data_joined_2018$park))
 
-## PRETTY NAMES ----
-### distribution vars ----
-dist_vars <- c("Booking window" = "booking_window",
-               "Daily cost" = "daily_cost_per_visitor",
-               "Distance traveled" = "distance_traveled_mi",
-               # cat education
-               "Education" = "hs_GED_or_below",
-               "Education" = "college",
-               "Education" = "some_college",
-               "Education" = "master_or_above",
-               "Estimated household income" = "median_income",
-               "Language - English only" = "english_only",
-               "Language - Not English only" = "not_english_only",
-               "Length of stay" = "length_of_stay",
-               "Race - Asian" = "asian",
-               "Race - Black" = "black",
-               "Race - Hispanic/Latinx" = "hispanic_latinx",
-               "Race - Multiracial" = "multiracial",
-               "Race - Native American" = "native_american",
-               "Race - Pacific Islander" = "pacific_islander",
-               "Race - White" = "white",
-               "Race - Other" = "other")
-               #"Total number of different site types" = "aggregated_site_type",
-               #"Total number of sites" = "park", # is this right?
-               #"Total number of visits" = "count"
+# VARS ----
+## distribution vars ----
+summary_vars <- c("Distance traveled" = "distance_traveled_mi")
+  
+  # c("Booking window" = "booking_window",
+  #              "Daily cost" = "daily_cost_per_visitor",
+  #              "Distance traveled" = "distance_traveled_mi",
+  #              # cat education
+  #              # "Education" = "hs_GED_or_below",
+  #              # "Education" = "college",
+  #              # "Education" = "some_college",
+  #              # "Education" = "master_or_above",
+  #              "Estimated household income" = "median_income",
+  #              # cat language
+  #              # "Language - English only" = "english_only",
+  #              # "Language - Not English only" = "not_english_only",
+  #              "Length of stay" = "length_of_stay",
+  #              "Race - Asian" = "asian",
+  #              "Race - Black" = "black",
+  #              "Race - Hispanic/Latinx" = "hispanic_latinx",
+  #              "Race - Multiracial" = "multiracial",
+  #              "Race - Native American" = "native_american",
+  #              "Race - Pacific Islander" = "pacific_islander",
+  #              "Race - White" = "white",
+  #              "Race - Other" = "other")
+  #              #"Total number of different site types" = "aggregated_site_type",
+  #              #"Total number of sites" = "park", # is this right?
+  #              #"Total number of visits" = "count"
 
-### comparison vars ----
+## comparison vars ----
 compare_vars <- c("Education - High School/GED" = "median_hs_GED_or_below",
                   "Education - College" = "median_college",
                   "Education - Some college" = "median_some_college",
