@@ -1,6 +1,6 @@
 ---
-title: "Variables - 2nd try"
-author: "Clarissa"
+title: "Mock up of 'Data Summary'"
+author: ""
 date: "4/10/2022"
 output: html_document
 ---
@@ -47,7 +47,7 @@ data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv"
 ```
 
 
-## Agency Analysis: Distribution Graphs
+## Data Summary
 
 ### Distance traveled
 
@@ -95,18 +95,11 @@ plot_distance_traveled_1 <-
                  col = hist_colors[[2]], size = 0.05) +
   scale_x_continuous(limits = c(0, x_max)) +
   scale_y_continuous(labels = scales::comma) +
-  annotate(geom = "text",
-           x = x_max * (2/3),
-           y = (max(split_all$Freq)) * (3/4),
-           label = paste0("80% of reservations to \nCalifornia overnight sites in ",
-                          deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
-                          "\n traveled less than ", quant_80, " miles."),
-           color = "red") +
   geom_vline(xintercept = quant_80,
-             linetype = "dashed", alpha = 0.5, color = "red") +
+             linetype = "dashed", alpha = 0.5, color = "darkred") +
   labs(x = "Distance traveled (miles)",
        y = "",
-       title = "Distance Traveled from Home to Site for <br>Overnight Reservations in California in 2018") +
+       title = "Distance Traveled to Reservation for <br> All Overnight Reservations in California in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank())
@@ -115,7 +108,19 @@ plot_distance_traveled_1 <-
 
 ```{r}
 ggplotly(plot_distance_traveled_1,
-         tooltip = list("text"))
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(x = 1, 
+                             y = -0.35, 
+                             text = paste0("80% of reservations to California overnight sites in ",
+                                           deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
+                                           " traveled less than ", quant_80, " miles."), 
+                             showarrow = F, 
+                             xre = 'paper', yref = 'paper', 
+                             xanchor = 'left', 
+                             yancho = 'auto', 
+                             xshift = 0, yshift = 0,
+                             font = list(size = 12, color = "darkred")))
 ```
 
 
@@ -167,18 +172,11 @@ plot_distance_traveled_upperpines <-
                  col = hist_colors[[2]], size = 0.05) +
   scale_x_continuous(limits = c(0, x_max)) +
   scale_y_continuous(labels = scales::comma) +
-  annotate(geom = "text", 
-           x = x_max * (2/3),
-           y = (max(split_all$Freq)) * (3/4),
-           label = paste0("80% of reservations to \nCalifornia overnight sites in ",
-                          deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
-                          "\n traveled less than ", quant_80, " miles."),
-           color = "red") +
   geom_vline(xintercept = quant_80,
-             linetype = "dashed", alpha = 0.5, color = "red") +
+             linetype = "dashed", alpha = 0.5, color = "darkred") +
   labs(x = "Distance traveled (miles)",
        y = "",
-       title = "Distance Traveled from Home to Site for <br>Overnight Reservations in California in 2018") +
+       title = "Distance Traveled to Reservation for <br>Upper Pines, Yosemite National Park in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank())
@@ -187,7 +185,19 @@ plot_distance_traveled_upperpines <-
 
 ```{r}
 ggplotly(plot_distance_traveled_upperpines,
-         tooltip = list("text"))
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(x = 1, 
+                             y = -0.35, 
+                             text = paste0("80% of reservations to California overnight sites in ",
+                                           deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
+                                           " traveled less than ", quant_80, " miles."), 
+                             showarrow = F, 
+                             xre = 'paper', yref = 'paper', 
+                             xanchor = 'left', 
+                             yancho = 'auto', 
+                             xshift = 0, yshift = 0,
+                             font = list(size = 12, color = "darkred")))
 ```
 
 
@@ -237,18 +247,11 @@ plot_distance_traveled_cranevalley <-
                  col = hist_colors[[2]], size = 0.05) +
   scale_x_continuous(limits = c(0, x_max)) +
   scale_y_continuous(labels = scales::comma) +
-  annotate(geom = "text", 
-           x = x_max * (2/3),
-           y = (max(split_all$Freq)) * (3/4),
-           label = paste0("80% of reservations to \nCalifornia overnight sites in ",
-                          deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
-                          "\n traveled less than ", quant_80, " miles."), 
-           color = "red") +
   geom_vline(xintercept = quant_80,
-             linetype = "dashed", alpha = 0.5, color = "red") +
+             linetype = "dashed", alpha = 0.5, color = "darkred") +
   labs(x = "Distance traveled (miles)",
        y = "",
-       title = "Distance Traveled from Home to Site for <br>Overnight Reservations in California in 2018") +
+       title = "Distance Traveled to Reservation for <br>Crane Valley, Sierra National Forest in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank())
@@ -257,7 +260,19 @@ plot_distance_traveled_cranevalley <-
 
 ```{r}
 ggplotly(plot_distance_traveled_cranevalley,
-         tooltip = list("text"))
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(x = 1, 
+                             y = -0.35, 
+                             text = paste0("80% of reservations to California overnight sites in ",
+                                           deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
+                                           " traveled less than ", quant_80, " miles."), 
+                             showarrow = F, 
+                             xre = 'paper', yref = 'paper', 
+                             xanchor = 'left', 
+                             yancho = 'auto', 
+                             xshift = 0, yshift = 0,
+                             font = list(size = 12, color = "darkred")))
 ```
 
 
@@ -310,18 +325,16 @@ plot_distance_traveled_navajoflats <-
                  col = hist_colors[[2]], size = 0.05, color = "red") +
   scale_x_continuous(limits = c(0, x_max)) +
   scale_y_continuous(labels = scales::comma) +
-  annotate(geom = "text", 
-           x = x_max * (2/3),
-           y = (max(split_all$Freq)) * (3/4),
-           label = paste0("80% of reservations to \nCalifornia overnight sites in ",
-                          deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
-                          "\n traveled less than ", quant_80, " miles."), 
-           color = "red") +
   geom_vline(xintercept = quant_80,
-             linetype = "dashed", alpha = 0.5, color = "red") +
+             linetype = "dashed", alpha = 0.5, color = "darkred") +
+  annotate(geom = "text",
+           x = quant_80,
+           y = max(split_all$Freq) * (9/10),
+           label ="80th\npercentile",
+           size = 3, color = "darkred", hjust = -1) +
   labs(x = "Distance traveled (miles)",
        y = "",
-       title = "Distance Traveled from Home to Site for <br>Overnight Reservations in California in 2018") +
+       title = "Distance Traveled to Reservation for <br>Navajo Flats Campground, Los Padres National Forest in 2018") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank())
@@ -330,7 +343,19 @@ plot_distance_traveled_navajoflats <-
 
 ```{r}
 ggplotly(plot_distance_traveled_navajoflats,
-         tooltip = list("text"))
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(x = 1, 
+                             y = -0.35, 
+                             text = paste0("80% of reservations to California overnight sites in ",
+                                           deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
+                                           " traveled less than ", quant_80, " miles."), 
+                             showarrow = F, 
+                             xre = 'paper', yref = 'paper', 
+                             xanchor = 'left', 
+                             yancho = 'auto', 
+                             xshift = 0, yshift = 0,
+                             font = list(size = 12, color = "darkred")))
 ```
 
 
