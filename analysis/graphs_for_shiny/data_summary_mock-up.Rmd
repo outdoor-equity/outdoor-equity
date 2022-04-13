@@ -2,7 +2,10 @@
 title: "Mock up of 'Data Summary'"
 author: ""
 date: "4/10/2022"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
@@ -360,66 +363,32 @@ ggplotly(plot_distance_traveled_navajoflats,
 
 
 
+### Booking window
 
 
+### Cost
 
 
+### Length of Stay
 
 
-```{r, eval=FALSE}
-
-## -- data wrangle -- ##
-data_plot_distance_traveled_all <- data_ridb_acs_2018 %>% 
-  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
-  select(agency, admin_unit, park, distance_traveled_mi) %>% 
-  filter(!is.na(distance_traveled_mi))
-
-quant_80 <- quantile(x = data_plot_distance_traveled_all$distance_traveled_mi,
-                     probs = seq(0, 1, 0.1))[[9]] %>% round(0)
+### Site Type
 
 
-## -- create plot -- ##
-
-# parameters
-hist_colors <- c("#009900FF", "#00c000")
+### Race
 
 
-test <-
-  ggplot(data = data_plot_distance_traveled_all) +
-  geom_bar(aes(x = distance_traveled_mi#,
-               # text = paste0(scales::comma(round(..count.. / nrow(data_plot_distance_traveled_all), 2) * 100), 
-               #               "% of all reservations traveled between ", xmin, " and ", xmax, " miles",
-               #               "<br>(", scales::comma(..count..), " reservations)")
-               ),
-           
-           # binwidth = center_bin * 2,
-           # center = center_bin,
-           fill = hist_colors[[1]], 
-           col = hist_colors[[2]], size = 0.05) +
-  scale_x_binned() +
-  scale_y_continuous(labels = scales::comma) +
-  annotate(geom = "text",
-           x = ,
-           y = ,
-  )
-annotate(geom = "text", 
-         x = x_max / 3, 
-         y = (max(split_all$Freq) - min(split_all$Freq)) / 2,
-         label = paste0("80% of reservations to \nCalifornia overnight sites in ",
-                        deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
-                        "\n traveled less than ", quant_80, " miles.")) +
-  geom_vline(xintercept = quant_80,
-             linetype = "dashed", alpha = 0.5) +
-  labs(x = "Distance traveled (miles)",
-       y = "",
-       title = "Distance Traveled from Home to Site for <br>Overnight Reservations in California in 2018") +
-  theme_minimal() +
-  theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank())
-```
+### Education
 
-```{r, eval=FALSE}
-ggplotly(test,
-         tooltip = list("text"))
-```
+
+### Language
+
+
+### Median income
+
+
+### Total reservations (by agency)
+
+
+### Total Reservations (by agency)
 

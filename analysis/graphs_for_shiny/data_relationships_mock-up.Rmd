@@ -2,7 +2,10 @@
 title: "Mock up of 'Data Relationships'"
 author: "Clarissa"
 date: "4/12/2022"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
@@ -35,6 +38,8 @@ data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv"
 data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
                           delim = ",")
 ```
+
+### Race x distance traveled
 
 ```{r}
 ## -- data wrangle -- ##
@@ -407,6 +412,129 @@ ggplotly(plot_white,
            xshift = 0, yshift = 0,
            font = list(size = 12, color = "black")))
 ```
+
+
+### Race x distance traveled 
+
+#### (Option 1)
+
+```{r}
+## -- data wrangle -- ##
+
+racial_groups <- c("other", "pacific_islander", "multiracial", "asian", 
+                   "black", "white", "native_american", "hispanic_latinx")
+for (i in seq_along(racial_groups)){
+  df_breaks <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
+           multiracial, native_american, other, pacific_islander, white,
+           distance_traveled_m) %>% 
+    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+    drop_na(distance_traveled_mi) %>% 
+  pivot_longer(cols = 5:12,
+               names_to = "race",
+               values_to = "race_percentage") %>% 
+    filter(race == racial_groups[[1]]) %>% 
+    drop_na(race_percentage) %>% 
+    mutate(race_percentage_bins = ntile(race_percentage, 5))
+  
+  bin_breaks <- quantile(df_breaks$race_percentage, prob = seq(0, 1, length = 6), type = 5)
+  
+  df <- df_breaks %>% 
+    group_by(race_percentage_bins) %>% 
+    summarize(mean_distance_traveled_mi = mean(distance_traveled_mi)) %>% 
+    mutate(race_percentage_bins = case_when(race_percentage_bins == 1 ~ paste0("Very Low"), 
+                                            race_percentage_bins == 2 ~ paste0("Low"), 
+                                            race_percentage_bins == 3 ~ paste0("Medium"), 
+                                            race_percentage_bins == 4 ~ paste0("High"), 
+                                            race_percentage_bins == 5 ~ paste0("Very High")),
+           race_percentage_bins = factor(race_percentage_bins, levels = c("Very Low", "Low", "Medium",
+                                                                          "High", "Very High")))
+    
+assign(paste0("data_plot_race_distance_traveled_", racial_groups[[i]]), data.frame(df), envir = .GlobalEnv)
+assign(paste0("bin_breaks_", racial_groups[[i]]), c(bin_breaks), envir = .GlobalEnv)
+}
+
+
+
+## -- create plot -- ##
+
+
+# plot for shiny
+
+# asian 
+plot_asian <- ggplot(data = data_plot_race_distance_traveled_asian,
+                     aes(x = mean_distance_traveled_mi,
+                         y = race_percentage_bins)) +
+  geom_segment(aes(xend = 0, yend = race_percentage_bins)) +
+  geom_point(size = 5, color = "#009E73", 
+             fill = alpha("#009E73"), 
+             shape = 21, stroke = 2,
+             aes(text = paste("People who live in ZIP codes with", str_to_upper(race_percentage_bins), "Asian populations",
+                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles."))) +
+  labs(x = paste("Distance Traveled from Home to Site (miles)", "\U2192"),
+       y = "",
+       title = "Distance Traveled to Reservation Based on <br>Presence of Asians in ZIP code")
+
+# black "#F0E442"
+
+# hispanic_latinx "#CC79A7"
+
+# multiracial "#56B4E9"
+
+# native_american "#D55E00"
+
+# other "#999999"
+
+# pacific_islander "#E69F00"
+
+# white "#0072B2"
+
+```
+
+```{r}
+ggplotly(plot_asian,
+         tooltip = list("text"))
+```
+
+
+### Race x site type 
+
+
+### Race x booking window 
+
+
+### Race x daily cost 
+
+
+### Race x length of stay 
+
+
+### Education x distance traveled 
+
+
+### Education x site type 
+
+
+### Education x booking window 
+
+
+### Education x daily cost 
+
+
+### Education x length of stay 
+
+
+### Language 
+
+
+### Median-income x distance traveled
+
+
+### Booking window x site type
+
+
+### Booking window x distance traveled
+
 
 
 
