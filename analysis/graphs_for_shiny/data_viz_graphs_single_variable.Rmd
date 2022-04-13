@@ -326,12 +326,7 @@ plot_race <-
   scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        # ## only needed for saving as image
-        # axis.text = element_text(size = 20),
-        # axis.title = element_text(size = 22, face = "bold"),
-        # title = element_text(size = 24, face = "bold")
-        )
+        panel.grid.major.y = element_blank())
 plot_race
 ```
 

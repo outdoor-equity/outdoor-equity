@@ -1,0 +1,540 @@
+---
+title: "Mock up of 'Data Relationships'"
+author: "Clarissa"
+date: "4/12/2022"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(lubridate)
+library(sf)
+library(tidycensus)
+library(patchwork)
+library(scales)
+library(tmap)
+library(vroom)
+library(paletteer)
+library(ggridges)
+library(plotly)
+
+options(scipen = 999)
+```
+
+
+```{r}
+# read in joined data
+data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
+                            delim = ",") ## non-map graphs (no geometries)
+# data_ridb_acs_2018 <- readRDS(file = "../../../../data_clean/2018_joined_data.rds") ## maps (don't use RDS for non-map viz, too slow)
+
+data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
+                          delim = ",")
+```
+
+### Race x distance traveled
+
+```{r}
+## -- data wrangle -- ##
+
+racial_groups <- c("other", "pacific_islander", "multiracial", "asian", 
+                   "black", "white", "native_american", "hispanic_latinx")
+for (i in seq_along(racial_groups)){
+  df_breaks <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
+           multiracial, native_american, other, pacific_islander, white,
+           distance_traveled_m) %>% 
+    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+    drop_na(distance_traveled_mi) %>% 
+  pivot_longer(cols = 5:12,
+               names_to = "race",
+               values_to = "race_percentage") %>% 
+    filter(race == racial_groups[[i]]) %>% 
+    drop_na(race_percentage) %>% 
+    mutate(race_percentage_bins = ntile(race_percentage, 5))
+  
+  bin_breaks <- quantile(df_breaks$race_percentage, prob = seq(0, 1, length = 6), type = 5)
+  
+  df <- df_breaks %>% 
+    group_by(race_percentage_bins) %>% 
+    summarize(mean_distance_traveled_mi = mean(distance_traveled_mi)) %>% 
+    mutate(race_percentage_bins = case_when(race_percentage_bins == 1 ~ paste0("Very Low"), 
+                                            race_percentage_bins == 2 ~ paste0("Low"), 
+                                            race_percentage_bins == 3 ~ paste0("Medium"), 
+                                            race_percentage_bins == 4 ~ paste0("High"), 
+                                            race_percentage_bins == 5 ~ paste0("Very High")),
+           race_percentage_bins = factor(race_percentage_bins, levels = c("Very Low", "Low", "Medium",
+                                                                          "High", "Very High")))
+    
+assign(paste0("data_plot_race_distance_traveled_", racial_groups[[i]]), data.frame(df), envir = .GlobalEnv)
+assign(paste0("bin_breaks_", racial_groups[[i]]), c(bin_breaks), envir = .GlobalEnv)
+}
+
+
+
+## -- create plot -- ##
+
+
+# plot for shiny
+
+# asian 
+plot_asian <- ggplot(data = data_plot_race_distance_traveled_asian,
+                     aes(x = mean_distance_traveled_mi,
+                         y = race_percentage_bins)) +
+  geom_segment(aes(xend = 0, yend = race_percentage_bins)) +
+  geom_point(size = 5, 
+             color = "#009E73", fill = alpha("#009E73"), 
+             shape = 21, stroke = 2,
+             aes(text = paste("People who live in ZIP codes with", str_to_upper(race_percentage_bins), "Asian populations",
+                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles."))) +
+  labs(x = paste("Average Distance Traveled from Home to Site (miles)", "\U2192"),
+       y = "",
+       title = "Average Distance Traveled to Reservation Based on <br>Asian Population in ZIP code")
+
+# black 
+plot_black <- ggplot(data = data_plot_race_distance_traveled_black,
+                     aes(x = mean_distance_traveled_mi,
+                         y = race_percentage_bins)) +
+  geom_segment(aes(xend = 0, yend = race_percentage_bins)) +
+  geom_point(size = 5, 
+             color = "#F0E442", fill = alpha("#F0E442"), 
+             shape = 21, stroke = 2,
+             aes(text = paste("People who live in ZIP codes with", str_to_upper(race_percentage_bins), "Black populations",
+                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles."))) +
+  labs(x = paste("Average Distance Traveled from Home to Site (miles)", "\U2192"),
+       y = "",
+       title = "Average Distance Traveled to Reservation Based on <br>Black Population in ZIP code")
+
+# hispanic_latinx 
+plot_hispanic_latinx <- ggplot(data = data_plot_race_distance_traveled_hispanic_latinx,
+                     aes(x = mean_distance_traveled_mi,
+                         y = race_percentage_bins)) +
+  geom_segment(aes(xend = 0, yend = race_percentage_bins)) +
+  geom_point(size = 5, 
+             color = "#CC79A7", fill = alpha("#CC79A7"), 
+             shape = 21, stroke = 2,
+             aes(text = paste("People who live in ZIP codes with", str_to_upper(race_percentage_bins), "Latinx populations",
+                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles."))) +
+  labs(x = paste("Average Distance Traveled from Home to Site (miles)", "\U2192"),
+       y = "",
+       title = "Average Distance Traveled to Reservation Based on <br>Latinx Population in ZIP code")
+
+# multiracial 
+plot_multiracial <- ggplot(data = data_plot_race_distance_traveled_multiracial,
+                     aes(x = mean_distance_traveled_mi,
+                         y = race_percentage_bins)) +
+  geom_segment(aes(xend = 0, yend = race_percentage_bins)) +
+  geom_point(size = 5, 
+             color = "#56B4E9", fill = alpha("#56B4E9"), 
+             shape = 21, stroke = 2,
+             aes(text = paste("People who live in ZIP codes with", str_to_upper(race_percentage_bins), "Multiracial populations",
+                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles."))) +
+  labs(x = paste("Average Distance Traveled from Home to Site (miles)", "\U2192"),
+       y = "",
+       title = "Average Distance Traveled to Reservation Based on <br>Multiracial Population in ZIP code")
+
+# native_american 
+plot_native_american <- ggplot(data = data_plot_race_distance_traveled_native_american,
+                     aes(x = mean_distance_traveled_mi,
+                         y = race_percentage_bins)) +
+  geom_segment(aes(xend = 0, yend = race_percentage_bins)) +
+  geom_point(size = 5, 
+             color = "#D55E00", fill = alpha("#D55E00"), 
+             shape = 21, stroke = 2,
+             aes(text = paste("People who live in ZIP codes with", str_to_upper(race_percentage_bins), "Native American populations",
+                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles."))) +
+  labs(x = paste("Average Distance Traveled from Home to Site (miles)", "\U2192"),
+       y = "",
+       title = "Average Distance Traveled to Reservation Based on <br>Native American Population in ZIP code")
+
+# other 
+plot_other <- ggplot(data = data_plot_race_distance_traveled_other,
+                     aes(x = mean_distance_traveled_mi,
+                         y = race_percentage_bins)) +
+  geom_segment(aes(xend = 0, yend = race_percentage_bins)) +
+  geom_point(size = 5, 
+             color = "#999999", fill = alpha("#999999"), 
+             shape = 21, stroke = 2,
+             aes(text = paste("People who live in ZIP codes with", str_to_upper(race_percentage_bins), "populations of other race(s)",
+                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles."))) +
+  labs(x = paste("Average Distance Traveled from Home to Site (miles)", "\U2192"),
+       y = "",
+       title = "Average Distance Traveled to Reservation Based on <br>Population of other races in ZIP code")
+
+# pacific_islander 
+plot_pacific_islander <- ggplot(data = data_plot_race_distance_traveled_pacific_islander,
+                     aes(x = mean_distance_traveled_mi,
+                         y = race_percentage_bins)) +
+  geom_segment(aes(xend = 0, yend = race_percentage_bins)) +
+  geom_point(size = 5, 
+             color = "#E69F00", fill = alpha("#E69F00"), 
+             shape = 21, stroke = 2,
+             aes(text = paste("People who live in ZIP codes with", str_to_upper(race_percentage_bins), "Native Hawaiian and Pacific Islander populations",
+                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles."))) +
+  labs(x = paste("Average Distance Traveled from Home to Site (miles)", "\U2192"),
+       y = "",
+       title = "Average Distance Traveled to Reservation Based on <br>Native Hawaiian and Pacific Islander Population in ZIP code")
+
+# white 
+plot_white <- ggplot(data = data_plot_race_distance_traveled_white,
+                     aes(x = mean_distance_traveled_mi,
+                         y = race_percentage_bins)) +
+  geom_segment(aes(xend = 0, yend = race_percentage_bins)) +
+  geom_point(size = 5, 
+             color = "#0072B2", fill = alpha("#0072B2"), 
+             shape = 21, stroke = 2,
+             aes(text = paste("People who live in ZIP codes with", str_to_upper(race_percentage_bins), "White populations",
+                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles."))) +
+  labs(x = paste("Average Distance Traveled from Home to Site (miles)", "\U2192"),
+       y = "",
+       title = "Average Distance Traveled to Reservation Based on <br>White Population in ZIP code")
+
+```
+
+```{r}
+ggplotly(plot_asian,
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(
+           x = 1, 
+           y = -0.35, 
+           text = paste0("Racial breakdown:    ",
+                        str_to_sentence(data_plot_race_distance_traveled_asian[[1, 1]]),
+                        " = ", round(bin_breaks_asian[[1]]*100, 0), "% - ", round(bin_breaks_asian[[2]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_asian[[2, 1]]),
+                        " = ", round(bin_breaks_asian[[2]]*100, 2), "% - ", round(bin_breaks_asian[[3]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_asian[[3, 1]]),
+                        " = ", round(bin_breaks_asian[[3]]*100, 2), "% - ", round(bin_breaks_asian[[4]]*100, 2), "%    <br>",
+                        str_to_sentence(data_plot_race_distance_traveled_asian[[4, 1]]),
+                        " = ", round(bin_breaks_asian[[4]]*100, 2), "% - ", round(bin_breaks_asian[[5]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_asian[[5, 1]]),
+                        " = ", round(bin_breaks_asian[[5]]*100, 2), "% - ", round(bin_breaks_asian[[6]]*100, 2), "%    "), 
+           showarrow = F, 
+           xre = 'paper', yref = 'paper', 
+           xanchor = 'left', 
+           yancho = 'auto', 
+           xshift = 0, yshift = 0,
+           font = list(size = 12, color = "black")))
+```
+
+
+```{r}
+ggplotly(plot_black,
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(
+           x = 1, 
+           y = -0.35, 
+           text = paste0("Racial breakdown:    ",
+                        str_to_sentence(data_plot_race_distance_traveled_black[[1, 1]]),
+                        " = ", round(bin_breaks_black[[1]]*100, 0), "% - ", round(bin_breaks_black[[2]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_black[[2, 1]]),
+                        " = ", round(bin_breaks_black[[2]]*100, 2), "% - ", round(bin_breaks_black[[3]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_black[[3, 1]]),
+                        " = ", round(bin_breaks_black[[3]]*100, 2), "% - ", round(bin_breaks_black[[4]]*100, 2), "%    <br>",
+                        str_to_sentence(data_plot_race_distance_traveled_black[[4, 1]]),
+                        " = ", round(bin_breaks_black[[4]]*100, 2), "% - ", round(bin_breaks_black[[5]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_black[[5, 1]]),
+                        " = ", round(bin_breaks_black[[5]]*100, 2), "% - ", round(bin_breaks_black[[6]]*100, 2), "%    "), 
+           showarrow = F, 
+           xre = 'paper', yref = 'paper', 
+           xanchor = 'left', 
+           yancho = 'auto', 
+           xshift = 0, yshift = 0,
+           font = list(size = 12, color = "black")))
+```
+
+
+```{r}
+ggplotly(plot_hispanic_latinx,
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(
+           x = 1, 
+           y = -0.35, 
+           text = paste0("Racial breakdown:    ",
+                        str_to_sentence(data_plot_race_distance_traveled_hispanic_latinx[[1, 1]]),
+                        " = ", round(bin_breaks_hispanic_latinx[[1]]*100, 0), "% - ", round(bin_breaks_hispanic_latinx[[2]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_hispanic_latinx[[2, 1]]),
+                        " = ", round(bin_breaks_hispanic_latinx[[2]]*100, 2), "% - ", round(bin_breaks_hispanic_latinx[[3]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_hispanic_latinx[[3, 1]]),
+                        " = ", round(bin_breaks_hispanic_latinx[[3]]*100, 2), "% - ", round(bin_breaks_hispanic_latinx[[4]]*100, 2), "%    <br>",
+                        str_to_sentence(data_plot_race_distance_traveled_hispanic_latinx[[4, 1]]),
+                        " = ", round(bin_breaks_hispanic_latinx[[4]]*100, 2), "% - ", round(bin_breaks_hispanic_latinx[[5]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_hispanic_latinx[[5, 1]]),
+                        " = ", round(bin_breaks_hispanic_latinx[[5]]*100, 2), "% - ", round(bin_breaks_hispanic_latinx[[6]]*100, 2), "%    "), 
+           showarrow = F, 
+           xre = 'paper', yref = 'paper', 
+           xanchor = 'left', 
+           yancho = 'auto', 
+           xshift = 0, yshift = 0,
+           font = list(size = 12, color = "black")))
+```
+
+
+```{r}
+ggplotly(plot_multiracial,
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(
+           x = 1, 
+           y = -0.35, 
+           text = paste0("Racial breakdown:    ",
+                        str_to_sentence(data_plot_race_distance_traveled_multiracial[[1, 1]]),
+                        " = ", round(bin_breaks_multiracial[[1]]*100, 0), "% - ", round(bin_breaks_multiracial[[2]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_multiracial[[2, 1]]),
+                        " = ", round(bin_breaks_multiracial[[2]]*100, 2), "% - ", round(bin_breaks_multiracial[[3]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_multiracial[[3, 1]]),
+                        " = ", round(bin_breaks_multiracial[[3]]*100, 2), "% - ", round(bin_breaks_multiracial[[4]]*100, 2), "%    <br>",
+                        str_to_sentence(data_plot_race_distance_traveled_multiracial[[4, 1]]),
+                        " = ", round(bin_breaks_multiracial[[4]]*100, 2), "% - ", round(bin_breaks_multiracial[[5]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_multiracial[[5, 1]]),
+                        " = ", round(bin_breaks_multiracial[[5]]*100, 2), "% - ", round(bin_breaks_multiracial[[6]]*100, 2), "%    "), 
+           showarrow = F, 
+           xre = 'paper', yref = 'paper', 
+           xanchor = 'left', 
+           yancho = 'auto', 
+           xshift = 0, yshift = 0,
+           font = list(size = 12, color = "black")))
+```
+
+
+```{r}
+ggplotly(plot_native_american,
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(
+           x = 1, 
+           y = -0.35, 
+           text = paste0("Racial breakdown:    ",
+                        str_to_sentence(data_plot_race_distance_traveled_native_american[[1, 1]]),
+                        " = ", round(bin_breaks_native_american[[1]]*100, 0), "% - ", round(bin_breaks_native_american[[2]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_native_american[[2, 1]]),
+                        " = ", round(bin_breaks_native_american[[2]]*100, 2), "% - ", round(bin_breaks_native_american[[3]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_native_american[[3, 1]]),
+                        " = ", round(bin_breaks_native_american[[3]]*100, 2), "% - ", round(bin_breaks_native_american[[4]]*100, 2), "%    <br>",
+                        str_to_sentence(data_plot_race_distance_traveled_native_american[[4, 1]]),
+                        " = ", round(bin_breaks_native_american[[4]]*100, 2), "% - ", round(bin_breaks_native_american[[5]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_native_american[[5, 1]]),
+                        " = ", round(bin_breaks_native_american[[5]]*100, 2), "% - ", round(bin_breaks_native_american[[6]]*100, 2), "%    "),
+           showarrow = F, 
+           xre = 'paper', yref = 'paper', 
+           xanchor = 'left', 
+           yancho = 'auto', 
+           xshift = 0, yshift = 0,
+           font = list(size = 12, color = "black")))
+```
+
+
+```{r}
+ggplotly(plot_other,
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(
+           x = 1, 
+           y = -0.35, 
+           text = paste0("Racial breakdown:    ",
+                        str_to_sentence(data_plot_race_distance_traveled_other[[1, 1]]),
+                        " = ", round(bin_breaks_other[[1]]*100, 0), "% - ", round(bin_breaks_other[[2]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_other[[2, 1]]),
+                        " = ", round(bin_breaks_other[[2]]*100, 2), "% - ", round(bin_breaks_other[[3]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_other[[3, 1]]),
+                        " = ", round(bin_breaks_other[[3]]*100, 2), "% - ", round(bin_breaks_other[[4]]*100, 2), "%    <br>",
+                        str_to_sentence(data_plot_race_distance_traveled_other[[4, 1]]),
+                        " = ", round(bin_breaks_other[[4]]*100, 2), "% - ", round(bin_breaks_other[[5]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_other[[5, 1]]),
+                        " = ", round(bin_breaks_other[[5]]*100, 2), "% - ", round(bin_breaks_other[[6]]*100, 2), "%    "), 
+           showarrow = F, 
+           xre = 'paper', yref = 'paper', 
+           xanchor = 'left', 
+           yancho = 'auto', 
+           xshift = 0, yshift = 0,
+           font = list(size = 12, color = "black")))
+```
+
+
+```{r}
+ggplotly(plot_pacific_islander,
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(
+           x = 1, 
+           y = -0.35, 
+           text = paste0("Racial breakdown:    ",
+                        str_to_sentence(data_plot_race_distance_traveled_pacific_islander[[1, 1]]),
+                        " = ", round(bin_breaks_pacific_islander[[1]]*100, 0), "% - ", round(bin_breaks_pacific_islander[[2]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_pacific_islander[[2, 1]]),
+                        " = ", round(bin_breaks_pacific_islander[[2]]*100, 2), "% - ", round(bin_breaks_pacific_islander[[3]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_pacific_islander[[3, 1]]),
+                        " = ", round(bin_breaks_pacific_islander[[3]]*100, 2), "% - ", round(bin_breaks_pacific_islander[[4]]*100, 2), "%    <br>",
+                        str_to_sentence(data_plot_race_distance_traveled_pacific_islander[[4, 1]]),
+                        " = ", round(bin_breaks_pacific_islander[[4]]*100, 2), "% - ", round(bin_breaks_pacific_islander[[5]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_pacific_islander[[5, 1]]),
+                        " = ", round(bin_breaks_pacific_islander[[5]]*100, 2), "% - ", round(bin_breaks_pacific_islander[[6]]*100, 2), "%    "), 
+           showarrow = F, 
+           xre = 'paper', yref = 'paper', 
+           xanchor = 'left', 
+           yancho = 'auto', 
+           xshift = 0, yshift = 0,
+           font = list(size = 12, color = "black")))
+```
+
+
+```{r}
+ggplotly(plot_white,
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(
+           x = 1, 
+           y = -0.35, 
+           text = paste0("Racial breakdown:    ",
+                        str_to_sentence(data_plot_race_distance_traveled_white[[1, 1]]),
+                        " = ", round(bin_breaks_white[[1]]*100, 0), "% - ", round(bin_breaks_white[[2]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_white[[2, 1]]),
+                        " = ", round(bin_breaks_white[[2]]*100, 2), "% - ", round(bin_breaks_white[[3]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_white[[3, 1]]),
+                        " = ", round(bin_breaks_white[[3]]*100, 2), "% - ", round(bin_breaks_white[[4]]*100, 2), "%    <br>",
+                        str_to_sentence(data_plot_race_distance_traveled_white[[4, 1]]),
+                        " = ", round(bin_breaks_white[[4]]*100, 2), "% - ", round(bin_breaks_white[[5]]*100, 2), "%    ",
+                        str_to_sentence(data_plot_race_distance_traveled_white[[5, 1]]),
+                        " = ", round(bin_breaks_white[[5]]*100, 2), "% - ", round(bin_breaks_white[[6]]*100, 2), "%    "), 
+           showarrow = F, 
+           xre = 'paper', yref = 'paper', 
+           xanchor = 'left', 
+           yancho = 'auto', 
+           xshift = 0, yshift = 0,
+           font = list(size = 12, color = "black")))
+```
+
+
+### Race x distance traveled 
+
+#### (Option 1)
+
+```{r}
+## -- data wrangle -- ##
+
+racial_groups <- c("other", "pacific_islander", "multiracial", "asian", 
+                   "black", "white", "native_american", "hispanic_latinx")
+for (i in seq_along(racial_groups)){
+  df_breaks <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
+           multiracial, native_american, other, pacific_islander, white,
+           distance_traveled_m) %>% 
+    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+    drop_na(distance_traveled_mi) %>% 
+  pivot_longer(cols = 5:12,
+               names_to = "race",
+               values_to = "race_percentage") %>% 
+    filter(race == racial_groups[[1]]) %>% 
+    drop_na(race_percentage) %>% 
+    mutate(race_percentage_bins = ntile(race_percentage, 5))
+  
+  bin_breaks <- quantile(df_breaks$race_percentage, prob = seq(0, 1, length = 6), type = 5)
+  
+  df <- df_breaks %>% 
+    group_by(race_percentage_bins) %>% 
+    summarize(mean_distance_traveled_mi = mean(distance_traveled_mi)) %>% 
+    mutate(race_percentage_bins = case_when(race_percentage_bins == 1 ~ paste0("Very Low"), 
+                                            race_percentage_bins == 2 ~ paste0("Low"), 
+                                            race_percentage_bins == 3 ~ paste0("Medium"), 
+                                            race_percentage_bins == 4 ~ paste0("High"), 
+                                            race_percentage_bins == 5 ~ paste0("Very High")),
+           race_percentage_bins = factor(race_percentage_bins, levels = c("Very Low", "Low", "Medium",
+                                                                          "High", "Very High")))
+    
+assign(paste0("data_plot_race_distance_traveled_", racial_groups[[i]]), data.frame(df), envir = .GlobalEnv)
+assign(paste0("bin_breaks_", racial_groups[[i]]), c(bin_breaks), envir = .GlobalEnv)
+}
+
+
+
+## -- create plot -- ##
+
+
+# plot for shiny
+
+# asian 
+plot_asian <- ggplot(data = data_plot_race_distance_traveled_asian,
+                     aes(x = mean_distance_traveled_mi,
+                         y = race_percentage_bins)) +
+  geom_segment(aes(xend = 0, yend = race_percentage_bins)) +
+  geom_point(size = 5, color = "#009E73", 
+             fill = alpha("#009E73"), 
+             shape = 21, stroke = 2,
+             aes(text = paste("People who live in ZIP codes with", str_to_upper(race_percentage_bins), "Asian populations",
+                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles."))) +
+  labs(x = paste("Distance Traveled from Home to Site (miles)", "\U2192"),
+       y = "",
+       title = "Distance Traveled to Reservation Based on <br>Presence of Asians in ZIP code")
+
+# black "#F0E442"
+
+# hispanic_latinx "#CC79A7"
+
+# multiracial "#56B4E9"
+
+# native_american "#D55E00"
+
+# other "#999999"
+
+# pacific_islander "#E69F00"
+
+# white "#0072B2"
+
+```
+
+```{r}
+ggplotly(plot_asian,
+         tooltip = list("text"))
+```
+
+
+### Race x site type 
+
+
+### Race x booking window 
+
+
+### Race x daily cost 
+
+
+### Race x length of stay 
+
+
+### Education x distance traveled 
+
+
+### Education x site type 
+
+
+### Education x booking window 
+
+
+### Education x daily cost 
+
+
+### Education x length of stay 
+
+
+### Language 
+
+
+### Median-income x distance traveled
+
+
+### Booking window x site type
+
+
+### Booking window x distance traveled
+
+
+
+
