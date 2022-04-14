@@ -56,8 +56,8 @@ ui <- fluidPage(
                             select_admin_unit(locationId = "summary"),
                             # site input
                             select_site(locationId = "summary"),
-                            # data source input
-                            select_data_summary(),
+                            # data summary vars
+                            select_data_summary_vars()
                             
                           ), # EO data summary sidebar panel
                           
