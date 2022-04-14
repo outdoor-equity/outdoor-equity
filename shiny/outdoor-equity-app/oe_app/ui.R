@@ -111,7 +111,7 @@ ui <- fluidPage(
                         titlePanel("Visualize a visitorshed"),
                         # visitorsheds sidebar layout
                         sidebarLayout(
-                          # visitorsheds side bar panel
+                          # visitorsheds sidebar panel
                           sidebarPanel(
                           
                             # agency input
