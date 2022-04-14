@@ -51,11 +51,7 @@ select_data_summary <- function(){
   
 selectizeInput(inputId = "data_summary",
                label = "Select a variable to visualize",
-               choices = c("Booking Window", 
-                           "Race", 
-                           "Education", 
-                           "Language", 
-                           "Median Income"),
+               choices = summary_vars, # add sort later
                multiple = FALSE,
                options = list(
                  placeholder = "Type to search for a variable",
