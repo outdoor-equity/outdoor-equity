@@ -43,11 +43,25 @@ data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
 
 ```{r}
 ## -- data wrangle -- ##
-
 racial_groups <- c("other", "pacific_islander", "multiracial", "asian", 
                    "black", "white", "native_american", "hispanic_latinx")
+
+data_plot_race_distance_traveled <- data.frame()
+
+# create plot df for each group for RIDB data
 for (i in seq_along(racial_groups)){
-  df_breaks <- data_ridb_acs_2018 %>% 
+  df_ca_bin_breaks <- data_ca_acs_2018 %>% 
+    select(zip_code, asian, black, hispanic_latinx, multiracial, 
+           native_american, other, pacific_islander, white, mean_zip_code_population) %>% 
+    pivot_longer(cols = 2:9,
+                 names_to = "race",
+                 values_to = "race_percentage") %>% 
+    filter(race == racial_groups[[i]]) %>% ## BACK TO i
+    drop_na(race_percentage) 
+  
+  bin_breaks <- quantile(df_ca_bin_breaks$race_percentage, prob = seq(0, 1, length = 4), type = 5)
+  
+  max_racial_group_ridb <- data_ridb_acs_2018 %>% 
     select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
            multiracial, native_american, other, pacific_islander, white,
            distance_traveled_m) %>% 
@@ -56,31 +70,88 @@ for (i in seq_along(racial_groups)){
   pivot_longer(cols = 5:12,
                names_to = "race",
                values_to = "race_percentage") %>% 
-    filter(race == racial_groups[[i]]) %>% 
+    filter(race == racial_groups[[i]]) %>% ## BACK TO i
+    drop_na(race_percentage) %>%
+    summarize(max = max(race_percentage))
+  
+  df_racial_group <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
+           multiracial, native_american, other, pacific_islander, white,
+           distance_traveled_m) %>% 
+    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+    drop_na(distance_traveled_mi) %>% 
+  pivot_longer(cols = 5:12,
+               names_to = "race",
+               values_to = "race_percentage") %>% 
+    filter(race == racial_groups[[i]]) %>% ## BACK TO i
     drop_na(race_percentage) %>% 
-    mutate(race_percentage_bins = ntile(race_percentage, 5))
-  
-  bin_breaks <- quantile(df_breaks$race_percentage, prob = seq(0, 1, length = 6), type = 5)
-  
-  df <- df_breaks %>% 
+    mutate(race_percentage_bins = case_when(race_percentage <= bin_breaks[[2]] ~ paste0("Low"),
+                                            race_percentage > bin_breaks[[2]] & race_percentage <= bin_breaks[[3]] ~ paste0("Medium"),
+                                            race_percentage > bin_breaks[[3]] ~ paste0("High")),
+           race_percentage_bins = factor(race_percentage_bins, levels = c("Low", "Medium", "High"))) %>% 
     group_by(race_percentage_bins) %>% 
     summarize(mean_distance_traveled_mi = mean(distance_traveled_mi)) %>% 
-    mutate(race_percentage_bins = case_when(race_percentage_bins == 1 ~ paste0("Very Low"), 
-                                            race_percentage_bins == 2 ~ paste0("Low"), 
-                                            race_percentage_bins == 3 ~ paste0("Medium"), 
-                                            race_percentage_bins == 4 ~ paste0("High"), 
-                                            race_percentage_bins == 5 ~ paste0("Very High")),
-           race_percentage_bins = factor(race_percentage_bins, levels = c("Very Low", "Low", "Medium",
-                                                                          "High", "Very High")))
+    mutate(race = paste0(racial_groups[[i]])) %>%  ## BACK TO 
+    relocate(race, .before = 1) %>% 
+    mutate(race = str_replace(string = race,
+                              pattern = "_",
+                              replacement = " "),
+           race = str_to_title(race))
+
+  data_plot_race_distance_traveled <- rbind(data_plot_race_distance_traveled, df_racial_group)
     
-assign(paste0("data_plot_race_distance_traveled_", racial_groups[[i]]), data.frame(df), envir = .GlobalEnv)
-assign(paste0("bin_breaks_", racial_groups[[i]]), c(bin_breaks), envir = .GlobalEnv)
+assign(paste0("bin_breaks_", racial_groups[[i]]), 
+       c(bin_breaks), 
+       envir = .GlobalEnv)
+assign(paste0("max_race_ridb_", racial_groups[[i]]), 
+       data.frame(max_racial_group_ridb), 
+       envir = .GlobalEnv)
 }
+```
 
 
-
+```{r}
 ## -- create plot -- ##
+racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
 
+
+# plot for shiny
+plot_race_distance_traveled <- ggplot(data = data_plot_race_distance_traveled %>% filter(race_percentage_bins == "High")
+                                      ) +
+  geom_linerange(aes(x = race_percentage_bins,
+                     ymin = 0,
+                     ymax = mean_distance_traveled_mi,
+                     color = reorder(race, mean_distance_traveled_mi)),
+                 position = position_dodge(width = 1)#,
+                 #width = .25
+                 ) +
+  geom_point(aes(x = race_percentage_bins,
+                 y = mean_distance_traveled_mi,
+                 color = reorder(race, mean_distance_traveled_mi), fill = reorder(race, mean_distance_traveled_mi),
+                 text = paste("People who live in ZIP codes with", str_to_upper(race_percentage_bins), "Asian populations",
+                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles.")),
+             position = position_dodge(width = 1),
+             #width = .25,
+             size = 4, shape = 21, stroke = 2) +
+  coord_flip() +
+  scale_fill_manual(values = racial_group_colors) +
+  scale_color_manual(values = racial_group_colors) +
+  labs(y = paste("Average Distance Traveled from Home to Site (miles)"),
+       x = "",
+       #color = "Race",
+       #fill = "Race",
+       title = "Average Distance Traveled to Reservation Based on <br>Different Racial Populations in ZIP code")
+
+ggplotly(plot_race_distance_traveled,
+         tooltip = list("text"))
+```
+
+
+
+```{r}
+## -- create plot -- ##
 
 # plot for shiny
 
