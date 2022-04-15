@@ -909,13 +909,13 @@ education_groups <- c("hs_GED_or_below", "some_college", "college", "master_or_a
 data_plot_education_distance_traveled <- data.frame()
 
 # create plot df for each group for RIDB data
-for (i in seq_along(racial_groups)){
+for (i in seq_along(education_groups)){
   df_ca_bin_breaks <- data_ca_acs_2018 %>% 
-    select(hs_GED_or_below, some_college, collage, master_or_above, mean_zip_code_population) %>% 
-    pivot_longer(cols = 2:9,
+    select(hs_GED_or_below, some_college, college, master_or_above, mean_zip_code_population) %>% 
+    pivot_longer(cols = 2:5,
                  names_to = "education",
                  values_to = "education_percentage") %>% 
-    filter(race == education_groups[[i]]) %>% ## BACK TO i
+    filter(education == education_groups[[i]]) %>% ## BACK TO i
     drop_na(education_percentage) 
   
   weighted_half <- weighted.mean(x = df_ca_bin_breaks$education_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
@@ -925,20 +925,20 @@ for (i in seq_along(racial_groups)){
   weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$education_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
   
   df_education_group_i_longer <- data_ridb_acs_2018 %>% 
-    select(agency, admin_unit, park, hs_GED_or_below, some_college, collage, master_or_above,
+    select(agency, admin_unit, park, customer_zip, hs_GED_or_below, some_college, college, master_or_above,
            distance_traveled_m) %>% 
     mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
     drop_na(distance_traveled_mi) %>% 
-  pivot_longer(cols = 5:12,
+  pivot_longer(cols = 5:8,
                names_to = "education",
                values_to = "education_percentage") %>% 
-    filter(race == education_groups[[i]]) %>% ## BACK TO i
+    filter(education == education_groups[[i]]) %>% ## BACK TO i
     drop_na(education_percentage)
   
   max_education_group_ridb <- df_education_group_i_longer %>%
     summarize(max = max(education_percentage))
   
-  df_racial_i_group <- df_racial_group_i_longer %>% 
+  df_education_i_group <- df_education_group_i_longer %>% 
     filter(education_percentage >= weighted_quartile) %>% 
     summarize(mean_distance_traveled_mi = mean(distance_traveled_mi)) %>% 
     mutate(education = paste0(education_groups[[i]])) %>%  ## BACK TO i
@@ -954,13 +954,13 @@ for (i in seq_along(racial_groups)){
                               pattern = "Ged",
                               replacement = "GED"))
 
-  data_plot_education_distance_traveled <- rbind(data_plot_race_distance_traveled, df_racial_i_group)
+  data_plot_education_distance_traveled <- rbind(data_plot_education_distance_traveled, df_education_i_group)
     
 assign(paste0("top_quartile_ca_education", education_groups[[i]]), 
        c(weighted_quartile), 
        envir = .GlobalEnv)
 assign(paste0("max_education_ridb_", education_groups[[i]]), 
-       data.frame(max_racial_group_ridb), 
+       data.frame(max_education_group_ridb), 
        envir = .GlobalEnv)
 }
 
