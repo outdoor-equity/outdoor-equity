@@ -52,6 +52,9 @@ source("r/summary_plots/site_type_plot.R")
 source("r/summary_plots/race_plot.R")
 source("r/summary_plots/education_plot.R")
 source("r/summary_plots/median_income_plot.R")
+# need to move these sourced functions to a new section
+source("r/summary_plots/tot_site_agency_plot.R")
+source("r/summary_plots/tota_res_agency_plot.R")
 
 # CA objects ----
 ## CA agency list ----
@@ -72,7 +75,8 @@ summary_vars <- c("Distance traveled" = "distance_traveled_mi",
                   "Site type" = "aggregated_site_type",
                   "Race" = "race",
                   "Education" = "education",
-                  "Median income" = "median_income")
+                  "Median income" = "median_income",
+                  "Total sites per agency")
 
 ## relationship vars ----
 compare_vars <- c("Education - High School/GED" = "median_hs_GED_or_below",
