@@ -45,10 +45,6 @@ source("r/inputs/select_site.R")
 source("r/inputs/select_data_summary_vars.R")
 source("r/inputs/select_relationships_vars.R")
 
-## source summary rdf functions ----
-source("r/summary_plots/dist_travel_rdf.R")
-source("r/summary_plots/booking_window_rdf.R")
-
 ## source summary plot functions ----
 source("r/summary_plots/dist_travel_plot.R")
 source("r/summary_plots/booking_window_plot.R")
