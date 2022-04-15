@@ -278,7 +278,6 @@ output$data_summary_plot <- renderPlot({
     
   } ## EO else if median income
   
-  
 }) ## EO data summary plots
 
 ## SO RELATIONSHIPS PLOTS NO REACTIVE ----
