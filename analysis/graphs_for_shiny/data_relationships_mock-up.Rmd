@@ -8,8 +8,8 @@ output:
     toc_float: true
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```{r setup, include=FALSE, eval=TRUE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, eval = FALSE)
 
 library(tidyverse)
 library(here)
@@ -28,11 +28,11 @@ library(plotly)
 options(scipen = 999)
 ```
 
-```{r}
+```{r, eval=TRUE}
 start_time <- Sys.time()
 ```
 
-```{r}
+```{r, eval=TRUE}
 # read in joined data
 data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
                             delim = ",") ## non-map graphs (no geometries)
@@ -44,21 +44,6 @@ data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
 
 ### Race x distance traveled
 
-
-Checking myself on weighted quartiles:
-
-```{r, eval=FALSE}
-# print "high" for each race
-print(paste0("A high presence was calculated as the highest quintile for each racial group for the state of California.   ",
-             "White: ", round(top_quartile_ca_white, 4)*100, " - ", round(max_race_ridb_white, 4) *100, "%    ",
-             "Hispanic Latinx: ", round(top_quartile_ca_hispanic_latinx, 4)*100, " - ", round(max_race_ridb_hispanic_latinx, 4) *100, "%    ",
-             "Asian: ", round(top_quartile_ca_asian, 4)*100, " - ", round(max_race_ridb_asian, 4) *100, "%    ",
-             "Black: ", round(top_quartile_ca_black, 4)*100, " - ", round(max_race_ridb_black, 4) *100, "%    ",
-             "Multiracial: ", round(top_quartile_ca_multiracial, 4)*100, " - ", round(max_race_ridb_multiracial, 4) *100, "%    ",
-             "Native American: ", round(top_quartile_native_ca_american, 4)*100, " - ", round(max_race_ridb_native_american, 4) *100, "%    ",
-             "Pacific Islander: ", round(top_quartile_ca_pacific_islander, 4)*100, " - ", round(max_race_ridb_pacific_islander, 4) *100, "%    ",
-             "Other Race(s): ", round(top_quartile_ca_other, 4)*100, " - ", round(max_race_ridb_other, 4) *100, "%  "))
-```
 
 
 ```{r, eval=FALSE}
@@ -901,7 +886,90 @@ ggplotly(plot_race_lenth_of_stay,
 ```
 
 
+```{r}
+# print "high" percentage range for each race
+print(paste0("A high presence was calculated as the highest quintile for each racial group for the state of California.   ",
+             "White: ", round(top_quartile_ca_white, 4)*100, " - ", round(max_race_ridb_white, 4) *100, "%    ",
+             "Hispanic Latinx: ", round(top_quartile_ca_hispanic_latinx, 4)*100, " - ", round(max_race_ridb_hispanic_latinx, 4) *100, "%    ",
+             "Asian: ", round(top_quartile_ca_asian, 4)*100, " - ", round(max_race_ridb_asian, 4) *100, "%    ",
+             "Black: ", round(top_quartile_ca_black, 4)*100, " - ", round(max_race_ridb_black, 4) *100, "%    ",
+             "Multiracial: ", round(top_quartile_ca_multiracial, 4)*100, " - ", round(max_race_ridb_multiracial, 4) *100, "%    ",
+             "Native American: ", round(top_quartile_native_ca_american, 4)*100, " - ", round(max_race_ridb_native_american, 4) *100, "%    ",
+             "Pacific Islander: ", round(top_quartile_ca_pacific_islander, 4)*100, " - ", round(max_race_ridb_pacific_islander, 4) *100, "%    ",
+             "Other Race(s): ", round(top_quartile_ca_other, 4)*100, " - ", round(max_race_ridb_other, 4) *100, "%  "))
+```
+
+
 ### Education x distance traveled 
+
+```{r, eval=TRUE}
+## -- data wrangle -- ##
+education_groups <- c("hs_GED_or_below", "some_college", "college", "master_or_above")
+
+data_plot_education_distance_traveled <- data.frame()
+
+# create plot df for each group for RIDB data
+for (i in seq_along(racial_groups)){
+  df_ca_bin_breaks <- data_ca_acs_2018 %>% 
+    select(hs_GED_or_below, some_college, collage, master_or_above, mean_zip_code_population) %>% 
+    pivot_longer(cols = 2:9,
+                 names_to = "education",
+                 values_to = "education_percentage") %>% 
+    filter(race == education_groups[[i]]) %>% ## BACK TO i
+    drop_na(education_percentage) 
+  
+  weighted_half <- weighted.mean(x = df_ca_bin_breaks$education_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(education_percentage >= weighted_half)
+  
+  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$education_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_education_group_i_longer <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, hs_GED_or_below, some_college, collage, master_or_above,
+           distance_traveled_m) %>% 
+    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+    drop_na(distance_traveled_mi) %>% 
+  pivot_longer(cols = 5:12,
+               names_to = "education",
+               values_to = "education_percentage") %>% 
+    filter(race == education_groups[[i]]) %>% ## BACK TO i
+    drop_na(education_percentage)
+  
+  max_education_group_ridb <- df_education_group_i_longer %>%
+    summarize(max = max(education_percentage))
+  
+  df_racial_i_group <- df_racial_group_i_longer %>% 
+    filter(education_percentage >= weighted_quartile) %>% 
+    summarize(mean_distance_traveled_mi = mean(distance_traveled_mi)) %>% 
+    mutate(education = paste0(education_groups[[i]])) %>%  ## BACK TO i
+    relocate(education, .before = 1) %>% 
+    mutate(education = str_replace(string = education,
+                              pattern = "_",
+                              replacement = " "),
+           race = str_to_title(education),
+           race = str_replace(string = education,
+                              pattern = "Hs",
+                              replacement = "HS"),
+           race = str_replace(string = education,
+                              pattern = "Ged",
+                              replacement = "GED"))
+
+  data_plot_education_distance_traveled <- rbind(data_plot_race_distance_traveled, df_racial_i_group)
+    
+assign(paste0("top_quartile_ca_education", education_groups[[i]]), 
+       c(weighted_quartile), 
+       envir = .GlobalEnv)
+assign(paste0("max_education_ridb_", education_groups[[i]]), 
+       data.frame(max_racial_group_ridb), 
+       envir = .GlobalEnv)
+}
+
+
+## -- create plot -- ##
+
+
+```
+
 
 
 ### Education x site type 
@@ -928,7 +996,7 @@ ggplotly(plot_race_lenth_of_stay,
 ### Booking window x distance traveled
 
 
-```{r}
+```{r, eval=TRUE}
 end_time <- Sys.time()
 time_taken <- end_time - start_time
 time_taken
