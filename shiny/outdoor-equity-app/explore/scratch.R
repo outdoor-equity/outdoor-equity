@@ -3,6 +3,30 @@ library(here)
 library(collections)
 
 
+dist_travel_df <- data_joined_2018 %>%
+  filter(agency %in% "USFS",
+         admin_unit %in% "Eldorado National Forest",
+         park %in% "Middle Meadows") %>%
+  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+  select(agency, admin_unit, park, distance_traveled_mi)
+
+hist_colors <- c("#009900FF")
+
+ggplot(data = dist_travel_df) +
+  geom_histogram(aes(x = distance_traveled_mi),
+                 fill = hist_colors) +
+  scale_y_continuous(labels = comma) +
+  labs(x = "Distance traveled (miles)",
+       y = "",
+       title = "Distribution of Distance Traveled to ",
+       subtitle = "Overnight Reservations in California in 2018") +
+  scale_x_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 500), minor_breaks = seq(0, 3000, 250)) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank()
+  )
+
+
 choices <- vector()
 
 for (i in seq_along(admin_units)){

@@ -87,7 +87,7 @@ observeEvent(input$agency_data_download, {
   
   
 # SO OE press admin unit ----
-## SO press admin_unit on summary page ----
+## SO press admin unit on summary page ----
 observeEvent(input$admin_unit_summary, {
   
   print(paste0("You have chosen: ", input$admin_unit_summary))
@@ -123,30 +123,9 @@ observeEvent(input$admin_unit_relationships, {
 
   updateSelectizeInput(session, "site_relationships",
                        choices = sort(choices)
-  )
-
-}) ## EO press admin unit on relationships page
+                       )
+  }) ## EO press admin unit on relationships page
   
-## SO press admin unit on visitorsheds page ----
-  # observeEvent(input$admin_unit_visitorsheds, {
-  #   
-  #   print(paste0("You have chosen: ", input$admin_unit_visitorsheds))
-  #   print(class(input$admin_unit_visitorsheds))
-  #   
-  #   choices <- vector()
-  #   
-  #   for (i in seq_along(input$admin_unit_visitorsheds)){
-  #     
-  #     choices <- append(choices,
-  #                       admin_units_to_site_dict$get(input$admin_unit_visitorsheds[[i]]))
-  #     
-  #   }
-  #   
-  #   updateSelectizeInput(session, "site_visitorsheds",
-  #                        choices = sort(choices))
-  #   
-  # })
-
 ## SO press admin unit on visitorsheds page ----
 # observeEvent(input$admin_unit_visitorsheds, {
 #   
@@ -164,28 +143,7 @@ observeEvent(input$admin_unit_relationships, {
 #   updateSelectizeInput(session, "site_visitorsheds",
 #                        choices = sort(choices)
 #                        )
-#   }) ## EO press admin unit on visitorsheds page    
-  
-
-## SO press admin unit on visitorsheds page ----
-# observeEvent(input$admin_unit_visitorsheds, {
-# 
-#   print(paste0("You have chosen: ", input$admin_unit_visitorsheds))
-#   print(class(input$admin_unit_visitorsheds))
-# 
-#   choices <- vector()
-# 
-#   for (i in seq_along(input$admin_unit_visitorsheds)){
-# 
-#     choices <- append(choices,
-#                       admin_units_to_site_dict$get(input$admin_unit_visitorsheds[[i]]))
-#   }
-# 
-#   updateSelectizeInput(session, "site_visitorsheds",
-#                        choices = sort(choices)
-#   )
-# 
-# }) ## EO press admin unit on visitorsheds page
+#   }) ## EO press admin unit on visitorsheds page
 
 # ## SO press admin unit on data download page ----
 observeEvent(input$admin_unit_data_download, {
@@ -209,16 +167,22 @@ observeEvent(input$admin_unit_data_download, {
 
 
 # REACTIVE DATA FRAMES ----
+## SO distance traveled RDF ----
+dist_travel_rdf <- reactive ({
   
-## distance traveled RDF ----
-  dist_travel_rdf <- reactive({
-    
-    dist_travel_rdf()
-    
-  }) ## EO reactive 
+  #dist_travel_rdf()
+  data_joined_2018 %>%
+    filter(agency %in% input$agency_summary,
+           admin_unit %in% input$admin_unit_summary,
+           park %in% input$site_summary) %>%
+    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>%
+    select(agency, admin_unit, park, distance_traveled_mi)
+
+}) # EO distance traveled RDF
 
 ## race RDF ----
 race_df <- reactive({
+  
   data_joined_2018 %>% 
     filter(agency %in% input$agency_summary,
            admin_unit %in% input$admin_unit_summary,
@@ -238,17 +202,19 @@ race_df <- reactive({
            race = str_to_title(race))
 })
   
-## booking window RDF ----
+## SO booking window RDF ----
 booking_window_df <- reactive({
-  data_plot_boooking_window %>%
+  
+  data_joined_2018 %>%
     filter(agency %in% input$agency_summary,
            admin_unit %in% input$admin_unit_summary,
-           park %in% input$site_summary)
-
-})
+           park %in% input$site_summary) %>%
+    filter(booking_window > 0,
+           booking_window < 510) %>% 
+    select(agency, admin_unit, park, booking_window)
+}) ## EO booking window RDF 
 
 # RENDER PLOTS ----
-
 
 ## data_relationships_plots NO REACTIVE
 output$data_relationships_plot <- renderPlot({
@@ -277,12 +243,7 @@ output$data_relationships_plot <- renderPlot({
     theme_minimal() +
     theme(legend.position = "none",
           plot.background = element_rect("white"),
-          panel.grid.major.x = element_blank()
-          # ## only needed for saving as image
-          # axis.text = element_text(size = 20),
-          # axis.title = element_text(size = 22, face = "bold"),
-          # title = element_text(size = 24, face = "bold")
-    ) +
+          panel.grid.major.x = element_blank()) +
     coord_flip()
   
 })
@@ -321,75 +282,92 @@ output$usVisitorshed_plot <- renderTmap({
   
 })
 
-# SO DATA SUMMARY PLOTS ----
+## SO DATA SUMMARY PLOTS ----
+## IMPORTANT NOTE(HD): MAY NEED TO CHAGNE FROM RENDER PLOT TO RENDER PLOTLY----
 output$data_summary_plot <- renderPlot({
-  
-  # SO distance traveled ----
-  if(input$data_summary == "Distance traveled"){
+  ### SO distance traveled ----
+  if (input$data_summary == "distance_traveled_mi") {
     
-    dist_travel_plot()
+    # parameters
+    hist_colors <- c("#009900FF")
+    # plot for shiny app
+    ggplot(data = dist_travel_rdf()) +
+      geom_histogram(aes(x = distance_traveled_mi),
+                     fill = hist_colors) +
+      scale_y_continuous(labels = comma) +
+      labs(x = "Distance traveled (miles)",
+           y = "",
+           title = paste("Distribution of Distance Traveled to", input$site_summary),
+           subtitle = "Overnight Reservations in California in 2018") +
+      scale_x_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 500), minor_breaks = seq(0, 3000, 250)) +
+      theme_minimal() +
+      theme(plot.background = element_rect("white"),
+            panel.grid.major.y = element_blank())
     
-  } # EO distance traveled 
+  } ## EO if distance traveled
   
-  # SO booking window ----
-  # else if(input$data_summary == "Booking Window"){
-  # 
-  #     hist_colors <- c("#009900FF")
-  # 
-  #     # plot for shiny app
-  #     ggplot(data = booking_window_df()) + # reactive df
-  #       geom_histogram(aes(x = booking_window),
-  #                      binwidth = 7,
-  #                      fill = hist_colors) +
-  #       labs(x = "Days elapsed from order to visit (each bar = 1 week)",
-  #            y = "Number of reservations",
-  #            title = paste("Booking Window for", input$agency_summary), # Note(HD) call name for multiple selections
-  #            subtitle = "Overnight Reservations in California in 2018") +
-  #       scale_x_continuous(limits = c(0, 510),
-  #                          breaks = seq(0, 510, by = 30)) +
-  #       scale_y_continuous(labels = comma) +
-  #       geom_vline(xintercept = 180,
-  #                  linetype = "dashed", size = .3, alpha = .5) +
-  #       annotate("text", label = "6 months", # Note(HD) need to make y dynamic
-  #                x = 210, y = 10000) +
-  #       geom_vline(xintercept = 360,
-  #                  linetype = "dashed", size = .3, alpha = .5) +
-  #       annotate("text", label = "1 year",
-  #                x = 380, y = 10000) + # Note(HD) need to make y dynamic
-  #       theme_minimal() +
-  #       theme(plot.background = element_rect("white"),
-  #             panel.grid.major.y = element_blank())
-  # 
-  #   } ## EO if statement booking window
+  ## SO booking window ----
+  else if (input$data_summary == "booking_window") {
+    
+    # parameters
+    hist_colors <- c("#009900FF")
+    
+    # plot for shiny app
+    ggplot(data = booking_window_df()) +
+      geom_histogram(aes(x = booking_window),
+                     binwidth = 7,
+                     fill = hist_colors) +
+      labs(x = "Days elapsed from order to visit (each bar = 1 week)",
+           y = "",
+           title = paste("Distribution of Booking Windows for", input$site_summary),
+           subtitle = "Overnight Reservations in California in 2018") +
+      scale_x_continuous(limits = c(0, 510), 
+                         breaks = seq(0, 510, by = 30)) +
+      scale_y_continuous(labels = comma) +
+      geom_vline(xintercept = 180, 
+                 linetype = "dashed", size = .3, alpha = .5) +
+      annotate("text", label = "6 months", 
+               x = 210, y = 65000) +
+      geom_vline(xintercept = 360, 
+                 linetype = "dashed", size = .3, alpha = .5) +
+      annotate("text", label = "1 year", 
+               x = 380, y = 65000) +
+      theme_minimal() +
+      theme(plot.background = element_rect("white"),
+            panel.grid.major.y = element_blank())
+    
+  } ### EO else if booking window
   
-  ## race plot ----
-  # else if(input$data_summary == "Race"){
-  #   
-  #   ggplot(data = race_df()) +
-  #     geom_col(aes(x = race_percent_average,
-  #                  y = reorder(race, race_percent_average)),
-  #              stat = "identity") +
-  #     scale_fill_manual(values = groups_colors_ridb_ca) +  
-  #     geom_text(aes(x = race_percent_average,
-  #                   y = reorder(race, race_percent_average),
-  #                   label = paste0(round(race_percent_average, 1), "%")), 
-  #               position = position_dodge(width = 1), 
-  #               hjust = -0.1, size = 4) +
-  #     scale_color_manual(values = groups_colors_ridb_ca) +
-  #     labs(x = "Percentage (%)",
-  #          y = "",
-  #          title = "Racial Breakdown of ZIP Codes in 2018",
-  #          subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
-  #     scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
-  #     theme_minimal() +
-  #     theme(plot.background = element_rect("white"),
-  #           panel.grid.major.y = element_blank()
-  #     )
-  #   
-  #   
-  # } ## EO of race plot
-
-}) ## EO data_summary_plot booking window ----
+  
+}) ## EO data_summary_plot
 
 
-} # EO server 
+} ## EO server
+
+
+## race plot
+# else if(input$data_summary == "Race"){
+#   
+#   ggplot(data = race_df()) +
+#     geom_col(aes(x = race_percent_average,
+#                  y = reorder(race, race_percent_average)),
+#              stat = "identity") +
+#     scale_fill_manual(values = groups_colors_ridb_ca) +  
+#     geom_text(aes(x = race_percent_average,
+#                   y = reorder(race, race_percent_average),
+#                   label = paste0(round(race_percent_average, 1), "%")), 
+#               position = position_dodge(width = 1), 
+#               hjust = -0.1, size = 4) +
+#     scale_color_manual(values = groups_colors_ridb_ca) +
+#     labs(x = "Percentage (%)",
+#          y = "",
+#          title = "Racial Breakdown of ZIP Codes in 2018",
+#          subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
+#     scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
+#     theme_minimal() +
+#     theme(plot.background = element_rect("white"),
+#           panel.grid.major.y = element_blank()
+#     )
+#   
+#   
+# } ## EO of race plot

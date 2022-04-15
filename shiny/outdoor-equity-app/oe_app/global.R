@@ -25,27 +25,33 @@ library(collections)
 
 reactlog_enable()
 
-# import data ---- 
+# IMPORT DATA ---- 
 ## CA prototype joined 2018 ----
 data_joined_2018 <- readRDS("data/2018_joined_data.rds")
 ## booking window ----
-data_plot_boooking_window <- readRDS("data/2018_data_plot_boooking_window.rds")
+#data_plot_boooking_window <- readRDS("data/2018_data_plot_boooking_window.rds")
 ## yosemite visitorsheds ----
 data_yosemite_upper_pines_geom <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_geom.rds")
 data_zip_geometries_ca <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_zip_geometries_ca.rds")
 data_geometries_us <- readRDS("data/2018_data_map_us_yosemite_upper_pines_geometries_us.rds")
 ## race dist travel comparison ----
-data_race_dist_travel <- readRDS("data/2018_data_plot_race_distance_traveled.rds")
+#data_race_dist_travel <- readRDS("data/2018_data_plot_race_distance_traveled.rds")
 
-# source input functions ----
-source("r/inputs/inputs.R")
+# SOURCE FUNCTIONS ----
+## source input functions ----
+source("r/inputs/select_agency.R")
+source("r/inputs/select_admin_unit.R")
+source("r/inputs/select_site.R")
+source("r/inputs/select_data_summary_vars.R")
+source("r/inputs/select_relationships_vars.R")
 
-# source summary rdf functions ----
+## source summary rdf functions ----
 source("r/summary_plots/dist_travel_rdf.R")
+source("r/summary_plots/booking_window_rdf.R")
 
-# source summary plot functions ----
+## source summary plot functions ----
 source("r/summary_plots/dist_travel_plot.R")
-
+source("r/summary_plots/booking_window_plot.R")
 
 
 # CA objects ----
@@ -61,8 +67,9 @@ admin_units <- as.vector(unique(data_joined_2018$admin_unit))
 sites <- as.vector(unique(data_joined_2018$park))
 
 # VARS ----
-## distribution vars ----
-summary_vars <- c("Distance traveled" = "distance_traveled_mi")
+## data summary vars ----
+summary_vars <- c("Distance traveled" = "distance_traveled_mi",
+                  "Booking window" = "booking_window")
   
   # c("Booking window" = "booking_window",
   #              "Daily cost" = "daily_cost_per_visitor",
@@ -89,7 +96,7 @@ summary_vars <- c("Distance traveled" = "distance_traveled_mi")
   #              #"Total number of sites" = "park", # is this right?
   #              #"Total number of visits" = "count"
 
-## comparison vars ----
+## relationship vars ----
 compare_vars <- c("Education - High School/GED" = "median_hs_GED_or_below",
                   "Education - College" = "median_college",
                   "Education - Some college" = "median_some_college",
@@ -118,7 +125,7 @@ booking_scat_var <- c("Booking window" = "median_booking_window")
 agency_comp_scat_vars <- c("Distance traveled" = "distance_traveled_m",
                            "Site Type" = "aggregated_site_type")
 
-## DICTIONARY ----
+# DICTIONARY ----
 
 # use keys() to view all the keys in the dict
 # use get() to get specific values from a specific key
