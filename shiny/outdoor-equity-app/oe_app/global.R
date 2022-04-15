@@ -75,8 +75,7 @@ summary_vars <- c("Distance traveled" = "distance_traveled_mi",
                   "Site type" = "aggregated_site_type",
                   "Race" = "race",
                   "Education" = "education",
-                  "Median income" = "median_income",
-                  "Total sites per agency")
+                  "Median income" = "median_income")
 
 ## relationship vars ----
 compare_vars <- c("Education - High School/GED" = "median_hs_GED_or_below",
