@@ -6,7 +6,7 @@ server <- function(input, output, session){
 observeEvent(input$agency_summary, {
 
   # Note(HD): these print statements are temporary 
-  print(paste0("You have chosen: ", input$agency_summary))
+  print(paste0("You have chosen agency: ", input$agency_summary, " on data summary page"))
   print(class(input$agency_summary))
 
   # create choices based on dictionary
@@ -28,7 +28,7 @@ observeEvent(input$agency_summary, {
 ## SO press agency on relationships page ----
 observeEvent(input$agency_relationships, {
   
-  print(paste0("You have chosen: ", input$agency_relationships))
+  print(paste0("You have chosen agency: ", input$agency_relationships, " on relationships page"))
   print(class(input$agency_relationships))
   
   choices <- vector()
@@ -48,7 +48,7 @@ observeEvent(input$agency_relationships, {
 ## SO press agency on visitorsheds page ----
 observeEvent(input$agency_visitorsheds, {
 
-  print(paste0("You have chosen: ", input$agency_visitorsheds))
+  print(paste0("You have chosen agency: ", input$agency_visitorsheds, " on visitorsheds page"))
   print(class(input$agency_visitorsheds))
 
   choices <- vector()
@@ -68,7 +68,7 @@ observeEvent(input$agency_visitorsheds, {
 ## SO press agency on data download page ----
 observeEvent(input$agency_data_download, {
   
-  print(paste0("You have chosen: ", input$agency_data_download))
+  print(paste0("You have chosen agency: ", input$agency_data_download, " on data download page"))
   print(class(input$agency_data_download))
   
   choices <- vector()
@@ -90,7 +90,7 @@ observeEvent(input$agency_data_download, {
 ## SO press admin unit on summary page ----
 observeEvent(input$admin_unit_summary, {
   
-  print(paste0("You have chosen: ", input$admin_unit_summary))
+  print(paste0("You have chosen admin unit: ", input$admin_unit_summary, "data summary page"))
   print(class(input$admin_unit_summary))
   
   choices <- vector()
@@ -110,7 +110,7 @@ observeEvent(input$admin_unit_summary, {
 ## SO press admin unit on relationships page ----
 observeEvent(input$admin_unit_relationships, {
 
-  print(paste0("You have chosen: ", input$admin_unit_relationships))
+  print(paste0("You have chosen admin unit: ", input$admin_unit_relationships, " on relationships page"))
   print(class(input$admin_unit_relationships))
 
   choices <- vector()
@@ -127,28 +127,36 @@ observeEvent(input$admin_unit_relationships, {
   }) ## EO press admin unit on relationships page
   
 ## SO press admin unit on visitorsheds page ----
-# observeEvent(input$admin_unit_visitorsheds, {
-#   
-#   print(paste0("You have chosen: ", input$admin_unit_visitorsheds))
-#   print(class(input$admin_unit_visitorsheds))
-#   
-#   choices <- vector()
-#   
-#   for (i in seq_along(input$admin_unit_visitorsheds)){
-#     
-#     choices <- append(choices,
-#                       admin_units_to_site_dict$get(input$admin_unit_visitorsheds[[i]]))
-#     }
-#   
-#   updateSelectizeInput(session, "site_visitorsheds",
-#                        choices = sort(choices)
-#                        )
-#   }) ## EO press admin unit on visitorsheds page
+observeEvent(input$admin_unit_visitorsheds, {
+
+  print(paste0("You have chosen admin unit: ", input$admin_unit_visitorsheds, "on visitorsheds page"))
+  print(class(input$admin_unit_visitorsheds))
+
+  choices <- vector()
+
+  for (i in seq_along(input$admin_unit_visitorsheds)){
+
+    input_value <- input$admin_unit_visitorsheds[[i]]
+    
+    if (input_value == ""){
+      
+      next
+      
+    }
+    
+    choices <- append(choices,
+                      admin_units_to_site_dict$get(input_value))
+    }
+
+  updateSelectizeInput(session, "site_visitorsheds",
+                       choices = sort(choices)
+                       )
+  }) ## EO press admin unit on visitorsheds page
 
 # ## SO press admin unit on data download page ----
 observeEvent(input$admin_unit_data_download, {
 
-  print(paste0("You have chosen: ", input$admin_unit_data_download))
+  print(paste0("You have chosen admin unit: ", input$admin_unit_data_download, " on data download page"))
   print(class(input$admin_unit_data_download))
 
   choices <- vector()
@@ -164,21 +172,6 @@ observeEvent(input$admin_unit_data_download, {
   )
 
 }) ## EO press admin unit on data download page
-
-
-# REACTIVE DATA FRAMES ----
-## SO distance traveled RDF ----
-dist_travel_rdf <- reactive ({
-  
-  #dist_travel_rdf()
-  data_joined_2018 %>%
-    filter(agency %in% input$agency_summary,
-           admin_unit %in% input$admin_unit_summary,
-           park %in% input$site_summary) %>%
-    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>%
-    select(agency, admin_unit, park, distance_traveled_mi)
-
-}) # EO distance traveled RDF
 
 ## race RDF ----
 race_df <- reactive({
@@ -201,22 +194,93 @@ race_df <- reactive({
                               replacement = " "),
            race = str_to_title(race))
 })
-  
-## SO booking window RDF ----
-booking_window_df <- reactive({
-  
-  data_joined_2018 %>%
-    filter(agency %in% input$agency_summary,
-           admin_unit %in% input$admin_unit_summary,
-           park %in% input$site_summary) %>%
-    filter(booking_window > 0,
-           booking_window < 510) %>% 
-    select(agency, admin_unit, park, booking_window)
-}) ## EO booking window RDF 
 
 # RENDER PLOTS ----
+## SO DATA SUMMARY PLOTS ----
+output$data_summary_plot <- renderPlot({
+  ### SO distance traveled ----
+  if (input$data_summary == "distance_traveled_mi") {
+    
+    dist_travel_plot(agencyInput = input$agency_summary,
+                     admin_unitInput = input$admin_unit_summary,
+                     siteInput = input$site_summary, 
+                     titleInput = input$site_summary)
+    
+  } ## EO if distance traveled
+  
+  ## SO booking window ----
+  else if (input$data_summary == "booking_window") {
+    
+    booking_window_plot(agencyInput = input$agency_summary,
+                        admin_unitInput = input$admin_unit_summary,
+                        siteInput = input$site_summary,
+                        titleInput = input$site_summary)
+    
+  } ## EO else if booking window
+  
+  ## SO daily cost per visitor ----
+  else if (input$data_summary == "daily_cost_per_visitor") {
+    
+    daily_cost_visitor_plot(agencyInput = input$agency_summary,
+                        admin_unitInput = input$admin_unit_summary,
+                        siteInput = input$site_summary,
+                        titleInput = input$site_summary)
+    
+  } ## EO else if daily cost per visitor
+  
+  ## SO length of stay ----
+  else if (input$data_summary == "length_of_stay") {
+    
+    length_of_stay_plot(agencyInput = input$agency_summary,
+                        admin_unitInput = input$admin_unit_summary,
+                        siteInput = input$site_summary,
+                        titleInput = input$site_summary)
+    
+  } ## EO else if length of stay
+  
+  ## SO site type ----
+  else if (input$data_summary == "aggregated_site_type") {
+    
+    site_type_plot(agencyInput = input$agency_summary,
+                   admin_unitInput = input$admin_unit_summary,
+                   siteInput = input$site_summary,
+                   titleInput = input$site_summary)
+    
+  } ## EO else if site type
+  
+  ## SO race ----
+  # else if (input$data_summary == "race") {
+  #   
+  #   race_plot(agencyInput = input$agency_summary,
+  #             admin_unitInput = input$admin_unit_summary,
+  #             siteInput = input$site_summary,
+  #             titleInput = input$site_summary)
+  #   
+  # } ## EO else if race
+  
+  ## SO education ----
+  else if (input$data_summary == "education") {
+    
+    education_plot(agencyInput = input$agency_summary,
+                   admin_unitInput = input$admin_unit_summary,
+                   siteInput = input$site_summary,
+                   titleInput = input$site_summary)
+    
+  } ## EO else if education
+  
+  ## SO median income ----
+  else if (input$data_summary == "median_income") {
+    
+    median_income_plot(agencyInput = input$agency_summary,
+                       admin_unitInput = input$admin_unit_summary,
+                       siteInput = input$site_summary,
+                       titleInput = input$site_summary)
+    
+  } ## EO else if median income
+  
+}) ## EO data summary plots
 
-## data_relationships_plots NO REACTIVE
+## SO RELATIONSHIPS PLOTS NO REACTIVE ----
 output$data_relationships_plot <- renderPlot({
   
   # parameters
@@ -246,10 +310,10 @@ output$data_relationships_plot <- renderPlot({
           panel.grid.major.x = element_blank()) +
     coord_flip()
   
-})
+}) ## EO relationships plots 
 
-
-## visitorshed yosemite YES REACTIVE ----
+## SO VISITORSHEDS PLOTS YES REACTIVE ----
+### yosemite plot ----
 output$caVisitorshed_plot <- renderTmap({
   
   tm_shape(data_zip_geometries_ca) +
@@ -280,66 +344,8 @@ output$usVisitorshed_plot <- renderTmap({
             popup.vars = c("Total Visits" = "number_reservations")) +
     tm_view(set.view = c(-101.834335, 40.022356, 3))
   
-})
+}) # EO visitorsheds plots
 
-## SO DATA SUMMARY PLOTS ----
-## IMPORTANT NOTE(HD): MAY NEED TO CHAGNE FROM RENDER PLOT TO RENDER PLOTLY----
-output$data_summary_plot <- renderPlot({
-  ### SO distance traveled ----
-  if (input$data_summary == "distance_traveled_mi") {
-    
-    # parameters
-    hist_colors <- c("#009900FF")
-    # plot for shiny app
-    ggplot(data = dist_travel_rdf()) +
-      geom_histogram(aes(x = distance_traveled_mi),
-                     fill = hist_colors) +
-      scale_y_continuous(labels = comma) +
-      labs(x = "Distance traveled (miles)",
-           y = "",
-           title = paste("Distribution of Distance Traveled to", input$site_summary),
-           subtitle = "Overnight Reservations in California in 2018") +
-      scale_x_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 500), minor_breaks = seq(0, 3000, 250)) +
-      theme_minimal() +
-      theme(plot.background = element_rect("white"),
-            panel.grid.major.y = element_blank())
-    
-  } ## EO if distance traveled
-  
-  ## SO booking window ----
-  else if (input$data_summary == "booking_window") {
-    
-    # parameters
-    hist_colors <- c("#009900FF")
-    
-    # plot for shiny app
-    ggplot(data = booking_window_df()) +
-      geom_histogram(aes(x = booking_window),
-                     binwidth = 7,
-                     fill = hist_colors) +
-      labs(x = "Days elapsed from order to visit (each bar = 1 week)",
-           y = "",
-           title = paste("Distribution of Booking Windows for", input$site_summary),
-           subtitle = "Overnight Reservations in California in 2018") +
-      scale_x_continuous(limits = c(0, 510), 
-                         breaks = seq(0, 510, by = 30)) +
-      scale_y_continuous(labels = comma) +
-      geom_vline(xintercept = 180, 
-                 linetype = "dashed", size = .3, alpha = .5) +
-      annotate("text", label = "6 months", 
-               x = 210, y = 65000) +
-      geom_vline(xintercept = 360, 
-                 linetype = "dashed", size = .3, alpha = .5) +
-      annotate("text", label = "1 year", 
-               x = 380, y = 65000) +
-      theme_minimal() +
-      theme(plot.background = element_rect("white"),
-            panel.grid.major.y = element_blank())
-    
-  } ### EO else if booking window
-  
-  
-}) ## EO data_summary_plot
 
 
 } ## EO server
