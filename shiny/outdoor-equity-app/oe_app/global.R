@@ -28,14 +28,12 @@ reactlog_enable()
 # IMPORT DATA ---- 
 ## CA prototype joined 2018 ----
 data_joined_2018 <- readRDS("data/2018_joined_data.rds")
-## booking window ----
-#data_plot_boooking_window <- readRDS("data/2018_data_plot_boooking_window.rds")
+## CA ACS all ----
+data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds")
 ## yosemite visitorsheds ----
 data_yosemite_upper_pines_geom <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_geom.rds")
 data_zip_geometries_ca <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_zip_geometries_ca.rds")
 data_geometries_us <- readRDS("data/2018_data_map_us_yosemite_upper_pines_geometries_us.rds")
-## race dist travel comparison ----
-#data_race_dist_travel <- readRDS("data/2018_data_plot_race_distance_traveled.rds")
 
 # SOURCE FUNCTIONS ----
 ## source input functions ----
@@ -51,6 +49,9 @@ source("r/summary_plots/booking_window_plot.R")
 source("r/summary_plots/daily_cost_visitor_plot.R")
 source("r/summary_plots/length_of_stay_plot.R")
 source("r/summary_plots/site_type_plot.R")
+source("r/summary_plots/race_plot.R")
+source("r/summary_plots/education_plot.R")
+source("r/summary_plots/median_income_plot.R")
 
 # CA objects ----
 ## CA agency list ----
@@ -68,32 +69,10 @@ summary_vars <- c("Distance traveled" = "distance_traveled_mi",
                   "Booking window" = "booking_window",
                   "Daily cost per visitor" = "daily_cost_per_visitor",
                   "Length of stay" = "length_of_stay",
-                  "Site type" = "aggregated_site_type")
-  
-  # c("Booking window" = "booking_window",
-  #              "Daily cost" = "daily_cost_per_visitor",
-  #              "Distance traveled" = "distance_traveled_mi",
-  #              # cat education
-  #              # "Education" = "hs_GED_or_below",
-  #              # "Education" = "college",
-  #              # "Education" = "some_college",
-  #              # "Education" = "master_or_above",
-  #              "Estimated household income" = "median_income",
-  #              # cat language
-  #              # "Language - English only" = "english_only",
-  #              # "Language - Not English only" = "not_english_only",
-  #              "Length of stay" = "length_of_stay",
-  #              "Race - Asian" = "asian",
-  #              "Race - Black" = "black",
-  #              "Race - Hispanic/Latinx" = "hispanic_latinx",
-  #              "Race - Multiracial" = "multiracial",
-  #              "Race - Native American" = "native_american",
-  #              "Race - Pacific Islander" = "pacific_islander",
-  #              "Race - White" = "white",
-  #              "Race - Other" = "other")
-  #              #"Total number of different site types" = "aggregated_site_type",
-  #              #"Total number of sites" = "park", # is this right?
-  #              #"Total number of visits" = "count"
+                  "Site type" = "aggregated_site_type",
+                  "Race" = "race",
+                  "Education" = "education",
+                  "Median income" = "median_income")
 
 ## relationship vars ----
 compare_vars <- c("Education - High School/GED" = "median_hs_GED_or_below",
