@@ -46,7 +46,7 @@ data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
 
 
 
-```{r, eval=FALSE}
+```{r}
 # check # of reservations in each "high" race categories
 test_df <- data_plot_race_site_type
 
@@ -70,6 +70,28 @@ test <- c("white" = test_white, "hispanic_latinx" = test_hisp_lat, "asian" = tes
 
 comma(test)
 ```
+
+```{r}
+## trying to figure out purr
+
+# racial_groups <- c("other", "pacific_islander", "multiracial", "asian", 
+#                    "black", "white", "native_american", "hispanic_latinx")
+# 
+# 
+# data_ca_acs_2018 %>% 
+#   select(zip_code, asian, black, hispanic_latinx, multiracial, 
+#              native_american, other, pacific_islander, white, mean_zip_code_population) %>% 
+#       pivot_longer(cols = 2:9,
+#                    names_to = "race",
+#                    values_to = "race_percent") %>%
+#   map(racial_groups, 
+#     ~ (race == .)
+# )
+
+
+
+```
+
 
 
 ```{r}
@@ -125,13 +147,13 @@ for (i in seq_along(racial_groups)){
                               replacement = "Other Race(s)"))
 
   data_plot_race_distance_traveled <- rbind(data_plot_race_distance_traveled, df_racial_i_group)
-    
-assign(paste0("top_quartile_ca_", racial_groups[[i]]), 
-       c(weighted_quartile), 
-       envir = .GlobalEnv)
-assign(paste0("max_race_ridb_", racial_groups[[i]]), 
-       data.frame(max_racial_group_ridb), 
-       envir = .GlobalEnv)
+  
+  assign(paste0("top_quartile_ca_", racial_groups[[i]]), 
+         c(weighted_quartile), 
+         envir = .GlobalEnv)
+  assign(paste0("max_race_ridb_", racial_groups[[i]]), 
+         data.frame(max_racial_group_ridb), 
+         envir = .GlobalEnv)
 }
 
 
