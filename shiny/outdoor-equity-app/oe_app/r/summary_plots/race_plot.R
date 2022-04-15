@@ -1,20 +1,94 @@
-# race rdf and wrangling
+## race plot and parameters ##
+# used in DATA SUMMARY PLOTS in server
+# using input id's for summary page in ui
 
-data_joined_2018 %>% 
-  filter(agency %in% input$agency_summary,
-         admin_unit %in% input$admin_unit_summary,
-         park %in% input$site_summary) %>%
-  # need to add more
-  summarize(white = (mean(white, na.rm = TRUE) * 100),
-            black = (mean(black, na.rm = TRUE) * 100),
-            asian = (mean(asian, na.rm = TRUE) * 100),
-            multiracial = (mean(multiracial, na.rm = TRUE) * 100),
-            other = (mean(other, na.rm = TRUE) * 100),
-            native_american = (mean(native_american, na.rm = TRUE) * 100),
-            pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
-            hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>%
-  pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
-  mutate(race = str_replace(string = race,
-                            pattern = "_",
-                            replacement = " "),
-         race = str_to_title(race))
+race_plot <- function(agencyInput, admin_unitInput, siteInput, titleInput){
+  
+  # non RDFs
+  # reservations in CA
+  data_plot_race_ridb <- data_joined_2018 %>%
+    summarize(white = (mean(white, na.rm = TRUE) * 100),
+              black = (mean(black, na.rm = TRUE) * 100),
+              asian = (mean(asian, na.rm = TRUE) * 100),
+              multiracial = (mean(multiracial, na.rm = TRUE) * 100),
+              other = (mean(other, na.rm = TRUE) * 100),
+              native_american = (mean(native_american, na.rm = TRUE) * 100),
+              pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
+              hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>%
+    pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
+    mutate(race = str_replace(string = race,
+                              pattern = "_",
+                              replacement = " "),
+           race = str_to_title(race))
+  # CA population
+  data_plot_race_ca <- data_ca_acs_2018 %>%
+    summarize(white = (weighted.mean(white, mean_zip_code_population, 
+                                     na.rm = TRUE) * 100),
+              black = (weighted.mean(black,  mean_zip_code_population,
+                                     na.rm = TRUE) * 100),
+              asian = (weighted.mean(asian, mean_zip_code_population, 
+                                     na.rm = TRUE) * 100),
+              multiracial = (weighted.mean(multiracial, mean_zip_code_population, 
+                                           na.rm = TRUE) * 100),
+              other = (weighted.mean(other, mean_zip_code_population, 
+                                     na.rm = TRUE) * 100),
+              native_american = (weighted.mean(native_american, mean_zip_code_population, 
+                                               na.rm = TRUE) * 100),
+              pacific_islander = (weighted.mean(pacific_islander, mean_zip_code_population, 
+                                                na.rm = TRUE) * 100),
+              hispanic_latinx = (weighted.mean(hispanic_latinx, mean_zip_code_population, 
+                                               na.rm = TRUE) * 100)) %>%
+    pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
+    mutate(race = str_replace(string = race,
+                              pattern = "_",
+                              replacement = " "),
+           race = str_to_title(race))
+  
+  # reactive data frame 
+  race_rdf <- reactive ({
+    
+    # join data for plotting
+    data_plot_race_ridb %>%
+      filter(agency %in% agencyInput,
+             admin_unit %in% admin_unitInput,
+             park %in% siteInput) %>%
+      left_join(y = data_plot_race_ca,
+                by = c("race"),
+                suffix = c("_ridb", "_ca")) %>% 
+      rename(RIDB = race_percent_average_ridb,
+             CA = race_percent_average_ca) %>% 
+      pivot_longer(cols = 2:3,
+                   names_to = "data_source",
+                   values_to = "race_percent_average") %>% 
+      mutate(data_source = factor(data_source, levels = c("RIDB", "CA")))
+    
+  }) # EO RDF
+  
+  # parameters
+  groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
+  
+  # plot for shiny app
+  ggplot(data = race_rdf()) +
+    geom_col(aes(x = race_percent_average,
+                 y = reorder(race, race_percent_average),
+                 fill = data_source),
+             stat = "identity",
+             position = "dodge") +
+    scale_fill_manual(values = groups_colors_ridb_ca) +  
+    geom_text(aes(x = race_percent_average,
+                  y = reorder(race, race_percent_average),
+                  label = paste0(round(race_percent_average, 1), "%"),
+                  col = data_source), 
+              position = position_dodge(width = 1), 
+              hjust = -0.1, size = 4) +
+    scale_color_manual(values = groups_colors_ridb_ca) +
+    labs(x = "Percentage (%)",
+         y = "",
+         title = paste("Racial Breakdown of ZIP Codes in 2018 for", titleInput),
+         subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
+    scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
+    theme_minimal() +
+    theme(plot.background = element_rect("white"),
+          panel.grid.major.y = element_blank())
+  
+} # EO function
