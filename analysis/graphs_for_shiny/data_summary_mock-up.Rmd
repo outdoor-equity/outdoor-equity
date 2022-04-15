@@ -89,9 +89,9 @@ split_all <- data.frame(table(cut(x = data_plot_distance_traveled_all$distance_t
 plot_distance_traveled_1 <-
   ggplot(data = data_plot_distance_traveled_all) +
   geom_histogram(aes(x = distance_traveled_mi,
-                     text = paste0(scales::comma(round(..count.. / nrow(data_plot_distance_traveled_all), 2) * 100), 
-                                   "% of all reservations traveled between ", xmin, " and ", xmax, " miles",
-                                   "<br>(", scales::comma(..count..), " reservations)")),
+                     text = paste0(scales::percent(..count.. / nrow(data_plot_distance_traveled_all), accuracy = 0.1), 
+                                   " of all reservations traveled between ", xmin, " and ", xmax, " miles",
+                                   "<br>(", scales::comma(..count.., accuracy = 1), " reservations)")),
                  binwidth = center_bin * 2,
                  center = center_bin,
                  fill = hist_colors[[1]], 
