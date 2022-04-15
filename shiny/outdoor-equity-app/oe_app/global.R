@@ -48,11 +48,11 @@ source("r/inputs/select_relationships_vars.R")
 ## source summary plot functions ----
 source("r/summary_plots/dist_travel_plot.R")
 source("r/summary_plots/booking_window_plot.R")
-
+source("r/summary_plots/daily_cost_visitor_plot.R")
+source("r/summary_plots/length_of_stay_plot.R")
+source("r/summary_plots/site_type_plot.R")
 
 # CA objects ----
-# use in R scripts, ui or server
-
 ## CA agency list ----
 ca_agency <- as.vector(unique(data_joined_2018$agency))
 
@@ -65,7 +65,10 @@ sites <- as.vector(unique(data_joined_2018$park))
 # VARS ----
 ## data summary vars ----
 summary_vars <- c("Distance traveled" = "distance_traveled_mi",
-                  "Booking window" = "booking_window")
+                  "Booking window" = "booking_window",
+                  "Daily cost per visitor" = "daily_cost_per_visitor",
+                  "Length of stay" = "length_of_stay",
+                  "Site type" = "aggregated_site_type")
   
   # c("Booking window" = "booking_window",
   #              "Daily cost" = "daily_cost_per_visitor",
