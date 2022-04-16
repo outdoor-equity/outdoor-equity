@@ -1054,7 +1054,7 @@ ggplotly(plot_education_distance_traveled,
 
 ### Education x site type 
 
-```{r, eval=TRUE}
+```{r}
 ## -- data wrangle -- ##
 education_groups <- c("hs_GED_or_below", "some_college", "college", "master_or_above")
 
@@ -1176,7 +1176,7 @@ ggplotly(plot_education_site_type,
          tooltip = list("text"))
 ```
 
-```{r, eval=TRUE}
+```{r}
 # equestrian
 data <- data_plot_education_site_type_equestrian
 data_string <- deparse(substitute(data_plot_education_site_type_equestrian))
@@ -1221,7 +1221,7 @@ ggplotly(plot_education_site_type_equestrian,
          tooltip = list("text"))
 ```
 
-```{r, eval=TRUE}
+```{r}
 # remote
 data <- data_plot_education_site_type_remote
 data_string <- deparse(substitute(data_plot_education_site_type_remote))
@@ -1266,7 +1266,7 @@ ggplotly(plot_education_site_type_remote,
          tooltip = list("text"))
 ```
 
-```{r, eval=TRUE}
+```{r}
 # RV Only
 data <- data_plot_education_site_type_rv.only
 data_string <- deparse(substitute(data_plot_education_site_type_rv.only))
@@ -1311,7 +1311,7 @@ ggplotly(plot_education_site_type_rv_only,
          tooltip = list("text"))
 ```
 
-```{r, eval=TRUE}
+```{r}
 # RV or Tent
 data <- data_plot_education_site_type_rv.or.tent
 data_string <- deparse(substitute(data_plot_education_site_type_rv.or.tent))
@@ -1356,7 +1356,7 @@ ggplotly(plot_education_site_type_rv_or_tent,
          tooltip = list("text"))
 ```
 
-```{r, eval=TRUE}
+```{r}
 # Shelter
 data <- data_plot_education_site_type_shelter
 data_string <- deparse(substitute(data_plot_education_site_type_shelter))
@@ -1401,7 +1401,7 @@ ggplotly(plot_education_site_type_shelter,
          tooltip = list("text"))
 ```
 
-```{r, eval=TRUE}
+```{r}
 # Tent Only
 data <- data_plot_education_site_type_tent.only
 data_string <- deparse(substitute(data_plot_education_site_type_tent.only))
@@ -1446,7 +1446,7 @@ ggplotly(plot_education_site_type_tent_only,
          tooltip = list("text"))
 ```
 
-```{r, eval=TRUE}
+```{r}
 # Water
 data <- data_plot_education_site_type_water
 data_string <- deparse(substitute(data_plot_education_site_type_water))
@@ -1705,7 +1705,7 @@ ggplotly(plot_education_daily_cost,
 
 ### Education x length of stay 
 
-```{r, eval=TRUE}
+```{r}
 education_groups <- c("hs_GED_or_below", "some_college", "college", "master_or_above")
 
 data_plot_education_length_of_stay <- data.frame()
@@ -1828,15 +1828,15 @@ print(paste0("Masters Degree or Above: ", round(top_quartile_ca_education_master
 
 ```{r}
 ## -- data wrangle -- ##
-language_groups <- c("hs_GED_or_below", "some_college", "college", "master_or_above")
+language_groups <- c("english_only", "not_english_only")
 
 data_plot_language_distance_traveled <- data.frame()
 
 # create plot df for each group for RIDB data
 for (i in seq_along(language_groups)){
   df_ca_bin_breaks <- data_ca_acs_2018 %>% 
-    select(zip_code, hs_GED_or_below, some_college, college, master_or_above, mean_zip_code_population) %>% 
-    pivot_longer(cols = 2:5,
+    select(zip_code, english_only, not_english_only, mean_zip_code_population) %>% 
+    pivot_longer(cols = 2:3,
                  names_to = "language",
                  values_to = "language_percentage") %>% 
     filter(language == language_groups[[i]]) %>% ## BACK TO i
@@ -1849,11 +1849,11 @@ for (i in seq_along(language_groups)){
   weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
   
   df_language_group_i_longer <- data_ridb_acs_2018 %>% 
-    select(agency, admin_unit, park, customer_zip, hs_GED_or_below, some_college, college, master_or_above,
+    select(agency, admin_unit, park, customer_zip, english_only, not_english_only,
            distance_traveled_m) %>% 
     mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
     drop_na(distance_traveled_mi) %>% 
-  pivot_longer(cols = 5:8,
+  pivot_longer(cols = 5:6,
                names_to = "language",
                values_to = "language_percentage") %>% 
     filter(language == language_groups[[i]]) %>% ## BACK TO i
@@ -1870,23 +1870,15 @@ for (i in seq_along(language_groups)){
     mutate(language = str_replace_all(string = language,
                                        pattern = "_",
                                        replacement = " "),
-           language = str_to_title(language),
            language = str_replace(string = language,
-                                   pattern = "Hs Ged Or", 
-                                   replacement = "HS, GED, or"),
+                                  pattern = "^english only$",
+                                  replacement = "Speak Only English at Home"),
            language = str_replace(string = language,
-                                   pattern = "Some College",
-                                   replacement = "Some College or Trade School"),
-           language = str_replace(string = language,
-                                   pattern = "^College$",
-                                   replacement = "Associates or Bachelors Degree"),
-           language = str_replace(string = language,
-                                   pattern = "Master Or Above",
-                                   replacement = "Masters Degree or Above"))
+                                  pattern = "^not english only$",
+                                  replacement = "Speak Language Other Than English at Home"),
+           language = str_to_title(language))
 
-  data_plot_language_distance_traveled <- rbind(data_plot_language_distance_traveled, df_language_i_group) %>% 
-    mutate(language = factor(language, levels = c("HS, GED, or Below", "Some College or Trade School", 
-                                                    "Associates or Bachelors Degree", "Masters Degree or Above")))
+  data_plot_language_distance_traveled <- rbind(data_plot_language_distance_traveled, df_language_i_group)
     
 assign(paste0("top_quartile_ca_language_", language_groups[[i]]), 
        c(weighted_quartile), 
@@ -1899,26 +1891,26 @@ assign(paste0("max_language_ridb_", language_groups[[i]]),
 
 ## -- create plot -- ##
 
-language_group_colors <- c("HS, GED, or Below" = "#a6cee3", "Some College or Trade School"  = "#1f78b4", 
-                      "Associates or Bachelors Degree" = "#b2df8a", "Masters Degree or Above" = "#33a02c")
+language_group_colors <- c("Speak Only English At Home" = "#66c2a5", "Speak Language Other Than English At Home" = "#8da0cb")
 
 plot_language_distance_traveled <- ggplot(data = data_plot_language_distance_traveled, 
                                       aes(x = mean_distance_traveled_mi,
-                                          y = language)) +
-  geom_segment(aes(xend = 0, yend = language)) +
+                                          y = reorder(language, mean_distance_traveled_mi))) +
+  geom_segment(aes(xend = 0, yend = reorder(language, mean_distance_traveled_mi))) +
   geom_point(aes(x = mean_distance_traveled_mi,
-                 y = language,
+                 y = reorder(language, mean_distance_traveled_mi),
                  color = language, fill = language,
-                 text = paste("Those who live in ZIP codes with high rates of a <br>maximum language level of", 
-                              language, "<br>travel an estimated distance of",
-                              round(mean_distance_traveled_mi, 0), "miles.")),
+                 text = paste("Those who live in ZIP codes with high rates of <br>populations that", 
+                              str_to_lower(language) %>% 
+                                str_replace(string = ., pattern = "english", replacement = "English"), 
+                              "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles.")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
   scale_fill_manual(values = language_group_colors) +
   scale_color_manual(values = language_group_colors) +
   labs(x = paste("Average Distance Traveled from Home to Site (miles)"),
        y = "",
-       title = "Average Distance Traveled to Reservation for <br>Different Educational Level Groups") + 
+       title = "Average Distance Traveled to Reservation for <br>Populations that Speak a Language Other than <br>English at Home") + 
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank(),
@@ -1931,9 +1923,321 @@ ggplotly(plot_language_distance_traveled,
 
 ### Language x site type
 
+```{r, eval=TRUE}
+## -- data wrangle -- ##
+language_groups <- c("english_only", "not_english_only")
+
+site_types_groups <- c("equestrian", "remote", "rv only", "rv or tent", "shelter", "tent only", "water")
+
+data_plot_language_site_type <- data.frame()
+
+# create plot df for each group for RIDB data
+for (i in seq_along(language_groups)){
+  df_ca_bin_breaks <- data_ca_acs_2018 %>% 
+    select(zip_code, english_only, not_english_only, mean_zip_code_population) %>% 
+    pivot_longer(cols = 2:3,
+                 names_to = "language",
+                 values_to = "language_percentage") %>% 
+    filter(language == language_groups[[i]]) %>% ## BACK TO i
+    drop_na(language_percentage) 
+  
+  weighted_half <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(language_percentage >= weighted_half)
+  
+  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_language_group_i_longer <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, english_only, not_english_only, aggregated_site_type) %>% 
+    drop_na(aggregated_site_type) %>% 
+    pivot_longer(cols = 5:6,
+                 names_to = "language",
+                 values_to = "language_percentage") %>% 
+    filter(language == language_groups[[i]]) %>% ## BACK TO i
+    drop_na(language_percentage)
+
+  max_language_group_ridb <- df_language_group_i_longer %>%
+    summarize(max = max(language_percentage))
+
+  df_language_group_i <- df_language_group_i_longer %>%
+    filter(language_percentage >= weighted_quartile) %>% 
+    count(language, aggregated_site_type) %>% 
+    mutate(language = paste0(language_groups[[i]])) %>%  ## BACK TO i
+    relocate(language, .before = 1) %>% 
+    mutate(language = str_replace_all(string = language,
+                              pattern = "_",
+                              replacement = " "),
+           language = str_replace(string = language,
+                                  pattern = "^english only$",
+                                  replacement = "Speak Only English at Home"),
+           language = str_replace(string = language,
+                                  pattern = "^not english only$",
+                                  replacement = "Speak Language Other Than English at Home"),
+           language = str_to_title(language))
+  
+  data_plot_language_site_type <- rbind(data_plot_language_site_type, df_language_group_i)
+  
+  for (j in seq_along(site_types_groups)){
+    site_df <- data_plot_language_site_type %>% 
+      filter(aggregated_site_type == site_types_groups[[j]]) %>% 
+      mutate(sum_n = sum(n),
+             percent_n = n / sum_n)
+    
+    assign(paste0("data_plot_language_site_type_", 
+                  str_replace_all(string = site_types_groups[[j]],
+                                  pattern = " ",
+                                  replacement = ".")),
+           data.frame(site_df), envir = .GlobalEnv)
+  }
+
+  assign(paste0("top_quartile_ca_language_", language_groups[[i]]),
+         c(weighted_quartile),
+         envir = .GlobalEnv)
+  assign(paste0("max_language_ridb_", language_groups[[i]]),
+         data.frame(max_language_group_ridb),
+         envir = .GlobalEnv)
+}
+
+
+## -- create plot -- ##
+language_group_colors <- c("Speak Only English At Home" = "#66c2a5", "Speak Language Other Than English At Home" = "#8da0cb")
+
+# plot for shiny
+
+# stacked all sites in one plot
+data_plot_language_site_type <- rbind(data_plot_language_site_type_equestrian, data_plot_language_site_type_remote,
+                                  data_plot_language_site_type_rv.only, data_plot_language_site_type_rv.or.tent,
+                                  data_plot_language_site_type_shelter, data_plot_language_site_type_tent.only,
+                                  data_plot_language_site_type_water) %>% 
+  mutate(aggregated_site_type = str_to_title(string = aggregated_site_type) %>% 
+           str_replace(string = ., pattern = "Rv", replacement = "RV"))
+
+plot_language_site_type <- ggplot(data = data_plot_language_site_type, 
+                              aes(x = percent_n,
+                                  y = aggregated_site_type, fill = fct_rev(language),
+                                  text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                                                " of reservations were made by ",
+                                                "<br>people who live in ZIP codes with high rates of <br>households that ", 
+                                                str_to_lower(language) %>% str_replace(string = ., pattern = "english", replacement = "English")))) +
+  geom_col(position = "stack") +
+  scale_fill_manual(values = language_group_colors) +
+  scale_x_continuous(labels = scales::percent) +
+  labs(x = paste("Percent of Total Reservations per Site Type Group"),
+       y = "",
+       title = paste0("Percentage of Reservations to Sites by <br>Language Spoekn at Home")) + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_language_site_type,
+         tooltip = list("text"))
+```
+
+
 ### Language x daily cost
 
+```{r}
+## -- data wrangle -- ##
+language_groups <- c("english_only", "not_english_only")
+
+data_plot_language_daily_cost <- data.frame()
+
+# create plot df for each group for RIDB data
+for (i in seq_along(language_groups)){
+  df_ca_bin_breaks <- data_ca_acs_2018 %>% 
+    select(zip_code, english_only, not_english_only, mean_zip_code_population) %>% 
+    pivot_longer(cols = 2:3,
+                 names_to = "language",
+                 values_to = "language_percentage") %>% 
+    filter(language == language_groups[[i]]) %>% ## BACK TO i
+    drop_na(language_percentage) 
+  
+  weighted_half <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(language_percentage >= weighted_half)
+  
+  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_language_group_i_longer <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, english_only, not_english_only,
+           daily_cost) %>% 
+    drop_na(daily_cost) %>% 
+  pivot_longer(cols = 5:6,
+               names_to = "language",
+               values_to = "language_percentage") %>% 
+    filter(language == language_groups[[i]]) %>% ## BACK TO i
+    drop_na(language_percentage)
+  
+  max_language_group_ridb <- df_language_group_i_longer %>%
+    summarize(max = max(language_percentage))
+  
+  df_language_i_group <- df_language_group_i_longer %>% 
+    filter(language_percentage >= weighted_quartile) %>% 
+    summarize(mean_daily_cost = mean(daily_cost)) %>% 
+    mutate(language = paste0(language_groups[[i]])) %>%  ## BACK TO i
+    relocate(language, .before = 1) %>% 
+    mutate(language = str_replace_all(string = language,
+                                       pattern = "_",
+                                       replacement = " "),
+           language = str_replace(string = language,
+                                  pattern = "^english only$",
+                                  replacement = "Speak Only English at Home"),
+           language = str_replace(string = language,
+                                  pattern = "^not english only$",
+                                  replacement = "Speak Language Other Than English at Home"),
+           language = str_to_title(language))
+
+  data_plot_language_daily_cost <- rbind(data_plot_language_daily_cost, df_language_i_group)
+    
+assign(paste0("top_quartile_ca_language_", language_groups[[i]]), 
+       c(weighted_quartile), 
+       envir = .GlobalEnv)
+assign(paste0("max_language_ridb_", language_groups[[i]]), 
+       data.frame(max_language_group_ridb), 
+       envir = .GlobalEnv)
+}
+
+
+## -- create plot -- ##
+
+language_group_colors <- c("Speak Only English At Home" = "#66c2a5", "Speak Language Other Than English At Home" = "#8da0cb")
+
+plot_language_daily_cost <- ggplot(data = data_plot_language_daily_cost, 
+                                      aes(x = mean_daily_cost,
+                                          y = reorder(language, mean_daily_cost))) +
+  geom_segment(aes(xend = 0, yend = reorder(language, mean_daily_cost))) +
+  geom_point(aes(x = mean_daily_cost,
+                 y = reorder(language, mean_daily_cost),
+                 color = language, fill = language,
+                 text = paste("Those who live in ZIP codes with high rates of <br>populations that", 
+                              str_to_lower(language) %>% 
+                                str_replace(string = ., pattern = "english", replacement = "English"), 
+                              "<br>pay an estimated distance of", scales::dollar(mean_daily_cost), "per day.")),
+             width = .25,
+             size = 4, shape = 21, stroke = 2) +
+  scale_fill_manual(values = language_group_colors) +
+  scale_color_manual(values = language_group_colors) +
+  scale_x_continuous(labels = scales::dollar) +
+  labs(x = paste("Average Daily Cost of Reservation"),
+       y = "",
+       title = "Average Daily Cost of Reservations for <br>Populations that Speak a Language Other than <br>English at Home") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_language_daily_cost,
+         tooltip = list("text"))
+```
+
+
 ### Language x length of stay
+
+```{r}
+## -- data wrangle -- ##
+language_groups <- c("english_only", "not_english_only")
+
+data_plot_language_length_of_stay <- data.frame()
+
+# create plot df for each group for RIDB data
+for (i in seq_along(language_groups)){
+  df_ca_bin_breaks <- data_ca_acs_2018 %>% 
+    select(zip_code, english_only, not_english_only, mean_zip_code_population) %>% 
+    pivot_longer(cols = 2:3,
+                 names_to = "language",
+                 values_to = "language_percentage") %>% 
+    filter(language == language_groups[[i]]) %>% ## BACK TO i
+    drop_na(language_percentage) 
+  
+  weighted_half <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(language_percentage >= weighted_half)
+  
+  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_language_group_i_longer <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, english_only, not_english_only,
+           length_of_stay) %>% 
+    drop_na(length_of_stay) %>% 
+  pivot_longer(cols = 5:6,
+               names_to = "language",
+               values_to = "language_percentage") %>% 
+    filter(language == language_groups[[i]]) %>% ## BACK TO i
+    drop_na(language_percentage)
+  
+  max_language_group_ridb <- df_language_group_i_longer %>%
+    summarize(max = max(language_percentage))
+  
+  df_language_i_group <- df_language_group_i_longer %>% 
+    filter(language_percentage >= weighted_quartile) %>% 
+    summarize(mean_length_of_stay = mean(length_of_stay)) %>% 
+    mutate(language = paste0(language_groups[[i]])) %>%  ## BACK TO i
+    relocate(language, .before = 1) %>% 
+    mutate(language = str_replace_all(string = language,
+                                       pattern = "_",
+                                       replacement = " "),
+           language = str_replace(string = language,
+                                  pattern = "^english only$",
+                                  replacement = "Speak Only English at Home"),
+           language = str_replace(string = language,
+                                  pattern = "^not english only$",
+                                  replacement = "Speak Language Other Than English at Home"),
+           language = str_to_title(language))
+
+  data_plot_language_length_of_stay <- rbind(data_plot_language_length_of_stay, df_language_i_group)
+    
+assign(paste0("top_quartile_ca_language_", language_groups[[i]]), 
+       c(weighted_quartile), 
+       envir = .GlobalEnv)
+assign(paste0("max_language_ridb_", language_groups[[i]]), 
+       data.frame(max_language_group_ridb), 
+       envir = .GlobalEnv)
+}
+
+
+## -- create plot -- ##
+
+language_group_colors <- c("Speak Only English At Home" = "#66c2a5", "Speak Language Other Than English At Home" = "#8da0cb")
+
+plot_language_length_of_stay <- ggplot(data = data_plot_language_length_of_stay, 
+                                      aes(x = mean_length_of_stay,
+                                          y = language)) +
+  geom_segment(aes(xend = 0, yend = language)) +
+  geom_point(aes(x = mean_length_of_stay,
+                 y = language,
+                 color = language, fill = language,
+                 text = paste("Those who live in ZIP codes with high rates of <br>populations that", 
+                              str_to_lower(language) %>% 
+                                str_replace(string = ., pattern = "english", replacement = "English"), 
+                              "<br>stay an estimated distance of", round(mean_length_of_stay, 0), "days.")),
+             width = .25,
+             size = 4, shape = 21, stroke = 2) +
+  scale_fill_manual(values = language_group_colors) +
+  scale_color_manual(values = language_group_colors) +
+  labs(x = paste("Average Length of Stay"),
+       y = "",
+       title = "Average Length of Stay of Reservations for <br>Populations that Speak a Language Other than <br>English at Home") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_language_length_of_stay,
+         tooltip = list("text"))
+```
+
+
+
+```{r}
+# print "high" percentage range for each language category
+print(paste0("A high presence was calculated as anything above the upper weighted quartile for each language group for the state of California."))
+             
+print(paste0("Speak Only English at Home: ", round(top_quartile_ca_language_english_only, 4)*100, " - ", round(max_language_ridb_english_only, 4) *100, "%"))
+             
+print(paste0("Language(s) Other than English: ", round(top_quartile_ca_language_not_english_only, 4)*100, " - ", round(max_language_ridb_not_english_only, 4) *100, "%"))
+```
 
 
 
