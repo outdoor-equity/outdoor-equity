@@ -1923,7 +1923,7 @@ ggplotly(plot_language_distance_traveled,
 
 ### Language x site type
 
-```{r, eval=TRUE}
+```{r}
 ## -- data wrangle -- ##
 language_groups <- c("english_only", "not_english_only")
 
@@ -2024,7 +2024,7 @@ plot_language_site_type <- ggplot(data = data_plot_language_site_type,
   scale_x_continuous(labels = scales::percent) +
   labs(x = paste("Percent of Total Reservations per Site Type Group"),
        y = "",
-       title = paste0("Percentage of Reservations to Sites by <br>Language Spoekn at Home")) + 
+       title = paste0("Percentage of Reservations to Sites by <br>Language Spoken at Home")) + 
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank(),
@@ -2234,9 +2234,11 @@ ggplotly(plot_language_length_of_stay,
 # print "high" percentage range for each language category
 print(paste0("A high presence was calculated as anything above the upper weighted quartile for each language group for the state of California."))
              
-print(paste0("Speak Only English at Home: ", round(top_quartile_ca_language_english_only, 4)*100, " - ", round(max_language_ridb_english_only, 4) *100, "%"))
+print(paste0("Speak Only English at Home: ", percent(top_quartile_ca_language_english_only, accuracy = 0.1), 
+             " - ", percent(max_language_ridb_english_only[[1]], accuracy = 0.1), "%"))
              
-print(paste0("Language(s) Other than English: ", round(top_quartile_ca_language_not_english_only, 4)*100, " - ", round(max_language_ridb_not_english_only, 4) *100, "%"))
+print(paste0("Language(s) Other than English: ", percent(top_quartile_ca_language_not_english_only, accuracy = 0.1), 
+             " - ", percent(max_language_ridb_not_english_only[[1]], accuracy = 0.1), "%"))
 ```
 
 
@@ -2244,6 +2246,101 @@ print(paste0("Language(s) Other than English: ", round(top_quartile_ca_language_
 ## Median-income x ____
 
 ### Median-income x distance traveled
+
+```{r}
+## -- data wrangle -- ##
+median_income_groups <- c("english_only", "not_english_only")
+
+data_plot_median_income_distance_traveled <- data.frame()
+
+# create plot df for each group for RIDB data
+for (i in seq_along(median_income_groups)){
+  df_ca_bin_breaks <- data_ca_acs_2018 %>% 
+    select(zip_code, english_only, not_english_only, mean_zip_code_population) %>% 
+    pivot_longer(cols = 2:3,
+                 names_to = "median_income",
+                 values_to = "median_income_percentage") %>% 
+    filter(median_income == median_income_groups[[i]]) %>% ## BACK TO i
+    drop_na(median_income_percentage) 
+  
+  weighted_half <- weighted.mean(x = df_ca_bin_breaks$median_income_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(median_income_percentage >= weighted_half)
+  
+  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$median_income_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_median_income_group_i_longer <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, english_only, not_english_only,
+           distance_traveled_m) %>% 
+    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+    drop_na(distance_traveled_mi) %>% 
+  pivot_longer(cols = 5:6,
+               names_to = "median_income",
+               values_to = "median_income_percentage") %>% 
+    filter(median_income == median_income_groups[[i]]) %>% ## BACK TO i
+    drop_na(median_income_percentage)
+  
+  max_median_income_group_ridb <- df_median_income_group_i_longer %>%
+    summarize(max = max(median_income_percentage))
+  
+  df_median_income_i_group <- df_median_income_group_i_longer %>% 
+    filter(median_income_percentage >= weighted_quartile) %>% 
+    summarize(mean_distance_traveled_mi = mean(distance_traveled_mi)) %>% 
+    mutate(median_income = paste0(median_income_groups[[i]])) %>%  ## BACK TO i
+    relocate(median_income, .before = 1) %>% 
+    mutate(median_income = str_replace_all(string = median_income,
+                                       pattern = "_",
+                                       replacement = " "),
+           median_income = str_replace(string = median_income,
+                                  pattern = "^english only$",
+                                  replacement = "Speak Only English at Home"),
+           median_income = str_replace(string = median_income,
+                                  pattern = "^not english only$",
+                                  replacement = "Speak median_income Other Than English at Home"),
+           median_income = str_to_title(median_income))
+
+  data_plot_median_income_distance_traveled <- rbind(data_plot_median_income_distance_traveled, df_median_income_i_group)
+    
+assign(paste0("top_quartile_ca_median_income_", median_income_groups[[i]]), 
+       c(weighted_quartile), 
+       envir = .GlobalEnv)
+assign(paste0("max_median_income_ridb_", median_income_groups[[i]]), 
+       data.frame(max_median_income_group_ridb), 
+       envir = .GlobalEnv)
+}
+
+
+## -- create plot -- ##
+
+median_income_group_colors <- c("Speak Only English At Home" = "#66c2a5", "Speak median_income Other Than English At Home" = "#8da0cb")
+
+plot_median_income_distance_traveled <- ggplot(data = data_plot_median_income_distance_traveled, 
+                                      aes(x = mean_distance_traveled_mi,
+                                          y = reorder(median_income, mean_distance_traveled_mi))) +
+  geom_segment(aes(xend = 0, yend = reorder(median_income, mean_distance_traveled_mi))) +
+  geom_point(aes(x = mean_distance_traveled_mi,
+                 y = reorder(median_income, mean_distance_traveled_mi),
+                 color = median_income, fill = median_income,
+                 text = paste("Those who live in ZIP codes with high rates of <br>populations that", 
+                              str_to_lower(median_income) %>% 
+                                str_replace(string = ., pattern = "english", replacement = "English"), 
+                              "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles.")),
+             width = .25,
+             size = 4, shape = 21, stroke = 2) +
+  scale_fill_manual(values = median_income_group_colors) +
+  scale_color_manual(values = median_income_group_colors) +
+  labs(x = paste("Average Distance Traveled from Home to Site (miles)"),
+       y = "",
+       title = "Average Distance Traveled to Reservation for <br>Populations that Speak a Language Other than <br>English at Home") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_median_distance_traveled,
+         tooltip = list("text"))
+```
+
 
 ### Median-income x site type
 
