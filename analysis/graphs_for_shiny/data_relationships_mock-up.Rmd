@@ -243,7 +243,9 @@ data_plot_race_site_type <- rbind(data_plot_race_site_type_equestrian, data_plot
 plot_race_site_type <- ggplot(data = data_plot_race_site_type, 
                               aes(x = percent_n,
                                   y = aggregated_site_type, fill = fct_rev(race),
-                                  text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.01),
+                                  text = paste0("Of visits to ", str_to_lower(aggregated_site_type) %>% 
+                                                  str_replace(string = ., pattern = "rv", replacement = "RV"), 
+                                                " sites, ", scales::percent(percent_n, accuracy = 0.1),
                                                 " reservations were made by <br>people who live in ZIP codes with high ", 
                                                 str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations."))) +
   geom_col(position = "stack") +
@@ -274,8 +276,8 @@ plot_race_site_type_equestrian <- ggplot(data = data,
                  y = reorder(race, percent_n),
                  #color = race, 
                  fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::comma(round(percent_n, 4)*100, accuracy = 1),
-                              "% reservations were made by <br>people who live in ZIP codes with high ", 
+                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                              " reservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
              # size = 4, shape = 21, stroke = 2
@@ -318,8 +320,8 @@ plot_race_site_type_remote <- ggplot(data = data,
                  y = reorder(race, percent_n),
                  #color = race, 
                  fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::comma(round(percent_n, 4)*100, accuracy = 1),
-                              "% reservations were made by <br>people who live in ZIP codes with high ", 
+                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                              " reservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
              # size = 4, shape = 21, stroke = 2
@@ -362,8 +364,8 @@ plot_race_site_type_rv_only <- ggplot(data = data,
                  y = reorder(race, percent_n),
                  #color = race, 
                  fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::comma(round(percent_n, 4)*100, accuracy = 1),
-                              "% reservations were made by <br>people who live in ZIP codes with high ", 
+                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                              " reservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
              # size = 4, shape = 21, stroke = 2
@@ -406,8 +408,8 @@ plot_race_site_type_rv_or_tent <- ggplot(data = data,
                  y = reorder(race, percent_n),
                  # color = race, 
                fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::comma(round(percent_n, 4)*100, accuracy = 1),
-                              "% reservations were made by <br>people who live in ZIP codes with high ", 
+                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                              " reservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
              # size = 4, shape = 21, stroke = 2
@@ -450,8 +452,8 @@ plot_race_site_type_shelter <- ggplot(data = data,
                  y = reorder(race, percent_n),
                  # color = race, 
                fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::comma(round(percent_n, 4)*100, accuracy = 1),
-                              "% reservations were made by <br>people who live in ZIP codes with high ", 
+                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                              " reservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
              # size = 4, shape = 21, stroke = 2
@@ -494,8 +496,8 @@ plot_race_site_type_tent_only <- ggplot(data = data,
                y = reorder(race, percent_n),
                #color = race, 
                fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::comma(round(percent_n, 4)*100, accuracy = 1),
-                              "% reservations were made by <br>people who live in ZIP codes with high ", 
+                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                              " reservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
              # size = 4, shape = 21, stroke = 2
@@ -538,8 +540,8 @@ plot_race_site_type_water <- ggplot(data = data,
                y = reorder(race, percent_n),
                #color = race, 
                fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::comma(round(percent_n, 4)*100, accuracy = 1),
-                              "% reservations were made by <br>people who live in ZIP codes with high ", 
+                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                              "%eservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
              # size = 4, shape = 21, stroke = 2
@@ -678,7 +680,7 @@ ggplotly(plot_race_booking_window,
 racial_groups <- c("other", "pacific_islander", "multiracial", "asian", 
                    "black", "white", "native_american", "hispanic_latinx")
 
-data_plot_race_daily_cost_per_visitor <- data.frame()
+data_plot_race_daily_cost <- data.frame()
 
 # create plot df for each group for RIDB data
 for (i in seq_along(racial_groups)){
@@ -700,9 +702,9 @@ for (i in seq_along(racial_groups)){
   df_racial_group_i_longer <- data_ridb_acs_2018 %>% 
     select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
            multiracial, native_american, other, pacific_islander, white,
-           daily_cost_per_visitor) %>% 
-    drop_na(daily_cost_per_visitor) %>% 
-    filter(daily_cost_per_visitor != Inf) %>% 
+           daily_cost) %>% 
+    drop_na(daily_cost) %>% 
+    filter(daily_cost != Inf) %>% 
   pivot_longer(cols = 5:12,
                names_to = "race",
                values_to = "race_percentage") %>% 
@@ -714,7 +716,7 @@ for (i in seq_along(racial_groups)){
 
   df_racial_group_i <- df_racial_group_i_longer %>%
     filter(race_percentage >= weighted_quartile) %>% 
-    summarize(mean_daily_cost_per_visitor = mean(daily_cost_per_visitor)) %>% 
+    summarize(mean_daily_cost = mean(daily_cost)) %>% 
     mutate(race = paste0(racial_groups[[i]])) %>%  ## BACK TO i
     relocate(race, .before = 1) %>% 
     mutate(race = str_replace(string = race,
@@ -725,7 +727,7 @@ for (i in seq_along(racial_groups)){
                               pattern = "Other",
                               replacement = "Other Race(s)"))
 
-  data_plot_race_daily_cost_per_visitor <- rbind(data_plot_race_daily_cost_per_visitor, df_racial_group_i)
+  data_plot_race_daily_cost <- rbind(data_plot_race_daily_cost, df_racial_group_i)
     
 assign(paste0("top_quartile_ca_race_", racial_groups[[i]]),
        c(weighted_quartile),
@@ -743,30 +745,30 @@ racial_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69
 
 
 # plot for shiny
-plot_race_daily_cost_per_visitor <- ggplot(data = data_plot_race_daily_cost_per_visitor, 
-                                      aes(x = mean_daily_cost_per_visitor,
-                                          y = reorder(race, mean_daily_cost_per_visitor))) +
+plot_race_daily_cost <- ggplot(data = data_plot_race_daily_cost, 
+                                      aes(x = mean_daily_cost,
+                                          y = reorder(race, mean_daily_cost))) +
   geom_segment(aes(xend = 0, yend = race)) +
-  geom_point(aes(x = mean_daily_cost_per_visitor,
-                 y = reorder(race, mean_daily_cost_per_visitor),
+  geom_point(aes(x = mean_daily_cost,
+                 y = reorder(race, mean_daily_cost),
                  color = race, fill = race,
                  text = paste0("People who live in ZIP codes with high ", 
                                str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations ",
-                             "<br>pay an estimate of ", scales::dollar(mean_daily_cost_per_visitor), " per person per day.")),
+                             "<br>pay an estimate of ", scales::dollar(mean_daily_cost), " per person per day.")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
   scale_fill_manual(values = racial_group_colors) +
   scale_color_manual(values = racial_group_colors) +
   scale_x_continuous(labels = scales::dollar) +
-  labs(x = paste("Average Daily Cost per Visitor"),
+  labs(x = paste("Average Daily Cost of Reservation"),
        y = "",
-       title = "Average Daily Cost per Visitor for <br>Different Racial Groups") + 
+       title = "Average Daily Cost for <br>Different Racial Groups") + 
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank(),
         legend.position = "none")
 
-ggplotly(plot_race_daily_cost_per_visitor,
+ggplotly(plot_race_daily_cost,
          tooltip = list("text"))
 ```
 
@@ -993,11 +995,20 @@ for (i in seq_along(education_groups)){
            education = str_to_title(education),
            education = str_replace(string = education,
                                    pattern = "Hs Ged Or", 
-                                   replacement = "HS, GED, or"))
+                                   replacement = "HS, GED, or"),
+           education = str_replace(string = education,
+                                   pattern = "Some College",
+                                   replacement = "Some College or Trade School"),
+           education = str_replace(string = education,
+                                   pattern = "^College$",
+                                   replacement = "Associates or Bachelors Degree"),
+           education = str_replace(string = education,
+                                   pattern = "Master Or Above",
+                                   replacement = "Masters Degree or Above"))
 
   data_plot_education_distance_traveled <- rbind(data_plot_education_distance_traveled, df_education_i_group) %>% 
-    mutate(education = factor(education, levels = c("HS, GED, or Below", "Some College", 
-                                                    "College", "Master Or Above")))
+    mutate(education = factor(education, levels = c("HS, GED, or Below", "Some College or Trade School", 
+                                                    "Associates or Bachelors Degree", "Masters Degree or Above")))
     
 assign(paste0("top_quartile_ca_education_", education_groups[[i]]), 
        c(weighted_quartile), 
@@ -1010,8 +1021,8 @@ assign(paste0("max_education_ridb_", education_groups[[i]]),
 
 ## -- create plot -- ##
 
-edu_group_colors <- c("HS, GED, or Below" = "#a6cee3", "Some College"  = "#1f78b4", 
-                      "College" = "#b2df8a", "Master Or Above" = "#33a02c")
+education_group_colors <- c("HS, GED, or Below" = "#a6cee3", "Some College or Trade School"  = "#1f78b4", 
+                      "Associates or Bachelors Degree" = "#b2df8a", "Masters Degree or Above" = "#33a02c")
 
 plot_education_distance_traveled <- ggplot(data = data_plot_education_distance_traveled, 
                                       aes(x = mean_distance_traveled_mi,
@@ -1020,14 +1031,13 @@ plot_education_distance_traveled <- ggplot(data = data_plot_education_distance_t
   geom_point(aes(x = mean_distance_traveled_mi,
                  y = education,
                  color = education, fill = education,
-                 text = paste("Those who live in ZIP codes with high rates <br>an educational level of", 
-                              str_to_title(education) %>% 
-                                str_replace(string = ., pattern = "Hs Ged Or", replacement = "HS, GED, or"), 
-                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles.")),
+                 text = paste("Those who live in ZIP codes with high rates of a <br>maximum education level of", 
+                              education, "<br>travel an estimated distance of",
+                              round(mean_distance_traveled_mi, 0), "miles.")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
-  scale_fill_manual(values = edu_group_colors) +
-  scale_color_manual(values = edu_group_colors) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
   labs(x = paste("Average Distance Traveled from Home to Site (miles)"),
        y = "",
        title = "Average Distance Traveled to Reservation for <br>Different Educational Level Groups") + 
@@ -1091,12 +1101,21 @@ for (i in seq_along(education_groups)){
                               replacement = " "),
            education = str_to_title(education),
            education = str_replace(string = education,
-                              pattern = "Hs Ged Or",
-                              replacement = "HS, GED, Or"))
+                                   pattern = "Hs Ged Or", 
+                                   replacement = "HS, GED, or"),
+           education = str_replace(string = education,
+                                   pattern = "Some College",
+                                   replacement = "Some College or Trade School"),
+           education = str_replace(string = education,
+                                   pattern = "^College$",
+                                   replacement = "Associates or Bachelors Degree"),
+           education = str_replace(string = education,
+                                   pattern = "Master Or Above",
+                                   replacement = "Masters Degree or Above"))
   
   data_plot_education_site_type <- rbind(data_plot_education_site_type, df_education_group_i) %>% 
-    mutate(education = factor(education, levels = c("HS, GED, Or Below", "Some College", 
-                                                    "College", "Master Or Above")))
+    mutate(education = factor(education, levels = c("HS, GED, or Below", "Some College or Trade School", 
+                                                    "Associates or Bachelors Degree", "Masters Degree or Above")))
   
   for (j in seq_along(site_types_groups)){
     site_df <- data_plot_education_site_type %>% 
@@ -1121,8 +1140,8 @@ for (i in seq_along(education_groups)){
 
 
 ## -- create plot -- ##
-edu_group_colors <- c("HS, GED, Or Below" = "#a6cee3", "Some College"  = "#1f78b4", 
-                      "College" = "#b2df8a", "Master Or Above" = "#33a02c")
+education_group_colors <- c("HS, GED, or Below" = "#a6cee3", "Some College or Trade School"  = "#1f78b4", 
+                      "Associates or Bachelors Degree" = "#b2df8a", "Masters Degree or Above" = "#33a02c")
 
 # plot for shiny
 
@@ -1137,11 +1156,12 @@ data_plot_education_site_type <- rbind(data_plot_education_site_type_equestrian,
 plot_education_site_type <- ggplot(data = data_plot_education_site_type, 
                               aes(x = percent_n,
                                   y = aggregated_site_type, fill = fct_rev(education),
-                                  text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.01),
-                                                " of reservations were made by <br>people who live in ZIP codes with high education levels of ", 
+                                  text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                                                " of reservations were made by ",
+                                                "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
                                                 education))) +
   geom_col(position = "stack") +
-  scale_fill_manual(values = edu_group_colors) +
+  scale_fill_manual(values = education_group_colors) +
   scale_x_continuous(labels = scales::percent) +
   labs(x = paste("Percent of Total Reservations per Site Type Group"),
        y = "",
@@ -1166,17 +1186,18 @@ plot_education_site_type_equestrian <- ggplot(data = data,
                                           y = education)) +
   # geom_segment(aes(xend = 0, yend = education)) +
   geom_col(aes(x = percent_n,
-                 y = education,
-                 #color = education, 
-                 fill = education,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.01),
-                                                " of reservations were made by <br>people who live in ZIP codes with high education levels of ", 
-                                                str_to_title(education))),
-             # width = .25,
-             # size = 4, shape = 21, stroke = 2
-             ) +
-  scale_fill_manual(values = edu_group_colors) +
-  scale_color_manual(values = edu_group_colors) +
+               y = education,
+               #color = education, 
+               fill = education,
+               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                             " of reservations were made by ",
+                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
+                             education)),
+           # width = .25,
+           # size = 4, shape = 21, stroke = 2
+  ) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
   scale_x_continuous(labels = scales::percent) +
   labs(x = paste("Percent of Total", 
                  str_remove(string = data_string, pattern = ".*_") %>% 
@@ -1210,17 +1231,18 @@ plot_education_site_type_remote <- ggplot(data = data,
                                           y = education)) +
   # geom_segment(aes(xend = 0, yend = education)) +
   geom_col(aes(x = percent_n,
-                 y = education,
-                 #color = education, 
-                 fill = education,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.01),
-                                                " of reservations were made by <br>people who live in ZIP codes with high education levels of ", 
-                                                str_to_title(education))),
-             # width = .25,
-             # size = 4, shape = 21, stroke = 2
-             ) +
-  scale_fill_manual(values = edu_group_colors) +
-  scale_color_manual(values = edu_group_colors) +
+               y = education,
+               #color = education, 
+               fill = education,
+               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                             " of reservations were made by ",
+                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
+                             education)),
+           # width = .25,
+           # size = 4, shape = 21, stroke = 2
+  ) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
   scale_x_continuous(labels = scales::percent) +
   labs(x = paste("Percent of Total", 
                  str_remove(string = data_string, pattern = ".*_") %>% 
@@ -1254,17 +1276,18 @@ plot_education_site_type_rv_only <- ggplot(data = data,
                                           y = education)) +
   # geom_segment(aes(xend = 0, yend = education)) +
   geom_col(aes(x = percent_n,
-                 y = education,
-                 #color = education, 
-                 fill = education,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.01),
-                                                " of reservations were made by <br>people who live in ZIP codes with high education levels of ", 
-                                                str_to_title(education))),
-             # width = .25,
-             # size = 4, shape = 21, stroke = 2
-           ) +
-  scale_fill_manual(values = edu_group_colors) +
-  scale_color_manual(values = edu_group_colors) +
+               y = education,
+               #color = education, 
+               fill = education,
+               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                             " of reservations were made by ",
+                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
+                             education)),
+           # width = .25,
+           # size = 4, shape = 21, stroke = 2
+  ) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
   scale_x_continuous(labels = scales::percent) +
   labs(x = paste("Percent of Total", 
                  str_remove(string = data_string, pattern = ".*_") %>% 
@@ -1298,17 +1321,18 @@ plot_education_site_type_rv_or_tent <- ggplot(data = data,
                                           y = education)) +
   # geom_segment(aes(xend = 0, yend = education)) +
   geom_col(aes(x = percent_n,
-                 y = education,
-                 # color = education, 
+               y = education,
+               # color = education, 
                fill = education,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.01),
-                                                " of reservations were made by <br>people who live in ZIP codes with high education levels of ", 
-                                                str_to_title(education))),
-             # width = .25,
-             # size = 4, shape = 21, stroke = 2
-           ) +
-  scale_fill_manual(values = edu_group_colors) +
-  scale_color_manual(values = edu_group_colors) +
+               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                             " of reservations were made by ",
+                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
+                             education)),
+           # width = .25,
+           # size = 4, shape = 21, stroke = 2
+  ) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
   scale_x_continuous(labels = scales::percent) +
   labs(x = paste("Percent of Total", 
                  str_remove(string = data_string, pattern = ".*_") %>% 
@@ -1342,17 +1366,18 @@ plot_education_site_type_shelter <- ggplot(data = data,
                                           y = education)) +
   # geom_segment(aes(xend = 0, yend = education)) +
   geom_col(aes(x = percent_n,
-                 y = education,
-                 # color = education, 
+               y = education,
+               # color = education, 
                fill = education,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.01),
-                                                " of reservations were made by <br>people who live in ZIP codes with high education levels of ", 
-                                                str_to_title(education))),
-             # width = .25,
-             # size = 4, shape = 21, stroke = 2
-             ) +
-  scale_fill_manual(values = edu_group_colors) +
-  scale_color_manual(values = edu_group_colors) +
+               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                             " of reservations were made by ",
+                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
+                             education)),
+           # width = .25,
+           # size = 4, shape = 21, stroke = 2
+  ) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
   scale_x_continuous(labels = scales::percent) +
   labs(x = paste("Percent of Total", 
                  str_remove(string = data_string, pattern = ".*_") %>% 
@@ -1389,14 +1414,15 @@ plot_education_site_type_tent_only <- ggplot(data = data,
                y = education,
                #color = education, 
                fill = education,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.01),
-                                                " of reservations were made by <br>people who live in ZIP codes with high education levels of ", 
-                                                str_to_title(education))),
-             # width = .25,
-             # size = 4, shape = 21, stroke = 2
-           ) +
-  scale_fill_manual(values = edu_group_colors) +
-  scale_color_manual(values = edu_group_colors) +
+               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                             " of reservations were made by ",
+                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
+                             education)),
+           # width = .25,
+           # size = 4, shape = 21, stroke = 2
+  ) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
   scale_x_continuous(labels = scales::percent) +
   labs(x = paste("Percent of Total", 
                  str_remove(string = data_string, pattern = ".*_") %>% 
@@ -1433,14 +1459,15 @@ plot_education_site_type_water <- ggplot(data = data,
                y = education,
                #color = education, 
                fill = education,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.01),
-                                                " of reservations were made by <br>people who live in ZIP codes with high education levels of ", 
-                                                str_to_title(education))),
-             # width = .25,
-             # size = 4, shape = 21, stroke = 2
-           ) +
-  scale_fill_manual(values = edu_group_colors) +
-  scale_color_manual(values = edu_group_colors) +
+               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                             " of reservations were made by ",
+                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
+                             education)),
+           # width = .25,
+           # size = 4, shape = 21, stroke = 2
+  ) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
   scale_x_continuous(labels = scales::percent) +
   labs(x = paste("Percent of Total", 
                  str_remove(string = data_string, pattern = ".*_") %>% 
@@ -1467,11 +1494,319 @@ ggplotly(plot_education_site_type_water,
 
 ### Education x booking window 
 
+```{r}
+## -- data wrangle -- ##
+education_groups <- c("hs_GED_or_below", "some_college", "college", "master_or_above")
+
+data_plot_education_booking_window <- data.frame()
+
+# create plot df for each group for RIDB data
+for (i in seq_along(education_groups)){
+  df_ca_bin_breaks <- data_ca_acs_2018 %>%
+    select(zip_code, hs_GED_or_below, some_college, college, master_or_above, mean_zip_code_population) %>%
+    pivot_longer(cols = 2:5,
+                 names_to = "education",
+                 values_to = "education_percentage") %>%
+    filter(education == education_groups[[i]]) %>% ## BACK TO i
+    drop_na(education_percentage)
+
+  weighted_half <- weighted.mean(x = df_ca_bin_breaks$education_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+
+  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(education_percentage >= weighted_half)
+
+  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$education_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+
+  df_education_group_i_longer <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, hs_GED_or_below, 
+           some_college, college, master_or_above,  booking_window) %>% 
+    drop_na(booking_window) %>% 
+  pivot_longer(cols = 5:8,
+               names_to = "education",
+               values_to = "education_percentage") %>% 
+    filter(education == education_groups[[i]]) %>% ## BACK TO i
+    drop_na(education_percentage)
+
+  max_education_group_ridb <- df_education_group_i_longer %>%
+    summarize(max = max(education_percentage))
+
+  df_education_group_i <- df_education_group_i_longer %>%
+    filter(education_percentage >= weighted_quartile) %>% 
+    summarize(mean_booking_window = mean(booking_window)) %>% 
+    mutate(education = paste0(education_groups[[i]])) %>%  ## BACK TO i
+    relocate(education, .before = 1) %>% 
+    mutate(education = str_replace_all(string = education,
+                                       pattern = "_",
+                                       replacement = " "),
+           education = str_to_title(education),
+           education = str_replace(string = education,
+                                   pattern = "Hs Ged Or", 
+                                   replacement = "HS, GED, or"),
+           education = str_replace(string = education,
+                                   pattern = "Some College",
+                                   replacement = "Some College or Trade School"),
+           education = str_replace(string = education,
+                                   pattern = "^College$",
+                                   replacement = "Associates or Bachelors Degree"),
+           education = str_replace(string = education,
+                                   pattern = "Master Or Above",
+                                   replacement = "Masters Degree or Above"))
+
+  data_plot_education_booking_window <- rbind(data_plot_education_booking_window, df_education_group_i) %>% 
+    mutate(education = factor(education, levels = c("HS, GED, or Below", "Some College or Trade School", 
+                                                    "Associates or Bachelors Degree", "Masters Degree or Above")))
+    
+assign(paste0("top_quartile_ca_education_", education_groups[[i]]),
+       c(weighted_quartile),
+       envir = .GlobalEnv)
+assign(paste0("max_education_ridb_", education_groups[[i]]),
+       data.frame(max_education_group_ridb),
+       envir = .GlobalEnv)
+}
+
+
+## -- create plot -- ##
+education_group_colors <- c("HS, GED, or Below" = "#a6cee3", "Some College or Trade School"  = "#1f78b4", 
+                      "Associates or Bachelors Degree" = "#b2df8a", "Masters Degree or Above" = "#33a02c")
+
+
+
+# plot for shiny
+plot_education_booking_window <- ggplot(data = data_plot_education_booking_window, 
+                                      aes(x = mean_booking_window,
+                                          y = reorder(education, mean_booking_window))) +
+  geom_segment(aes(xend = 0, yend = education)) +
+  geom_point(aes(x = mean_booking_window,
+                 y = reorder(education, mean_booking_window),
+                 color = education, fill = education,
+                 text = paste("Those who live in ZIP codes with high rates <br>of a maximum education level of", 
+                              education, "<br>make their reservations", round(mean_booking_window, 0), "days before their trip.")),
+             width = .25,
+             size = 4, shape = 21, stroke = 2) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
+  labs(x = paste("Average Number of Days from Order Date to Reservation Date"),
+       y = "",
+       title = "Average Number of Days in Advance <br>Reservation is Booked for Populations with Different Levels of Education") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_education_booking_window,
+         tooltip = list("text"))
+```
+
 
 ### Education x daily cost 
 
+```{r}
+## -- data wrangle -- ##
+education_groups <- c("hs_GED_or_below", "some_college", "college", "master_or_above")
+
+data_plot_education_daily_cost <- data.frame()
+
+# create plot df for each group for RIDB data
+for (i in seq_along(education_groups)){
+  df_ca_bin_breaks <- data_ca_acs_2018 %>%
+    select(zip_code, hs_GED_or_below, some_college, college, master_or_above, mean_zip_code_population) %>%
+    pivot_longer(cols = 2:5,
+                 names_to = "education",
+                 values_to = "education_percentage") %>%
+    filter(education == education_groups[[i]]) %>% ## BACK TO i
+    drop_na(education_percentage)
+
+  weighted_half <- weighted.mean(x = df_ca_bin_breaks$education_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+
+  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(education_percentage >= weighted_half)
+
+  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$education_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+
+  df_education_group_i_longer <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, hs_GED_or_below, 
+           some_college, college, master_or_above,  daily_cost) %>% 
+    drop_na(daily_cost) %>% 
+  pivot_longer(cols = 5:8,
+               names_to = "education",
+               values_to = "education_percentage") %>% 
+    filter(education == education_groups[[i]]) %>% ## BACK TO i
+    drop_na(education_percentage)
+
+  max_education_group_ridb <- df_education_group_i_longer %>%
+    summarize(max = max(education_percentage))
+
+  df_education_group_i <- df_education_group_i_longer %>%
+    filter(education_percentage >= weighted_quartile) %>% 
+    summarize(mean_daily_cost = mean(daily_cost)) %>% 
+    mutate(education = paste0(education_groups[[i]])) %>%  ## BACK TO i
+    relocate(education, .before = 1) %>% 
+    mutate(education = str_replace_all(string = education,
+                                       pattern = "_",
+                                       replacement = " "),
+           education = str_to_title(education),
+           education = str_replace(string = education,
+                                   pattern = "Hs Ged Or", 
+                                   replacement = "HS, GED, or"),
+           education = str_replace(string = education,
+                                   pattern = "Some College",
+                                   replacement = "Some College or Trade School"),
+           education = str_replace(string = education,
+                                   pattern = "^College$",
+                                   replacement = "Associates or Bachelors Degree"),
+           education = str_replace(string = education,
+                                   pattern = "Master Or Above",
+                                   replacement = "Masters Degree or Above"))
+
+  data_plot_education_daily_cost <- rbind(data_plot_education_daily_cost, df_education_group_i) %>% 
+    mutate(education = factor(education, levels = c("HS, GED, or Below", "Some College or Trade School", 
+                                                    "Associates or Bachelors Degree", "Masters Degree or Above")))
+    
+assign(paste0("top_quartile_ca_education_", education_groups[[i]]),
+       c(weighted_quartile),
+       envir = .GlobalEnv)
+assign(paste0("max_education_ridb_", education_groups[[i]]),
+       data.frame(max_education_group_ridb),
+       envir = .GlobalEnv)
+}
+
+
+## -- create plot -- ##
+education_group_colors <- c("HS, GED, or Below" = "#a6cee3", "Some College or Trade School"  = "#1f78b4", 
+                      "Associates or Bachelors Degree" = "#b2df8a", "Masters Degree or Above" = "#33a02c")
+
+
+
+# plot for shiny
+plot_education_daily_cost <- ggplot(data = data_plot_education_daily_cost, 
+                                      aes(x = mean_daily_cost,
+                                          y = education)) +
+  geom_segment(aes(xend = 0, yend = education)) +
+  geom_point(aes(x = mean_daily_cost,
+                 y = education,
+                 color = education, fill = education,
+                 text = paste("Those who live in ZIP codes with high rates <br>of a maximum education level of", 
+                              education, "<br>pay an average of", scales::dollar(mean_daily_cost), "per day.")),
+             width = .25,
+             size = 4, shape = 21, stroke = 2) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
+  scale_x_continuous(labels = scales::dollar) +
+  labs(x = paste("Average Daily Cost of Reservation"),
+       y = "",
+       title = "Average Daily Cost for Populations <br>with Different Levels of Education") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_education_daily_cost,
+         tooltip = list("text"))
+```
+
 
 ### Education x length of stay 
+
+```{r, eval=TRUE}
+education_groups <- c("hs_GED_or_below", "some_college", "college", "master_or_above")
+
+data_plot_education_length_of_stay <- data.frame()
+
+# create plot df for each group for RIDB data
+for (i in seq_along(education_groups)){
+  df_ca_bin_breaks <- data_ca_acs_2018 %>%
+    select(zip_code, hs_GED_or_below, some_college, college, master_or_above, mean_zip_code_population) %>%
+    pivot_longer(cols = 2:5,
+                 names_to = "education",
+                 values_to = "education_percentage") %>%
+    filter(education == education_groups[[i]]) %>% ## BACK TO i
+    drop_na(education_percentage)
+
+  weighted_half <- weighted.mean(x = df_ca_bin_breaks$education_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+
+  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(education_percentage >= weighted_half)
+
+  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$education_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+
+  df_education_group_i_longer <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, hs_GED_or_below, 
+           some_college, college, master_or_above,  length_of_stay) %>% 
+    drop_na(length_of_stay) %>% 
+  pivot_longer(cols = 5:8,
+               names_to = "education",
+               values_to = "education_percentage") %>% 
+    filter(education == education_groups[[i]]) %>% ## BACK TO i
+    drop_na(education_percentage)
+
+  max_education_group_ridb <- df_education_group_i_longer %>%
+    summarize(max = max(education_percentage))
+
+  df_education_group_i <- df_education_group_i_longer %>%
+    filter(education_percentage >= weighted_quartile) %>% 
+    summarize(mean_length_of_stay = mean(length_of_stay)) %>% 
+    mutate(education = paste0(education_groups[[i]])) %>%  ## BACK TO i
+    relocate(education, .before = 1) %>% 
+    mutate(education = str_replace_all(string = education,
+                                       pattern = "_",
+                                       replacement = " "),
+           education = str_to_title(education),
+           education = str_replace(string = education,
+                                   pattern = "Hs Ged Or", 
+                                   replacement = "HS, GED, or"),
+           education = str_replace(string = education,
+                                   pattern = "Some College",
+                                   replacement = "Some College or Trade School"),
+           education = str_replace(string = education,
+                                   pattern = "^College$",
+                                   replacement = "Associates or Bachelors Degree"),
+           education = str_replace(string = education,
+                                   pattern = "Master Or Above",
+                                   replacement = "Masters Degree or Above"))
+
+  data_plot_education_length_of_stay <- rbind(data_plot_education_length_of_stay, df_education_group_i) %>% 
+    mutate(education = factor(education, levels = c("HS, GED, or Below", "Some College or Trade School", 
+                                                    "Associates or Bachelors Degree", "Masters Degree or Above")))
+    
+assign(paste0("top_quartile_ca_education_", education_groups[[i]]),
+       c(weighted_quartile),
+       envir = .GlobalEnv)
+assign(paste0("max_education_ridb_", education_groups[[i]]),
+       data.frame(max_education_group_ridb),
+       envir = .GlobalEnv)
+}
+
+
+## -- create plot -- ##
+education_group_colors <- c("HS, GED, or Below" = "#a6cee3", "Some College or Trade School"  = "#1f78b4", 
+                      "Associates or Bachelors Degree" = "#b2df8a", "Masters Degree or Above" = "#33a02c")
+
+
+
+# plot for shiny
+plot_education_length_of_stay <- ggplot(data = data_plot_education_length_of_stay, 
+                                      aes(x = mean_length_of_stay,
+                                          y = education)) +
+  geom_segment(aes(xend = 0, yend = education)) +
+  geom_point(aes(x = mean_length_of_stay,
+                 y = education,
+                 color = education, fill = education,
+                 text = paste("Those who live in ZIP codes with high rates <br>of a maximum education level of", 
+                              education, "<br>stay an average of", round(mean_length_of_stay, 0), "days.")),
+             width = .25,
+             size = 4, shape = 21, stroke = 2) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
+  labs(x = paste("Average Length of Stay"),
+       y = "",
+       title = "Average Length of Stay for Populations <br>with Different Levels of Education") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_education_length_of_stay,
+         tooltip = list("text"))
+```
+
+
 
 
 ```{r}
@@ -1489,16 +1824,135 @@ print(paste0("Masters Degree or Above: ", round(top_quartile_ca_education_master
 
 ## Language x ____
 
-### Language 
+### Language x distance traveled
 
+```{r}
+## -- data wrangle -- ##
+language_groups <- c("hs_GED_or_below", "some_college", "college", "master_or_above")
+
+data_plot_language_distance_traveled <- data.frame()
+
+# create plot df for each group for RIDB data
+for (i in seq_along(language_groups)){
+  df_ca_bin_breaks <- data_ca_acs_2018 %>% 
+    select(zip_code, hs_GED_or_below, some_college, college, master_or_above, mean_zip_code_population) %>% 
+    pivot_longer(cols = 2:5,
+                 names_to = "language",
+                 values_to = "language_percentage") %>% 
+    filter(language == language_groups[[i]]) %>% ## BACK TO i
+    drop_na(language_percentage) 
+  
+  weighted_half <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(language_percentage >= weighted_half)
+  
+  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_language_group_i_longer <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, hs_GED_or_below, some_college, college, master_or_above,
+           distance_traveled_m) %>% 
+    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+    drop_na(distance_traveled_mi) %>% 
+  pivot_longer(cols = 5:8,
+               names_to = "language",
+               values_to = "language_percentage") %>% 
+    filter(language == language_groups[[i]]) %>% ## BACK TO i
+    drop_na(language_percentage)
+  
+  max_language_group_ridb <- df_language_group_i_longer %>%
+    summarize(max = max(language_percentage))
+  
+  df_language_i_group <- df_language_group_i_longer %>% 
+    filter(language_percentage >= weighted_quartile) %>% 
+    summarize(mean_distance_traveled_mi = mean(distance_traveled_mi)) %>% 
+    mutate(language = paste0(language_groups[[i]])) %>%  ## BACK TO i
+    relocate(language, .before = 1) %>% 
+    mutate(language = str_replace_all(string = language,
+                                       pattern = "_",
+                                       replacement = " "),
+           language = str_to_title(language),
+           language = str_replace(string = language,
+                                   pattern = "Hs Ged Or", 
+                                   replacement = "HS, GED, or"),
+           language = str_replace(string = language,
+                                   pattern = "Some College",
+                                   replacement = "Some College or Trade School"),
+           language = str_replace(string = language,
+                                   pattern = "^College$",
+                                   replacement = "Associates or Bachelors Degree"),
+           language = str_replace(string = language,
+                                   pattern = "Master Or Above",
+                                   replacement = "Masters Degree or Above"))
+
+  data_plot_language_distance_traveled <- rbind(data_plot_language_distance_traveled, df_language_i_group) %>% 
+    mutate(language = factor(language, levels = c("HS, GED, or Below", "Some College or Trade School", 
+                                                    "Associates or Bachelors Degree", "Masters Degree or Above")))
+    
+assign(paste0("top_quartile_ca_language_", language_groups[[i]]), 
+       c(weighted_quartile), 
+       envir = .GlobalEnv)
+assign(paste0("max_language_ridb_", language_groups[[i]]), 
+       data.frame(max_language_group_ridb), 
+       envir = .GlobalEnv)
+}
+
+
+## -- create plot -- ##
+
+language_group_colors <- c("HS, GED, or Below" = "#a6cee3", "Some College or Trade School"  = "#1f78b4", 
+                      "Associates or Bachelors Degree" = "#b2df8a", "Masters Degree or Above" = "#33a02c")
+
+plot_language_distance_traveled <- ggplot(data = data_plot_language_distance_traveled, 
+                                      aes(x = mean_distance_traveled_mi,
+                                          y = language)) +
+  geom_segment(aes(xend = 0, yend = language)) +
+  geom_point(aes(x = mean_distance_traveled_mi,
+                 y = language,
+                 color = language, fill = language,
+                 text = paste("Those who live in ZIP codes with high rates of a <br>maximum language level of", 
+                              language, "<br>travel an estimated distance of",
+                              round(mean_distance_traveled_mi, 0), "miles.")),
+             width = .25,
+             size = 4, shape = 21, stroke = 2) +
+  scale_fill_manual(values = language_group_colors) +
+  scale_color_manual(values = language_group_colors) +
+  labs(x = paste("Average Distance Traveled from Home to Site (miles)"),
+       y = "",
+       title = "Average Distance Traveled to Reservation for <br>Different Educational Level Groups") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_language_distance_traveled,
+         tooltip = list("text"))
+```
+
+
+### Language x site type
+
+### Language x daily cost
+
+### Language x length of stay
+
+
+
+## Median-income x ____
 
 ### Median-income x distance traveled
 
+### Median-income x site type
 
-### Booking window x site type
+### Median-income x daily cost
+
+### Median-income x lenth of stay
 
 
-### Booking window x distance traveled
+
+## Booking window x site type
+
+
+## Booking window x distance traveled
 
 
 ```{r, eval=TRUE}
