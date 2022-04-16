@@ -972,13 +972,13 @@ plot_race_booking_window
 data_plot_race_daily_cost_bins <- data_ridb_acs_2018 %>% 
   select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
          multiracial, native_american, other, pacific_islander, white,
-         daily_cost_per_visitor) %>% 
-  filter(daily_cost_per_visitor >= 0,
-         daily_cost_per_visitor != "Inf") %>%
-  mutate(daily_cost_per_visitor_bins = ntile(daily_cost_per_visitor, 5)) 
+         daily_cost) %>% 
+  filter(daily_cost >= 0,
+         daily_cost != "Inf") %>%
+  mutate(daily_cost_bins = ntile(daily_cost, 5)) 
 
 data_plot_race_daily_cost <- data_plot_race_daily_cost_bins %>% 
-  group_by(daily_cost_per_visitor_bins) %>% 
+  group_by(daily_cost_bins) %>% 
   summarize(white = (mean(white, na.rm = TRUE) * 100),
             black = (mean(black, na.rm = TRUE) * 100),
             asian = (mean(asian, na.rm = TRUE) * 100),
@@ -995,7 +995,7 @@ data_plot_race_daily_cost <- data_plot_race_daily_cost_bins %>%
                             replacement = " "),
          race = str_to_title(race))
   
-daily_cost_bin_breaks <- quantile(data_plot_race_daily_cost_bins$daily_cost_per_visitor, 
+daily_cost_bin_breaks <- quantile(data_plot_race_daily_cost_bins$daily_cost, 
                                   prob = seq(0, 1, length = 6), type = 5)
          
 
@@ -1008,7 +1008,7 @@ racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "M
 
 # plot for shiny
 plot_race_daily_cost <- ggplot(data = data_plot_race_daily_cost) +
-  geom_col(aes(x = factor(daily_cost_per_visitor_bins),
+  geom_col(aes(x = factor(daily_cost_bins),
                y = race_percentage,
                fill = race)) +
   facet_wrap(~race, scales = "free_x") +
@@ -1341,11 +1341,11 @@ plot_education_booking_window
 ## -- data wrangle -- ##
 data_plot_education_daily_cost_bins <- data_ridb_acs_2018 %>% 
   select(agency, admin_unit, park, customer_zip, college, hs_GED_or_below, 
-         master_or_above, some_college, daily_cost_per_visitor) %>% 
-  mutate(daily_cost_per_visitor_bins = ntile(daily_cost_per_visitor, 5)) 
+         master_or_above, some_college, daily_cost) %>% 
+  mutate(daily_cost_bins = ntile(daily_cost, 5)) 
 
 data_plot_education_daily_cost <- data_plot_education_daily_cost_bins %>% 
-  group_by(daily_cost_per_visitor_bins) %>% 
+  group_by(daily_cost_bins) %>% 
   summarize(college = (mean(college, na.rm = TRUE) * 100),
             hs_GED_or_below = (mean(hs_GED_or_below, na.rm = TRUE) * 100),
             master_or_above = (mean(master_or_above, na.rm = TRUE) * 100),
@@ -1369,7 +1369,7 @@ data_plot_education_daily_cost <- data_plot_education_daily_cost_bins %>%
                             pattern = "master_or_above",
                             replacement = "Masters degree or higher"))
   
-daily_cost_bin_breaks <- quantile(data_plot_education_daily_cost_bins$daily_cost_per_visitor, 
+daily_cost_bin_breaks <- quantile(data_plot_education_daily_cost_bins$daily_cost, 
                                   prob = seq(0, 1, length = 6), type = 5)
          
 
@@ -1379,7 +1379,7 @@ daily_cost_bin_breaks <- quantile(data_plot_education_daily_cost_bins$daily_cost
 
 # plot for shiny
 plot_education_daily_cost <- ggplot(data = data_plot_education_daily_cost) +
-  geom_col(aes(x = factor(daily_cost_per_visitor_bins),
+  geom_col(aes(x = factor(daily_cost_bins),
                y = education_percentage,
                fill = education)) +
   facet_wrap(~education, scales = "free_x") +

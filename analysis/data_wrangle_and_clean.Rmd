@@ -171,7 +171,7 @@ saveRDS(object = data_combined_park_summary_2018_geometry,
         file = "../../../data_clean/2018_joined_data_site_summary.rds")
 ```
 
-```{r, eval=FALSE}
+```{r}
 ## save RDS files to `data` directory within Shiny App directories
 
 # full dataset (RIDB and ACS joined)

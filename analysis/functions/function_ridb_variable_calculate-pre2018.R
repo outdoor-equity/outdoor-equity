@@ -9,7 +9,7 @@ RIDB_calculate_pre2018 <-
              # calculate new variables
              length_of_stay = as.numeric(difftime(end_date, start_date), units = "days"),
              booking_window = as.numeric(difftime(start_date, order_date), units = "days"),
-             daily_cost_per_visitor = (total_paid / number_of_people) / length_of_stay,
+             daily_cost = total_paid / length_of_stay,
              # create column for administrative unit
              admin_unit = case_when(agency == "USFS" ~ parent_location,
                                     agency %in% c("NPS", "BOR", "USACE") ~ region_description),
@@ -38,11 +38,11 @@ RIDB_calculate_pre2018 <-
                                           "group tent only area nonelectric",
                                           "tent only electric") ~ "tent only")
       ) %>% # close mutate for creating new variables
-      select(!c("parent_location", "region_description", "site_type")) %>% # (CB) I think this is repetitive, remove?
+      select(!c("parent_location", "region_description", "site_type")) %>% 
       select("agency", "admin_unit", "park", "aggregated_site_type", "facility_state", 
              "facility_longitude", "facility_latitude", "customer_zip", "total_paid", 
              "start_date", "end_date", "order_date", "number_of_people", 
-             "length_of_stay", "booking_window", "daily_cost_per_visitor") %>% 
+             "length_of_stay", "booking_window", "daily_cost") %>% 
       # update values
       mutate(
         # update park values (generic)

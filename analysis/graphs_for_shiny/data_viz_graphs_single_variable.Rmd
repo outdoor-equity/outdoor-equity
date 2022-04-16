@@ -134,10 +134,10 @@ plot_booking_window
 
 ```{r}
 ## -- data wrangle -- ##
-data_plot_daily_cost_per_visitor <- data_ridb_acs_2018 %>% 
-  filter(daily_cost_per_visitor != "Inf",
-         daily_cost_per_visitor <= 50) %>% 
-  select(agency, admin_unit, park, daily_cost_per_visitor)
+data_plot_daily_cost <- data_ridb_acs_2018 %>% 
+  filter(daily_cost != "Inf",
+         daily_cost <= 50) %>% 
+  select(agency, admin_unit, park, daily_cost)
 
 ## -- create plot -- ##
 
@@ -145,9 +145,9 @@ data_plot_daily_cost_per_visitor <- data_ridb_acs_2018 %>%
 hist_colors <- c("#009900FF")
 
 # plot for shiny app
-plot_daily_cost_per_visitor <-
-  ggplot(data = data_plot_daily_cost_per_visitor) +
-  geom_histogram(aes(x = daily_cost_per_visitor),
+plot_daily_cost <-
+  ggplot(data = data_plot_daily_cost) +
+  geom_histogram(aes(x = daily_cost),
                  fill = hist_colors) +
   labs(x = "Daily cost per visitor ($)",
        y = "",
@@ -163,7 +163,7 @@ plot_daily_cost_per_visitor <-
         # axis.title = element_text(size = 22, face = "bold"),
         # title = element_text(size = 24, face = "bold")
         )
-plot_daily_cost_per_visitor
+plot_daily_cost
 ```
 
 
@@ -623,7 +623,7 @@ time_taken
 ## Save plot all data to RDS
 
 plot_data <- c("data_plot_distance_traveled", "data_plot_boooking_window", 
-               "data_plot_daily_cost_per_visitor", "data_plot_length_of_stay", 
+               "data_plot_daily_cost", "data_plot_length_of_stay", 
                "data_plot_site_type", "data_plot_race", 
                "data_plot_education", "data_plot_language_ca", 
                "data_plot_language_ridb", "data_plot_median_income_ca",

@@ -5,14 +5,14 @@ joined_park_summary <-
       input_df_name %>% 
       select(agency, admin_unit, park, facility_latitude, facility_longitude,
              total_paid, number_of_people, length_of_stay, booking_window, 
-             daily_cost_per_visitor, distance_traveled_m, asian, black, 
+             daily_cost, distance_traveled_m, asian, black, 
              hispanic_latinx, multiracial, native_american, other, pacific_islander, 
              white, college, hs_GED_or_below, master_or_above, some_college, 
              median_income, english_only, not_english_only) %>% 
-      #filter(daily_cost_per_visitor != "Inf") %>% #drop 48 rows with "Inf" for cost/visitor/day
+      #filter(daily_cost != "Inf") %>% #drop 48 rows with "Inf" for cost/visitor/day
       pivot_longer(cols = c(facility_latitude, facility_longitude,
                             total_paid, number_of_people, length_of_stay, booking_window, 
-                            daily_cost_per_visitor, distance_traveled_m, asian, black, 
+                            daily_cost, distance_traveled_m, asian, black, 
                             hispanic_latinx, multiracial, native_american, other, 
                             pacific_islander, white, college, hs_GED_or_below, 
                             master_or_above, some_college, median_income, 
