@@ -9,7 +9,7 @@ output:
 ---
 
 ```{r setup, include=FALSE, eval=TRUE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, eval = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE)
 
 library(tidyverse)
 library(here)
@@ -125,7 +125,7 @@ plot_race_distance_traveled <- ggplot(data = data_plot_race_distance_traveled,
                  color = race, fill = race,
                  text = paste("People who live in ZIP codes with high", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), "populations",
-                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles.")),
+                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles to overnight reservable sites.")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
   scale_fill_manual(values = racial_group_colors) +
@@ -245,7 +245,7 @@ plot_race_site_type <- ggplot(data = data_plot_race_site_type,
                                   y = aggregated_site_type, fill = fct_rev(race),
                                   text = paste0("Of visits to ", str_to_lower(aggregated_site_type) %>% 
                                                   str_replace(string = ., pattern = "rv", replacement = "RV"), 
-                                                " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                                                " overnight reservable sites, ", scales::percent(percent_n, accuracy = 0.1),
                                                 " reservations were made by <br>people who live in ZIP codes with high ", 
                                                 str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations."))) +
   geom_col(position = "stack") +
@@ -276,7 +276,7 @@ plot_race_site_type_equestrian <- ggplot(data = data,
                  y = reorder(race, percent_n),
                  #color = race, 
                  fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                 text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", scales::percent(percent_n, accuracy = 0.1),
                               " reservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
@@ -320,7 +320,7 @@ plot_race_site_type_remote <- ggplot(data = data,
                  y = reorder(race, percent_n),
                  #color = race, 
                  fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                 text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", scales::percent(percent_n, accuracy = 0.1),
                               " reservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
@@ -364,7 +364,7 @@ plot_race_site_type_rv_only <- ggplot(data = data,
                  y = reorder(race, percent_n),
                  #color = race, 
                  fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                 text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", scales::percent(percent_n, accuracy = 0.1),
                               " reservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
@@ -408,7 +408,7 @@ plot_race_site_type_rv_or_tent <- ggplot(data = data,
                  y = reorder(race, percent_n),
                  # color = race, 
                fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                 text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", scales::percent(percent_n, accuracy = 0.1),
                               " reservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
@@ -452,7 +452,7 @@ plot_race_site_type_shelter <- ggplot(data = data,
                  y = reorder(race, percent_n),
                  # color = race, 
                fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                 text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", scales::percent(percent_n, accuracy = 0.1),
                               " reservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
@@ -496,7 +496,7 @@ plot_race_site_type_tent_only <- ggplot(data = data,
                y = reorder(race, percent_n),
                #color = race, 
                fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                 text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", scales::percent(percent_n, accuracy = 0.1),
                               " reservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
@@ -540,7 +540,7 @@ plot_race_site_type_water <- ggplot(data = data,
                y = reorder(race, percent_n),
                #color = race, 
                fill = race,
-                 text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                 text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", scales::percent(percent_n, accuracy = 0.1),
                               "%eservations were made by <br>people who live in ZIP codes with high ", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
              # width = .25,
@@ -654,7 +654,7 @@ plot_race_booking_window <- ggplot(data = data_plot_race_booking_window,
                  text = paste("People who live in ZIP codes with high", 
                               str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), 
                               "populations",
-                             "<br>make their reservations", round(mean_booking_window, 0), "days before their trip.")),
+                             "<br>tend to make their reservations", round(mean_booking_window, 0), "days before their visit to overnight reservable sites.")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
   scale_fill_manual(values = racial_group_colors) +
@@ -754,7 +754,7 @@ plot_race_daily_cost <- ggplot(data = data_plot_race_daily_cost,
                  color = race, fill = race,
                  text = paste0("People who live in ZIP codes with high ", 
                                str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations ",
-                             "<br>pay an estimate of ", scales::dollar(mean_daily_cost), " per person per day.")),
+                             "<br>pay an average of ", scales::dollar(mean_daily_cost), " per day for overnight reservable sites.")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
   scale_fill_manual(values = racial_group_colors) +
@@ -1031,9 +1031,9 @@ plot_education_distance_traveled <- ggplot(data = data_plot_education_distance_t
   geom_point(aes(x = mean_distance_traveled_mi,
                  y = education,
                  color = education, fill = education,
-                 text = paste("Those who live in ZIP codes with high rates of a <br>maximum education level of", 
-                              education, "<br>travel an estimated distance of",
-                              round(mean_distance_traveled_mi, 0), "miles.")),
+                 text = paste("Those who live in ZIP codes with high rates of a<br>", 
+                              education, "as the highest level of education <br>travel an estimated distance of",
+                              round(mean_distance_traveled_mi, 0), "miles to overnight reservable sites.")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
   scale_fill_manual(values = education_group_colors) +
@@ -1156,10 +1156,10 @@ data_plot_education_site_type <- rbind(data_plot_education_site_type_equestrian,
 plot_education_site_type <- ggplot(data = data_plot_education_site_type, 
                               aes(x = percent_n,
                                   y = aggregated_site_type, fill = fct_rev(education),
-                                  text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+                                  text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", scales::percent(percent_n, accuracy = 0.1),
                                                 " of reservations were made by ",
-                                                "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
-                                                education))) +
+                                                "<br>people who live in ZIP codes with ", 
+                                                education, " as the highest level of education."))) +
   geom_col(position = "stack") +
   scale_fill_manual(values = education_group_colors) +
   scale_x_continuous(labels = scales::percent) +
@@ -1189,10 +1189,10 @@ plot_education_site_type_equestrian <- ggplot(data = data,
                y = education,
                #color = education, 
                fill = education,
-               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", scales::percent(percent_n, accuracy = 0.1),
                              " of reservations were made by ",
-                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
-                             education)),
+                             "<br>people who live in ZIP codes with ", 
+                             education, " as the highest level of education.")),
            # width = .25,
            # size = 4, shape = 21, stroke = 2
   ) +
@@ -1234,10 +1234,10 @@ plot_education_site_type_remote <- ggplot(data = data,
                y = education,
                #color = education, 
                fill = education,
-               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", scales::percent(percent_n, accuracy = 0.1),
                              " of reservations were made by ",
-                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
-                             education)),
+                             "<br>people who live in ZIP codes with ", 
+                             education, " as the highest level of education.")),
            # width = .25,
            # size = 4, shape = 21, stroke = 2
   ) +
@@ -1279,10 +1279,11 @@ plot_education_site_type_rv_only <- ggplot(data = data,
                y = education,
                #color = education, 
                fill = education,
-               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
+                             scales::percent(percent_n, accuracy = 0.1),
                              " of reservations were made by ",
-                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
-                             education)),
+                             "<br>people who live in ZIP codes with ", 
+                             education, " as the highest level of education.")),
            # width = .25,
            # size = 4, shape = 21, stroke = 2
   ) +
@@ -1324,10 +1325,11 @@ plot_education_site_type_rv_or_tent <- ggplot(data = data,
                y = education,
                # color = education, 
                fill = education,
-               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
+                             scales::percent(percent_n, accuracy = 0.1),
                              " of reservations were made by ",
-                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
-                             education)),
+                             "<br>people who live in ZIP codes with ", 
+                             education, " as the highest level of education.")),
            # width = .25,
            # size = 4, shape = 21, stroke = 2
   ) +
@@ -1369,10 +1371,11 @@ plot_education_site_type_shelter <- ggplot(data = data,
                y = education,
                # color = education, 
                fill = education,
-               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
+                             scales::percent(percent_n, accuracy = 0.1),
                              " of reservations were made by ",
-                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
-                             education)),
+                             "<br>people who live in ZIP codes with ", 
+                             education, " as the highest level of education.")),
            # width = .25,
            # size = 4, shape = 21, stroke = 2
   ) +
@@ -1414,10 +1417,11 @@ plot_education_site_type_tent_only <- ggplot(data = data,
                y = education,
                #color = education, 
                fill = education,
-               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
+                             scales::percent(percent_n, accuracy = 0.1),
                              " of reservations were made by ",
-                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
-                             education)),
+                             "<br>people who live in ZIP codes with ", 
+                             education, " as the highest level of education.")),
            # width = .25,
            # size = 4, shape = 21, stroke = 2
   ) +
@@ -1459,10 +1463,11 @@ plot_education_site_type_water <- ggplot(data = data,
                y = education,
                #color = education, 
                fill = education,
-               text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
+               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
+                             scales::percent(percent_n, accuracy = 0.1),
                              " of reservations were made by ",
-                             "<br>people who live in ZIP codes with high rates of <br>a maximum education level of ", 
-                             education)),
+                             "<br>people who live in ZIP codes with ", 
+                             education, " as the highest level of education.")),
            # width = .25,
            # size = 4, shape = 21, stroke = 2
   ) +
@@ -1578,15 +1583,15 @@ plot_education_booking_window <- ggplot(data = data_plot_education_booking_windo
   geom_point(aes(x = mean_booking_window,
                  y = reorder(education, mean_booking_window),
                  color = education, fill = education,
-                 text = paste("Those who live in ZIP codes with high rates <br>of a maximum education level of", 
-                              education, "<br>make their reservations", round(mean_booking_window, 0), "days before their trip.")),
+                 text = paste("Those who live in ZIP codes with high rates of", 
+                              education, "<br> as the maximum level of education tend to make their reservations<br>", round(mean_booking_window, 0), "days before their trip to overnight reservable sites.")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
   scale_fill_manual(values = education_group_colors) +
   scale_color_manual(values = education_group_colors) +
   labs(x = paste("Average Number of Days from Order Date to Reservation Date"),
        y = "",
-       title = "Average Number of Days in Advance <br>Reservation is Booked for Populations with Different Levels of Education") + 
+       title = "Average Number of Days in Advance Reservation is <br>Booked for Populations with Different Levels of Education") + 
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank(),
@@ -1683,8 +1688,8 @@ plot_education_daily_cost <- ggplot(data = data_plot_education_daily_cost,
   geom_point(aes(x = mean_daily_cost,
                  y = education,
                  color = education, fill = education,
-                 text = paste("Those who live in ZIP codes with high rates <br>of a maximum education level of", 
-                              education, "<br>pay an average of", scales::dollar(mean_daily_cost), "per day.")),
+                 text = paste("Those who live in ZIP codes with high rates of<br>", 
+                              education, "as the highest level of education <br>pay an average of", scales::dollar(mean_daily_cost), "per day for overnight reservable sites.")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
   scale_fill_manual(values = education_group_colors) +
@@ -1788,8 +1793,8 @@ plot_education_length_of_stay <- ggplot(data = data_plot_education_length_of_sta
   geom_point(aes(x = mean_length_of_stay,
                  y = education,
                  color = education, fill = education,
-                 text = paste("Those who live in ZIP codes with high rates <br>of a maximum education level of", 
-                              education, "<br>stay an average of", round(mean_length_of_stay, 0), "days.")),
+                 text = paste("Those who live in ZIP codes with high rates of", 
+                              education, "<br> as the highest level of education <br>stay an average of", round(mean_length_of_stay, 0), "days at overnight reservable sites.")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
   scale_fill_manual(values = education_group_colors) +
@@ -1903,7 +1908,7 @@ plot_language_distance_traveled <- ggplot(data = data_plot_language_distance_tra
                  text = paste("Those who live in ZIP codes with high rates of <br>populations that", 
                               str_to_lower(language) %>% 
                                 str_replace(string = ., pattern = "english", replacement = "English"), 
-                              "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles.")),
+                              "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles to overnight reservable sites.")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
   scale_fill_manual(values = language_group_colors) +
@@ -2018,7 +2023,9 @@ plot_language_site_type <- ggplot(data = data_plot_language_site_type,
                                   text = paste0("Of visits to ", aggregated_site_type, " sites, ", scales::percent(percent_n, accuracy = 0.1),
                                                 " of reservations were made by ",
                                                 "<br>people who live in ZIP codes with high rates of <br>households that ", 
-                                                str_to_lower(language) %>% str_replace(string = ., pattern = "english", replacement = "English")))) +
+                                                str_to_lower(language) %>% 
+                                                  str_replace(string = ., pattern = "english", replacement = "English"), 
+                                                "."))) +
   geom_col(position = "stack") +
   scale_fill_manual(values = language_group_colors) +
   scale_x_continuous(labels = scales::percent) +
@@ -2034,6 +2041,103 @@ plot_language_site_type <- ggplot(data = data_plot_language_site_type,
 ggplotly(plot_language_site_type,
          tooltip = list("text"))
 ```
+
+
+### Language x booking window
+
+```{r}
+language_groups <- c("english_only", "not_english_only")
+
+data_plot_language_booking_window <- data.frame()
+
+# create plot df for each group for RIDB data
+for (i in seq_along(language_groups)){
+  df_ca_bin_breaks <- data_ca_acs_2018 %>% 
+    select(zip_code, english_only, not_english_only, mean_zip_code_population) %>% 
+    pivot_longer(cols = 2:3,
+                 names_to = "language",
+                 values_to = "language_percentage") %>% 
+    filter(language == language_groups[[i]]) %>% ## BACK TO i
+    drop_na(language_percentage) 
+  
+  weighted_half <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(language_percentage >= weighted_half)
+  
+  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_language_group_i_longer <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, english_only, not_english_only,
+           booking_window) %>% 
+    drop_na(booking_window) %>% 
+  pivot_longer(cols = 5:6,
+               names_to = "language",
+               values_to = "language_percentage") %>% 
+    filter(language == language_groups[[i]]) %>% ## BACK TO i
+    drop_na(language_percentage)
+  
+  max_language_group_ridb <- df_language_group_i_longer %>%
+    summarize(max = max(language_percentage))
+  
+  df_language_i_group <- df_language_group_i_longer %>% 
+    filter(language_percentage >= weighted_quartile) %>% 
+    summarize(mean_booking_window = mean(booking_window)) %>% 
+    mutate(language = paste0(language_groups[[i]])) %>%  ## BACK TO i
+    relocate(language, .before = 1) %>% 
+    mutate(language = str_replace_all(string = language,
+                                       pattern = "_",
+                                       replacement = " "),
+           language = str_replace(string = language,
+                                  pattern = "^english only$",
+                                  replacement = "Speak Only English at Home"),
+           language = str_replace(string = language,
+                                  pattern = "^not english only$",
+                                  replacement = "Speak Language Other Than English at Home"),
+           language = str_to_title(language))
+
+  data_plot_language_booking_window <- rbind(data_plot_language_booking_window, df_language_i_group)
+    
+assign(paste0("top_quartile_ca_language_", language_groups[[i]]), 
+       c(weighted_quartile), 
+       envir = .GlobalEnv)
+assign(paste0("max_language_ridb_", language_groups[[i]]), 
+       data.frame(max_language_group_ridb), 
+       envir = .GlobalEnv)
+}
+
+
+## -- create plot -- ##
+
+language_group_colors <- c("Speak Only English At Home" = "#66c2a5", "Speak Language Other Than English At Home" = "#8da0cb")
+
+plot_language_booking_window <- ggplot(data = data_plot_language_booking_window, 
+                                      aes(x = mean_booking_window,
+                                          y = reorder(language, mean_booking_window))) +
+  geom_segment(aes(xend = 0, yend = reorder(language, mean_booking_window))) +
+  geom_point(aes(x = mean_booking_window,
+                 y = reorder(language, mean_booking_window),
+                 color = language, fill = language,
+                 text = paste("Those who live in ZIP codes with high rates of <br>populations that", 
+                              str_to_lower(language) %>% 
+                                str_replace(string = ., pattern = "english", replacement = "English"), 
+                              "<br>make their reservations", round(mean_booking_window, 0), 
+                              "days before their trip to overnight reservable sites.")),
+             width = .25,
+             size = 4, shape = 21, stroke = 2) +
+  scale_fill_manual(values = language_group_colors) +
+  scale_color_manual(values = language_group_colors) +
+  labs(x = paste("Average Number of Days from Order Date to Reservation Date"),
+       y = "",
+       title = "Average Number of Days from Order to Reservation Date <br>for Populations Based on Languages Spoken at Home") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_language_booking_window,
+         tooltip = list("text"))
+```
+
 
 
 ### Language x daily cost
@@ -2114,7 +2218,8 @@ plot_language_daily_cost <- ggplot(data = data_plot_language_daily_cost,
                  text = paste("Those who live in ZIP codes with high rates of <br>populations that", 
                               str_to_lower(language) %>% 
                                 str_replace(string = ., pattern = "english", replacement = "English"), 
-                              "<br>pay an estimated distance of", scales::dollar(mean_daily_cost), "per day.")),
+                              "<br>pay an average of", scales::dollar(mean_daily_cost), 
+                              "per day for overnight reservable sites.")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
   scale_fill_manual(values = language_group_colors) +
@@ -2211,7 +2316,8 @@ plot_language_length_of_stay <- ggplot(data = data_plot_language_length_of_stay,
                  text = paste("Those who live in ZIP codes with high rates of <br>populations that", 
                               str_to_lower(language) %>% 
                                 str_replace(string = ., pattern = "english", replacement = "English"), 
-                              "<br>stay an estimated distance of", round(mean_length_of_stay, 0), "days.")),
+                              "<br>stay an average of", round(mean_length_of_stay, 0), 
+                              "days at overnight reservable sites.")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
   scale_fill_manual(values = language_group_colors) +
@@ -2249,96 +2355,12 @@ print(paste0("Language(s) Other than English: ", percent(top_quartile_ca_languag
 
 ```{r}
 ## -- data wrangle -- ##
-median_income_groups <- c("english_only", "not_english_only")
 
-data_plot_median_income_distance_traveled <- data.frame()
-
-# create plot df for each group for RIDB data
-for (i in seq_along(median_income_groups)){
-  df_ca_bin_breaks <- data_ca_acs_2018 %>% 
-    select(zip_code, english_only, not_english_only, mean_zip_code_population) %>% 
-    pivot_longer(cols = 2:3,
-                 names_to = "median_income",
-                 values_to = "median_income_percentage") %>% 
-    filter(median_income == median_income_groups[[i]]) %>% ## BACK TO i
-    drop_na(median_income_percentage) 
-  
-  weighted_half <- weighted.mean(x = df_ca_bin_breaks$median_income_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
-  
-  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(median_income_percentage >= weighted_half)
-  
-  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$median_income_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
-  
-  df_median_income_group_i_longer <- data_ridb_acs_2018 %>% 
-    select(agency, admin_unit, park, customer_zip, english_only, not_english_only,
-           distance_traveled_m) %>% 
-    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
-    drop_na(distance_traveled_mi) %>% 
-  pivot_longer(cols = 5:6,
-               names_to = "median_income",
-               values_to = "median_income_percentage") %>% 
-    filter(median_income == median_income_groups[[i]]) %>% ## BACK TO i
-    drop_na(median_income_percentage)
-  
-  max_median_income_group_ridb <- df_median_income_group_i_longer %>%
-    summarize(max = max(median_income_percentage))
-  
-  df_median_income_i_group <- df_median_income_group_i_longer %>% 
-    filter(median_income_percentage >= weighted_quartile) %>% 
-    summarize(mean_distance_traveled_mi = mean(distance_traveled_mi)) %>% 
-    mutate(median_income = paste0(median_income_groups[[i]])) %>%  ## BACK TO i
-    relocate(median_income, .before = 1) %>% 
-    mutate(median_income = str_replace_all(string = median_income,
-                                       pattern = "_",
-                                       replacement = " "),
-           median_income = str_replace(string = median_income,
-                                  pattern = "^english only$",
-                                  replacement = "Speak Only English at Home"),
-           median_income = str_replace(string = median_income,
-                                  pattern = "^not english only$",
-                                  replacement = "Speak median_income Other Than English at Home"),
-           median_income = str_to_title(median_income))
-
-  data_plot_median_income_distance_traveled <- rbind(data_plot_median_income_distance_traveled, df_median_income_i_group)
-    
-assign(paste0("top_quartile_ca_median_income_", median_income_groups[[i]]), 
-       c(weighted_quartile), 
-       envir = .GlobalEnv)
-assign(paste0("max_median_income_ridb_", median_income_groups[[i]]), 
-       data.frame(max_median_income_group_ridb), 
-       envir = .GlobalEnv)
-}
 
 
 ## -- create plot -- ##
 
-median_income_group_colors <- c("Speak Only English At Home" = "#66c2a5", "Speak median_income Other Than English At Home" = "#8da0cb")
 
-plot_median_income_distance_traveled <- ggplot(data = data_plot_median_income_distance_traveled, 
-                                      aes(x = mean_distance_traveled_mi,
-                                          y = reorder(median_income, mean_distance_traveled_mi))) +
-  geom_segment(aes(xend = 0, yend = reorder(median_income, mean_distance_traveled_mi))) +
-  geom_point(aes(x = mean_distance_traveled_mi,
-                 y = reorder(median_income, mean_distance_traveled_mi),
-                 color = median_income, fill = median_income,
-                 text = paste("Those who live in ZIP codes with high rates of <br>populations that", 
-                              str_to_lower(median_income) %>% 
-                                str_replace(string = ., pattern = "english", replacement = "English"), 
-                              "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles.")),
-             width = .25,
-             size = 4, shape = 21, stroke = 2) +
-  scale_fill_manual(values = median_income_group_colors) +
-  scale_color_manual(values = median_income_group_colors) +
-  labs(x = paste("Average Distance Traveled from Home to Site (miles)"),
-       y = "",
-       title = "Average Distance Traveled to Reservation for <br>Populations that Speak a Language Other than <br>English at Home") + 
-  theme_minimal() +
-  theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        legend.position = "none")
-
-ggplotly(plot_median_distance_traveled,
-         tooltip = list("text"))
 ```
 
 
@@ -2352,8 +2374,85 @@ ggplotly(plot_median_distance_traveled,
 
 ## Booking window x site type
 
+```{r}
+## -- data wrangle -- ##
+data_plot_booking_window_site_type <- data_ridb_acs_2018 %>% 
+  select(agency, admin_unit, park, aggregated_site_type, booking_window) %>% 
+  group_by(aggregated_site_type) %>% 
+  summarise(mean_booking_window = mean(booking_window, na.rm = TRUE)) %>% 
+  mutate(aggregated_site_type = str_to_title(aggregated_site_type),
+         aggregated_site_type = str_replace(string = aggregated_site_type,
+                                            pattern = "Rv",
+                                            replacement = "RV"))
+
+
+
+## -- create plot -- ##
+plot_booking_window_site_type <- ggplot(data = data_plot_booking_window_site_type, 
+                                      aes(x = mean_booking_window,
+                                          y = reorder(aggregated_site_type, mean_booking_window))) +
+  geom_segment(aes(xend = 0, yend = reorder(aggregated_site_type, mean_booking_window))) +
+  geom_point(aes(x = mean_booking_window,
+                 y = reorder(aggregated_site_type, mean_booking_window),
+                 color = aggregated_site_type, fill = aggregated_site_type,
+                 text = paste("Those who visit", aggregated_site_type, "tend to reserve their overnight reservable site<br>", 
+                              round(mean_booking_window, 0), "days before their trip start date.")),
+             width = .25,
+             size = 4, shape = 21, stroke = 2) +
+  labs(x = paste("Average Number of Days from Order Date to Reservation Date"),
+       y = "",
+       title = "Average Length of Stay of Reservations for <br>Different Site Types") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_booking_window_site_type,
+         tooltip = list("text"))
+```
+
+
 
 ## Booking window x distance traveled
+
+```{r}
+## -- data wrangle -- ##
+data_plot_booking_window_site_type <- data_ridb_acs_2018 %>% 
+  select(agency, admin_unit, park, aggregated_site_type, distance_traveled_m)%>% 
+  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+  group_by(aggregated_site_type) %>% 
+  summarise(mean_distance_traveled_mi = mean(distance_traveled_mi, na.rm = TRUE)) %>% 
+  mutate(aggregated_site_type = str_to_title(aggregated_site_type),
+         aggregated_site_type = str_replace(string = aggregated_site_type,
+                                            pattern = "Rv",
+                                            replacement = "RV"))
+
+
+
+## -- create plot -- ##
+plot_booking_window_site_type <- ggplot(data = data_plot_booking_window_site_type, 
+                                      aes(x = mean_distance_traveled_mi,
+                                          y = reorder(aggregated_site_type, mean_distance_traveled_mi))) +
+  geom_segment(aes(xend = 0, yend = reorder(aggregated_site_type, mean_distance_traveled_mi))) +
+  geom_point(aes(x = mean_distance_traveled_mi,
+                 y = reorder(aggregated_site_type, mean_distance_traveled_mi),
+                 color = aggregated_site_type, fill = aggregated_site_type,
+                 text = paste("Those who visit", aggregated_site_type, "overnight reservable sites tend to travel", 
+                              round(mean_distance_traveled_mi, 0), "miles.")),
+             width = .25,
+             size = 4, shape = 21, stroke = 2) +
+  labs(x = paste("Average Distance Traveled from Home to Site (miles)"),
+       y = "",
+       title = "Average Distance Traveled to Site for <br>Different Site Types") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_booking_window_site_type,
+         tooltip = list("text"))
+```
+
 
 
 ```{r, eval=TRUE}
