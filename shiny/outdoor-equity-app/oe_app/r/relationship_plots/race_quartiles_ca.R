@@ -24,8 +24,5 @@ race_ca_quartiles <- function(acs_data){
     assign(paste0("top_quartile_ca_", racial_groups[[i]]), 
            c(weighted_quartile), 
            envir = .GlobalEnv)
-    assign(paste0("max_race_ridb_", racial_groups[[i]]), 
-           data.frame(max_racial_group_ridb), 
-           envir = .GlobalEnv) 
   }
 }
