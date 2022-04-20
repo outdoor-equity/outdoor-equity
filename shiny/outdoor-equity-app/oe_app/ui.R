@@ -45,6 +45,8 @@ ui <- fluidPage(
                         fluid = TRUE, # (HD) not sure what this argument does
                         
                         titlePanel("Visualize a data summary"),
+                        # SO data summary FR layout
+                        
                         # data summary sidebar layout
                         sidebarLayout(
                           # data summary analysis side bar panel
@@ -168,7 +170,8 @@ ui <- fluidPage(
              titlePanel("Create a subsetted dataset to download"),
              # SO data download FR layout
              fluidRow(
-               box(width = 12,
+               # SO box inputs
+               box(width = 12, # Note(HD): not seeing even inputs???
                  splitLayout(
                    # select agency
                    select_agency(locationId = "data_download"),
@@ -180,35 +183,15 @@ ui <- fluidPage(
                      ".shiny-split-layout > div {
                      overflow: visible;
                      }"
-                   )))
+                   ))) # EO tags$head making drop down visible 
                  ) # EO split layout
-               ) # EO box layout
+               ), # EO box layout
+               # SO box data table
+               box(width = 12,
+                   title = "Preview of subsetted table to download" #,
+                   #plotOutput(outputId = ) %>% withSpinner(color="#0dc5c1")
+                   ) # EO box data table
              ) # EO data download FR layout
-             
-             # # data download sidebar layout
-             # sidebarLayout(
-             #   # data download sidebar panel
-             #   splitLayout(
-             #     # select agency
-             #     select_agency(locationId = "data_download"),
-             #     # select admin_unit
-             #     select_admin_unit(locationId = "data_download"),
-             #     # select reservable site
-             #     select_site(locationId = "data_download")), # EO side panel data download
-             #   
-             #   mainPanel(
-             #     
-             #     fluidRow(
-             #       box(
-             #         #plotOutput(outputId = ) %>% withSpinner(color="#0dc5c1"),
-             #         width = 12,
-             #         title = "Table of data to download"
-             #       ) # EO box
-             #     ) # EO fluidRow box data download
-             #     
-             #   ) # EO main panel data download 
-             #     
-             #   ) # EO sidebar layout data download
              ) ## EO Data Download ----
     
   ) # EO navbarPage
