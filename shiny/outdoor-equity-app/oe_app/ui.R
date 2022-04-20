@@ -49,7 +49,7 @@ ui <- fluidPage(
                         sidebarLayout(
                           # data summary analysis side bar panel
                           sidebarPanel(
-                            width = 3,
+                            width = 12,
                             # agency input
                             select_agency(locationId = "summary"),
                             # admin input
@@ -64,7 +64,7 @@ ui <- fluidPage(
                           # data summary main panel aka visual
                           mainPanel(
                             
-                            plotOutput(outputId = "data_summary_plot") %>% 
+                            plotlyOutput(outputId = "data_summary_plot") %>% 
                               withSpinner(color="#0dc5c1")
                             
                           ) # EO data summary main panel
@@ -166,30 +166,49 @@ ui <- fluidPage(
     tabPanel("Data Download", icon = icon("download-alt", lib = "glyphicon"),
              
              titlePanel("Create a subsetted dataset to download"),
-             # data download sidebar layout
-             sidebarLayout(
-               # data download sidebar panel
-               sidebarPanel(
-                 # select agency
-                 select_agency(locationId = "data_download"),
-                 # select admin_unit
-                 select_admin_unit(locationId = "data_download"),
-                 # select reservable site
-                 select_site(locationId = "data_download")), # EO side panel data download
-               
-               mainPanel(
-                 
-                 fluidRow(
-                   box(
-                     #plotOutput(outputId = ) %>% withSpinner(color="#0dc5c1"),
-                     width = 12,
-                     title = "Table of data to download"
-                   ) # EO box
-                 ) # EO fluidRow box data download
-                 
-               ) # EO main panel data download 
-                 
-               ) # EO sidebar layout data download
+             # SO data download FR layout
+             fluidRow(
+               box(width = 12,
+                 splitLayout(
+                   # select agency
+                   select_agency(locationId = "data_download"),
+                   # select admin unit
+                   select_admin_unit(locationId = "data_download"),
+                   # select reservable site
+                   select_site(locationId = "data_download"),
+                   tags$head(tags$style(HTML(
+                     ".shiny-split-layout > div {
+                     overflow: visible;
+                     }"
+                   )))
+                 ) # EO split layout
+               ) # EO box layout
+             ) # EO data download FR layout
+             
+             # # data download sidebar layout
+             # sidebarLayout(
+             #   # data download sidebar panel
+             #   splitLayout(
+             #     # select agency
+             #     select_agency(locationId = "data_download"),
+             #     # select admin_unit
+             #     select_admin_unit(locationId = "data_download"),
+             #     # select reservable site
+             #     select_site(locationId = "data_download")), # EO side panel data download
+             #   
+             #   mainPanel(
+             #     
+             #     fluidRow(
+             #       box(
+             #         #plotOutput(outputId = ) %>% withSpinner(color="#0dc5c1"),
+             #         width = 12,
+             #         title = "Table of data to download"
+             #       ) # EO box
+             #     ) # EO fluidRow box data download
+             #     
+             #   ) # EO main panel data download 
+             #     
+             #   ) # EO sidebar layout data download
              ) ## EO Data Download ----
     
   ) # EO navbarPage
