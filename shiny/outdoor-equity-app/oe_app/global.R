@@ -22,6 +22,7 @@ library(scales)
 library(paletteer)
 #library(DT)
 library(collections)
+library(plotly)
 
 reactlog_enable()
 
@@ -46,7 +47,7 @@ source("r/inputs/select_relationships_vars.R")
 ## source summary plot functions ----
 source("r/summary_plots/dist_travel_plot.R")
 source("r/summary_plots/booking_window_plot.R")
-source("r/summary_plots/daily_cost_visitor_plot.R")
+source("r/summary_plots/daily_cost_plot.R")
 source("r/summary_plots/length_of_stay_plot.R")
 source("r/summary_plots/site_type_plot.R")
 source("r/summary_plots/race_plot.R")
@@ -55,6 +56,8 @@ source("r/summary_plots/median_income_plot.R")
 # need to move these sourced functions to a new section
 source("r/summary_plots/tot_site_agency_plot.R")
 source("r/summary_plots/tota_res_agency_plot.R")
+
+# PLOT OBJECTS ----
 
 # CA objects ----
 ## CA agency list ----

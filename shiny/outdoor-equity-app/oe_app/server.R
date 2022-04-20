@@ -197,14 +197,13 @@ race_df <- reactive({
 
 # RENDER PLOTS ----
 ## SO DATA SUMMARY PLOTS ----
-output$data_summary_plot <- renderPlot({
+output$data_summary_plot <- renderPlotly({
   ### SO distance traveled ----
   if (input$data_summary == "distance_traveled_mi") {
     
     dist_travel_plot(agencyInput = input$agency_summary,
                      admin_unitInput = input$admin_unit_summary,
-                     siteInput = input$site_summary, 
-                     titleInput = input$site_summary)
+                     siteInput = input$site_summary)
     
   } ## EO if distance traveled
   
