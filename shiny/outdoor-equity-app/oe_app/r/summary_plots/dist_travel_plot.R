@@ -17,8 +17,6 @@ dist_travel_plot <- function(agencyInput, admin_unitInput, siteInput){
     
   })
   
-print(paste("there are this many NAs in the rdf:", sum(is.na(dist_travel_rdf))))
-  
 print(class(dist_travel_rdf))
   
   # wrangling
@@ -39,19 +37,11 @@ print(class(dist_travel_rdf))
   
   quant_80 <- quantile(x = dist_travel_rdf()$distance_traveled_mi,
                        probs = seq(0, 1, 0.1))[[9]] %>% round(0)
-  
+
   print(paste("the class of quant_80 bin is", class(quant_80)))
-  
+
   print(quant_80)
-  
-  # split_all <- data.frame(table(cut(x = dist_travel_rdf()$distance_traveled_mi,
-  #                                   breaks = seq(0,
-  #                                                x_max,
-  #                                                center_bin * 2))))
-  # 
-  # print(paste("the class of split_all bin is", class(split_all)))
-  # 
-  # print(split_all)
+
 
   # parameters
   hist_colors <- c("#009900FF", "#00c000")
@@ -82,13 +72,13 @@ print(class(dist_travel_rdf))
            tooltip = list("text")) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
-                               y = -0.35, 
+                               y = -0.5, 
                                text = paste0("80% of reservations to California overnight sites in 2018 traveled less than ", 
                                              quant_80, " miles."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 
-                               yancho = 'auto', 
+                               yanchor = 'auto', 
                                xshift = 0, yshift = 0,
                                font = list(size = 12, color = "darkred")))
 
