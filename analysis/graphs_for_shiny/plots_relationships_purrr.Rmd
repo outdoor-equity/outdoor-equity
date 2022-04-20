@@ -1,0 +1,134 @@
+---
+title: "Trying out purr for plot functions"
+author: "Clarissa"
+date: "4/19/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(tidycensus)
+library(scales)
+library(vroom)
+library(plotly)
+```
+
+```{r, eval=TRUE}
+start_time <- Sys.time()
+```
+
+```{r, eval=TRUE}
+# read in joined data
+data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv",
+                            delim = ",") ## non-map graphs (no geometries)
+# data_ridb_acs_2018 <- readRDS(file = "../../../../data_clean/2018_joined_data.rds") ## maps (don't use RDS for non-map viz, too slow)
+
+# read in CA ACS data for 2018
+data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
+                          delim = ",")
+```
+
+
+
+```{r}
+# create function to make plot df
+function_plot_df <- function(race_group, 
+                             acs_df = data_ca_acs_2018, 
+                             ridb_df = data_ridb_acs_2018){
+  
+  df_ca_bin_breaks <- acs_df %>%
+    select(zip_code, asian, black, hispanic_latinx, multiracial,
+           native_american, other, pacific_islander, white, mean_zip_code_population) %>%
+    pivot_longer(cols = 2:9,
+                 names_to = "race",
+                 values_to = "race_percentage") %>%
+    filter(race == race_group) %>% ## BACK TO i
+    drop_na(race_percentage)
+  
+  weighted_half <- weighted.mean(x = df_ca_bin_breaks$race_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(race_percentage >= weighted_half)
+  
+  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$race_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_racial_group_i_longer <- data_ridb_acs_2018 %>% 
+    select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
+           multiracial, native_american, other, pacific_islander, white,
+           distance_traveled_m) %>% 
+    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+    drop_na(distance_traveled_mi) %>% 
+  pivot_longer(cols = 5:12,
+               names_to = "race",
+               values_to = "race_percentage") %>% 
+    filter(race == race_group) %>% ## BACK TO i
+    drop_na(race_percentage)
+
+  max_racial_group_ridb <- df_racial_group_i_longer %>%
+    summarize(max = max(race_percentage))
+
+  df_racial_group_i <- df_racial_group_i_longer %>%
+    filter(race_percentage >= weighted_quartile) %>% 
+    summarize(mean_distance_traveled_mi = mean(distance_traveled_mi)) %>% 
+    mutate(race = paste0(race_group)) %>%  ## BACK TO i
+    relocate(race, .before = 1) %>% 
+    mutate(race = str_replace(string = race,
+                              pattern = "_",
+                              replacement = " "),
+           race = str_to_title(race),
+           race = str_replace(string = race,
+                              pattern = "Other",
+                              replacement = "Other Race(s)"))
+}
+```
+
+
+```{r}
+race_group <- c("other", "pacific_islander", "multiracial", "asian", 
+                   "black", "white", "native_american", "hispanic_latinx")
+
+# running function to get df for each racial group
+data_plot_race_distance_traveled <- race_group %>% map_dfr(function_plot_df)
+```
+
+```{r}
+race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+
+plot_race_distance_traveled <- ggplot(data = data_plot_race_distance_traveled, 
+                                      aes(x = mean_distance_traveled_mi,
+                                          y = reorder(race, mean_distance_traveled_mi))) +
+  geom_segment(aes(xend = 0, yend = race)) +
+  geom_point(aes(x = mean_distance_traveled_mi,
+                 y = reorder(race, mean_distance_traveled_mi),
+                 color = race, fill = race,
+                 text = paste("People who live in ZIP codes with high", 
+                              str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), "populations",
+                             "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles to overnight reservable sites.")),
+             width = .25,
+             size = 4, shape = 21, stroke = 2) +
+  scale_fill_manual(values = race_group_colors) +
+  scale_color_manual(values = race_group_colors) +
+  labs(x = paste("Average Distance Traveled from Home to Site (miles)"),
+       y = "",
+       title = "Average Distance Traveled to Reservation for <br>Different Racial Groups") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_race_distance_traveled,
+         tooltip = list("text"))
+```
+
+
+
+```{r, eval=TRUE}
+end_time <- Sys.time()
+time_taken <- end_time - start_time
+time_taken
+```

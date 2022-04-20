@@ -9,7 +9,7 @@ output:
 ---
 
 ```{r setup, include=FALSE, eval=TRUE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, eval = FALSE)
 
 library(tidyverse)
 library(here)
@@ -46,7 +46,7 @@ data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
 
 ### Race x distance traveled
 
-```{r}
+```{r, eval=TRUE}
 ## -- data wrangle -- ##
 racial_groups <- c("other", "pacific_islander", "multiracial", "asian", 
                    "black", "white", "native_american", "hispanic_latinx")
