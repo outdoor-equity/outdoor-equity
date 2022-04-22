@@ -97,9 +97,12 @@ observeEvent(input$admin_unit_summary, {
   
   for (i in seq_along(input$admin_unit_summary)){
     
-    choices <- append(choices,
+    if (input$admin_unit_summary[i] != ""){
+      
+      choices <- append(choices,
                       admin_units_to_site_dict$get(input$admin_unit_summary[i]))
-  }
+    } # EO if statement
+  } # EO for loop
   
   updateSelectizeInput(session, "site_summary",
                        choices = sort(choices)

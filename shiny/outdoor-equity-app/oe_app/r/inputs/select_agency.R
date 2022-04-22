@@ -1,6 +1,6 @@
 # SEL agency ----
 # used in (1) data summary; (2) data relationships; (3) visitorsheds; (4) data download
-select_agency <- function(locationId, isMultiple = TRUE){
+select_agency <- function(locationId, isMultiple = FALSE){
   
   selectizeInput(inputId = paste("agency", locationId, sep = "_"),
                  label = "Select an agency",

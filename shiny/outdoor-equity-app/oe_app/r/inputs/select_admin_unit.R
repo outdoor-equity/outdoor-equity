@@ -4,7 +4,7 @@ select_admin_unit <- function(locationId, isMultiple = FALSE){
   
   selectizeInput(inputId = paste("admin_unit", locationId, sep = "_"),
                  label = "Select an administrative unit",
-                 choices = admin_units,
+                 choices = admin_units_vec,
                  multiple = isMultiple,
                  options = list(
                    placeholder = "Type to search for a National Park, Forest, or Public Land",
