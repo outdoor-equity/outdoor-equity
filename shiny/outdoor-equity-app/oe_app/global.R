@@ -10,8 +10,8 @@ library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
 library(shinycssloaders) # loading icon 
+library(shinyjs) # hide / show boxes in ui
 library(reactlog)
-#library(leaflet)
 library(tidyverse)
 library(tmap)
 library(janitor)
@@ -22,6 +22,7 @@ library(scales)
 library(paletteer)
 #library(DT)
 library(collections)
+library(plotly)
 
 reactlog_enable()
 
@@ -46,22 +47,29 @@ source("r/inputs/select_relationships_vars.R")
 ## source summary plot functions ----
 source("r/summary_plots/dist_travel_plot.R")
 source("r/summary_plots/booking_window_plot.R")
-source("r/summary_plots/daily_cost_visitor_plot.R")
+source("r/summary_plots/daily_cost_plot.R")
 source("r/summary_plots/length_of_stay_plot.R")
 source("r/summary_plots/site_type_plot.R")
 source("r/summary_plots/race_plot.R")
 source("r/summary_plots/education_plot.R")
 source("r/summary_plots/median_income_plot.R")
+
+## source observe event functions ----
+source("r/inputs/observe_event_agency_to_admin_dict.R")
+source("r/inputs/observe_event_admin_unit_to_site_dict.R")
+
 # need to move these sourced functions to a new section
 source("r/summary_plots/tot_site_agency_plot.R")
 source("r/summary_plots/tota_res_agency_plot.R")
+
+# PLOT OBJECTS ----
 
 # CA objects ----
 ## CA agency list ----
 ca_agency <- as.vector(unique(data_joined_2018$agency))
 
 ## CA admin units ----
-admin_units <- as.vector(unique(data_joined_2018$admin_unit))
+admin_units_vec <- as.vector(unique(data_joined_2018$admin_unit))
 
 ## CA reservable sites ----
 sites <- as.vector(unique(data_joined_2018$park))
@@ -94,18 +102,6 @@ compare_vars <- c("Education - High School/GED" = "median_hs_GED_or_below",
                   "Race - White" = "median_white",
                   "Race - Other" = "median_other")
 
-compare_vars_2 <- c("Booking window" = "median_booking_window",
-                    "Daily cost" = "median_daily_cost_per_visitor",
-                    "Distance traveled" = "distance_traveled_m",
-                    "Length of stay" = "median_length_of_stay",
-                    "Site Type" = "aggregated_site_type")
-
-# comparing with booking window
-booking_scat_var <- c("Booking window" = "median_booking_window")
-
-agency_comp_scat_vars <- c("Distance traveled" = "distance_traveled_m",
-                           "Site Type" = "aggregated_site_type")
-
 # DICTIONARY ----
 
 # use keys() to view all the keys in the dict
@@ -118,19 +114,19 @@ for (i in seq_along(ca_agency)){
   # pull out each agency
   ag_df <- data_joined_2018 %>% filter(agency == ca_agency[[i]]) 
   # pull out each admin unit
-  value_vector <- unique(ag_df$admin_unit)
+  value_vector_au <- unique(ag_df$admin_unit)
   
-  agency_to_admin_unit_dict$set(ca_agency[[i]], value_vector)
+  agency_to_admin_unit_dict$set(ca_agency[[i]], value_vector_au)
 } # EO agency to admin unit dictionary
 
 ### admin unit to sites ----
 admin_units_to_site_dict <- dict()
 
-for (i in seq_along(admin_units)){
+for (i in seq_along(admin_units_vec)){
   # pull out each admin unit
-  au_df <- data_joined_2018 %>% filter(admin_unit == admin_units[[i]]) 
-  # pull out each park
-  value_vector <- unique(au_df$park)
+  au_df <- data_joined_2018 %>% filter(admin_unit == admin_units_vec[[i]]) 
+  # pull out each site
+  value_vector_site <- unique(au_df$park)
   
-  admin_units_to_site_dict$set(admin_units[[i]], value_vector)
+  admin_units_to_site_dict$set(admin_units_vec[[i]], value_vector_site)
 } # EO admin unit to site dictionary

@@ -1,177 +1,128 @@
 # server instructions ----
 server <- function(input, output, session){
-  
-# SO OE press agency ----
-## SO press agency on summary page ----
+
+# OBSERVE EVENTS ----  
+## SO OE press agency ----
+### summary page ----
 observeEvent(input$agency_summary, {
-
-  # Note(HD): these print statements are temporary 
-  print(paste0("You have chosen agency: ", input$agency_summary, " on data summary page"))
-  print(class(input$agency_summary))
-
-  # create choices based on dictionary
-  choices <- vector()
   
-  for (i in seq_along(input$agency_summary)){
-    
-    choices <- append(choices, 
-                      agency_to_admin_unit_dict$get(input$agency_summary[[i]]))
-  }
+  # function to call values based on key from agency to admin dict
+  oe_agency_to_admin_dict(isInput_key = input$agency_summary,
+                          page = "agency_summary")
 
   # update input with new choices
   updateSelectizeInput(session, "admin_unit_summary",
                        choices = sort(choices)
-  ) # EO update choices 
-
+                       )
 }) ## EO OE press agency on summary page
 
-## SO press agency on relationships page ----
+### relationships page ----
 observeEvent(input$agency_relationships, {
   
-  print(paste0("You have chosen agency: ", input$agency_relationships, " on relationships page"))
-  print(class(input$agency_relationships))
+  # function to call values based on key from agency to admin dict
+  oe_agency_to_admin_dict(isInput_key = input$agency_relationships,
+                          page = "agency_relationships")
   
-  choices <- vector()
-  
-  for (i in seq_along(input$agency_relationships)){
-    
-    choices <- append(choices,
-                      agency_to_admin_unit_dict$get(input$agency_relationships[[i]]))
-  }
-  
+  # update input with new choices
   updateSelectizeInput(session, "admin_unit_relationships",
                        choices = sort(choices)
-  )
-  
+                       )
 }) ## EO OE press agency on relationships page
 
-## SO press agency on visitorsheds page ----
+### visitorsheds page ----
 observeEvent(input$agency_visitorsheds, {
-
-  print(paste0("You have chosen agency: ", input$agency_visitorsheds, " on visitorsheds page"))
-  print(class(input$agency_visitorsheds))
-
-  choices <- vector()
-
-  for (i in seq_along(input$agency_visitorsheds)){
-
-    choices <- append(choices,
-                      agency_to_admin_unit_dict$get(input$agency_visitorsheds[[i]]))
-  }
-
+  
+  # function to call values based on key from agency to admin dict
+  oe_agency_to_admin_dict(isInput_key = input$agency_visitorsheds,
+                          page = "agency_visitorsheds")
+  
+  # update input with new choices
   updateSelectizeInput(session, "admin_unit_visitorsheds",
                        choices = sort(choices)
-  )
-
+                       )
 }) ## EO OE press agency on visitorsheds page
 
-## SO press agency on data download page ----
+### data download page ----
 observeEvent(input$agency_data_download, {
   
-  print(paste0("You have chosen agency: ", input$agency_data_download, " on data download page"))
-  print(class(input$agency_data_download))
+  # function to call values based on key from agency to admin dict
+  oe_agency_to_admin_dict(isInput_key = input$agency_data_download,
+                          page = "agency_data_download")
   
-  choices <- vector()
-  
-  for (i in seq_along(input$agency_data_download)){
-    
-    choices <- append(choices,
-                      agency_to_admin_unit_dict$get(input$agency_data_download[[i]]))
-  }
-  
+  # update input with new choices
   updateSelectizeInput(session, "admin_unit_data_download",
                        choices = sort(choices)
-  )
-  
+                       )
 }) ## EO press agency on data download page
   
   
-# SO OE press admin unit ----
-## SO press admin unit on summary page ----
+## SO OE press admin unit ----
+### summary page ----
 observeEvent(input$admin_unit_summary, {
   
-  print(paste0("You have chosen admin unit: ", input$admin_unit_summary, "data summary page"))
-  print(class(input$admin_unit_summary))
+  # function to call values based on key from agency to admin dict
+  oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary,
+                             page = "admin_unit_summary")
   
-  choices <- vector()
-  
-  for (i in seq_along(input$admin_unit_summary)){
-    
-    choices <- append(choices,
-                      admin_units_to_site_dict$get(input$admin_unit_summary[i]))
-  }
-  
+  # update input with new choices
   updateSelectizeInput(session, "site_summary",
                        choices = sort(choices)
-  )
-  
+                       )
 }) ## EO press admin unit on summary page
 
-## SO press admin unit on relationships page ----
+### relationships page ----
 observeEvent(input$admin_unit_relationships, {
-
-  print(paste0("You have chosen admin unit: ", input$admin_unit_relationships, " on relationships page"))
-  print(class(input$admin_unit_relationships))
-
-  choices <- vector()
-
-  for (i in seq_along(input$admin_unit_relationships)){
-
-    choices <- append(choices,
-                      admin_units_to_site_dict$get(input$admin_unit_relationships[[i]]))
-  }
-
+  
+  # function to call values based on key from agency to admin dict
+  oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary,
+                             page = "admin_unit_summary")
+  
+  # update input with new choices
   updateSelectizeInput(session, "site_relationships",
                        choices = sort(choices)
                        )
   }) ## EO press admin unit on relationships page
   
-## SO press admin unit on visitorsheds page ----
+### visitorsheds page ----
 observeEvent(input$admin_unit_visitorsheds, {
-
-  print(paste0("You have chosen admin unit: ", input$admin_unit_visitorsheds, "on visitorsheds page"))
-  print(class(input$admin_unit_visitorsheds))
-
-  choices <- vector()
-
-  for (i in seq_along(input$admin_unit_visitorsheds)){
-
-    input_value <- input$admin_unit_visitorsheds[[i]]
-    
-    if (input_value == ""){
-      
-      next
-      
-    }
-    
-    choices <- append(choices,
-                      admin_units_to_site_dict$get(input_value))
-    }
-
+  
+  # function to call values based on key from agency to admin dict
+  oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_visitorsheds,
+                             page = "admin_unit_visitorsheds")
+  
+  # update input with new choices
   updateSelectizeInput(session, "site_visitorsheds",
                        choices = sort(choices)
                        )
   }) ## EO press admin unit on visitorsheds page
 
-# ## SO press admin unit on data download page ----
+### data download page ----
 observeEvent(input$admin_unit_data_download, {
-
-  print(paste0("You have chosen admin unit: ", input$admin_unit_data_download, " on data download page"))
-  print(class(input$admin_unit_data_download))
-
-  choices <- vector()
-
-  for (i in seq_along(input$admin_unit_data_download)){
-
-    choices <- append(choices,
-                      admin_units_to_site_dict$get(input$admin_unit_data_download[[i]]))
-  }
-
+  
+  # function to call values based on key from agency to admin dict
+  oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_data_download,
+                             page = "admin_unit_data_download")
+  
+  # update input with new choices
   updateSelectizeInput(session, "site_data_download",
                        choices = sort(choices)
-  )
-
+                       )
 }) ## EO press admin unit on data download page
+
+## SO OE press num_viz ----
+observeEvent(input$num_viz, {
+
+  if (input$num_viz == "1") {
+    shinyjs::hide(id = c("num_viz_2", "num_viz_3", "num_viz_4"))
+  }
+  # else if (input$num_viz == 2) {
+  #   shinyjs::hide(id %in% c("num_viz_1", "num_viz_3"))
+  # }
+  # else (input$num_viz == 3) {
+  #   shinyjs::hide(id %in% c("num_viz_1", "num_viz_2"))
+  # }
+
+}) ## EO OE press num_viz
 
 ## race RDF ----
 race_df <- reactive({
@@ -197,14 +148,13 @@ race_df <- reactive({
 
 # RENDER PLOTS ----
 ## SO DATA SUMMARY PLOTS ----
-output$data_summary_plot <- renderPlot({
+output$data_summary_plot <- renderPlotly({
   ### SO distance traveled ----
   if (input$data_summary == "distance_traveled_mi") {
     
     dist_travel_plot(agencyInput = input$agency_summary,
                      admin_unitInput = input$admin_unit_summary,
-                     siteInput = input$site_summary, 
-                     titleInput = input$site_summary)
+                     siteInput = input$site_summary)
     
   } ## EO if distance traveled
   

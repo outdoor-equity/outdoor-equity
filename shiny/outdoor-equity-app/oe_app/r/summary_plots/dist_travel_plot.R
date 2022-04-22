@@ -11,36 +11,45 @@ dist_travel_plot <- function(agencyInput, admin_unitInput, siteInput){
       filter(agency %in% agencyInput,
              admin_unit %in% admin_unitInput,
              park %in% siteInput) %>%
-      mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+      mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>%
       select(agency, admin_unit, park, distance_traveled_mi) %>% 
       filter(!is.na(distance_traveled_mi))
     
   })
-
-  # parameters
-  hist_colors <- c("#009900FF", "#00c000")
   
-  x_max <- (round(max(dist_travel_rdf$distance_traveled_mi) / 5) * 5) + 5 # max x rounded to nearest 5
-  center_bin <- 
-    if (max(dist_travel_rdf$distance_traveled_mi) > 100) {
-      round((max(dist_travel_rdf$distance_traveled_mi) / 100) / 5) * 5
-    } else if (max(dist_travel_rdf$distance_traveled_mi) > 10) {
-      round((max(dist_travel_rdf$distance_traveled_mi) / 10) / 5) * 5
+print(class(dist_travel_rdf))
+  
+  # wrangling
+  x_max <- (round(max(dist_travel_rdf()$distance_traveled_mi) / 5) * 5) + 5 # max x rounded to nearest 5
+  
+  center_bin <-
+    if (max(dist_travel_rdf()$distance_traveled_mi) > 100) {
+      round((max(dist_travel_rdf()$distance_traveled_mi) / 100) / 5) * 5
+    } else if (max(dist_travel_rdf()$distance_traveled_mi) > 10) {
+      round((max(dist_travel_rdf()$distance_traveled_mi) / 10) / 5) * 5
     } else {
       0.5
     }
   
-  quant_80 <- quantile(x = dist_travel_rdf$distance_traveled_mi,
+  print(paste("the class of center bin is", class(center_bin)))
+  
+  print(center_bin)
+  
+  quant_80 <- quantile(x = dist_travel_rdf()$distance_traveled_mi,
                        probs = seq(0, 1, 0.1))[[9]] %>% round(0)
-  split_all <- data.frame(table(cut(x = dist_travel_rdf$distance_traveled_mi, 
-                                    breaks = seq(0, 
-                                                 x_max,
-                                                 center_bin * 2))))
+
+  print(paste("the class of quant_80 bin is", class(quant_80)))
+
+  print(quant_80)
+
+
+  # parameters
+  hist_colors <- c("#009900FF", "#00c000")
   
   # plot for shiny app
-  dist_travel_plot <- ggplot(data = dist_travel_rdf()) +
+  dist_travel_plotly <- ggplot(data = dist_travel_rdf()) +
     geom_histogram(aes(x = distance_traveled_mi,
-                       text = paste0(scales::percent(..count.. / nrow(data_plot_distance_traveled_all), accuracy = 0.1), 
+                       text = paste0(scales::percent(..count.. / nrow(dist_travel_rdf()), accuracy = 0.1), 
                                      " of all reservations traveled between ", xmin, " and ", xmax, " miles",
                                      "<br>(", scales::comma(..count.., accuracy = 1), " reservations)")),
                    binwidth = center_bin * 2,
@@ -59,17 +68,17 @@ dist_travel_plot <- function(agencyInput, admin_unitInput, siteInput){
           panel.grid.major.y = element_blank()
     )
   
-  ggplotly(dist_travel_plot,
+  ggplotly(dist_travel_plotly,
            tooltip = list("text")) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
-                               y = -0.35, 
+                               y = -0.5, 
                                text = paste0("80% of reservations to California overnight sites in 2018 traveled less than ", 
                                              quant_80, " miles."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 
-                               yancho = 'auto', 
+                               yanchor = 'auto', 
                                xshift = 0, yshift = 0,
                                font = list(size = 12, color = "darkred")))
 

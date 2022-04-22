@@ -2,6 +2,7 @@
 ui <- fluidPage(
   # use shiny dashboard elements in shiny
   useShinydashboard(),
+  useShinyjs(),
   
   # set theme ----
   theme = bs_theme(bootswatch = "minty"),
@@ -45,31 +46,69 @@ ui <- fluidPage(
                         fluid = TRUE, # (HD) not sure what this argument does
                         
                         titlePanel("Visualize a data summary"),
-                        # data summary sidebar layout
-                        sidebarLayout(
-                          # data summary analysis side bar panel
-                          sidebarPanel(
-                            width = 3,
-                            # agency input
-                            select_agency(locationId = "summary"),
-                            # admin input
-                            select_admin_unit(locationId = "summary"),
-                            # site input
-                            select_site(locationId = "summary"),
-                            # data summary vars
-                            select_data_summary_vars()
-                            
-                          ), # EO data summary sidebar panel
+                        # SO data summary FR layout
+                        fluidRow(
+                          # SO pick a var input box
+                          box(width = 4,
+                              title = "1. Select a variable and how many sites to compare",
+                              splitLayout(
+                              # choose a var
+                              select_data_summary_vars(),
+                              #### SO select number of visuals ----
+                              selectizeInput(inputId = "num_viz",
+                                             label = "Select number of visuals",
+                                             choices = c(1, 2, 3, 4),
+                                             multiple = FALSE,
+                                             options = list(
+                                               placeholder = "Select number of visuals",
+                                               # Note(HD) when created set a value for the input to an empty string
+                                               onInitialize = I('function() { this.setValue("1"); }')
+                                             )) # EO num viz input
+                              ) # EO split layout var input & num visual
+                          ), # EO pick a var input box
                           
-                          # data summary main panel aka visual
-                          mainPanel(
-                            
-                            plotOutput(outputId = "data_summary_plot") %>% 
-                              withSpinner(color="#0dc5c1")
-                            
-                          ) # EO data summary main panel
-                        ) # EO data summary sidebar layout
-                        
+                          #### SO subset inputs box ----
+                          box(width = 8,
+                              title = "2. Choose a how to subset the data",
+                              splitLayout(
+                                # agency input
+                                select_agency(locationId = "summary"),
+                                # admin input
+                                select_admin_unit(locationId = "summary"),
+                                # site input
+                                select_site(locationId = "summary")
+                              ) # EO split layout subset inputs
+                              ), # EO subset inputs box
+                          
+                          # SO data summary plot 1 output box
+                          box(id = "num_viz_1",
+                              width = 6,
+                              plotlyOutput(outputId = "data_summary_plot") %>%
+                                withSpinner(color = "#0dc5c1")
+                          ), # EO data summary plot 1 output box
+                          
+                          # SO data summary plot 2 output box
+                          box(id = "num_viz_2",
+                              width = 6,
+                              # plotlyOutput(outputId = "data_summary_plot") %>%
+                              #   withSpinner(color = "#0dc5c1")
+                              ), # EO data summary plot 2 output box
+
+                          # SO data summary plot 3 output box
+                          box(id = "num_viz_3",
+                              width = 6,
+                              # plotlyOutput(outputId = "data_summary_plot") %>%
+                              #   withSpinner(color = "#0dc5c1")
+                              ), # EO data summary plot 3 output box
+
+                          # SO data summary plot 4 output box
+                          box(id = "num_viz_4",
+                              width = 6,
+                              # plotlyOutput(outputId = "data_summary_plot") %>%
+                              #   withSpinner(color = "#0dc5c1")
+                          ) # EO data summary plot 3 output box
+                          
+                        ) # EO data summary FR layout
                         ), #### EO data summary ----
                
                ### SO data relationships ----
@@ -166,30 +205,30 @@ ui <- fluidPage(
     tabPanel("Data Download", icon = icon("download-alt", lib = "glyphicon"),
              
              titlePanel("Create a subsetted dataset to download"),
-             # data download sidebar layout
-             sidebarLayout(
-               # data download sidebar panel
-               sidebarPanel(
-                 # select agency
-                 select_agency(locationId = "data_download"),
-                 # select admin_unit
-                 select_admin_unit(locationId = "data_download"),
-                 # select reservable site
-                 select_site(locationId = "data_download")), # EO side panel data download
-               
-               mainPanel(
-                 
-                 fluidRow(
-                   box(
-                     #plotOutput(outputId = ) %>% withSpinner(color="#0dc5c1"),
-                     width = 12,
-                     title = "Table of data to download"
-                   ) # EO box
-                 ) # EO fluidRow box data download
-                 
-               ) # EO main panel data download 
-                 
-               ) # EO sidebar layout data download
+             # SO data download FR layout
+             fluidRow(
+               # SO box inputs
+               box(width = 12, # Note(HD): not seeing even inputs???
+                 splitLayout(cellWidths = c("33.3%", "33.3%", "33.3%"),
+                   # select agency
+                   select_agency(locationId = "data_download"),
+                   # select admin unit
+                   select_admin_unit(locationId = "data_download"),
+                   # select reservable site
+                   select_site(locationId = "data_download"),
+                   tags$head(tags$style(HTML(
+                     ".shiny-split-layout > div {
+                     overflow: visible;
+                     }"
+                   ))) # EO tags$head making drop down visible 
+                 ) # EO split layout
+               ), # EO box layout
+               # SO box data table
+               box(width = 12,
+                   title = "Preview of subsetted table to download" #,
+                   #plotOutput(outputId = ) %>% withSpinner(color="#0dc5c1")
+                   ) # EO box data table
+             ) # EO data download FR layout
              ) ## EO Data Download ----
     
   ) # EO navbarPage
