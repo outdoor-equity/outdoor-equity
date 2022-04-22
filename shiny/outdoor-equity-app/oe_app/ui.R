@@ -48,8 +48,8 @@ ui <- fluidPage(
                         # SO data summary FR layout
                         fluidRow(
                           # SO pick a var input
-                          box(width = 6,
-                              title = "1. Select a variable to visualize & how many visuals you want to see",
+                          box(width = 4,
+                              title = "1. Select a variable and how many sites to compare",
                               splitLayout(
                               # choose a var
                               select_data_summary_vars(),
@@ -66,8 +66,8 @@ ui <- fluidPage(
                               ) # EO split layout var input & num visual
                           ), # EO pick a var input box
                           # SO subset inputs box
-                          box(width = 6,
-                              title = "2. Choose a reservable site to visualize",
+                          box(width = 8,
+                              title = "2. Choose a how to subset the data",
                               splitLayout(
                                 # agency input
                                 select_agency(locationId = "summary"),
