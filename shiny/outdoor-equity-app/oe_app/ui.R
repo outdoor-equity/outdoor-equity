@@ -2,6 +2,7 @@
 ui <- fluidPage(
   # use shiny dashboard elements in shiny
   useShinydashboard(),
+  useShinyjs(),
   
   # set theme ----
   theme = bs_theme(bootswatch = "minty"),
@@ -47,16 +48,16 @@ ui <- fluidPage(
                         titlePanel("Visualize a data summary"),
                         # SO data summary FR layout
                         fluidRow(
-                          # SO pick a var input
+                          # SO pick a var input box
                           box(width = 4,
                               title = "1. Select a variable and how many sites to compare",
                               splitLayout(
                               # choose a var
                               select_data_summary_vars(),
-                              # select number of visuals
+                              #### SO select number of visuals ----
                               selectizeInput(inputId = "num_viz",
                                              label = "Select number of visuals",
-                                             choices = c(1, 2, 3),
+                                             choices = c(1, 2, 3, 4),
                                              multiple = FALSE,
                                              options = list(
                                                placeholder = "Select number of visuals",
@@ -65,7 +66,8 @@ ui <- fluidPage(
                                              )) # EO num viz input
                               ) # EO split layout var input & num visual
                           ), # EO pick a var input box
-                          # SO subset inputs box
+                          
+                          #### SO subset inputs box ----
                           box(width = 8,
                               title = "2. Choose a how to subset the data",
                               splitLayout(
@@ -77,38 +79,36 @@ ui <- fluidPage(
                                 select_site(locationId = "summary")
                               ) # EO split layout subset inputs
                               ), # EO subset inputs box
-                          # SO data summary plot outputs box
-                          box(width = 12,
-                            plotlyOutput(outputId = "data_summary_plot") %>% 
-                              withSpinner(color="#0dc5c1")
-                          ) # EO data summary plot outputs box
+                          
+                          # SO data summary plot 1 output box
+                          box(id = "num_viz_1",
+                              width = 6,
+                              plotlyOutput(outputId = "data_summary_plot") %>%
+                                withSpinner(color = "#0dc5c1")
+                          ), # EO data summary plot 1 output box
+                          
+                          # SO data summary plot 2 output box
+                          box(id = "num_viz_2",
+                              width = 6,
+                              # plotlyOutput(outputId = "data_summary_plot") %>%
+                              #   withSpinner(color = "#0dc5c1")
+                              ), # EO data summary plot 2 output box
+
+                          # SO data summary plot 3 output box
+                          box(id = "num_viz_3",
+                              width = 6,
+                              # plotlyOutput(outputId = "data_summary_plot") %>%
+                              #   withSpinner(color = "#0dc5c1")
+                              ), # EO data summary plot 3 output box
+
+                          # SO data summary plot 4 output box
+                          box(id = "num_viz_4",
+                              width = 6,
+                              # plotlyOutput(outputId = "data_summary_plot") %>%
+                              #   withSpinner(color = "#0dc5c1")
+                          ) # EO data summary plot 3 output box
+                          
                         ) # EO data summary FR layout
-                        
-                        # # data summary sidebar layout
-                        # sidebarLayout(
-                        #   # data summary analysis side bar panel
-                        #   sidebarPanel(
-                        #     width = 12,
-                        #     # agency input
-                        #     select_agency(locationId = "summary"),
-                        #     # admin input
-                        #     select_admin_unit(locationId = "summary"),
-                        #     # site input
-                        #     select_site(locationId = "summary"),
-                        #     # data summary vars
-                        #     select_data_summary_vars()
-                        #     
-                        #   ), # EO data summary sidebar panel
-                        #   
-                        #   # data summary main panel aka visual
-                        #   mainPanel(
-                        #     
-                        #     plotlyOutput(outputId = "data_summary_plot") %>% 
-                        #       withSpinner(color="#0dc5c1")
-                        #     
-                        #   ) # EO data summary main panel
-                        # ) # EO data summary sidebar layout
-                        
                         ), #### EO data summary ----
                
                ### SO data relationships ----

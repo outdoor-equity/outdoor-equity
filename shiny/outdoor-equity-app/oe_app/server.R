@@ -1,8 +1,9 @@
 # server instructions ----
 server <- function(input, output, session){
-  
-# SO OE press agency ----
-## SO press agency on summary page ----
+
+# OBSERVE EVENTS ----  
+## SO OE press agency ----
+### summary page ----
 observeEvent(input$agency_summary, {
   
   # function to call values based on key from agency to admin dict
@@ -15,7 +16,7 @@ observeEvent(input$agency_summary, {
                        )
 }) ## EO OE press agency on summary page
 
-## SO press agency on relationships page ----
+### relationships page ----
 observeEvent(input$agency_relationships, {
   
   # function to call values based on key from agency to admin dict
@@ -28,7 +29,7 @@ observeEvent(input$agency_relationships, {
                        )
 }) ## EO OE press agency on relationships page
 
-## SO press agency on visitorsheds page ----
+### visitorsheds page ----
 observeEvent(input$agency_visitorsheds, {
   
   # function to call values based on key from agency to admin dict
@@ -41,7 +42,7 @@ observeEvent(input$agency_visitorsheds, {
                        )
 }) ## EO OE press agency on visitorsheds page
 
-## SO press agency on data download page ----
+### data download page ----
 observeEvent(input$agency_data_download, {
   
   # function to call values based on key from agency to admin dict
@@ -55,8 +56,8 @@ observeEvent(input$agency_data_download, {
 }) ## EO press agency on data download page
   
   
-# SO OE press admin unit ----
-## SO press admin unit on summary page ----
+## SO OE press admin unit ----
+### summary page ----
 observeEvent(input$admin_unit_summary, {
   
   # function to call values based on key from agency to admin dict
@@ -69,7 +70,7 @@ observeEvent(input$admin_unit_summary, {
                        )
 }) ## EO press admin unit on summary page
 
-## SO press admin unit on relationships page ----
+### relationships page ----
 observeEvent(input$admin_unit_relationships, {
   
   # function to call values based on key from agency to admin dict
@@ -82,7 +83,7 @@ observeEvent(input$admin_unit_relationships, {
                        )
   }) ## EO press admin unit on relationships page
   
-## SO press admin unit on visitorsheds page ----
+### visitorsheds page ----
 observeEvent(input$admin_unit_visitorsheds, {
   
   # function to call values based on key from agency to admin dict
@@ -95,7 +96,7 @@ observeEvent(input$admin_unit_visitorsheds, {
                        )
   }) ## EO press admin unit on visitorsheds page
 
-# ## SO press admin unit on data download page ----
+### data download page ----
 observeEvent(input$admin_unit_data_download, {
   
   # function to call values based on key from agency to admin dict
@@ -107,6 +108,21 @@ observeEvent(input$admin_unit_data_download, {
                        choices = sort(choices)
                        )
 }) ## EO press admin unit on data download page
+
+## SO OE press num_viz ----
+observeEvent(input$num_viz, {
+
+  if (input$num_viz == "1") {
+    shinyjs::hide(id = c("num_viz_2", "num_viz_3", "num_viz_4"))
+  }
+  # else if (input$num_viz == 2) {
+  #   shinyjs::hide(id %in% c("num_viz_1", "num_viz_3"))
+  # }
+  # else (input$num_viz == 3) {
+  #   shinyjs::hide(id %in% c("num_viz_1", "num_viz_2"))
+  # }
+
+}) ## EO OE press num_viz
 
 ## race RDF ----
 race_df <- reactive({
