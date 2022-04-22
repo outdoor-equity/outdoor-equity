@@ -1,6 +1,6 @@
 # SEL site ----
 # used in (1) data summary; (2) data relationships; (3) visitorsheds; (4) data download
-select_site <- function(locationId, isMultiple = TRUE){
+select_site <- function(locationId, isMultiple = FALSE){
   
   selectizeInput(inputId = paste("site", locationId, sep = "_"),
                  label = "Select a reservable site",
