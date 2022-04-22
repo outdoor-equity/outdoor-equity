@@ -46,31 +46,68 @@ ui <- fluidPage(
                         
                         titlePanel("Visualize a data summary"),
                         # SO data summary FR layout
-                        
-                        # data summary sidebar layout
-                        sidebarLayout(
-                          # data summary analysis side bar panel
-                          sidebarPanel(
-                            width = 12,
-                            # agency input
-                            select_agency(locationId = "summary"),
-                            # admin input
-                            select_admin_unit(locationId = "summary"),
-                            # site input
-                            select_site(locationId = "summary"),
-                            # data summary vars
-                            select_data_summary_vars()
-                            
-                          ), # EO data summary sidebar panel
-                          
-                          # data summary main panel aka visual
-                          mainPanel(
-                            
+                        fluidRow(
+                          # SO pick a var input
+                          box(width = 6,
+                              title = "1. Select a variable to visualize & how many visuals you want to see",
+                              splitLayout(
+                              # choose a var
+                              select_data_summary_vars(),
+                              # select number of visuals
+                              selectizeInput(inputId = "num_viz",
+                                             label = "Select number of visuals",
+                                             choices = c(1, 2, 3),
+                                             multiple = FALSE,
+                                             options = list(
+                                               placeholder = "Select number of visuals",
+                                               # Note(HD) when created set a value for the input to an empty string
+                                               onInitialize = I('function() { this.setValue("1"); }')
+                                             )) # EO num viz input
+                              ) # EO split layout var input & num visual
+                          ), # EO pick a var input box
+                          # SO subset inputs box
+                          box(width = 6,
+                              title = "2. Choose a reservable site to visualize",
+                              splitLayout(
+                                # agency input
+                                select_agency(locationId = "summary"),
+                                # admin input
+                                select_admin_unit(locationId = "summary"),
+                                # site input
+                                select_site(locationId = "summary")
+                              ) # EO split layout subset inputs
+                              ), # EO subset inputs box
+                          # SO data summary plot outputs box
+                          box(width = 12,
                             plotlyOutput(outputId = "data_summary_plot") %>% 
                               withSpinner(color="#0dc5c1")
-                            
-                          ) # EO data summary main panel
-                        ) # EO data summary sidebar layout
+                          ) # EO data summary plot outputs box
+                        ) # EO data summary FR layout
+                        
+                        # # data summary sidebar layout
+                        # sidebarLayout(
+                        #   # data summary analysis side bar panel
+                        #   sidebarPanel(
+                        #     width = 12,
+                        #     # agency input
+                        #     select_agency(locationId = "summary"),
+                        #     # admin input
+                        #     select_admin_unit(locationId = "summary"),
+                        #     # site input
+                        #     select_site(locationId = "summary"),
+                        #     # data summary vars
+                        #     select_data_summary_vars()
+                        #     
+                        #   ), # EO data summary sidebar panel
+                        #   
+                        #   # data summary main panel aka visual
+                        #   mainPanel(
+                        #     
+                        #     plotlyOutput(outputId = "data_summary_plot") %>% 
+                        #       withSpinner(color="#0dc5c1")
+                        #     
+                        #   ) # EO data summary main panel
+                        # ) # EO data summary sidebar layout
                         
                         ), #### EO data summary ----
                
@@ -172,7 +209,7 @@ ui <- fluidPage(
              fluidRow(
                # SO box inputs
                box(width = 12, # Note(HD): not seeing even inputs???
-                 splitLayout(
+                 splitLayout(cellWidths = c("33.3%", "33.3%", "33.3%"),
                    # select agency
                    select_agency(locationId = "data_download"),
                    # select admin unit
