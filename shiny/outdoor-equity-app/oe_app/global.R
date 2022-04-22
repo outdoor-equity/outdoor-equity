@@ -10,8 +10,8 @@ library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
 library(shinycssloaders) # loading icon 
+library(shinyjs) # hide / show boxes in ui
 library(reactlog)
-#library(leaflet)
 library(tidyverse)
 library(tmap)
 library(janitor)
