@@ -1,6 +1,6 @@
 # SEL admin unit ----
 # used in (1) data summary; (2) data relationships; (3) visitorsheds; (4) data download
-select_admin_unit <- function(locationId, isMultiple = TRUE){
+select_admin_unit <- function(locationId, isMultiple = FALSE){
   
   selectizeInput(inputId = paste("admin_unit", locationId, sep = "_"),
                  label = "Select an administrative unit",
