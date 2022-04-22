@@ -4,41 +4,26 @@ server <- function(input, output, session){
 # SO OE press agency ----
 ## SO press agency on summary page ----
 observeEvent(input$agency_summary, {
-
-  # Note(HD): these print statements are temporary 
-  print(paste0("You have chosen agency: ", input$agency_summary, " on data summary page"))
-  print(class(input$agency_summary))
-
-  # create choices based on dictionary
-  choices <- vector()
   
-  for (i in seq_along(input$agency_summary)){
-    
-    choices <- append(choices, 
-                      agency_to_admin_unit_dict$get(input$agency_summary[[i]]))
-  }
+  # function to call values based on key from agency to admin dict
+  oe_agency_to_admin_dict(isInput_key = input$agency_summary,
+                          page = "agency_summary")
 
   # update input with new choices
   updateSelectizeInput(session, "admin_unit_summary",
                        choices = sort(choices)
-  ) # EO update choices 
+  ) # EO update choices
 
 }) ## EO OE press agency on summary page
 
 ## SO press agency on relationships page ----
 observeEvent(input$agency_relationships, {
   
-  print(paste0("You have chosen agency: ", input$agency_relationships, " on relationships page"))
-  print(class(input$agency_relationships))
+  # function to call values based on key from agency to admin dict
+  oe_agency_to_admin_dict(isInput_key = input$agency_relationships,
+                          page = "agency_relationships")
   
-  choices <- vector()
-  
-  for (i in seq_along(input$agency_relationships)){
-    
-    choices <- append(choices,
-                      agency_to_admin_unit_dict$get(input$agency_relationships[[i]]))
-  }
-  
+  # update input with new choices
   updateSelectizeInput(session, "admin_unit_relationships",
                        choices = sort(choices)
   )
@@ -47,18 +32,12 @@ observeEvent(input$agency_relationships, {
 
 ## SO press agency on visitorsheds page ----
 observeEvent(input$agency_visitorsheds, {
-
-  print(paste0("You have chosen agency: ", input$agency_visitorsheds, " on visitorsheds page"))
-  print(class(input$agency_visitorsheds))
-
-  choices <- vector()
-
-  for (i in seq_along(input$agency_visitorsheds)){
-
-    choices <- append(choices,
-                      agency_to_admin_unit_dict$get(input$agency_visitorsheds[[i]]))
-  }
-
+  
+  # function to call values based on key from agency to admin dict
+  oe_agency_to_admin_dict(isInput_key = input$agency_visitorsheds,
+                          page = "agency_visitorsheds")
+  
+  # update input with new choices
   updateSelectizeInput(session, "admin_unit_visitorsheds",
                        choices = sort(choices)
   )
@@ -68,17 +47,22 @@ observeEvent(input$agency_visitorsheds, {
 ## SO press agency on data download page ----
 observeEvent(input$agency_data_download, {
   
-  print(paste0("You have chosen agency: ", input$agency_data_download, " on data download page"))
-  print(class(input$agency_data_download))
+  # function to call values based on key from agency to admin dict
+  oe_agency_to_admin_dict(isInput_key = input$agency_data_download,
+                          page = "agency_data_download")
   
-  choices <- vector()
+  # print(paste0("You have chosen agency: ", input$agency_data_download, " on data download page"))
+  # print(class(input$agency_data_download))
+  # 
+  # choices <- vector()
+  # 
+  # for (i in seq_along(input$agency_data_download)){
+  #   
+  #   choices <- append(choices,
+  #                     agency_to_admin_unit_dict$get(input$agency_data_download[[i]]))
+  # }
   
-  for (i in seq_along(input$agency_data_download)){
-    
-    choices <- append(choices,
-                      agency_to_admin_unit_dict$get(input$agency_data_download[[i]]))
-  }
-  
+  # update input with new choices
   updateSelectizeInput(session, "admin_unit_data_download",
                        choices = sort(choices)
   )
@@ -118,12 +102,15 @@ observeEvent(input$admin_unit_relationships, {
 
   choices <- vector()
 
-  for (i in seq_along(input$admin_unit_relationships)){
-
-    choices <- append(choices,
-                      admin_units_to_site_dict$get(input$admin_unit_relationships[[i]]))
-  }
-
+  for (i in seq_along(input$admin_unit_relationships)) {
+    
+    if (input$admin_unit_relationships[i] != "") {
+      
+      choices <- append(choices,
+                        admin_units_to_site_dict$get(input$admin_unit_relationships[[i]]))
+    } # EO if statement
+  } # EO for loop
+  
   updateSelectizeInput(session, "site_relationships",
                        choices = sort(choices)
                        )
@@ -138,18 +125,14 @@ observeEvent(input$admin_unit_visitorsheds, {
   choices <- vector()
 
   for (i in seq_along(input$admin_unit_visitorsheds)){
-
-    input_value <- input$admin_unit_visitorsheds[[i]]
     
-    if (input_value == ""){
+    if (input$admin_unit_visitorsheds[i] != "") {
       
-      next
+      choices <- append(choices,
+                        admin_units_to_site_dict$get(input_value))
       
-    }
-    
-    choices <- append(choices,
-                      admin_units_to_site_dict$get(input_value))
-    }
+    } # EO if statement
+  } # EO for loop
 
   updateSelectizeInput(session, "site_visitorsheds",
                        choices = sort(choices)
@@ -164,12 +147,16 @@ observeEvent(input$admin_unit_data_download, {
 
   choices <- vector()
 
-  for (i in seq_along(input$admin_unit_data_download)){
-
-    choices <- append(choices,
-                      admin_units_to_site_dict$get(input$admin_unit_data_download[[i]]))
-  }
-
+  for (i in seq_along(input$admin_unit_data_download)) {
+    
+    if (input$admin_unit_data_download[i] != "") {
+      
+      choices <- append(choices,
+                        admin_units_to_site_dict$get(input$admin_unit_data_download[[i]]))
+      
+    } # EO if statement
+  } # EO for loop
+  
   updateSelectizeInput(session, "site_data_download",
                        choices = sort(choices)
   )
