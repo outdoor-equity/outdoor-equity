@@ -1,4 +1,4 @@
-## observe event agency to admin dictionary ##
+## observe event agency to admin unit dictionary ##
 # used in PRESS AGENCY in server
 # using input id's for all analysis and data download pages in ui
 
