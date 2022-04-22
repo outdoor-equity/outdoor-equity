@@ -53,6 +53,10 @@ source("r/summary_plots/site_type_plot.R")
 source("r/summary_plots/race_plot.R")
 source("r/summary_plots/education_plot.R")
 source("r/summary_plots/median_income_plot.R")
+
+## source observe event functions ----
+source("r/inputs/observe_event_agency_to_admin_dict.R")
+
 # need to move these sourced functions to a new section
 source("r/summary_plots/tot_site_agency_plot.R")
 source("r/summary_plots/tota_res_agency_plot.R")
