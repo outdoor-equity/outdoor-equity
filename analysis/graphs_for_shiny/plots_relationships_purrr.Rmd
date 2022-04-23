@@ -56,6 +56,7 @@ function_highCutoff <- function(race_group,
   df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(race_percentage >= weighted_half)
   
   weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$race_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
   return(weighted_quartile)
 }
 ```
@@ -93,6 +94,8 @@ function_plot_race_distanceTravel <- function(race_group, weighted_quartile,
            race = str_replace(string = race,
                               pattern = "Other",
                               replacement = "Other Race(s)"))
+  
+  return(df_racial_group_i)
 }
 ```
 
@@ -115,7 +118,7 @@ function_plot_race_SiteType <- function(race_group, weighted_quartile,
 
   max_racial_group_ridb <- df_racial_group_i_longer %>%
     summarize(max = max(race_percentage))
-
+  
   df_racial_group_i <- df_racial_group_i_longer %>%
     filter(race_percentage >= weighted_quartile) %>% 
     count(race, aggregated_site_type) %>% 
@@ -128,6 +131,8 @@ function_plot_race_SiteType <- function(race_group, weighted_quartile,
            race = str_replace(string = race,
                               pattern = "Other",
                               replacement = "Other Race(s)"))
+  
+  return(df_racial_group_i)
 }
 ```
 
@@ -136,8 +141,8 @@ function_plot_race_SiteType <- function(race_group, weighted_quartile,
 race_group <- c("other", "pacific_islander", "multiracial", "asian", 
                    "black", "white", "native_american", "hispanic_latinx")
 # parallel processing
-n_cores <- detectCores() - 1
-plan(multisession, workers = n_cores)
+# n_cores <- detectCores() - 1
+# plan(multisession, workers = n_cores)
 
 # "high" cutoff value
 data_race_distance_traveled_high <- 
@@ -148,10 +153,10 @@ data_race_distance_traveled_high <-
   as.data.frame()
 
 # running function to get df for each racial group
-data_plot_race_distanceTravel %<-% {
+data_plot_race_distanceTravel <-  {
   data_race_distance_traveled_high %>% pmap_dfr(function_plot_race_distanceTravel)
 }
-data_plot_race_siteType %<-% {
+data_plot_race_siteType <- {
   data_race_distance_traveled_high %>% pmap_dfr(function_plot_race_SiteType)
 }
 
