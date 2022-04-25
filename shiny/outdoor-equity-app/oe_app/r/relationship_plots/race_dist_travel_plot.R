@@ -5,7 +5,7 @@ race_dist_travel_plot <- function(agencyInput, admin_unitInput, siteInput,
                                   race_top_quartile_df, ridb_df){
   
   data_plot_race_distanceTravel <- 
-    race_top_quartile_df %>% pmap_dfr(function_plot_race_distanceTravel, 
+    race_top_quartile_df %>% pmap_dfr(race_dist_travel_data, 
                                       ridb_df = ridb_df, 
                                       agencyInput = agencyInput, 
                                       admin_unitInput = admin_unitInput, 
