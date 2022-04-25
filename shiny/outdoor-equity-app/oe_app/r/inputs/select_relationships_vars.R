@@ -4,7 +4,8 @@ select_data_relationship <- function(){
   
   selectizeInput(inputId = "data_relationships",
                  label = "Select a data relationship to visualize",
-                 choices = c("Race x Site type",
+                 choices = c("Race x Distance traveled",
+                             "Race x Site type",
                              "Race x Booking window",
                              "Race x Daily cost",
                              "Education x Distance traveled",
