@@ -1,20 +1,35 @@
 # server instructions ----
 server <- function(input, output, session){
 
+  
+  
 # OBSERVE EVENTS ----  
 ## SO OE press agency ----
-### summary page ----
-observeEvent(input$agency_summary, {
+### data summary page box 1 ----
+observeEvent(input$agency_summary_1, {
   
   # function to call values based on key from agency to admin dict
-  oe_agency_to_admin_dict(isInput_key = input$agency_summary,
-                          page = "agency_summary")
+  oe_agency_to_admin_dict(isInput_key = input$agency_summary_1,
+                          page = "agency_summary_1")
 
   # update input with new choices
-  updateSelectizeInput(session, "admin_unit_summary",
+  updateSelectizeInput(session, "admin_unit_summary_1",
                        choices = sort(choices)
                        )
 }) ## EO OE press agency on summary page
+  
+### data summary page box 2 ----
+observeEvent(input$agency_summary_2, {
+  
+  # function to call values based on key from agency to admin dict
+  oe_agency_to_admin_dict(isInput_key = input$agency_summary_2,
+                          page = "agency_summary_2")
+  
+  # update input with new choices
+  updateSelectizeInput(session, "admin_unit_summary_2",
+                       choices = sort(choices)
+    )
+  }) ## EO OE press agency on summary page
 
 ### relationships page ----
 observeEvent(input$agency_relationships, {
@@ -58,11 +73,11 @@ observeEvent(input$agency_data_download, {
   
 ## SO OE press admin unit ----
 ### summary page ----
-observeEvent(input$admin_unit_summary, {
+observeEvent(input$admin_unit_summary_1, {
   
   # function to call values based on key from agency to admin dict
-  oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary,
-                             page = "admin_unit_summary")
+  oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary_1,
+                             page = "admin_unit_summary_1")
   
   # update input with new choices
   updateSelectizeInput(session, "site_summary_1",
@@ -71,10 +86,10 @@ observeEvent(input$admin_unit_summary, {
 }) ## EO press admin unit on summary page
   
 ## SITE_SUMMARY_2
-observeEvent(input$admin_unit_summary, {
+observeEvent(input$admin_unit_summary_2, {
   # function to call values based on key from agency to admin dict
-  oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary,
-                             page = "admin_unit_summary")
+  oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary_2,
+                             page = "admin_unit_summary_2")
   
   # update input with new choices
   updateSelectizeInput(session, "site_summary_2",
@@ -121,19 +136,19 @@ observeEvent(input$admin_unit_data_download, {
 }) ## EO press admin unit on data download page
 
 ## SO OE press num_viz ----
-observeEvent(input$num_viz, {
-
-  if (input$num_viz == "1") {
-    shinyjs::hide(id = c("site_summary_2", "data_summary_plot_2"))
-  }
-  else if (input$num_viz == 2) {
-    shinyjs::hide(id = "site_summary_1")
-  }
-  # else (input$num_viz == 3) {
-  #   shinyjs::hide(id %in% c("num_viz_1", "num_viz_2"))
-  # }
-
-}) ## EO OE press num_viz
+# observeEvent(input$num_viz, {
+# 
+#   if (input$num_viz == "1") {
+#     shinyjs::hide(id = c("site_summary_2", "data_summary_plot_2"))
+#   }
+#   else if (input$num_viz == 2) {
+#     shinyjs::hide(id = "site_summary_1")
+#   }
+#   # else (input$num_viz == 3) {
+#   #   shinyjs::hide(id %in% c("num_viz_1", "num_viz_2"))
+#   # }
+# 
+# }) ## EO OE press num_viz
 
 ## race RDF ----
 race_df <- reactive({
@@ -164,7 +179,7 @@ output$data_summary_plot <- renderPlotly({
   if (input$data_summary == "distance_traveled_mi") {
     
     dist_travel_plot(#agencyInput = input$agency_summary,
-                     #admin_unitInput = input$admin_unit_summary,
+                     admin_unitInput = input$admin_unit_summary,
                      siteInput = input$site_summary_1)
     
   } ## EO if distance traveled
@@ -247,7 +262,7 @@ output$data_summary_plot_2 <- renderPlotly({
   if (input$data_summary == "distance_traveled_mi") {
     
     dist_travel_plot(#agencyInput = input$agency_summary,
-                     #admin_unitInput = input$admin_unit_summary,
+                     admin_unitInput = input$admin_unit_summary,
                      siteInput = input$site_summary_2)
     
   } ## EO if distance traveled

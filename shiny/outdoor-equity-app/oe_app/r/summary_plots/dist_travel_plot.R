@@ -3,7 +3,7 @@
 # using input id's for summary page in ui
 # agencyInput, admin_unitInput,
 
-dist_travel_plot <- function(siteInput){
+dist_travel_plot <- function(siteInput, admin_unitInput){
   
   # reactive data frame 
   dist_travel_rdf <- reactive ({
@@ -15,7 +15,7 @@ dist_travel_plot <- function(siteInput){
       mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>%
       select(agency, admin_unit, park, distance_traveled_mi) %>% 
       filter(!is.na(distance_traveled_mi))
-    
+     
   })
   
 print(class(dist_travel_rdf))
