@@ -65,10 +65,10 @@ ui <- fluidPage(
                                                onInitialize = I('function() { this.setValue("1"); }')
                                              )) # EO num viz input
                               ) # EO split layout var input & num visual
-                          ), # EO pick a var input box
+                          ), # EO pick a var & num visual input box
                           
                           # SO data summary plot 1 output box
-                          box(#id = "num_viz_1",
+                          box(id = "num_viz_1",
                               width = 6,
                               splitLayout(
                                 # agency input
@@ -83,7 +83,7 @@ ui <- fluidPage(
                           ), # EO data summary plot 1 output box
                           
                           # SO data summary plot 2 output box
-                          box(#id = "num_viz_2",
+                          box(id = "num_viz_2",
                               width = 6,
                               splitLayout(
                                 # agency input

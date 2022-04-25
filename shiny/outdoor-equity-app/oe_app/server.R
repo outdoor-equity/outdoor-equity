@@ -134,19 +134,19 @@ observeEvent(input$admin_unit_data_download, {
 }) ## EO press admin unit on data download page
 
 ## SO OE press num_viz ----
-# observeEvent(input$num_viz, {
-# 
-#   if (input$num_viz == "1") {
-#     shinyjs::hide(id = c("site_summary_2", "data_summary_plot_2"))
-#   }
-#   else if (input$num_viz == 2) {
-#     shinyjs::hide(id = "site_summary_1")
-#   }
-#   # else (input$num_viz == 3) {
-#   #   shinyjs::hide(id %in% c("num_viz_1", "num_viz_2"))
-#   # }
-# 
-# }) ## EO OE press num_viz
+observeEvent(input$num_viz, {
+
+  if (input$num_viz == 1) {
+    shinyjs::hide(id = "num_viz_2")
+  }
+  else if (input$num_viz == 2) {
+    shinyjs::hide(id = "num_viz_1")
+  }
+  # else (input$num_viz == 3) {
+  #   shinyjs::hide(id %in% c("num_viz_1", "num_viz_2"))
+  # }
+
+}) ## EO OE press num_viz
 
 ## race RDF ----
 race_df <- reactive({
