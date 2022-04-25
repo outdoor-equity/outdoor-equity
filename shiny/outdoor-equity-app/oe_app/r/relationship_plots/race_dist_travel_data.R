@@ -1,9 +1,7 @@
 
-function_plot_race_distanceTravel <- function(agencyInput, admin_unitInput, siteInput, 
-                                              race_group = c("other", "pacific_islander", "multiracial", "asian", 
-                                                             "black", "white", "native_american", "hispanic_latinx"), 
-                                              weighted_quartile,
-                                              ridb_df){
+race_dist_travel_data <- function(agencyInput, admin_unitInput, siteInput, 
+                                  race_group, weighted_quartile,
+                                  ridb_df){
   # reactive data frame 
   race_dist_travel_rdf <- reactive ({
     

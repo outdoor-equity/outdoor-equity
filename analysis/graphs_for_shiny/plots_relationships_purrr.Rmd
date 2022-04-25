@@ -39,8 +39,7 @@ data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
 
 ```{r}
 # create function to get weighted quartile value for each group
-function_highCutoff <- function(race_group, 
-                                 acs_df = data_ca_acs_2018){
+function_highCutoff <- function(race_group, acs_df = data_ca_acs_2018){
   
   df_ca_bin_breaks <- acs_df %>%
     select(zip_code, asian, black, hispanic_latinx, multiracial,
@@ -145,7 +144,7 @@ race_group <- c("other", "pacific_islander", "multiracial", "asian",
 # plan(multisession, workers = n_cores)
 
 # "high" cutoff value
-data_race_distance_traveled_high <- 
+data_race_distanceTraveled_high <- 
   race_group %>% 
   map_dbl(function_highCutoff) %>% 
   cbind("race_group" = race_group, 
@@ -153,12 +152,12 @@ data_race_distance_traveled_high <-
   as.data.frame()
 
 # running function to get df for each racial group
-data_plot_race_distanceTravel <-  {
-  data_race_distance_traveled_high %>% pmap_dfr(function_plot_race_distanceTravel)
-}
-data_plot_race_siteType <- {
-  data_race_distance_traveled_high %>% pmap_dfr(function_plot_race_siteType)
-}
+data_plot_race_distanceTravel <-  #{
+  data_race_distanceTraveled_high %>% pmap_dfr(function_plot_race_distanceTravel)
+#}
+# data_plot_race_siteType <- #{
+#   data_race_distance_traveled_high %>% pmap_dfr(function_plot_race_siteType)
+#}
 
 #gc()
 ```
