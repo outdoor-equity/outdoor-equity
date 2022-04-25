@@ -290,7 +290,6 @@ data_race_quants <-
   as.data.frame()
 
 output$data_relationships_plot <- renderPlotly({
-  
 ### SO race x dist travel ----
 if (input$data_relationships == "Race x Distance traveled") {
   

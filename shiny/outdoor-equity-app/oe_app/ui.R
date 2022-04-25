@@ -155,7 +155,7 @@ ui <- fluidPage(
                           # data relationships main panel aka visual
                           mainPanel(
                             
-                            plotOutput(outputId = "data_relationships_plot") %>% 
+                            plotlyOutput(outputId = "data_relationships_plot") %>% 
                               withSpinner(color="#0dc5c1")
                         
                         ) # EO data relationships main panel
