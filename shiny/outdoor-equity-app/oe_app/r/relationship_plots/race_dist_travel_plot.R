@@ -35,7 +35,7 @@ race_dist_travel_plot <- function(agencyInput, admin_unitInput, siteInput,
     scale_color_manual(values = race_group_colors) +
     labs(x = paste("Average Distance Traveled from Home to Site (miles)"),
          y = "",
-         title = "Average Distance Traveled to Reservation for <br>Different Racial Groups") + 
+         title = paste0("Average Distance Traveled to ", siteInput, ", ", admin_unitInput, " for <br>Different Racial Groups")) + 
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank(),
