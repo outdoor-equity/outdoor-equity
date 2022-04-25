@@ -44,6 +44,4 @@ race_dist_travel_plot <- function(agencyInput, admin_unitInput, siteInput,
   ggplotly(plot_race_distance_traveled,
            tooltip = list("text"))   
   
-  return(df_racial_group_i)
-  
 } # EO function
