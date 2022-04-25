@@ -1,7 +1,5 @@
 
-race_top_quartile <- function(race_group = c("other", "pacific_islander", "multiracial", "asian", 
-                                             "black", "white", "native_american", "hispanic_latinx"), 
-                              acs_df){
+race_top_quartile <- function(race_group, acs_df){
   
   df_ca_bin_breaks <- acs_df %>%
     select(zip_code, asian, black, hispanic_latinx, multiracial,
