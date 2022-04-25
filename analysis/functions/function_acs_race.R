@@ -1,10 +1,17 @@
 
+#' Title
+#'
+#' @param geography String indicating geographic grouping for census data. Defaults to "zcta" (ZIP Code Tabulation Area). 
+#'     See all geographic options within the `tidycensus` package here: https://walker-data.com/tidycensus/articles/basic-usage.html
+#' @param year Year of census data
+#' @param state String indicating state to be included, use NULL to get all US states.
+#'
+#' @return Returns a dataframe which includes 
+#' @export
+#'
+#' @examples
 acs_subset_calculate_race <- 
-  function(geography, # string indicating grouping for census data 
-           #("zcta" = zip code, all options found here: https://walker-data.com/tidycensus/articles/basic-usage.html)
-           year, # year of census datat
-           state # string indicating state to be include, use NULL for all US states
-  ){
+  function(geography = "zcta", year, state){
     # read in raw data
     df <- 
       get_acs(geography = geography,

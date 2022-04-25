@@ -145,7 +145,7 @@ ggplotly(plot_race_distance_traveled,
 
 ### Race x site type 
 
-```{r}
+```{r, eval=TRUE}
 ## -- data wrangle -- ##
 racial_groups <- c("other", "pacific_islander", "multiracial", "asian", 
                    "black", "white", "native_american", "hispanic_latinx")
@@ -225,8 +225,10 @@ for (i in seq_along(racial_groups)){
 racial_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
                               "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
                               "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+```
 
 
+```{r}
 # plot for shiny
 
 # stacked all sites in one plot
@@ -263,7 +265,7 @@ ggplotly(plot_race_site_type,
          tooltip = list("text"))
 ```
 
-```{r}
+```{r, eval=TRUE}
 # equestrian
 data <- data_plot_race_site_type_equestrian
 data_string <- deparse(substitute(data_plot_race_site_type_equestrian))
@@ -307,7 +309,7 @@ ggplotly(plot_race_site_type_equestrian,
          tooltip = list("text"))
 ```
 
-```{r}
+```{r, eval=TRUE}
 # remote
 data <- data_plot_race_site_type_remote
 data_string <- deparse(substitute(data_plot_race_site_type_remote))
@@ -351,7 +353,7 @@ ggplotly(plot_race_site_type_remote,
          tooltip = list("text"))
 ```
 
-```{r}
+```{r, eval=TRUE}
 # RV Only
 data <- data_plot_race_site_type_rv.only
 data_string <- deparse(substitute(data_plot_race_site_type_rv.only))
@@ -395,7 +397,7 @@ ggplotly(plot_race_site_type_rv_only,
          tooltip = list("text"))
 ```
 
-```{r}
+```{r, eval=TRUE}
 # RV or Tent
 data <- data_plot_race_site_type_rv.or.tent
 data_string <- deparse(substitute(data_plot_race_site_type_rv.or.tent))
@@ -439,7 +441,7 @@ ggplotly(plot_race_site_type_rv_or_tent,
          tooltip = list("text"))
 ```
 
-```{r}
+```{r, eval=TRUE}
 # Shelter
 data <- data_plot_race_site_type_shelter
 data_string <- deparse(substitute(data_plot_race_site_type_shelter))
@@ -483,7 +485,7 @@ ggplotly(plot_race_site_type_shelter,
          tooltip = list("text"))
 ```
 
-```{r}
+```{r, eval=TRUE}
 # Tent Only
 data <- data_plot_race_site_type_tent.only
 data_string <- deparse(substitute(data_plot_race_site_type_tent.only))
@@ -527,7 +529,7 @@ ggplotly(plot_race_site_type_tent_only,
          tooltip = list("text"))
 ```
 
-```{r}
+```{r, eval=TRUE}
 # Water
 data <- data_plot_race_site_type_water
 data_string <- deparse(substitute(data_plot_race_site_type_water))
