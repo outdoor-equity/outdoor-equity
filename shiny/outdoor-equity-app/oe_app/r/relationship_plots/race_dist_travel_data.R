@@ -22,10 +22,10 @@ race_dist_travel_data <- function(agencyInput, admin_unitInput, siteInput,
   })
   
   
-  max_racial_group_ridb <- ridb_df() %>%
+  max_racial_group_ridb <- race_dist_travel_rdf() %>%
     summarize(max = max(race_percentage))
   
-  df_racial_group_i <- ridb_df() %>%
+  df_racial_group_i <- race_dist_travel_rdf() %>%
     filter(race_percentage >= weighted_quartile) %>% 
     summarize(mean_distance_traveled_mi = mean(distance_traveled_mi)) %>% 
     mutate(race = paste0(race_group)) %>% 
