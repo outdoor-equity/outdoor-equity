@@ -141,21 +141,21 @@ ui <- fluidPage(
                           # IMPORTANT NOTE(HD) MAKE SIDEBAR PANEL HORIZONTAL ----
                           sidebarPanel(
                             
+                            # data relationship input
+                            select_data_relationship(),
                             # agency input
                             select_agency(locationId = "relationships"),
                             # admin input
                             select_admin_unit(locationId = "relationships"),
                             # site input
                             select_site(locationId = "relationships"),
-                            # data relationship input
-                            select_data_relationship()
 
                           ), # EO data relationships sidebar panel
                           
                           # data relationships main panel aka visual
                           mainPanel(
                             
-                            plotOutput(outputId = "data_relationships_plot") %>% 
+                            plotlyOutput(outputId = "data_relationships_plot") %>% 
                               withSpinner(color="#0dc5c1")
                         
                         ) # EO data relationships main panel
