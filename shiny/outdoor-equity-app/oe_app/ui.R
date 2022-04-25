@@ -76,22 +76,24 @@ ui <- fluidPage(
                                 # admin input
                                 select_admin_unit(locationId = "summary"),
                                 # site input
-                                select_site(locationId = "summary")
+                                #select_site(locationId = "summary")
                               ) # EO split layout subset inputs
                               ), # EO subset inputs box
                           
                           # SO data summary plot 1 output box
-                          box(id = "num_viz_1",
+                          box(#id = "num_viz_1",
                               width = 6,
+                              select_site(locationId = "summary_1"),
                               plotlyOutput(outputId = "data_summary_plot") %>%
                                 withSpinner(color = "#0dc5c1")
                           ), # EO data summary plot 1 output box
                           
                           # SO data summary plot 2 output box
-                          box(id = "num_viz_2",
+                          box(#id = "num_viz_2",
                               width = 6,
-                              # plotlyOutput(outputId = "data_summary_plot") %>%
-                              #   withSpinner(color = "#0dc5c1")
+                              select_site(locationId = "summary_2"),
+                              plotlyOutput(outputId = "data_summary_plot_2") %>%
+                                withSpinner(color = "#0dc5c1")
                               ), # EO data summary plot 2 output box
 
                           # SO data summary plot 3 output box

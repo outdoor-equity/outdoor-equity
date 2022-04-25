@@ -1,15 +1,16 @@
 ## distance traveled plot and parameters ##
 # used in DATA SUMMARY PLOTS in server
 # using input id's for summary page in ui
+# agencyInput, admin_unitInput,
 
-dist_travel_plot <- function(agencyInput, admin_unitInput, siteInput){
+dist_travel_plot <- function(siteInput){
   
   # reactive data frame 
   dist_travel_rdf <- reactive ({
     
     data_joined_2018 %>%
-      filter(agency %in% agencyInput,
-             admin_unit %in% admin_unitInput,
+      filter(#agency %in% agencyInput,
+             #admin_unit %in% admin_unitInput,
              park %in% siteInput) %>%
       mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>%
       select(agency, admin_unit, park, distance_traveled_mi) %>% 

@@ -65,11 +65,22 @@ observeEvent(input$admin_unit_summary, {
                              page = "admin_unit_summary")
   
   # update input with new choices
-  updateSelectizeInput(session, "site_summary",
+  updateSelectizeInput(session, "site_summary_1",
                        choices = sort(choices)
                        )
 }) ## EO press admin unit on summary page
-
+  
+## SITE_SUMMARY_2
+observeEvent(input$admin_unit_summary, {
+  # function to call values based on key from agency to admin dict
+  oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary,
+                             page = "admin_unit_summary")
+  
+  # update input with new choices
+  updateSelectizeInput(session, "site_summary_2",
+                       choices = sort(choices))
+  }) ## EO press admin unit on summary page
+  
 ### relationships page ----
 observeEvent(input$admin_unit_relationships, {
   
@@ -113,11 +124,11 @@ observeEvent(input$admin_unit_data_download, {
 observeEvent(input$num_viz, {
 
   if (input$num_viz == "1") {
-    shinyjs::hide(id = c("num_viz_2", "num_viz_3", "num_viz_4"))
+    shinyjs::hide(id = c("site_summary_2", "data_summary_plot_2"))
   }
-  # else if (input$num_viz == 2) {
-  #   shinyjs::hide(id %in% c("num_viz_1", "num_viz_3"))
-  # }
+  else if (input$num_viz == 2) {
+    shinyjs::hide(id = "site_summary_1")
+  }
   # else (input$num_viz == 3) {
   #   shinyjs::hide(id %in% c("num_viz_1", "num_viz_2"))
   # }
@@ -152,9 +163,9 @@ output$data_summary_plot <- renderPlotly({
   ### SO distance traveled ----
   if (input$data_summary == "distance_traveled_mi") {
     
-    dist_travel_plot(agencyInput = input$agency_summary,
-                     admin_unitInput = input$admin_unit_summary,
-                     siteInput = input$site_summary)
+    dist_travel_plot(#agencyInput = input$agency_summary,
+                     #admin_unitInput = input$admin_unit_summary,
+                     siteInput = input$site_summary_1)
     
   } ## EO if distance traveled
   
@@ -172,9 +183,9 @@ output$data_summary_plot <- renderPlotly({
   else if (input$data_summary == "daily_cost_per_visitor") {
     
     daily_cost_visitor_plot(agencyInput = input$agency_summary,
-                        admin_unitInput = input$admin_unit_summary,
-                        siteInput = input$site_summary,
-                        titleInput = input$site_summary)
+                            admin_unitInput = input$admin_unit_summary,
+                            siteInput = input$site_summary,
+                            titleInput = input$site_summary)
     
   } ## EO else if daily cost per visitor
   
@@ -229,6 +240,29 @@ output$data_summary_plot <- renderPlotly({
   } ## EO else if median income
   
 }) ## EO data summary plots
+
+## DATA SUMMARY PLOTS 2 ----
+output$data_summary_plot_2 <- renderPlotly({
+  ### SO distance traveled ----
+  if (input$data_summary == "distance_traveled_mi") {
+    
+    dist_travel_plot(#agencyInput = input$agency_summary,
+                     #admin_unitInput = input$admin_unit_summary,
+                     siteInput = input$site_summary_2)
+    
+  } ## EO if distance traveled
+  
+  ## SO booking window ----
+  else if (input$data_summary == "booking_window") {
+    
+    booking_window_plot(agencyInput = input$agency_summary,
+                        admin_unitInput = input$admin_unit_summary,
+                        siteInput = input$site_summary_2,
+                        titleInput = input$site_summary_2)
+    
+  } ## EO else if booking window
+  
+}) ## EO DATA SUMMARY PLOTS 2 
 
 ## SO RELATIONSHIPS PLOTS NO REACTIVE ----
 output$data_relationships_plot <- renderPlot({
