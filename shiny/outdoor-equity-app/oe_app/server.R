@@ -1,7 +1,5 @@
 # server instructions ----
 server <- function(input, output, session){
-
-  
   
 # OBSERVE EVENTS ----  
 ## SO OE press agency ----
@@ -100,8 +98,8 @@ observeEvent(input$admin_unit_summary_2, {
 observeEvent(input$admin_unit_relationships, {
   
   # function to call values based on key from agency to admin dict
-  oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary,
-                             page = "admin_unit_summary")
+  oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_relationships,
+                             page = "admin_unit_relationships")
   
   # update input with new choices
   updateSelectizeInput(session, "site_relationships",
@@ -280,34 +278,29 @@ output$data_summary_plot_2 <- renderPlotly({
 }) ## EO DATA SUMMARY PLOTS 2 
 
 ## SO RELATIONSHIPS PLOTS NO REACTIVE ----
-output$data_relationships_plot <- renderPlot({
+### race wrangling ----
+race_group <- c("other", "pacific_islander", "multiracial", "asian",
+                 "black", "white", "native_american", "hispanic_latinx")
+# “high” cutoff value
+data_race_quants <-
+  race_group %>%
+  map_dbl(race_top_quartile, acs_df = data_ca_acs_2018) %>%
+  cbind("race_group" = race_group,
+         "weighted_quartile" = .) %>%
+  as.data.frame()
+
+output$data_relationships_plot <- renderPlotly({
   
-  # parameters
-  racial_group_colors <- c("Other" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
-                           "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
-                           "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+### SO race x dist travel ----
+if (input$data_relationships == "Race x Distance traveled") {
   
-  # plot for shiny
-  ggplot(data = data_race_dist_travel) +
-    geom_col(aes(x = factor(distance_traveled_bins),
-                 y = race_percentage,
-                 fill = race)) +
-    facet_wrap(~race, scales = "free_x") +
-    scale_fill_manual(values = racial_group_colors) +
-    scale_x_discrete(labels = c("1" = "0 - 60 mi", 
-                                "2" = "60 - 117 mi", 
-                                "3" = "117 - 181 mi", 
-                                "4" = "181 - 299 mi", 
-                                "5" = "299 - 3,614 mi")) + 
-    labs(x = "Distance Traveled (miles)",
-         y = "Percentage (%)",
-         title = "Breakdown of Race of Home ZIP Codes vs. Distance Traveled",
-         subtitle = "for Overnight Reservations in California") +
-    theme_minimal() +
-    theme(legend.position = "none",
-          plot.background = element_rect("white"),
-          panel.grid.major.x = element_blank()) +
-    coord_flip()
+race_dist_travel_plot(agencyInput = input$agency_relationships,
+                      admin_unitInput = input$admin_unit_relationships,
+                      siteInput = input$site_relationships,
+                      race_top_quartile_df = data_race_quants,
+                      ridb_df = data_joined_2018)
+  
+} # EO race x dist travel
   
 }) ## EO relationships plots 
 
