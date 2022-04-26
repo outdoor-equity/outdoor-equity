@@ -37,7 +37,6 @@ data_zip_geometries_ca <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_zi
 data_geometries_us <- readRDS("data/2018_data_map_us_yosemite_upper_pines_geometries_us.rds")
 
 # SOURCE FUNCTIONS ----
-
 ## source input functions ----
 source("r/inputs/select_agency.R")
 source("r/inputs/select_admin_unit.R")
@@ -46,6 +45,7 @@ source("r/inputs/select_data_summary_vars.R")
 source("r/inputs/select_relationships_vars.R")
 
 ## source summary plot functions ----
+source("r/outputs/summary-boxes-plots.R")
 source("r/summary_plots/dist_travel_plot.R")
 source("r/summary_plots/booking_window_plot.R")
 source("r/summary_plots/daily_cost_plot.R")
