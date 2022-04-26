@@ -150,13 +150,13 @@ plot_distance_traveled_1.2 <-
   ggplot(data = data_plot_distance_traveled_all) +
   geom_bar(aes(x = distance_traveled_mi,
                      text = paste0(scales::percent(..count.. / nrow(data_plot_distance_traveled_all), accuracy = 0.1), 
-                                   " of all reservations traveled between ", xmin, " and ", xmax, 
+                                   " of all reservations traveled between ", #xmin, " and ", xmax, 
                                    " miles",
                                    "<br>(", scales::comma(..count.., accuracy = 1), " reservations)")),
                  fill = hist_colors[[1]], 
                  col = hist_colors[[2]], size = 0.05,
            stat = "count") +
-  scale_x_binned(labels = comma, n.breaks = n_breaks) +
+  scale_x_binned(labels = comma, breaks = breaks_width(n_breaks*2)) +
   scale_y_continuous(labels = scales::comma) +
   geom_vline(xintercept = quant_80,
              linetype = "dashed", alpha = 0.5, color = "darkred") +
