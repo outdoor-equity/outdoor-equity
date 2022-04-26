@@ -37,7 +37,6 @@ data_zip_geometries_ca <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_zi
 data_geometries_us <- readRDS("data/2018_data_map_us_yosemite_upper_pines_geometries_us.rds")
 
 # SOURCE FUNCTIONS ----
-
 ## source input functions ----
 source("r/inputs/select_agency.R")
 source("r/inputs/select_admin_unit.R")

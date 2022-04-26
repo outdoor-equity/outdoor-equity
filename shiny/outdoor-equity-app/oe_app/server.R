@@ -26,7 +26,7 @@ observeEvent(input$agency_summary_2, {
   # update input with new choices
   updateSelectizeInput(session, "admin_unit_summary_2",
                        choices = sort(choices)
-    )
+                       )
   }) ## EO OE press agency on summary page box 2
   
 
@@ -38,7 +38,7 @@ observeEvent(input$agency_summary_3, {
                             page = "agency_summary_3")
 
     # update input with new choices
-    updateSelectizeInput("admin_unit_summary_3",
+    updateSelectizeInput(session, "admin_unit_summary_3",
                          choices = sort(choices)
     )
   }) ## EO OE press agency on summary page box 3
