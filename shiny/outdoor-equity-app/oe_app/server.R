@@ -3,7 +3,7 @@ server <- function(input, output, session){
   
 # OBSERVE EVENTS ----  
 ## SO OE press agency ----
-### data summary page box 1 ----
+### summary box 1 ----
 observeEvent(input$agency_summary_1, {
   
   # function to call values based on key from agency to admin dict
@@ -14,9 +14,9 @@ observeEvent(input$agency_summary_1, {
   updateSelectizeInput(session, "admin_unit_summary_1",
                        choices = sort(choices)
                        )
-}) ## EO OE press agency on summary page
+}) ## EO OE press agency on summary page box 1
   
-### data summary page box 2 ----
+### summary box 2 ----
 observeEvent(input$agency_summary_2, {
   
   # function to call values based on key from agency to admin dict
@@ -27,8 +27,38 @@ observeEvent(input$agency_summary_2, {
   updateSelectizeInput(session, "admin_unit_summary_2",
                        choices = sort(choices)
     )
-  }) ## EO OE press agency on summary page
+  }) ## EO OE press agency on summary page box 2
+  
 
+### summary box 3 ----
+observeEvent(input$agency_summary_3, {
+    
+    # function to call values based on key from agency to admin dict
+    oe_agency_to_admin_dict(isInput_key = input$agency_summary_3,
+                            page = "agency_summary_3")
+    
+    # update input with new choices
+    updateSelectizeInput(session, "admin_unit_summary_3",
+                         choices = sort(choices)
+    )
+  }) ## EO OE press agency on summary page box 3
+  
+### summary box 4 ----
+observeEvent(input$agency_summary_4, {
+    
+    # function to call values based on key from agency to admin dict
+    oe_agency_to_admin_dict(isInput_key = input$agency_summary_4,
+                            page = "agency_summary_4")
+    
+    # update input with new choices
+    updateSelectizeInput(session, "admin_unit_summary_4",
+                         choices = sort(choices)
+    )
+  }) ## EO OE press agency on summary page box 4
+
+  
+  
+  
 ### relationships page ----
 observeEvent(input$agency_relationships, {
   
@@ -70,7 +100,7 @@ observeEvent(input$agency_data_download, {
   
   
 ## SO OE press admin unit ----
-### summary page ----
+### summary box 1 ----
 observeEvent(input$admin_unit_summary_1, {
   
   # function to call values based on key from agency to admin dict
@@ -81,18 +111,51 @@ observeEvent(input$admin_unit_summary_1, {
   updateSelectizeInput(session, "site_summary_1",
                        choices = sort(choices)
                        )
-}) ## EO press admin unit on summary page
+}) ## EO press admin unit on summary page box 1
   
-## SITE_SUMMARY_2
+### summary box 2 ----
 observeEvent(input$admin_unit_summary_2, {
+  
   # function to call values based on key from agency to admin dict
   oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary_2,
                              page = "admin_unit_summary_2")
   
   # update input with new choices
   updateSelectizeInput(session, "site_summary_2",
-                       choices = sort(choices))
-  }) ## EO press admin unit on summary page
+                       choices = sort(choices)
+                       )
+  }) ## EO press admin unit on summary page box 2
+  
+### summary box 3 ----
+observeEvent(input$admin_unit_summary_3, {
+  
+  # function to call values based on key from agency to admin dict
+  oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary_3,
+                             page = "admin_unit_summary_3")
+  
+  # update input with new choices
+  updateSelectizeInput(session, "site_summary_3",
+                       choices = sort(choices)
+                       )
+  }) ## EO press admin unit on summary page box 3
+  
+### summary box 4 ----
+observeEvent(input$admin_unit_summary_4, {
+    
+  # function to call values based on key from agency to admin dict
+  oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary_4,
+                             page = "admin_unit_summary_4")
+  
+  # update input with new choices
+  updateSelectizeInput(session, "site_summary_4",
+                       choices = sort(choices)
+                       )
+  }) ## EO press admin unit on summary page box 4
+  
+  
+  
+  
+  
   
 ### relationships page ----
 observeEvent(input$admin_unit_relationships, {
