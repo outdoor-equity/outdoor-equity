@@ -3,7 +3,7 @@
 # using input id's for summary page in ui
 # agencyInput, admin_unitInput,
 
-dist_travel_plot <- function(siteInput, admin_unitInput){
+dist_travel_plot <- function(admin_unitInput, siteInput){
   
   # reactive data frame 
   dist_travel_rdf <- reactive ({
