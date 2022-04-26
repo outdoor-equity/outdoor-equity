@@ -44,9 +44,9 @@ daily_cost_visitor_plot <- function(admin_unitInput, siteInput){
   # plot for shiny app
   daily_cost_plotly <- ggplot(data = daily_cost_visitor_rdf()) +
     geom_histogram(aes(x = daily_cost, 
-                       text = paste0(scales::percent(..count.. / nrow(dist_travel_rdf()), accuracy = 0.1), 
-                                     " of all reservations traveled between ", xmin, " and ", xmax, " miles",
-                                     "<br>(", scales::comma(..count.., accuracy = 1), " reservations)")),
+                       text = paste(scales::percent(..count.. / nrow(dist_travel_rdf()), accuracy = 0.1), 
+                                     "of all reservations paid between", dollar(xmin), "and", dollar(xmax),
+                                     "<br>(", scales::comma(..count.., accuracy = 1), "reservations.)")),
                    binwidth = center_bin * 2,
                    center = center_bin,
                    fill = hist_colors[[1]], 
