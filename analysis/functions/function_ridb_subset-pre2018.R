@@ -1,4 +1,14 @@
 
+#' Subset RIDB Data for Use in Outdoor Equity Shiny App
+#'
+#' @param full_file_path String of full file path to RIDB CSV file of raw data (from directory where .Rproj is saved)
+#' @param state_abbrev String of state abbreviation for subsetting (ex: "CA")
+#' @param year Year for subsetting (ex: 2018)
+#'
+#' @return Data frame for called state and year including only overnight sites, with valid US ZIP codes 
+#'     (ZIP codes updated to include only 5 digits)
+#'
+#' @examples
 RIDB_subset_pre2018 <- function(full_file_path, state_abbrev, year) {
   # read in file
   ridb_data <- read_csv(here::here(full_file_path))
@@ -30,7 +40,6 @@ RIDB_subset_pre2018 <- function(full_file_path, state_abbrev, year) {
                              "group picnic area",
                              "cave tour",
                              "management",
-                             "anchorage",
                              "picnic",
                              "entry point",
                              "trailhead")) %>%
@@ -44,7 +53,7 @@ RIDB_subset_pre2018 <- function(full_file_path, state_abbrev, year) {
                                       pattern = "[:digit:]{5}"))
   
   # create df
-  assign(paste0("data_ridb_", year), data.frame(df), envir = .GlobalEnv)
+  return(df)
 }
 
 

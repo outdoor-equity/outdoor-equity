@@ -1,6 +1,13 @@
 
+#' Variable calculated for RIDB data for use in Outdoor Equity App
+#'
+#' @param input_df_name Object name of dataframe output by subsetting function
+#'
+#' @return Dataframe with all variables calculated for use in Outdoor Equity App
+#'
+#' @examples
 RIDB_calculate_pre2018 <- 
-  function(input_df_name, output_df_name){
+  function(input_df_name){
     ## update variables
     df <- input_df_name %>% 
       mutate(start_date = as.Date(start_date),
@@ -10,6 +17,7 @@ RIDB_calculate_pre2018 <-
              length_of_stay = as.numeric(difftime(end_date, start_date), units = "days"),
              booking_window = as.numeric(difftime(start_date, order_date), units = "days"),
              daily_cost = total_paid / length_of_stay,
+             daily_cost_per_visitor = daily_cost / number_of_people,
              # create column for administrative unit
              admin_unit = case_when(agency == "USFS" ~ parent_location,
                                     agency %in% c("NPS", "BOR", "USACE") ~ region_description),
@@ -23,7 +31,8 @@ RIDB_calculate_pre2018 <-
                                           "cabin electric",
                                           "yurt",
                                           "shelter nonelectric") ~ "shelter",
-                         site_type %in% c("boat in") ~ "water",
+                         site_type %in% c("boat in",
+                                          "anchorage") ~ "water",
                          site_type %in% c("group equestrian",
                                           "equestrian nonelectric") ~ "equestrian",
                          site_type %in% c("rv nonelectric",
@@ -42,7 +51,7 @@ RIDB_calculate_pre2018 <-
       select("agency", "admin_unit", "park", "aggregated_site_type", "facility_state", 
              "facility_longitude", "facility_latitude", "customer_zip", "total_paid", 
              "start_date", "end_date", "order_date", "number_of_people", 
-             "length_of_stay", "booking_window", "daily_cost") %>% 
+             "length_of_stay", "booking_window", "daily_cost", "daily_cost_per_visitor") %>% 
       # update values
       mutate(
         # update park values (generic)
@@ -105,7 +114,7 @@ RIDB_calculate_pre2018 <-
                                                y = geometry.y,
                                                by_element = TRUE),
              distance_traveled_m = as.numeric(distance_traveled_m)) 
-    # convert to back to data.frame (from sf data.frame), remove geometries
+    # convert back to data.frame (from sf data.frame), remove geometries
     df_joined <- df_joined_geometries %>% 
       as.data.frame() %>% 
       extract(col = geometry.x, 
@@ -115,5 +124,5 @@ RIDB_calculate_pre2018 <-
       select(-geometry.y)
     
     # create df
-    assign(paste(output_df_name), data.frame(df_joined), envir = .GlobalEnv)
+    return(df_joined)
   }

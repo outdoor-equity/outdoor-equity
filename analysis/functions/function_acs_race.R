@@ -1,17 +1,15 @@
 
-#' Title
+#' American Communities Surveys Racial Grouping Percentages
 #'
 #' @param geography String indicating geographic grouping for census data. Defaults to "zcta" (ZIP Code Tabulation Area). 
 #'     See all geographic options within the `tidycensus` package here: https://walker-data.com/tidycensus/articles/basic-usage.html
 #' @param year Year of census data
 #' @param state String indicating state to be included, use NULL to get all US states.
 #'
-#' @return Returns a dataframe which includes 
-#' @export
+#' @return 
 #'
 #' @examples
-acs_subset_calculate_race <- 
-  function(geography = "zcta", year, state){
+acs_subset_calculate_race <- function(geography = "zcta", year, state){
     # read in raw data
     df <- 
       get_acs(geography = geography,
