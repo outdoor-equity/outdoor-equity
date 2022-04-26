@@ -11,7 +11,7 @@ dist_travel_plot <- function(siteInput, admin_unitInput){
     data_joined_2018 %>%
       filter(park %in% siteInput) %>%
       mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>%
-      select(agency, admin_unit, park, distance_traveled_mi) %>% 
+      select(park, distance_traveled_mi) %>% 
       filter(!is.na(distance_traveled_mi))
      
   })
