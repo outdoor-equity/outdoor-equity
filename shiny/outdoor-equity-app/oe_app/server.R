@@ -140,7 +140,7 @@ observeEvent(input$num_viz, {
     shinyjs::hide(id = "num_viz_2")
   }
   else if (input$num_viz == 2) {
-    shinyjs::hide(id = "num_viz_1")
+    shinyjs::show(id = "num_viz_2")
   }
   # else (input$num_viz == 3) {
   #   shinyjs::hide(id %in% c("num_viz_1", "num_viz_2"))

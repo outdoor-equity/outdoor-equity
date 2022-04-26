@@ -108,8 +108,8 @@ ui <- fluidPage(
                                 # site input
                                 select_site(locationId = "summary_3")
                               ),
-                              # plotlyOutput(outputId = "data_summary_plot") %>%
-                              #   withSpinner(color = "#0dc5c1")
+                              plotlyOutput(outputId = "data_summary_plot_3") %>%
+                                withSpinner(color = "#0dc5c1")
                               ), # EO data summary plot 3 output box
 
                           # SO data summary plot 4 output box
@@ -123,8 +123,8 @@ ui <- fluidPage(
                                 # site input
                                 select_site(locationId = "summary_4")
                               ),
-                              # plotlyOutput(outputId = "data_summary_plot") %>%
-                              #   withSpinner(color = "#0dc5c1")
+                              plotlyOutput(outputId = "data_summary_plot_4") %>%
+                                withSpinner(color = "#0dc5c1")
                           ) # EO data summary plot 3 output box
                           
                         ) # EO data summary FR layout
