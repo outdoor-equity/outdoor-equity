@@ -4,7 +4,11 @@
 race_dist_travel_plot <- function(agencyInput, admin_unitInput, siteInput,
                                   race_top_quartile_df, ridb_df){
   
-  
+  print(race_dist_travel_data)
+  print(ridb_df)
+  print(agencyInput)
+  print(admin_unitInput)
+  print(siteInput)
   
   data_plot_race_distanceTravel <- 
     race_top_quartile_df %>% pmap_dfr(race_dist_travel_data, 
@@ -12,6 +16,8 @@ race_dist_travel_plot <- function(agencyInput, admin_unitInput, siteInput,
                                       agencyInput = agencyInput, 
                                       admin_unitInput = admin_unitInput, 
                                       siteInput = siteInput)
+  
+  print(head(data_plot_race_distanceTravel))
   
   # create plot
   race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
