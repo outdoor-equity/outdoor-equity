@@ -2,15 +2,13 @@
 # used in DATA SUMMARY PLOTS in server
 # using input id's for summary page in ui
 
-site_type_plot <- function(agencyInput, admin_unitInput, siteInput, titleInput){
+site_type_plot <- function(admin_unitInput, siteInput){
   
   # reactive data frame 
   site_type_rdf <- reactive ({
     
     data_joined_2018 %>%
-      filter(agency %in% agencyInput,
-             admin_unit %in% admin_unitInput,
-             park %in% siteInput) %>%
+      filter(park %in% siteInput) %>%
       select(agency, admin_unit, park, aggregated_site_type)
     
   })
@@ -28,7 +26,7 @@ site_type_plot <- function(agencyInput, admin_unitInput, siteInput, titleInput){
     scale_x_continuous(labels = comma) +
     labs(x = "Number of Sites",
          y = "Types of Sites",
-         title = paste("Distribution of Type of Sites for", titleInput),
+         title = paste0("Distribution of Type of Sites for ", admin_unitInput, ", ", siteInput),
          subtitle = "Overnight Reservations in California in 2018") +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
