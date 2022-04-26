@@ -16,7 +16,7 @@ dist_travel_plot <- function(siteInput, admin_unitInput){
      
   })
   
-print(class(dist_travel_rdf))
+  print(class(dist_travel_rdf))
   
   # wrangling
   x_max <- (round(max(dist_travel_rdf()$distance_traveled_mi) / 5) * 5) + 5 # max x rounded to nearest 5
@@ -61,7 +61,8 @@ print(class(dist_travel_rdf))
                linetype = "dashed", alpha = 0.5, color = "#000099") +
     labs(x = "Distance traveled (miles)",
          y = "",
-         title = paste0("Distance Traveled to Reservations for <br>", siteInput, ", ", admin_unitInput, " in 2018")) +
+         title = paste0("Distance Traveled to Reservation for <br>", 
+                        siteInput, ", ", admin_unitInput, " in 2018")) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank()
