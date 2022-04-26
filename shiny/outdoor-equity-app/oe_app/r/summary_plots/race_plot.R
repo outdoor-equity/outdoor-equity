@@ -65,16 +65,18 @@ race_plot <- function(admin_unitInput, siteInput){
   groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
   
   # plot for shiny app
-  ggplot(data = race_data_plot) +
+  race_plotly <- ggplot(data = race_data_plot) +
     geom_col(aes(x = race_percent_average,
                  y = reorder(race, race_percent_average),
                  fill = data_source,
+                 ## think about how to have text that works for grey and green bars
                  text = paste0("Visitors to ", siteInput, ", ", admin_unitInput,
                                "<br>live in ZIP codes with an estimated ",
                                percent(race_percent_average, accuracy = 0.1), " of ",
                                race, " people.")),
              stat = "identity",
              position = "dodge") +
+    ## need to fix this to work for different subsets
     scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
     scale_fill_manual(values = groups_colors_ridb_ca) +  
     scale_color_manual(values = groups_colors_ridb_ca) +
@@ -87,9 +89,11 @@ race_plot <- function(admin_unitInput, siteInput){
 
     labs(x = "Percentage (%)",
          y = "",
-         title = paste("Racial Breakdown of ZIP Codes in 2018 for", titleInput)) +
+         title = paste0("Racial Breakdown of ZIP Codes for Visits to ", siteInput, ", ", admin_unitInput)) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank())
   
+  ggplotly(race_plotly,
+           tooltip = list("text"))
 } # EO function
