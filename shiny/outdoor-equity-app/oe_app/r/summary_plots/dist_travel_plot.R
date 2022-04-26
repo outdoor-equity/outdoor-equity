@@ -9,16 +9,14 @@ dist_travel_plot <- function(siteInput, admin_unitInput){
   dist_travel_rdf <- reactive ({
     
     data_joined_2018 %>%
-      filter(#agency %in% agencyInput,
-             #admin_unit %in% admin_unitInput,
-             park %in% siteInput) %>%
+      filter(park %in% siteInput) %>%
       mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>%
-      select(agency, admin_unit, park, distance_traveled_mi) %>% 
+      select(park, distance_traveled_mi) %>% 
       filter(!is.na(distance_traveled_mi))
      
   })
   
-print(class(dist_travel_rdf))
+  print(class(dist_travel_rdf))
   
   # wrangling
   x_max <- (round(max(dist_travel_rdf()$distance_traveled_mi) / 5) * 5) + 5 # max x rounded to nearest 5
@@ -60,10 +58,11 @@ print(class(dist_travel_rdf))
     scale_x_continuous(limits = c(0, x_max)) +
     scale_y_continuous(labels = comma) +
     geom_vline(xintercept = quant_80,
-               linetype = "dashed", alpha = 0.5, color = "darkred") +
+               linetype = "dashed", alpha = 0.5, color = "#000099") +
     labs(x = "Distance traveled (miles)",
          y = "",
-         title = paste0("Distance Traveled to Reservations for <br>", siteInput, ", ", admin_unitInput, " in 2018")) +
+         title = paste0("Distance Traveled to Reservation for <br>", 
+                        siteInput, ", ", admin_unitInput, " in 2018")) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank()
@@ -75,13 +74,13 @@ print(class(dist_travel_rdf))
            annotations =  list(x = 1, 
                                y = -0.5, 
                                text = paste0("80% of reservations to California overnight sites in 2018 traveled less than ", 
-                                             quant_80, " miles."), 
+                                             quant_80, " miles (shown on plot with dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 
                                yanchor = 'auto', 
                                xshift = 0, yshift = 0,
-                               font = list(size = 12, color = "darkred")))
+                               font = list(size = 12, color = "#000099")))
 
   
 } # EO function
