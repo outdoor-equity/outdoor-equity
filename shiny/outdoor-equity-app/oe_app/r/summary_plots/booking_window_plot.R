@@ -10,7 +10,7 @@ booking_window_plot <- function(admin_unitInput, siteInput){
     data_joined_2018 %>%
       filter(park %in% siteInput) %>%
       filter(booking_window > 0) %>% 
-      select(agency, admin_unit, park, booking_window)
+      select(park, booking_window)
   })
 
   # wrangling
