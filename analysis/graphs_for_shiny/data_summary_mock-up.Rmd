@@ -127,6 +127,65 @@ ggplotly(plot_distance_traveled_1,
 ```
 
 
+```{r}
+## -- create plot -- ##
+
+# parameters
+hist_colors <- c("#009900FF", "#00c000")
+
+# plot_1 for shiny app
+x_max <- (round(max(data_plot_distance_traveled_all$distance_traveled_mi) / 5) * 5) + 5 # max x rounded to nearest 5
+n_breaks <-
+  if (x_max > 100) {
+    round((max(data_plot_distance_traveled_all$distance_traveled_mi) / 100) / 5) * 5
+  } else if (x_max > 10) {
+    round((max(data_plot_distance_traveled_all$distance_traveled_mi) / 10) / 5) * 5
+  } else {
+    1
+  }
+quant_80 <- quantile(x = data_plot_distance_traveled_all$distance_traveled_mi,
+                     probs = seq(0, 1, 0.1))[[9]] %>% round(0)
+
+plot_distance_traveled_1.2 <-
+  ggplot(data = data_plot_distance_traveled_all) +
+  geom_bar(aes(x = distance_traveled_mi,
+                     text = paste0(scales::percent(..count.. / nrow(data_plot_distance_traveled_all), accuracy = 0.1), 
+                                   " of all reservations traveled between ", xmin, " and ", xmax, 
+                                   " miles",
+                                   "<br>(", scales::comma(..count.., accuracy = 1), " reservations)")),
+                 fill = hist_colors[[1]], 
+                 col = hist_colors[[2]], size = 0.05,
+           stat = "count") +
+  scale_x_binned(labels = comma, n.breaks = n_breaks) +
+  scale_y_continuous(labels = scales::comma) +
+  geom_vline(xintercept = quant_80,
+             linetype = "dashed", alpha = 0.5, color = "darkred") +
+  labs(x = "Distance traveled (miles)",
+       y = "",
+       title = "Distance Traveled to Reservation for <br> All Overnight Reservations in California in 2018") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank())
+
+ggplotly(plot_distance_traveled_1.2,
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(x = 1, 
+                             y = -0.35, 
+                             text = paste0("80% of reservations to California overnight sites in ",
+                                           deparse(substitute(data_ridb_acs_2018)) %>% str_remove(".*_"),
+                                           " traveled less than ", quant_80, " miles."), 
+                             showarrow = F, 
+                             xre = 'paper', yref = 'paper', 
+                             xanchor = 'left', 
+                             yancho = 'auto', 
+                             xshift = 0, yshift = 0,
+                             font = list(size = 12, color = "darkred")))
+```
+
+
+
+
 
 
 #### All reservations to Yosemite, Upper Pines in 2018 (highly visited campground)
