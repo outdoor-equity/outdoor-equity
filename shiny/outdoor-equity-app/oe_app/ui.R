@@ -78,7 +78,7 @@ ui <- fluidPage(
                                 # site input
                                 select_site(locationId = "summary_1")
                               ),
-                              plotlyOutput(outputId = "data_summary_plot") %>%
+                              plotlyOutput(outputId = "data_summary_plot_1") %>%
                                 withSpinner(color = "#0dc5c1")
                           ), # EO data summary plot 1 output box
                           
@@ -98,34 +98,34 @@ ui <- fluidPage(
                               ), # EO data summary plot 2 output box
 
                           # SO data summary plot 3 output box
-                          box(id = "num_viz_3",
-                              width = 6,
-                              splitLayout(
-                                # agency input
-                                select_agency(locationId = "summary"),
-                                # admin input
-                                select_admin_unit(locationId = "summary"),
-                                # site input
-                                select_site(locationId = "summary_3")
-                              ),
-                              plotlyOutput(outputId = "data_summary_plot_3") %>%
-                                withSpinner(color = "#0dc5c1")
-                              ), # EO data summary plot 3 output box
+                          # box(id = "num_viz_3",
+                          #     width = 6,
+                          #     splitLayout(
+                          #       # agency input
+                          #       select_agency(locationId = "summary_3"),
+                          #       # admin input
+                          #       select_admin_unit(locationId = "summary_3"),
+                          #       # site input
+                          #       select_site(locationId = "summary_3")
+                          #     ),
+                          #     plotlyOutput(outputId = "data_summary_plot_3") %>%
+                          #       withSpinner(color = "#0dc5c1")
+                          #     ), # EO data summary plot 3 output box
 
                           # SO data summary plot 4 output box
-                          box(id = "num_viz_4",
-                              width = 6,
-                              splitLayout(
-                                # agency input
-                                select_agency(locationId = "summary"),
-                                # admin input
-                                select_admin_unit(locationId = "summary"),
-                                # site input
-                                select_site(locationId = "summary_4")
-                              ),
-                              plotlyOutput(outputId = "data_summary_plot_4") %>%
-                                withSpinner(color = "#0dc5c1")
-                          ) # EO data summary plot 3 output box
+                          # box(id = "num_viz_4",
+                          #     width = 6,
+                          #     splitLayout(
+                          #       # agency input
+                          #       select_agency(locationId = "summary_4"),
+                          #       # admin input
+                          #       select_admin_unit(locationId = "summary_4"),
+                          #       # site input
+                          #       select_site(locationId = "summary_4")
+                          #     ),
+                          #     plotlyOutput(outputId = "data_summary_plot_4") %>%
+                          #       withSpinner(color = "#0dc5c1")
+                          # ) # EO data summary plot 3 output box
                           
                         ) # EO data summary FR layout
                         ), #### EO data summary ----

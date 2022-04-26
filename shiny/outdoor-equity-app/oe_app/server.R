@@ -5,7 +5,7 @@ server <- function(input, output, session){
 ## SO OE press agency ----
 ### summary box 1 ----
 observeEvent(input$agency_summary_1, {
-  
+
   # function to call values based on key from agency to admin dict
   oe_agency_to_admin_dict(isInput_key = input$agency_summary_1,
                           page = "agency_summary_1")
@@ -18,11 +18,11 @@ observeEvent(input$agency_summary_1, {
   
 ### summary box 2 ----
 observeEvent(input$agency_summary_2, {
-  
+
   # function to call values based on key from agency to admin dict
   oe_agency_to_admin_dict(isInput_key = input$agency_summary_2,
                           page = "agency_summary_2")
-  
+
   # update input with new choices
   updateSelectizeInput(session, "admin_unit_summary_2",
                        choices = sort(choices)
@@ -32,24 +32,24 @@ observeEvent(input$agency_summary_2, {
 
 ### summary box 3 ----
 observeEvent(input$agency_summary_3, {
-    
+
     # function to call values based on key from agency to admin dict
     oe_agency_to_admin_dict(isInput_key = input$agency_summary_3,
                             page = "agency_summary_3")
-    
+
     # update input with new choices
-    updateSelectizeInput(session, "admin_unit_summary_3",
+    updateSelectizeInput("admin_unit_summary_3",
                          choices = sort(choices)
     )
   }) ## EO OE press agency on summary page box 3
   
 ### summary box 4 ----
 observeEvent(input$agency_summary_4, {
-    
+
     # function to call values based on key from agency to admin dict
     oe_agency_to_admin_dict(isInput_key = input$agency_summary_4,
                             page = "agency_summary_4")
-    
+
     # update input with new choices
     updateSelectizeInput(session, "admin_unit_summary_4",
                          choices = sort(choices)
@@ -58,14 +58,13 @@ observeEvent(input$agency_summary_4, {
 
   
   
-  
 ### relationships page ----
 observeEvent(input$agency_relationships, {
-  
+
   # function to call values based on key from agency to admin dict
   oe_agency_to_admin_dict(isInput_key = input$agency_relationships,
                           page = "agency_relationships")
-  
+
   # update input with new choices
   updateSelectizeInput(session, "admin_unit_relationships",
                        choices = sort(choices)
@@ -74,11 +73,11 @@ observeEvent(input$agency_relationships, {
 
 ### visitorsheds page ----
 observeEvent(input$agency_visitorsheds, {
-  
+
   # function to call values based on key from agency to admin dict
   oe_agency_to_admin_dict(isInput_key = input$agency_visitorsheds,
                           page = "agency_visitorsheds")
-  
+
   # update input with new choices
   updateSelectizeInput(session, "admin_unit_visitorsheds",
                        choices = sort(choices)
@@ -87,11 +86,11 @@ observeEvent(input$agency_visitorsheds, {
 
 ### data download page ----
 observeEvent(input$agency_data_download, {
-  
+
   # function to call values based on key from agency to admin dict
   oe_agency_to_admin_dict(isInput_key = input$agency_data_download,
                           page = "agency_data_download")
-  
+
   # update input with new choices
   updateSelectizeInput(session, "admin_unit_data_download",
                        choices = sort(choices)
@@ -102,11 +101,11 @@ observeEvent(input$agency_data_download, {
 ## SO OE press admin unit ----
 ### summary box 1 ----
 observeEvent(input$admin_unit_summary_1, {
-  
+
   # function to call values based on key from agency to admin dict
   oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary_1,
                              page = "admin_unit_summary_1")
-  
+
   # update input with new choices
   updateSelectizeInput(session, "site_summary_1",
                        choices = sort(choices)
@@ -115,11 +114,11 @@ observeEvent(input$admin_unit_summary_1, {
   
 ### summary box 2 ----
 observeEvent(input$admin_unit_summary_2, {
-  
+
   # function to call values based on key from agency to admin dict
   oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary_2,
                              page = "admin_unit_summary_2")
-  
+
   # update input with new choices
   updateSelectizeInput(session, "site_summary_2",
                        choices = sort(choices)
@@ -128,11 +127,11 @@ observeEvent(input$admin_unit_summary_2, {
   
 ### summary box 3 ----
 observeEvent(input$admin_unit_summary_3, {
-  
+
   # function to call values based on key from agency to admin dict
   oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary_3,
                              page = "admin_unit_summary_3")
-  
+
   # update input with new choices
   updateSelectizeInput(session, "site_summary_3",
                        choices = sort(choices)
@@ -141,11 +140,11 @@ observeEvent(input$admin_unit_summary_3, {
   
 ### summary box 4 ----
 observeEvent(input$admin_unit_summary_4, {
-    
+
   # function to call values based on key from agency to admin dict
   oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_summary_4,
                              page = "admin_unit_summary_4")
-  
+
   # update input with new choices
   updateSelectizeInput(session, "site_summary_4",
                        choices = sort(choices)
@@ -154,16 +153,13 @@ observeEvent(input$admin_unit_summary_4, {
   
   
   
-  
-  
-  
 ### relationships page ----
 observeEvent(input$admin_unit_relationships, {
-  
+
   # function to call values based on key from agency to admin dict
   oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_relationships,
                              page = "admin_unit_relationships")
-  
+
   # update input with new choices
   updateSelectizeInput(session, "site_relationships",
                        choices = sort(choices)
@@ -172,11 +168,11 @@ observeEvent(input$admin_unit_relationships, {
   
 ### visitorsheds page ----
 observeEvent(input$admin_unit_visitorsheds, {
-  
+
   # function to call values based on key from agency to admin dict
   oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_visitorsheds,
                              page = "admin_unit_visitorsheds")
-  
+
   # update input with new choices
   updateSelectizeInput(session, "site_visitorsheds",
                        choices = sort(choices)
@@ -185,11 +181,11 @@ observeEvent(input$admin_unit_visitorsheds, {
 
 ### data download page ----
 observeEvent(input$admin_unit_data_download, {
-  
+
   # function to call values based on key from agency to admin dict
   oe_admin_unit_to_site_dict(isInput_key = input$admin_unit_data_download,
                              page = "admin_unit_data_download")
-  
+
   # update input with new choices
   updateSelectizeInput(session, "site_data_download",
                        choices = sort(choices)
@@ -210,37 +206,16 @@ observeEvent(input$num_viz, {
   # }
 
 }) ## EO OE press num_viz
-
-## race RDF ----
-race_df <- reactive({
   
-  data_joined_2018 %>% 
-    filter(agency %in% input$agency_summary,
-           admin_unit %in% input$admin_unit_summary,
-           park %in% input$site_summary) %>% 
-    summarize(white = (mean(white, na.rm = TRUE) * 100),
-              black = (mean(black, na.rm = TRUE) * 100),
-              asian = (mean(asian, na.rm = TRUE) * 100),
-              multiracial = (mean(multiracial, na.rm = TRUE) * 100),
-              other = (mean(other, na.rm = TRUE) * 100),
-              native_american = (mean(native_american, na.rm = TRUE) * 100),
-              pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
-              hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>%
-    pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
-    mutate(race = str_replace(string = race,
-                              pattern = "_",
-                              replacement = " "),
-           race = str_to_title(race))
-})
+  
 
 # RENDER PLOTS ----
 ## SO DATA SUMMARY PLOTS ----
-output$data_summary_plot <- renderPlotly({
+output$data_summary_plot_1 <- renderPlotly({
   ### SO distance traveled ----
   if (input$data_summary == "distance_traveled_mi") {
     
-    dist_travel_plot(#agencyInput = input$agency_summary,
-                     admin_unitInput = input$admin_unit_summary,
+    dist_travel_plot(admin_unitInput = input$admin_unit_summary_1,
                      siteInput = input$site_summary_1)
     
   } ## EO if distance traveled
@@ -248,10 +223,8 @@ output$data_summary_plot <- renderPlotly({
   ## SO booking window ----
   else if (input$data_summary == "booking_window") {
     
-    booking_window_plot(agencyInput = input$agency_summary,
-                        admin_unitInput = input$admin_unit_summary,
-                        siteInput = input$site_summary,
-                        titleInput = input$site_summary)
+    booking_window_plot(admin_unitInput = input$admin_unit_summary_1,
+                        siteInput = input$site_summary_1)
     
   } ## EO else if booking window
   
@@ -403,31 +376,3 @@ output$usVisitorshed_plot <- renderTmap({
 
 
 } ## EO server
-
-
-## race plot
-# else if(input$data_summary == "Race"){
-#   
-#   ggplot(data = race_df()) +
-#     geom_col(aes(x = race_percent_average,
-#                  y = reorder(race, race_percent_average)),
-#              stat = "identity") +
-#     scale_fill_manual(values = groups_colors_ridb_ca) +  
-#     geom_text(aes(x = race_percent_average,
-#                   y = reorder(race, race_percent_average),
-#                   label = paste0(round(race_percent_average, 1), "%")), 
-#               position = position_dodge(width = 1), 
-#               hjust = -0.1, size = 4) +
-#     scale_color_manual(values = groups_colors_ridb_ca) +
-#     labs(x = "Percentage (%)",
-#          y = "",
-#          title = "Racial Breakdown of ZIP Codes in 2018",
-#          subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
-#     scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
-#     theme_minimal() +
-#     theme(plot.background = element_rect("white"),
-#           panel.grid.major.y = element_blank()
-#     )
-#   
-#   
-# } ## EO of race plot

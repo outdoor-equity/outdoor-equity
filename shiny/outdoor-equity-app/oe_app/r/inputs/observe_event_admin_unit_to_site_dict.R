@@ -3,7 +3,7 @@
 # using input id's for all analysis and data download pages in ui
 
 oe_admin_unit_to_site_dict <- function(isInput_key, page){
-
+  
   print(paste0("You have chosen admin unit: ", isInput_key, " on the ", page, " page and the class is: ", class(isInput_key)))
   
   # create choices based on dictionary
