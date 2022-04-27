@@ -25,6 +25,9 @@ library(paletteer)
 library(plotly)
 
 options(scipen = 999)
+
+siteInput <- "The Best Site"
+admin_unitInput <- "Federal Park/Forest/Etc"
 ```
 
 
@@ -81,9 +84,8 @@ plot_distance_traveled <- ggplot(data = data_plot_distance_traveled) +
     geom_histogram(aes(x = distance_traveled_mi,
                        text = paste0(percent(..count.. / nrow(data_plot_distance_traveled), accuracy = 0.1), 
                                      " of all reservations traveled between ", comma(xmin, accuracy = 1), " and ", 
-                                     comma(xmax, accuracy = 1), " miles", "<br>(", comma(..count.., accuracy = 1), 
-                                     " of ", comma(nrow(data_plot_distance_traveled), accuracy = 1), 
-                                     " total reservations to ", siteInput, ", ", admin_unitInput, ")")),
+                                     comma(xmax, accuracy = 1), " miles", "<br>(All reservations to site: ",
+                                     comma(nrow(data_plot_distance_traveled), accuracy = 1), ")")),
                    binwidth = center_bin * 2,
                    center = center_bin,
                    fill = hist_colors[[1]], 
@@ -106,7 +108,8 @@ ggplotly(plot_distance_traveled,
            annotations =  list(x = 1, 
                                y = -0.5, 
                                text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
-                                             "<br>traveled less than ", quant_80, " miles. <br>(shown on plot with dotted line)."), 
+                                             "<br>traveled less than ", quant_80, 
+                                             " miles (shown on plot with dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 
@@ -140,9 +143,7 @@ plot_booking_window <- ggplot(data = data_plot_boooking_window) +
   geom_histogram(aes(x = booking_window,
                      text = paste0(percent(..count.. / nrow(data_plot_boooking_window), accuracy = 0.1), 
                                   " of all reservations book their visit between ", xmin, " and ", xmax, 
-                                  "<br>days before the start of their visit", "<br>(", comma(..count.., accuracy = 1), " of ", 
-                                  comma(nrow(data_plot_boooking_window), accuracy = 1), " total reservations to ", siteInput, 
-                                  ", ", admin_unitInput, " in 2018)")),
+                                  "<br>days before the start of their visit", data_plot_boooking_window)),
                  binwidth = 7,
                  center = 7 / 2,
                  fill = hist_colors[[1]], 

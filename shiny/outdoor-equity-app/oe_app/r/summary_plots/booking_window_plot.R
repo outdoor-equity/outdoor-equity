@@ -32,13 +32,12 @@ booking_window_plot <- function(admin_unitInput, siteInput){
   hist_colors <- c("#009900FF", "#00c000")
   
   # plot for shiny app
-  booking_window_plotly <- ggplot(data = data_plot_boooking_window) +
+  booking_window_plotly <- ggplot(data = booking_window_rdf()) +
     geom_histogram(aes(x = booking_window,
-                       text = paste0(percent(..count.. / nrow(data_plot_boooking_window), accuracy = 0.1), 
+                       text = paste0(percent(..count.. / nrow(booking_window_rdf()), accuracy = 0.1), 
                                      " of all reservations book their visit between ", xmin, " and ", xmax, 
-                                     "<br>days before the start of their visit", "<br>(", comma(..count.., accuracy = 1), " of ", 
-                                     comma(nrow(data_plot_boooking_window), accuracy = 1), " total reservations to ", siteInput, 
-                                     ", ", admin_unitInput, " in 2018)")),
+                                     "<br>days before the start of their visit", "<br>(All reservations to site: ",
+                                     comma(nrow(booking_window_rdf()), accuracy = 1), ")")),
                    binwidth = 7,
                    center = 7 / 2,
                    fill = hist_colors[[1]], 
