@@ -31,16 +31,16 @@ site_type_plot <- function(admin_unitInput, siteInput){
   
   # plot for shiny app
   site_type_plotly <- ggplot(data = site_type_rdf()) +
-    geom_col(aes(x = n, 
+    geom_col(aes(x = n/sum(n), 
                  y = reorder(aggregated_site_type, n), 
-                 text = paste0(comma(n, accuracy = 1), " reservations were made to ", aggregated_site_type,
-                               " sites at ", siteInput, ", ", admin_unitInput, 
-                               "<br>(", comma(sum(n), accuracy = 1), " total reservations)")),
+                 text = paste0(percent(n/sum(n), accuracy = 1), " of reservations were made to ", 
+                               aggregated_site_type, " sites", "<br>(All reservations to site: ",
+                               comma(sum(n), accuracy = 1), ")")),
              fill = hist_colors) +
-    scale_x_continuous(labels = comma) +
-    labs(x = "Number of Reservations",
+    scale_x_continuous(labels = percent) +
+    labs(x = "Percentage of Reservations to Selected Site",
          y = "",
-         title = paste0("Number of Visits by Site Type for ", 
+         title = paste0("Number of Visits by Site Type for <br>", 
                         admin_unitInput, ", ", siteInput, "in 2018")) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),

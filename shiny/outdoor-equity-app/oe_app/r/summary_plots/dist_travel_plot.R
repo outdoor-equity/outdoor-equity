@@ -80,7 +80,7 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
            tooltip = list("text")) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
-                               y = -0.5, 
+                               y = -0.4, 
                                text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
                                              "<br>traveled less than ", quant_80, " miles (shown on plot with dotted line)."), 
                                showarrow = F, 

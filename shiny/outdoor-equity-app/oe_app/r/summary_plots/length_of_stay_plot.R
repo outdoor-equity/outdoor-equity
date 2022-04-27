@@ -39,13 +39,12 @@ length_of_stay_plot <- function(admin_unitInput, siteInput){
   hist_colors <- c("#009900FF", "#00c000")
   
   # plot for shiny app
-  length_of_stay_plotly <- ggplot(data = length_of_stay_rdf) +
+  length_of_stay_plotly <- ggplot(data = length_of_stay_rdf()) +
     geom_histogram(aes(x = length_of_stay,
                        text = paste0(percent(..count.. / nrow(length_of_stay_rdf()), accuracy = 0.1), 
                                      " of all reservations stay between ", comma(xmin, accuracy = 1), " and ", 
-                                     comma(xmax, accuracy = 1), " days", "<br>(", comma(..count.., accuracy = 1), 
-                                     " of ", comma(nrow(length_of_stay_rdf())), " total reservations to ", siteInput, 
-                                     ", ", admin_unitInput, ")")),
+                                     comma(xmax, accuracy = 1), " days",  "<br>(All reservations to site: ",
+                                     comma(nrow(length_of_stay_rdf()), accuracy = 1), ")")),
                    binwidth = 1,
                    center = 0.5,
                    fill = hist_colors[[1]], 
@@ -66,9 +65,9 @@ length_of_stay_plot <- function(admin_unitInput, siteInput){
            tooltip = list("text")) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
-                               y = -0.5, 
+                               y = -0.4, 
                                text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
-                                             " stay less than ", quant_80, " days (shown on plot with dashed line)."), 
+                                             "<br>stay less than ", quant_80, " days (shown on plot with dashed line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 
