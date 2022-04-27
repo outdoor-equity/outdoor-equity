@@ -48,9 +48,11 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
   # plot for shiny app
   dist_travel_plotly <- ggplot(data = dist_travel_rdf()) +
     geom_histogram(aes(x = distance_traveled_mi,
-                       text = paste0(scales::percent(..count.. / nrow(dist_travel_rdf()), accuracy = 0.1), 
-                                     " of all reservations traveled between ", xmin, " and ", xmax, " miles",
-                                     "<br>(", scales::comma(..count.., accuracy = 1), " reservations)")),
+                       text = paste0(percent(..count.. / nrow(dist_travel_rdf()), accuracy = 0.1), 
+                                     " of all reservations traveled between ", comma(xmin, accuracy = 1), " and ", 
+                                     comma(xmax, accuracy = 1), " miles", "<br>(", comma(..count.., accuracy = 1), 
+                                     " of ", comma(nrow(dist_travel_rdf()), accuracy = 1), 
+                                     " total reservations to ", siteInput, ", ", admin_unitInput, ")")),
                    binwidth = center_bin * 2,
                    center = center_bin,
                    fill = hist_colors[[1]], 

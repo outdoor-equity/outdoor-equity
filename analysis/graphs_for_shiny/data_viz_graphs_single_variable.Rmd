@@ -22,6 +22,7 @@ library(scales)
 library(tmap)
 library(vroom)
 library(paletteer)
+library(plotly)
 
 options(scipen = 999)
 ```
@@ -53,7 +54,22 @@ data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
 ## -- data wrangle -- ##
 data_plot_distance_traveled <- data_ridb_acs_2018 %>% 
   mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
-  select(agency, admin_unit, park, distance_traveled_mi)
+  select(park, distance_traveled_mi) %>% 
+  filter(!is.na(distance_traveled_mi))
+
+x_max <- (round(max(data_plot_distance_traveled$distance_traveled_mi) / 5) * 5) + 5 # max x rounded to nearest 5
+
+center_bin <-
+  if (x_max > 100) {
+    round((max(data_plot_distance_traveled$distance_traveled_mi) / 100) / 5) * 5
+  } else if (x_max > 10) {
+    round((max(data_plot_distance_traveled$distance_traveled_mi) / 10) / 5) * 5
+  } else {
+    0.5
+  }
+
+quant_80 <- quantile(x = data_plot_distance_traveled$distance_traveled_mi,
+                     probs = seq(0, 1, 0.1))[[9]] %>% round(0)
 
 ## -- create plot -- ##
 
@@ -63,7 +79,12 @@ hist_colors <- c("#009900FF")
 # plot for shiny app
 plot_distance_traveled <-
   ggplot(data = data_plot_distance_traveled) +
-  geom_histogram(aes(x = distance_traveled_mi),
+  geom_histogram(aes(x = distance_traveled_mi,
+                       text = paste0(percent(..count.. / nrow(data_plot_distance_traveled), accuracy = 0.1), 
+                                     " of all reservations traveled between ", comma(xmin, accuracy = 1), " and ", 
+                                     comma(xmax, accuracy = 1), " miles", "<br>(", comma(..count.., accuracy = 1), 
+                                     " of ", comma(nrow(data_plot_distance_traveled), accuracy = 1), 
+                                     " total reservations to ", "siteInput", "admin_unitInput", ")")),
                  fill = hist_colors) +
   scale_y_continuous(labels = comma) +
   labs(x = "Distance traveled (miles)",
@@ -79,7 +100,20 @@ plot_distance_traveled <-
         # axis.title = element_text(size = 22, face = "bold"),
         # title = element_text(size = 24, face = "bold")
         )
-plot_distance_traveled
+
+ggplotly(plot_distance_traveled,
+           tooltip = list("text")) %>% 
+    layout(margin = list(b = 130, t = 100), 
+           annotations =  list(x = 1, 
+                               y = -0.5, 
+                               text = paste0("80% of reservations to California overnight sites in 2018 traveled less than ", 
+                                             quant_80, " miles (shown on plot with dotted line)."), 
+                               showarrow = F, 
+                               xre = 'paper', yref = 'paper', 
+                               xanchor = 'left', 
+                               yanchor = 'auto', 
+                               xshift = 0, yshift = 0,
+                               font = list(size = 12, color = "#000099")))
 ```
 
 
@@ -90,26 +124,38 @@ plot_distance_traveled
 data_plot_boooking_window <- data_ridb_acs_2018 %>% 
   filter(booking_window > 0,
          booking_window < 510) %>% 
-  select(agency, admin_unit, park, booking_window)
+  select(park, booking_window)
+
+x_max <- (round(max(data_plot_boooking_window$booking_window) / 5) * 5) + 5 # max x rounded to nearest 5
+
+quant_80 <- quantile(x = data_plot_boooking_window$booking_window,
+                       probs = seq(0, 1, 0.1))[[9]] %>% round(0)
 
 ## -- create plot -- ##
 
 # parameters
-hist_colors <- c("#009900FF")
+hist_colors <- c("#009900FF", "#00c000")
 
 # plot for shiny app
-plot_booking_window <-
-  ggplot(data = data_plot_boooking_window) +
-  geom_histogram(aes(x = booking_window),
+plot_booking_window <- ggplot(data = data_plot_boooking_window) +
+  geom_histogram(aes(x = booking_window,
+                     text = paste0(percent(..count.. / nrow(data_plot_boooking_window), accuracy = 0.1), 
+                                  " of all reservations book their visit between ", xmin, " and ", xmax, 
+                                  "<br>days before the start of their visit", "<br>(", comma(..count.., accuracy = 1), " of ", 
+                                  comma(nrow(data_plot_boooking_window), accuracy = 1), " total reservations to ", siteInput, 
+                                  ", ", admin_unitInput, " in 2018)")),
                  binwidth = 7,
-                 fill = hist_colors) +
+                 center = 7 / 2,
+                 fill = hist_colors[[1]], 
+                 col = hist_colors[[2]], size = 0.05) +
   labs(x = "Days elapsed from order to visit (each bar = 1 week)",
        y = "",
-       title = "Distribution of Booking Windows for",
-       subtitle = "Overnight Reservations in California in 2018") +
-  scale_x_continuous(limits = c(0, 510), 
-                     breaks = seq(0, 510, by = 30)) +
+       title = paste0("Number of Days Before a Visit that Reservations are Booked", "<br>for ", 
+                      siteInput, ", ", admin_unitInput)) +
+  scale_x_continuous(limits = c(0, x_max), breaks = seq(0, x_max, 30)) +
   scale_y_continuous(labels = comma) +
+  geom_vline(xintercept = quant_80,
+               linetype = "dashed", alpha = 0.5, color = "#000099") +
   geom_vline(xintercept = 180, 
              linetype = "dashed", size = .3, alpha = .5) +
   annotate("text", label = "6 months", 
@@ -120,13 +166,22 @@ plot_booking_window <-
            x = 380, y = 65000) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        # ## only needed for saving as image
-        # axis.text = element_text(size = 20),
-        # axis.title = element_text(size = 22, face = "bold"),
-        # title = element_text(size = 24, face = "bold")
-        )
-plot_booking_window
+        panel.grid.major.y = element_blank())
+
+ggplotly(plot_booking_window,
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(x = 1, 
+                             y = -0.5, 
+                             text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
+                                           "<br> reserve their visit less than ", quant_80, 
+                                           " days before the start date <br>(shown on plot with dashed line)."), 
+                             showarrow = F, 
+                             xre = 'paper', yref = 'paper', 
+                             xanchor = 'left', 
+                             yanchor = 'auto', 
+                             xshift = 0, yshift = 0,
+                             font = list(size = 12, color = "#000099")))
 ```
 
 
@@ -172,34 +227,54 @@ plot_daily_cost
 ```{r}
 ## -- data wrangle -- ##
 data_plot_length_of_stay <- data_ridb_acs_2018 %>% 
-  select(agency, admin_unit, park, length_of_stay)
+  select(park, length_of_stay)
+
+x_max <- (round(max(data_plot_length_of_stay$length_of_stay) / 5) * 5) + 5 # max x rounded to nearest 5
+
+quant_80 <- quantile(x = data_plot_length_of_stay$length_of_stay,
+                     probs = seq(0, 1, 0.1))[[9]] %>% round(0)
 
 ## -- create plot -- ##
 
 # parameters
-hist_colors <- c("#009900FF")
+hist_colors <- c("#009900FF", "#00c000")
 
 # plot for shiny app
-plot_length_of_stay <-
-  ggplot(data = data_plot_length_of_stay) +
-  geom_histogram(aes(x = length_of_stay),
+plot_length_of_stay <- ggplot(data = data_plot_length_of_stay) +
+  geom_histogram(aes(x = length_of_stay,
+                     text = paste0(percent(..count.. / nrow(data_plot_length_of_stay), accuracy = 0.1), 
+                                   " of all reservations stay between ", xmin, " and ", xmax, " days",
+                                   "<br>(", comma(..count.., accuracy = 1), " of ", comma(nrow(data_plot_length_of_stay)), 
+                                   " total reservations to ", siteInput, ", ", admin_unitInput, ")")),
                  binwidth = 1,
-                 fill = hist_colors) +
-  labs(x = "Length of stay (days)",
-       y = "",
-       title = "Distribution of Length of Stay for",
-       subtitle = "Overnight Reservations in California in 2018") +
-  #scale_x_continuous(breaks = seq(0, 20, by = 1)) +
+                 center = 0.5,
+                 fill = hist_colors[[1]], 
+                 col = hist_colors[[2]], size = 0.05) +
+  scale_x_continuous(limits = c(0, x_max)) +
   scale_y_continuous(labels = comma) +
+  geom_vline(xintercept = quant_80,
+             linetype = "dashed", alpha = 0.5, color = "#000099") +
+  labs(x = "Length of visit (days)",
+       y = "",
+       title = paste0("Length of Visit for Reservations at <br>", 
+                      siteInput, ", ", admin_unitInput, " in 2018")) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        # ## only needed for saving as image
-        # axis.text = element_text(size = 20),
-        # axis.title = element_text(size = 22, face = "bold"),
-        # title = element_text(size = 24, face = "bold")
-        )
-plot_length_of_stay
+        panel.grid.major.y = element_blank())
+
+ggplotly(plot_length_of_stay,
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(x = 1, 
+                             y = -0.5, 
+                             text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
+                                           " stay less than ", quant_80, " days (shown on plot with dashed line)."), 
+                             showarrow = F, 
+                             xre = 'paper', yref = 'paper', 
+                             xanchor = 'left', 
+                             yanchor = 'auto', 
+                             xshift = 0, yshift = 0,
+                             font = list(size = 12, color = "#000099")))
 ```
 
 
