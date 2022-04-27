@@ -53,10 +53,9 @@ daily_cost_plot <- function(admin_unitInput, siteInput){
   daily_cost_plotly <- ggplot(data = daily_cost_rdf()) +
     geom_histogram(aes(x = daily_cost, 
                        text = paste(percent(..count.. / nrow(daily_cost_rdf()), accuracy = 0.1), 
-                                    "of all reservations paid between", dollar(xmin), "and", dollar(xmax),
-                                    "<br>(", comma(..count.., accuracy = 1), 
-                                    " of ", comma(nrow(daily_cost_rdf()), accuracy = 1), 
-                                    " total reservations to ", siteInput, ", ", admin_unitInput, ")")),
+                                    " of all reservations paid between ", dollar(xmin), " and ", dollar(xmax),
+                                    "<br>(All reservations to site: ",
+                                    comma(nrow(daily_cost_rdf()), accuracy = 1), ")")),
                    binwidth = center_bin * 2,
                    center = center_bin,
                    fill = hist_colors[[1]], 
@@ -77,7 +76,7 @@ daily_cost_plot <- function(admin_unitInput, siteInput){
            tooltip = list("text")) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
-                               y = -0.5, 
+                               y = -0.4, 
                                text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
                                              "<br>paid less than ", dollar(quant_80), " (shown on plot with dotted line)."), 
                                showarrow = F, 

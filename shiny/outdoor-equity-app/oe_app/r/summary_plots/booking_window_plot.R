@@ -23,6 +23,7 @@ booking_window_plot <- function(admin_unitInput, siteInput){
   })
 
   # wrangling
+  x_max <- (round(max(booking_window_rdf()$booking_window) / 5) * 5) + 5 # max x rounded to nearest 5
   
   quant_80 <- quantile(x = booking_window_rdf()$booking_window,
                        probs = seq(0, 1, 0.1))[[9]] %>% round(0)
@@ -30,11 +31,19 @@ booking_window_plot <- function(admin_unitInput, siteInput){
   # parameters
   hist_colors <- c("#009900FF", "#00c000")
   
-  # plot for shiny app
+  # plot for shiny app=
     geom_histogram(aes(x = booking_window,
                                      " of all reservations book their visit between ", xmin, " and ", xmax, 
                                      "<br>days before the start of their visit", "<br>(", comma(..count.., accuracy = 1), " of ", 
-                                     ", ", admin_unitInput, " in 2018)")),
+                                     ", ", admin_unitInput, " in 2018)"))
+    
+  booking_window_plotly <- ggplot(data = booking_window_rdf()) +
+    geom_histogram(aes(x = booking_window,
+                       text = paste0(percent(..count.. / nrow(booking_window_rdf()), accuracy = 0.1), 
+                                     " of all visits are reserved between ", xmin, " and ", xmax, 
+                                     " days before the start of the visit", 
+                                     "<br>(All reservations to site: ",
+                                     comma(nrow(booking_window_rdf()), accuracy = 1), ")")),
                    binwidth = 7,
                    center = 7 / 2,
                    fill = hist_colors[[1]], 
@@ -63,10 +72,10 @@ booking_window_plot <- function(admin_unitInput, siteInput){
            tooltip = list("text")) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
-                               y = -0.5, 
+                               y = -0.4, 
                                text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
                                              "<br> reserve their visit less than ", quant_80, 
-                                             " days before the start date <br>(shown on plot with dashed line)."), 
+                                             " days before the start date (shown on plot with dashed line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 

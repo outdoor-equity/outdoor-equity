@@ -25,6 +25,10 @@ library(paletteer)
 library(plotly)
 
 options(scipen = 999)
+
+# for testing plotly outside of shiny
+siteInput <- "The Best Site"
+admin_unitInput <- "Federal Park/Forest/Etc"
 ```
 
 
@@ -81,9 +85,8 @@ plot_distance_traveled <- ggplot(data = data_plot_distance_traveled) +
     geom_histogram(aes(x = distance_traveled_mi,
                        text = paste0(percent(..count.. / nrow(data_plot_distance_traveled), accuracy = 0.1), 
                                      " of all reservations traveled between ", comma(xmin, accuracy = 1), " and ", 
-                                     comma(xmax, accuracy = 1), " miles", "<br>(", comma(..count.., accuracy = 1), 
-                                     " of ", comma(nrow(data_plot_distance_traveled), accuracy = 1), 
-                                     " total reservations to ", siteInput, ", ", admin_unitInput, ")")),
+                                     comma(xmax, accuracy = 1), " miles", "<br>(All reservations to site: ",
+                                     comma(nrow(data_plot_distance_traveled), accuracy = 1), ")")),
                    binwidth = center_bin * 2,
                    center = center_bin,
                    fill = hist_colors[[1]], 
@@ -106,7 +109,8 @@ ggplotly(plot_distance_traveled,
            annotations =  list(x = 1, 
                                y = -0.5, 
                                text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
-                                             "<br>traveled less than ", quant_80, " miles. <br>(shown on plot with dotted line)."), 
+                                             "<br>traveled less than ", quant_80, 
+                                             " miles (shown on plot with dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 
@@ -139,15 +143,15 @@ hist_colors <- c("#009900FF", "#00c000")
 plot_booking_window <- ggplot(data = data_plot_boooking_window) +
   geom_histogram(aes(x = booking_window,
                      text = paste0(percent(..count.. / nrow(data_plot_boooking_window), accuracy = 0.1), 
-                                  " of all reservations book their visit between ", xmin, " and ", xmax, 
-                                  "<br>days before the start of their visit", "<br>(", comma(..count.., accuracy = 1), " of ", 
-                                  comma(nrow(data_plot_boooking_window), accuracy = 1), " total reservations to ", siteInput, 
-                                  ", ", admin_unitInput, " in 2018)")),
+                                   " of all visits are reserved between ", xmin, " and ", xmax, 
+                                   " days before the start of the visit", 
+                                   "<br>(All reservations to site: ",
+                                   comma(nrow(data_plot_boooking_window), accuracy = 1), ")")),
                  binwidth = 7,
                  center = 7 / 2,
                  fill = hist_colors[[1]], 
                  col = hist_colors[[2]], size = 0.05) +
-  labs(x = "Days elapsed from order to visit (each bar = 1 week)",
+  labs(x = "Total Days Between Order and Start Date (each bar = 1 week)",
        y = "",
        title = paste0("Number of Days Before a Visit that Reservations are Booked", "<br>for ", 
                       siteInput, ", ", admin_unitInput)) +
@@ -159,10 +163,10 @@ plot_booking_window <- ggplot(data = data_plot_boooking_window) +
              linetype = "dashed", size = .3, alpha = .5) +
   annotate("text", label = "6 months", 
            x = 210, y = 65000) +
-  geom_vline(xintercept = 360, 
-             linetype = "dashed", size = .3, alpha = .5) +
-  annotate("text", label = "1 year", 
-           x = 380, y = 65000) +
+  # geom_vline(xintercept = 360, 
+  #            linetype = "dashed", size = .3, alpha = .5) +
+  # annotate("text", label = "1 year", 
+  #          x = 380, y = 65000) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank())
@@ -174,7 +178,7 @@ ggplotly(plot_booking_window,
                              y = -0.5, 
                              text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
                                            "<br> reserve their visit less than ", quant_80, 
-                                           " days before the start date <br>(shown on plot with dashed line)."), 
+                                           " days before the start date (shown on plot with dashed line)."), 
                              showarrow = F, 
                              xre = 'paper', yref = 'paper', 
                              xanchor = 'left', 
@@ -216,11 +220,10 @@ hist_colors <- c("#009900FF", "#00c000")
 # plot for shiny app
 plot_daily_cost <- ggplot(data = data_plot_daily_cost) +
   geom_histogram(aes(x = daily_cost, 
-                     text = paste(percent(..count.. / nrow(data_plot_daily_cost), accuracy = 0.1), 
-                                  "of all reservations paid between", dollar(xmin), "and", dollar(xmax),
-                                  "<br>(", comma(..count.., accuracy = 1), 
-                                  " of ", comma(nrow(data_plot_daily_cost), accuracy = 1), 
-                                  " total reservations to ", siteInput, ", ", admin_unitInput, ")")),
+                     text = paste0(percent(..count.. / nrow(data_plot_daily_cost), accuracy = 0.1), 
+                                    " of all reservations paid between ", dollar(xmin), " and ", dollar(xmax),
+                                    "<br>(All reservations to site: ",
+                                    comma(nrow(data_plot_boooking_window), accuracy = 1), ")")),
                  binwidth = center_bin * 2,
                  center = center_bin,
                  fill = hist_colors[[1]], 
@@ -241,7 +244,7 @@ ggplotly(plot_daily_cost,
          tooltip = list("text")) %>% 
   layout(margin = list(b = 130, t = 100), 
          annotations =  list(x = 1, 
-                             y = -0.5, 
+                             y = -0.4, 
                              text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
                                            "<br>paid less than ", dollar(quant_80), " (shown on plot with dotted line)."), 
                              showarrow = F, 
@@ -278,10 +281,9 @@ hist_colors <- c("#009900FF", "#00c000")
 plot_daily_cost_visitor <- ggplot(data = data_plot_daily_cost_visitor) +
   geom_histogram(aes(x = daily_cost_per_visitor, 
                      text = paste(percent(..count.. / nrow(data_plot_daily_cost_visitor), accuracy = 0.1), 
-                                  "of all reservations paid between", dollar(xmin), "and", dollar(xmax),
-                                  "<br>(", comma(..count.., accuracy = 1), 
-                                  " of ", comma(nrow(data_plot_daily_cost_visitor), accuracy = 1), 
-                                  " total reservations to ", siteInput, ", ", admin_unitInput, ")")),
+                                    "of all reservations paid between", dollar(xmin), "and", dollar(xmax),
+                                    "<br>(All reservations to site: ",
+                                    comma(nrow(data_plot_daily_cost_visitor), accuracy = 1), ")")),
                  binwidth = 1,
                  center = 0.5,
                  fill = hist_colors[[1]], 
@@ -304,7 +306,8 @@ ggplotly(plot_daily_cost_visitor,
          annotations =  list(x = 1, 
                              y = -0.5, 
                              text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
-                                           "<br>paid less than ", dollar(quant_80), " (shown on plot with dotted line)."), 
+                                           "<br>paid less than ", dollar(quant_80), 
+                                           " per visitor per day (shown on plot with dotted line)."), 
                              showarrow = F, 
                              xre = 'paper', yref = 'paper', 
                              xanchor = 'left', 
@@ -336,9 +339,9 @@ hist_colors <- c("#009900FF", "#00c000")
 plot_length_of_stay <- ggplot(data = data_plot_length_of_stay) +
   geom_histogram(aes(x = length_of_stay,
                      text = paste0(percent(..count.. / nrow(data_plot_length_of_stay), accuracy = 0.1), 
-                                   " of all reservations stay between ", xmin, " and ", xmax, " days",
-                                   "<br>(", comma(..count.., accuracy = 1), " of ", comma(nrow(data_plot_length_of_stay)), 
-                                   " total reservations to ", siteInput, ", ", admin_unitInput, ")")),
+                                     " of all reservations stay between ", comma(xmin, accuracy = 1), " and ", 
+                                     comma(xmax, accuracy = 1), " days",  "<br>(All reservations to site: ",
+                                     comma(nrow(data_plot_length_of_stay), accuracy = 1), ")")),
                  binwidth = 1,
                  center = 0.5,
                  fill = hist_colors[[1]], 
@@ -359,9 +362,9 @@ ggplotly(plot_length_of_stay,
          tooltip = list("text")) %>% 
   layout(margin = list(b = 130, t = 100), 
          annotations =  list(x = 1, 
-                             y = -0.5, 
+                             y = -0.4, 
                              text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
-                                           " stay less than ", quant_80, " days (shown on plot with dashed line)."), 
+                                           "<br>stay less than ", quant_80, " days (shown on plot with dashed line)."), 
                              showarrow = F, 
                              xre = 'paper', yref = 'paper', 
                              xanchor = 'left', 
@@ -391,16 +394,16 @@ hist_colors <- c("#009900FF")
 
 # plot for shiny app
 plot_site_type <- ggplot(data = data_plot_site_type) +
-    geom_col(aes(x = n, 
+    geom_col(aes(x = n/sum(n), 
                  y = reorder(aggregated_site_type, n), 
-                 text = paste0(comma(n, accuracy = 1), " reservations were made to ", aggregated_site_type,
-                               " sites at ", siteInput, ", ", admin_unitInput, 
-                               "<br>(", comma(sum(n), accuracy = 1), " total reservations)")),
+                 text = paste0(percent(n/sum(n), accuracy = 1), " of reservations were made to ", 
+                               aggregated_site_type, " sites", "<br>(All reservations to site: ",
+                               comma(sum(n), accuracy = 1), ")")),
              fill = hist_colors) +
-    scale_x_continuous(labels = comma) +
-    labs(x = "Number of Reservations",
+    scale_x_continuous(labels = percent) +
+    labs(x = "Percentage of Reservations to Selected Site",
          y = "",
-         title = paste0("Number of Visits by Site Type for ", 
+         title = paste0("Number of Visits by Site Type for <br>", 
                         admin_unitInput, ", ", siteInput, "in 2018")) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
