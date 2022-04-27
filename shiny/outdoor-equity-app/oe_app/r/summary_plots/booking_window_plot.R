@@ -23,7 +23,6 @@ booking_window_plot <- function(admin_unitInput, siteInput){
   })
 
   # wrangling
-  x_max <- (round(max(booking_window_plot()$booking_window) / 5) * 5) + 5 # max x rounded to nearest 5
   
   quant_80 <- quantile(x = booking_window_rdf()$booking_window,
                        probs = seq(0, 1, 0.1))[[9]] %>% round(0)
@@ -32,12 +31,9 @@ booking_window_plot <- function(admin_unitInput, siteInput){
   hist_colors <- c("#009900FF", "#00c000")
   
   # plot for shiny app
-  booking_window_plotly <- ggplot(data = data_plot_boooking_window) +
     geom_histogram(aes(x = booking_window,
-                       text = paste0(percent(..count.. / nrow(data_plot_boooking_window), accuracy = 0.1), 
                                      " of all reservations book their visit between ", xmin, " and ", xmax, 
                                      "<br>days before the start of their visit", "<br>(", comma(..count.., accuracy = 1), " of ", 
-                                     comma(nrow(data_plot_boooking_window), accuracy = 1), " total reservations to ", siteInput, 
                                      ", ", admin_unitInput, " in 2018)")),
                    binwidth = 7,
                    center = 7 / 2,
