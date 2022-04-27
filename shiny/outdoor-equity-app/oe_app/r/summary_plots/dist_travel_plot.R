@@ -3,6 +3,14 @@
 # using input id's for summary page in ui
 # agencyInput, admin_unitInput,
 
+#' Title
+#'
+#' @param admin_unitInput 
+#' @param siteInput 
+#'
+#' @return
+#'
+#' @examples
 dist_travel_plot <- function(admin_unitInput, siteInput){
   
   # reactive data frame 
@@ -13,7 +21,7 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
       mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>%
       select(park, distance_traveled_mi) %>% 
       filter(!is.na(distance_traveled_mi))
-     
+    
   })
   
   print(class(dist_travel_rdf))
@@ -36,12 +44,12 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
   
   quant_80 <- quantile(x = dist_travel_rdf()$distance_traveled_mi,
                        probs = seq(0, 1, 0.1))[[9]] %>% round(0)
-
+  
   print(paste("the class of quant_80 bin is", class(quant_80)))
-
+  
   print(quant_80)
-
-
+  
+  
   # parameters
   hist_colors <- c("#009900FF", "#00c000")
   
@@ -63,26 +71,25 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
                linetype = "dashed", alpha = 0.5, color = "#000099") +
     labs(x = "Distance traveled (miles)",
          y = "",
-         title = paste0("Distance Traveled to Reservation for <br>", 
+         title = paste0("Distance Traveled from Home to Reservation for <br>", 
                         siteInput, ", ", admin_unitInput, " in 2018")) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank()
-    )
+          panel.grid.major.y = element_blank())
   
   ggplotly(dist_travel_plotly,
            tooltip = list("text")) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.5, 
-                               text = paste0("80% of reservations to California overnight sites in 2018 traveled less than ", 
-                                             quant_80, " miles (shown on plot with dotted line)."), 
+                               text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
+                                             "<br>traveled less than ", quant_80, " miles (shown on plot with dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 
                                yanchor = 'auto', 
                                xshift = 0, yshift = 0,
                                font = list(size = 12, color = "#000099")))
-
+  
   
 } # EO function

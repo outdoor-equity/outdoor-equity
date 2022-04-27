@@ -74,40 +74,39 @@ quant_80 <- quantile(x = data_plot_distance_traveled$distance_traveled_mi,
 ## -- create plot -- ##
 
 # parameters
-hist_colors <- c("#009900FF")
+hist_colors <- c("#009900FF", "#00c000")
 
 # plot for shiny app
-plot_distance_traveled <-
-  ggplot(data = data_plot_distance_traveled) +
-  geom_histogram(aes(x = distance_traveled_mi,
+plot_distance_traveled <- ggplot(data = data_plot_distance_traveled) +
+    geom_histogram(aes(x = distance_traveled_mi,
                        text = paste0(percent(..count.. / nrow(data_plot_distance_traveled), accuracy = 0.1), 
                                      " of all reservations traveled between ", comma(xmin, accuracy = 1), " and ", 
                                      comma(xmax, accuracy = 1), " miles", "<br>(", comma(..count.., accuracy = 1), 
                                      " of ", comma(nrow(data_plot_distance_traveled), accuracy = 1), 
-                                     " total reservations to ", "siteInput", "admin_unitInput", ")")),
-                 fill = hist_colors) +
-  scale_y_continuous(labels = comma) +
-  labs(x = "Distance traveled (miles)",
-       y = "",
-       title = "Distribution of Distance Traveled to ",
-       subtitle = "Overnight Reservations in California in 2018") +
-  scale_x_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 500), minor_breaks = seq(0, 3000, 250)) +
-  theme_minimal() +
-  theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        # ## only needed for saving as image
-        # axis.text = element_text(size = 20),
-        # axis.title = element_text(size = 22, face = "bold"),
-        # title = element_text(size = 24, face = "bold")
-        )
+                                     " total reservations to ", siteInput, ", ", admin_unitInput, ")")),
+                   binwidth = center_bin * 2,
+                   center = center_bin,
+                   fill = hist_colors[[1]], 
+                   col = hist_colors[[2]], size = 0.05) +
+    scale_x_continuous(limits = c(0, x_max)) +
+    scale_y_continuous(labels = comma) +
+    geom_vline(xintercept = quant_80,
+               linetype = "dashed", alpha = 0.5, color = "#000099") +
+    labs(x = "Distance traveled (miles)",
+         y = "",
+         title = paste0("Distance Traveled from Home to Reservation for <br>", 
+                        siteInput, ", ", admin_unitInput, " in 2018")) +
+    theme_minimal() +
+    theme(plot.background = element_rect("white"),
+          panel.grid.major.y = element_blank())
 
 ggplotly(plot_distance_traveled,
            tooltip = list("text")) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.5, 
-                               text = paste0("80% of reservations to California overnight sites in 2018 traveled less than ", 
-                                             quant_80, " miles (shown on plot with dotted line)."), 
+                               text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
+                                             "<br>traveled less than ", quant_80, " miles. <br>(shown on plot with dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 
@@ -185,41 +184,135 @@ ggplotly(plot_booking_window,
 ```
 
 
-### Daily cost per visitor
+### Daily cost
 
 ```{r}
 ## -- data wrangle -- ##
 data_plot_daily_cost <- data_ridb_acs_2018 %>% 
-  filter(daily_cost != "Inf",
-         daily_cost <= 50) %>% 
-  select(agency, admin_unit, park, daily_cost)
+  filter(daily_cost != "Inf") %>% 
+  select(park, daily_cost)
 
 ## -- create plot -- ##
 
+# wrangling
+x_max <- (round(max(data_plot_daily_cost$daily_cost) / 5) * 5) + 5 # max x rounded to nearest 5
+
+center_bin <-
+  if (x_max > 100) {
+    round((max(data_plot_daily_cost$daily_cost) / 100) / 5) * 5
+  } else if (x_max > 10) {
+    round((max(data_plot_daily_cost$daily_cost) / 10) / 5) * 5
+  } else {
+    0.5
+  }
+
+quant_80 <- quantile(x = data_plot_daily_cost$daily_cost,
+                     probs = seq(0, 1, 0.1))[[9]] %>% round(0)
+
+
 # parameters
-hist_colors <- c("#009900FF")
+hist_colors <- c("#009900FF", "#00c000")
 
 # plot for shiny app
-plot_daily_cost <-
-  ggplot(data = data_plot_daily_cost) +
-  geom_histogram(aes(x = daily_cost),
-                 fill = hist_colors) +
-  labs(x = "Daily cost per visitor ($)",
+plot_daily_cost <- ggplot(data = data_plot_daily_cost) +
+  geom_histogram(aes(x = daily_cost, 
+                     text = paste(percent(..count.. / nrow(data_plot_daily_cost), accuracy = 0.1), 
+                                  "of all reservations paid between", dollar(xmin), "and", dollar(xmax),
+                                  "<br>(", comma(..count.., accuracy = 1), 
+                                  " of ", comma(nrow(data_plot_daily_cost), accuracy = 1), 
+                                  " total reservations to ", siteInput, ", ", admin_unitInput, ")")),
+                 binwidth = center_bin * 2,
+                 center = center_bin,
+                 fill = hist_colors[[1]], 
+                 col = hist_colors[[2]], size = 0.05) +
+  labs(x = "Daily cost per visit ($)",
        y = "",
-       title = "Distribution of Daily Costs per Visitor for",
-       subtitle = "Overnight Reservations in California in 2018") +
-  scale_x_continuous(limits = c(0, 50), breaks = seq(0, 50, by = 10)) +
+       title = paste0("Daily Cost for Visits to <br>", siteInput, 
+                      ", ", admin_unitInput, " in 2018")) +
+  scale_x_continuous(limits = c(0, x_max), labels = dollar) +
   scale_y_continuous(labels = comma) +
+  geom_vline(xintercept = quant_80,
+             linetype = "dashed", alpha = 0.5, color = "#000099") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        # ## only needed for saving as image
-        # axis.text = element_text(size = 20),
-        # axis.title = element_text(size = 22, face = "bold"),
-        # title = element_text(size = 24, face = "bold")
-        )
-plot_daily_cost
+        panel.grid.major.y = element_blank())
+
+ggplotly(plot_daily_cost,
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(x = 1, 
+                             y = -0.5, 
+                             text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
+                                           "<br>paid less than ", dollar(quant_80), " (shown on plot with dotted line)."), 
+                             showarrow = F, 
+                             xre = 'paper', yref = 'paper', 
+                             xanchor = 'left', 
+                             yanchor = 'auto', 
+                             xshift = 0, yshift = 0,
+                             font = list(size = 12, color = "#000099")))
 ```
+
+
+
+### Daily cost per visitor
+
+```{r}
+## -- data wrangle -- ##
+data_plot_daily_cost_visitor <- data_ridb_acs_2018 %>% 
+  filter(daily_cost_per_visitor != "Inf") %>% 
+  select(park, daily_cost_per_visitor)
+
+## -- create plot -- ##
+
+# wrangling
+x_max <- (round(max(data_plot_daily_cost_visitor$daily_cost_per_visitor) / 5) * 5) + 5 # max x rounded to nearest 5
+
+quant_80 <- quantile(x = data_plot_daily_cost_visitor$daily_cost_per_visitor,
+                     probs = seq(0, 1, 0.1))[[9]] %>% round(0)
+
+
+# parameters
+hist_colors <- c("#009900FF", "#00c000")
+
+# plot for shiny app
+plot_daily_cost_visitor <- ggplot(data = data_plot_daily_cost_visitor) +
+  geom_histogram(aes(x = daily_cost_per_visitor, 
+                     text = paste(percent(..count.. / nrow(data_plot_daily_cost_visitor), accuracy = 0.1), 
+                                  "of all reservations paid between", dollar(xmin), "and", dollar(xmax),
+                                  "<br>(", comma(..count.., accuracy = 1), 
+                                  " of ", comma(nrow(data_plot_daily_cost_visitor), accuracy = 1), 
+                                  " total reservations to ", siteInput, ", ", admin_unitInput, ")")),
+                 binwidth = 1,
+                 center = 0.5,
+                 fill = hist_colors[[1]], 
+                 col = hist_colors[[2]], size = 0.05) +
+  labs(x = "Daily cost per visit ($)",
+       y = "",
+       title = paste0("Daily Cost for Visits to <br>", siteInput, 
+                      ", ", admin_unitInput, " in 2018")) +
+  scale_x_continuous(limits = c(0, x_max), labels = dollar) +
+  scale_y_continuous(labels = comma) +
+  geom_vline(xintercept = quant_80,
+             linetype = "dashed", alpha = 0.5, color = "#000099") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank())
+
+ggplotly(plot_daily_cost_visitor,
+         tooltip = list("text")) %>% 
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(x = 1, 
+                             y = -0.5, 
+                             text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
+                                           "<br>paid less than ", dollar(quant_80), " (shown on plot with dotted line)."), 
+                             showarrow = F, 
+                             xre = 'paper', yref = 'paper', 
+                             xanchor = 'left', 
+                             yanchor = 'auto', 
+                             xshift = 0, yshift = 0,
+                             font = list(size = 12, color = "#000099")))
+```
+
 
 
 ### Length of Stay
@@ -283,7 +376,12 @@ ggplotly(plot_length_of_stay,
 ```{r}
 ## -- data wrangle -- ##
 data_plot_site_type <- data_ridb_acs_2018 %>% 
-  select(agency, admin_unit, park, aggregated_site_type)
+  select(park, aggregated_site_type) %>% 
+      mutate(aggregated_site_type = str_to_title(string = aggregated_site_type),
+             aggregated_site_type = str_replace(string = aggregated_site_type,
+                                                pattern = "Rv",
+                                                replacement = "RV")) %>% 
+  count(aggregated_site_type)
 
  
 ## -- create plot -- ##
@@ -292,27 +390,24 @@ data_plot_site_type <- data_ridb_acs_2018 %>%
 hist_colors <- c("#009900FF")
 
 # plot for shiny app
-plot_site_type <-
-  ggplot(data = data_plot_site_type %>% 
-           group_by(aggregated_site_type) %>% 
-           summarise(count = n())) +
-  geom_col(aes(x = count,
-               y = reorder(aggregated_site_type, count)),
-           fill = hist_colors) +
-  scale_x_continuous(labels = comma) +
-  labs(x = "Number of Sites",
-       y = "Types of Sites",
-       title = "Distribution of Type of Sites for",
-       subtitle = "Overnight Reservations in California in 2018") +
-  theme_minimal() +
-  theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        # ## only needed for saving as image
-        # axis.text = element_text(size = 20),
-        # axis.title = element_text(size = 22, face = "bold"),
-        # title = element_text(size = 24, face = "bold")
-        )
-plot_site_type
+plot_site_type <- ggplot(data = data_plot_site_type) +
+    geom_col(aes(x = n, 
+                 y = reorder(aggregated_site_type, n), 
+                 text = paste0(comma(n, accuracy = 1), " reservations were made to ", aggregated_site_type,
+                               " sites at ", siteInput, ", ", admin_unitInput, 
+                               "<br>(", comma(sum(n), accuracy = 1), " total reservations)")),
+             fill = hist_colors) +
+    scale_x_continuous(labels = comma) +
+    labs(x = "Number of Reservations",
+         y = "",
+         title = paste0("Number of Visits by Site Type for ", 
+                        admin_unitInput, ", ", siteInput, "in 2018")) +
+    theme_minimal() +
+    theme(plot.background = element_rect("white"),
+          panel.grid.major.y = element_blank())
+
+ggplotly(plot_site_type,
+           tooltip = list("text"))
 ```
 
 

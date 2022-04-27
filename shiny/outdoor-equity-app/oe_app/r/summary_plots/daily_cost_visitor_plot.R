@@ -10,35 +10,22 @@
 #' @return
 #'
 #' @examples
-daily_cost_plot <- function(admin_unitInput, siteInput){
+daily_cost_visitor_plot <- function(admin_unitInput, siteInput){
   
   # reactive data frame 
-  daily_cost_rdf <- reactive ({
+  daily_cost_visitor_rdf <- reactive ({
     
     data_joined_2018 %>%
       filter(park %in% siteInput) %>%
-      filter(daily_cost != "Inf") %>% 
-      select(park, daily_cost)
+      filter(daily_cost_per_visitor != "Inf") %>% 
+      select(park, daily_cost_per_visitor)
     
   })
   
   # wrangling
-  x_max <- (round(max(daily_cost_rdf()$daily_cost) / 5) * 5) + 5 # max x rounded to nearest 5
+  x_max <- (round(max(daily_cost_visitor_rdf()$daily_cost_per_visitor) / 5) * 5) + 5 # max x rounded to nearest 5
   
-  center_bin <-
-    if (x_max > 100) {
-      round((max(daily_cost_rdf()$daily_cost) / 100) / 5) * 5
-    } else if (x_max > 10) {
-      round((max(daily_cost_rdf()$daily_cost) / 10) / 5) * 5
-    } else {
-      0.5
-    }
-  
-  print(paste("the class of center bin is", class(center_bin)))
-  
-  print(center_bin)
-  
-  quant_80 <- quantile(x = daily_cost_rdf()$daily_cost,
+  quant_80 <- quantile(x = daily_cost_visitor_rdf()$daily_cost_per_visitor,
                        probs = seq(0, 1, 0.1))[[9]] %>% round(0)
   
   print(paste("the class of quant_80 bin is", class(quant_80)))
@@ -50,20 +37,20 @@ daily_cost_plot <- function(admin_unitInput, siteInput){
   hist_colors <- c("#009900FF", "#00c000")
   
   # plot for shiny app
-  daily_cost_plotly <- ggplot(data = daily_cost_rdf()) +
-    geom_histogram(aes(x = daily_cost, 
-                       text = paste(percent(..count.. / nrow(daily_cost_rdf()), accuracy = 0.1), 
+  daily_cost_plotly <- ggplot(data = daily_cost_visitor_rdf()) +
+    geom_histogram(aes(x = daily_cost_per_visitor, 
+                       text = paste(percent(..count.. / nrow(daily_cost_visitor_rdf()), accuracy = 0.1), 
                                     "of all reservations paid between", dollar(xmin), "and", dollar(xmax),
                                     "<br>(", comma(..count.., accuracy = 1), 
-                                    " of ", comma(nrow(daily_cost_rdf()), accuracy = 1), 
+                                    " of ", comma(nrow(daily_cost_visitor_rdf()), accuracy = 1), 
                                     " total reservations to ", siteInput, ", ", admin_unitInput, ")")),
-                   binwidth = center_bin * 2,
-                   center = center_bin,
+                   binwidth = 1,
+                   center = 0.5,
                    fill = hist_colors[[1]], 
                    col = hist_colors[[2]], size = 0.05) +
-    labs(x = "Daily cost per visit ($)",
+    labs(x = "Daily cost per visitor ($)",
          y = "",
-         title = paste0("Daily Cost for Visits to <br>", siteInput, 
+         title = paste0("Daily Cost per Visitor for Visits to <br>", siteInput, 
                         ", ", admin_unitInput, " in 2018")) +
     scale_x_continuous(limits = c(0, x_max), labels = dollar) +
     scale_y_continuous(labels = comma) +

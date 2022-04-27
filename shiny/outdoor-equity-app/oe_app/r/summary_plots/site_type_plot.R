@@ -21,7 +21,8 @@ site_type_plot <- function(admin_unitInput, siteInput){
       mutate(aggregated_site_type = str_to_title(string = aggregated_site_type),
              aggregated_site_type = str_replace(string = aggregated_site_type,
                                                 pattern = "Rv",
-                                                replacement = "RV"))
+                                                replacement = "RV")) %>% 
+      count(aggregated_site_type)
     
   })
   
@@ -29,14 +30,12 @@ site_type_plot <- function(admin_unitInput, siteInput){
   hist_colors <- c("#009900FF")
   
   # plot for shiny app
-  site_type_plotly <- ggplot(data = site_type_rdf() %>%
-           group_by(aggregated_site_type) %>%
-           summarise(count = n())) +
-    geom_col(aes(x = count,
-                 y = reorder(aggregated_site_type, count), 
-                 text = paste0(..count.., "reservations were made to ", aggregated_site_type, 
-                               "sites.", "<br>(", count, " total reservations were made to ", 
-                               siteInput, ", ", admin_unitInput, "in 2018.)")),
+  site_type_plotly <- ggplot(data = site_type_rdf()) +
+    geom_col(aes(x = n, 
+                 y = reorder(aggregated_site_type, n), 
+                 text = paste0(comma(n, accuracy = 1), " reservations were made to ", aggregated_site_type,
+                               " sites at ", siteInput, ", ", admin_unitInput, 
+                               "<br>(", comma(sum(n), accuracy = 1), " total reservations)")),
              fill = hist_colors) +
     scale_x_continuous(labels = comma) +
     labs(x = "Number of Reservations",

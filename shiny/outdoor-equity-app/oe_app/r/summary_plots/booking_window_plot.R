@@ -2,6 +2,15 @@
 # used in DATA SUMMARY PLOTS in server
 # using input id's for summary page in ui
 
+#' Title
+#'
+#' @param admin_unitInput 
+#' @param siteInput 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 booking_window_plot <- function(admin_unitInput, siteInput){
   
   # reactive data frame
