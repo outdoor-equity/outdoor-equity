@@ -3,6 +3,15 @@ library(here)
 library(collections)
 
 
+booking_window_rdf <- data_joined_2018 %>%
+  filter(park %in% "Anacapa Island") %>%
+  filter(booking_window > 0) %>%
+  select(park, booking_window)
+
+x_max <- (round(max(booking_window_rdf$booking_window) / 5) * 5) + 5
+
+
+
 
 
 dist_travel_df <- data_joined_2018 %>%
