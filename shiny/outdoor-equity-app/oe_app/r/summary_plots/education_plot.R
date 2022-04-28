@@ -2,15 +2,13 @@
 # used in DATA SUMMARY PLOTS in server
 # using input id's for summary page in ui
 
-education_plot <- function(agencyInput, admin_unitInput, siteInput, titleInput){
+education_plot <- function(admin_unitInput, siteInput){
   
   # reactive data frame 
   education_rdf <- reactive ({
     
     data_plot_education_ridb <- data_joined_2018 %>%
-      filter(agency %in% agencyInput,
-             admin_unit %in% admin_unitInput,
-             park %in% siteInput) %>%
+      filter(park %in% siteInput) %>%
       summarize(hs_GED_or_below = (mean(hs_GED_or_below, na.rm = TRUE) * 100),
                   some_college = (mean(some_college, na.rm = TRUE) * 100),
                   college = (mean(college, na.rm = TRUE) * 100),

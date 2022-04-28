@@ -302,7 +302,8 @@ plot_daily_cost_visitor <- ggplot(data = data_plot_daily_cost_visitor) +
         panel.grid.major.y = element_blank())
 
 ggplotly(plot_daily_cost_visitor,
-         tooltip = list("text")) %>% 
+         tooltip = list("text"),
+         dynamicTicks = TRUE) %>% 
   layout(margin = list(b = 130, t = 100), 
          annotations =  list(x = 1, 
                              y = -0.5, 
@@ -429,7 +430,8 @@ data_plot_race_ridb <- data_ridb_acs_2018 %>%
             other = mean(other, na.rm = TRUE),
             native_american = mean(native_american, na.rm = TRUE),
             pacific_islander = mean(pacific_islander, na.rm = TRUE),
-            hispanic_latinx = mean(hispanic_latinx, na.rm = TRUE)) %>%
+            hispanic_latinx = mean(hispanic_latinx, na.rm = TRUE),
+            num_reservations = n()) %>%
   pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
   mutate(race = str_replace(string = race,
                             pattern = "_",
@@ -467,11 +469,11 @@ data_plot_race <- data_plot_race_ridb %>%
             suffix = c("_ridb", "_ca")) %>% 
   rename(RIDB = race_percent_average_ridb,
          CA = race_percent_average_ca) %>% 
-  pivot_longer(cols = 2:3,
+  pivot_longer(cols = 3:4,
                names_to = "data_source",
                values_to = "race_percent_average") %>% 
   mutate(data_source = factor(data_source, levels = c("RIDB", "CA")),
-         tooltip_start = case_when(data_source == "RIDB" ~ "Visitors to California sites live in <br>communities with an estimated ",
+         tooltip_start = case_when(data_source == "RIDB" ~ "Visitors to California sites live in communities with an <br>estimated ",
                                   data_source == "CA" ~ ""),
          tooltip_middle = case_when(data_source == "RIDB" ~ " ",
                                   data_source == "CA" ~ " of Californians are "),
@@ -531,10 +533,10 @@ ggplotly(plot_race,
 
 # reservations in CA
 data_plot_education_ridb <- data_ridb_acs_2018 %>%
-  summarize(hs_GED_or_below = (mean(hs_GED_or_below, na.rm = TRUE) * 100),
-            some_college = (mean(some_college, na.rm = TRUE) * 100),
-            college = (mean(college, na.rm = TRUE) * 100),
-            master_or_above = (mean(master_or_above, na.rm = TRUE) * 100))  %>%
+  summarize(hs_GED_or_below = mean(hs_GED_or_below, na.rm = TRUE),
+            some_college = mean(some_college, na.rm = TRUE),
+            college = mean(college, na.rm = TRUE),
+            master_or_above = mean(master_or_above, na.rm = TRUE))  %>%
   pivot_longer(cols = 1:4, names_to = "education", values_to = "education_percent_average") %>% 
   mutate(education = str_replace(string = education,
                             pattern = "hs_GED_or_below",
@@ -551,14 +553,14 @@ data_plot_education_ridb <- data_ridb_acs_2018 %>%
 
 # CA population
 data_plot_education_ca <- data_ca_acs_2018 %>%
-  summarize(hs_GED_or_below = (weighted.mean(hs_GED_or_below, mean_zip_code_population, 
-                                             na.rm = TRUE) * 100),
-            some_college = (weighted.mean(some_college, mean_zip_code_population, 
-                                          na.rm = TRUE) * 100),
-            college = (weighted.mean(college, mean_zip_code_population, 
-                                     na.rm = TRUE) * 100),
-            master_or_above = (weighted.mean(master_or_above, mean_zip_code_population, 
-                                             na.rm = TRUE) * 100))  %>%
+  summarize(hs_GED_or_below = weighted.mean(hs_GED_or_below, mean_zip_code_population, 
+                                             na.rm = TRUE),
+            some_college = weighted.mean(some_college, mean_zip_code_population, 
+                                          na.rm = TRUE),
+            college = weighted.mean(college, mean_zip_code_population, 
+                                     na.rm = TRUE),
+            master_or_above = weighted.mean(master_or_above, mean_zip_code_population, 
+                                             na.rm = TRUE))  %>%
   pivot_longer(cols = 1:4, names_to = "education", values_to = "education_percent_average") %>% 
   mutate(education = str_replace(string = education,
                             pattern = "hs_GED_or_below",
@@ -587,7 +589,16 @@ data_plot_education <- data_plot_education_ridb %>%
          education = factor(education, levels = c("High school, GED, or below",
                                                   "Some College", 
                                                   "Associates or bachelors degree",
-                                                  "Masters degree or higher")))
+                                                  "Masters degree or higher")),
+         tooltip_start = case_when(data_source == "RIDB" ~ "Visitors to California sites live in communities with an estimated ",
+                                   data_source == "CA" ~ ""),
+         tooltip_middle = case_when(data_source == "RIDB" ~ " of the population <br>with ",
+                                    data_source == "CA" ~ " of Californians have "),
+         tooltip_end = case_when(data_source == "RIDB" ~ " as their highest level of education.",
+                                 data_source == "CA" ~ " as their highest level of education."),
+         race = str_replace(string = race,
+                            pattern = "Other",
+                            replacement = "Other Race(s)"))
 
 ## -- create plot -- ##
 
@@ -599,7 +610,9 @@ plot_education <-
   ggplot(data = data_plot_education) +
   geom_col(aes(x = education_percent_average,
                y = education,
-               fill = data_source),
+               fill = data_source,
+               text = paste0(tooltip_start, percent(education_percent_average, accuracy = 0.1), 
+                             tooltip_middle, race, tooltip_end)),
            stat = "identity",
            position = "dodge") +
   scale_fill_manual(values = groups_colors_ridb_ca) +  
@@ -617,13 +630,10 @@ plot_education <-
   scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        # ## only needed for saving as image
-        # axis.text = element_text(size = 20),
-        # axis.title = element_text(size = 22, face = "bold"),
-        # title = element_text(size = 24, face = "bold")
-        )
-plot_education
+        panel.grid.major.y = element_blank())
+
+ggplotly(plot_education,
+         tooltip = list("text"))
 ```
 
 
