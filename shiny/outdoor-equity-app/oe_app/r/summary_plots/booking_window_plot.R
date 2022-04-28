@@ -54,7 +54,7 @@ booking_window_plot <- function(admin_unitInput, siteInput){
                    col = hist_colors[[2]], size = 0.05) +
     labs(x = "Days elapsed from order to visit (each bar = 1 week)",
          y = "",
-         title = paste0("Number of Days Before a Visit that Reservations are Booked for<br>", 
+         title = paste0("Number of days between reservation made and start of visit for<br>", 
                         siteInput, ", ", admin_unitInput)) +
     scale_x_continuous(limits = c(0, x_max), breaks = seq(0, x_max, 30)) +
     scale_y_continuous(labels = comma) +
@@ -70,7 +70,8 @@ booking_window_plot <- function(admin_unitInput, siteInput){
     #          x = 380, y = 65000) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank())
+          panel.grid.major.y = element_blank(),
+          plot.title = element_text(size = 11))
   
   ggplotly(booking_window_plotly,
            tooltip = list("text"),

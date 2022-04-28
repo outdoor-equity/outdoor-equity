@@ -74,16 +74,16 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
                         siteInput, ", ", admin_unitInput, " in 2018")) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank())
+          panel.grid.major.y = element_blank(),
+          plot.title = element_size(size = 11))
   
   ggplotly(dist_travel_plotly,
            tooltip = list("text"),
            dynamicTicks = TRUE) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
-                               y = -0.4, 
-                               text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
-                                             "<br>traveled less than ", quant_80, " miles (shown on plot with dotted line)."), 
+                               y = -0.6, 
+                               text = paste0("80% of reservations to traveled less than ", quant_80, " miles <br>(shown on plot with dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 
