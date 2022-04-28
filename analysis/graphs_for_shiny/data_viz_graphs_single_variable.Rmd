@@ -639,52 +639,54 @@ CA census (grey) not yet weighted by population
 # reservations in CA
 data_plot_language_ridb <- data_ridb_acs_2018 %>%
   select(agency, admin_unit, park, customer_zip, not_english_only, english_only) %>% 
-  mutate(not_english_only = not_english_only * 100,
-         english_only = english_only * 100) %>% 
   drop_na(not_english_only, english_only)
 
 # CA population
 data_plot_language_ca <- data_ca_acs_2018 %>%
   select(zip_code, not_english_only, english_only) %>% 
-  mutate(not_english_only = not_english_only * 100,
-         english_only = english_only * 100) %>% 
   drop_na(not_english_only, english_only)
 
 
 ## -- create plot -- ##
 
 # parameters
-groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
+ca_colors <- c("#666666", "#848484")
+ridb_colors <- c("#009900FF", "#00c000")
 
 # plot for shiny app
 plot_language <- ggplot() +
-  geom_histogram(data = data_plot_language_ca,
-                 aes(x = not_english_only,
-                     y = stat(count) / sum(count),
-                     bins = 10),
-                 fill = groups_colors_ridb_ca[[2]],
-                 alpha = 0.75) +
-  geom_histogram(data = data_plot_language_ridb,
-                 aes(x = not_english_only,
-                     y = stat(count) / sum(count),
-                     bins = 10),
-                 fill = groups_colors_ridb_ca[[1]],
-                 alpha = 0.75) +
+  # geom_bar(data = data_plot_language_ca,
+  #          aes(x = not_english_only)) +
+  # geom_bar(data = data_plot_language_ridb,
+  #          aes(x = not_english_only)) +
+  # scale_x_binned() +
+  geom_density(data = data_plot_language_ca,
+                 aes(x = not_english_only),
+                 fill = ca_colors[[2]],
+                 col = ca_colors[[1]],
+                 binwidth = 0.1,
+                 center = 0.05,
+                 alpha = 0.5,
+                 position = "identity") +
+  geom_density(data = data_plot_language_ridb,
+                 aes(x = not_english_only),
+                 fill = ridb_colors[[1]],
+                 col = ridb_colors[[2]],
+                 binwidth = 0.1,
+                 center = 0.05,
+                 alpha = 0.5,
+                 position = "identity") +
+  scale_x_continuous(labels = percent) +
+  scale_y_continuous(labels = comma) +
   labs(x = "Percentage (%)",
        y = "",
-       title = "Distribution of Non-English Spoken in the Home in ZIP Codes in 2018",
-       subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
-  scale_x_continuous(breaks = seq(0, 100, 10), minor_breaks = seq(0, 100, 5)) +
-  scale_y_continuous(labels = scales::percent) +
+       title = paste0("Non-English Spken in the Home of <br>California Residents vs. Visitors to ", 
+                      siteInput, ", ", admin_unitInput)) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank()
-        # ## only needed for saving as image
-        # axis.text = element_text(size = 20),
-        # axis.title = element_text(size = 22, face = "bold"),
-        # title = element_text(size = 24, face = "bold")
-        )
-plot_language
+        panel.grid.major.y = element_blank())
+
+ggplotly(plot_language)
 ```
 
 
