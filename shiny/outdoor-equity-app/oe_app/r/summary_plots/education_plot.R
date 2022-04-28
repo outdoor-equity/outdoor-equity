@@ -17,15 +17,19 @@ education_plot <- function(admin_unitInput, siteInput){
     
     # CA population
     data_plot_education_ca <- data_ca_acs_2018 %>%
-      summarize(hs_GED_or_below = weighted.mean(hs_GED_or_below, mean_zip_code_population, 
-                                                na.rm = TRUE),
-                some_college = weighted.mean(some_college, mean_zip_code_population, 
-                                             na.rm = TRUE),
-                college = weighted.mean(college, mean_zip_code_population, 
+      summarize(
+        hs_GED_or_below = weighted.mean(hs_GED_or_below, mean_zip_code_population,
                                         na.rm = TRUE),
-                master_or_above = weighted.mean(master_or_above, mean_zip_code_population, 
-                                                na.rm = TRUE))  %>%
-      pivot_longer(cols = 1:4, names_to = "education", values_to = "education_percent_average")
+        some_college = weighted.mean(some_college, mean_zip_code_population,
+                                     na.rm = TRUE),
+        college = weighted.mean(college, mean_zip_code_population,
+                                na.rm = TRUE),
+        master_or_above = weighted.mean(master_or_above, mean_zip_code_population,
+                                        na.rm = TRUE)
+      )  %>%
+      pivot_longer(cols = 1:4,
+                   names_to = "education",
+                   values_to = "education_percent_average")
     
     # join data for plotting
     # data_plot_education <-
@@ -95,7 +99,9 @@ education_plot <- function(admin_unitInput, siteInput){
                         siteInput, ", ", admin_unitInput)) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank())
+          panel.grid.major.y = element_blank(),
+          plot.title = element_text(size = 11),
+          axis.text.y = element_text(size = 9))
   
   ggplotly(education_plotly,
            tooltip = list("text")) %>%

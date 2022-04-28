@@ -244,6 +244,14 @@ output$data_summary_plot_1 <- renderPlotly({
                             siteInput = input$site_summary_1)
 
   } ## EO else if daily cost per visitor
+  
+  ## SO education ----
+  else if (input$data_summary == "education") {
+    
+    education_plot(admin_unitInput = input$admin_unit_summary_1,
+                   siteInput = input$site_summary_1)
+    
+  } ## EO education
 
   ## SO length of stay ----
   else if (input$data_summary == "length_of_stay") {
@@ -316,13 +324,29 @@ output$data_summary_plot_2 <- renderPlotly({
     
   } ## EO else if booking window
   
-  ### SO daily cost ----
+  ## SO daily cost ----
   else if (input$data_summary == "daily_cost") {
     
     daily_cost_plot(admin_unitInput = input$admin_unit_summary_2,
                     siteInput = input$site_summary_2)
     
   } ## EO else if daily cost
+  
+  ## SO daily cost per visitor ----
+  else if (input$data_summary == "daily_cost_per_visitor") {
+    
+    daily_cost_visitor_plot(admin_unitInput = input$admin_unit_summary_2,
+                            siteInput = input$site_summary_2)
+    
+  } ## EO else if daily cost per visitor
+  
+  ## SO education ----
+  else if (input$data_summary == "education") {
+    
+    education_plot(admin_unitInput = input$admin_unit_summary_2,
+                   siteInput = input$site_summary_2)
+    
+  } ## EO education
   
 }) ## EO DATA SUMMARY PLOTS 2 
 

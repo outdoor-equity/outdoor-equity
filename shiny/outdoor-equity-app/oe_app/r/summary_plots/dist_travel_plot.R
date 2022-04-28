@@ -75,7 +75,7 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank(),
-          plot.title = element_size(size = 11))
+          plot.title = element_text(size = 11))
   
   ggplotly(dist_travel_plotly,
            tooltip = list("text"),
