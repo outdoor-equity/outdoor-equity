@@ -84,6 +84,7 @@ sites <- as.vector(unique(data_joined_2018$park))
 ## data summary vars ----
 summary_vars <- c("Distance traveled" = "distance_traveled_mi",
                   "Booking window" = "booking_window",
+                  "Daily cost" = "daily_cost",
                   "Daily cost per visitor" = "daily_cost_per_visitor",
                   "Length of stay" = "length_of_stay",
                   "Site type" = "aggregated_site_type",
