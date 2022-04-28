@@ -638,55 +638,58 @@ CA census (grey) not yet weighted by population
 
 # reservations in CA
 data_plot_language_ridb <- data_ridb_acs_2018 %>%
-  select(agency, admin_unit, park, customer_zip, not_english_only, english_only) %>% 
-  drop_na(not_english_only, english_only)
+  select(park, not_english_only, english_only) %>% 
+  drop_na(not_english_only, english_only) %>% 
+  mutate(mean_zip_code_population = 1) %>% 
+  rename(location_indicator = park) %>% 
+  relocate(mean_zip_code_population, .before = not_english_only) %>% 
+  mutate(data_source = "Visitors to California Sites")
 
 # CA population
 data_plot_language_ca <- data_ca_acs_2018 %>%
-  select(zip_code, not_english_only, english_only) %>% 
-  drop_na(not_english_only, english_only)
+  select(zip_code, mean_zip_code_population, not_english_only, english_only) %>% 
+  drop_na(not_english_only, english_only) %>% 
+  rename(location_indicator = zip_code) %>% 
+  mutate(data_source = "California Residents")
+
+test <- rbind(data_plot_language_ridb, data_plot_language_ca)
 
 
 ## -- create plot -- ##
 
 # parameters
-ca_colors <- c("#666666", "#848484")
-ridb_colors <- c("#009900FF", "#00c000")
+color_ridb_ca <- c("Visitors to California Sites" = "#009900FF", 
+                   "California Residents" = "#666666")
+fill_ridb_ca <- c("Visitors to California Sites" = "#00c000", 
+                  "California Residents" = "#848484")
+
+# ca_colors <- c("#666666", "#848484")
+# ridb_colors <- c("#009900FF", "#00c000")
 
 # plot for shiny app
 plot_language <- ggplot() +
-  # geom_bar(data = data_plot_language_ca,
-  #          aes(x = not_english_only)) +
-  # geom_bar(data = data_plot_language_ridb,
-  #          aes(x = not_english_only)) +
-  # scale_x_binned() +
-  geom_density(data = data_plot_language_ca,
-                 aes(x = not_english_only),
-                 fill = ca_colors[[2]],
-                 col = ca_colors[[1]],
-                 binwidth = 0.1,
-                 center = 0.05,
-                 alpha = 0.5,
-                 position = "identity") +
-  geom_density(data = data_plot_language_ridb,
-                 aes(x = not_english_only),
-                 fill = ridb_colors[[1]],
-                 col = ridb_colors[[2]],
-                 binwidth = 0.1,
-                 center = 0.05,
-                 alpha = 0.5,
-                 position = "identity") +
+  geom_density(data = test,
+             aes(x = not_english_only,
+                 color = data_source,
+                 fill = data_source,
+                 weight = mean_zip_code_population, 
+                 text = data_source),
+             alpha = 0.5) +
+  scale_fill_manual(values = fill_ridb_ca) +
+  scale_color_manual(values = color_ridb_ca) +
   scale_x_continuous(labels = percent) +
   scale_y_continuous(labels = comma) +
-  labs(x = "Percentage (%)",
-       y = "",
+  labs(x = "Percentage of Population that Speaks a Language Other than English at Home",
+       y = "Density",
        title = paste0("Non-English Spken in the Home of <br>California Residents vs. Visitors to ", 
                       siteInput, ", ", admin_unitInput)) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank())
 
-ggplotly(plot_language)
+ggplotly(plot_language, 
+         tooltip = list("text")) %>% 
+  layout(showlegend = FALSE)
 ```
 
 
@@ -699,50 +702,50 @@ CA census (grey) not yet weighted by population
 
 # reservations in CA
 data_plot_median_income_ridb <- data_ridb_acs_2018 %>%
-  select(agency, admin_unit, park, customer_zip, median_income)
+  select(park, median_income) %>% 
+  rename(location_indicator = park) %>% 
+  mutate(mean_zip_code_population = 1,
+         data_source = "RIDB")
 
 # CA population
 data_plot_median_income_ca <- data_ca_acs_2018 %>%
-  select(zip_code, median_income)
+  select(zip_code, median_income, mean_zip_code_population) %>% 
+  rename(location_indicator = zip_code) %>% 
+  mutate(data_source = "CA")
+
+data_plot_median_income <- rbind(data_plot_median_income_ridb, data_plot_median_income_ca)
 
 
 ## -- create plot -- ##
 
 # parameters
-groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
+color_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
+fill_ridb_ca <- c("RIDB" = "#00c000", "CA" = "#848484")
 
 # plot for shiny app
 plot_median_income <- ggplot() +
-  geom_histogram(data = data_plot_median_income_ca,
+  geom_density(data = data_plot_median_income,
                  aes(x = median_income,
-                     y = stat(count) / sum(count),
-                     bins = 10),
-                 fill = groups_colors_ridb_ca[[2]], 
-                 alpha = 0.75) +
-  geom_histogram(data = data_plot_median_income_ridb,
-                 aes(x = median_income,
-                     y = stat(count) / sum(count),
-                     bins = 10), 
-                 fill = groups_colors_ridb_ca[[1]], 
-                 alpha = 0.75) +
-  geom_vline(xintercept = 75277, 
-             linetype = "dashed", size = .3, alpha = .5) +
-  annotate("text", label = "Median household income \nin 2018 in CA ($75,277)", 
-           x = 118000, y = .15) +
-  labs(x = "Median Income ($))",
+                     color = data_source,
+                     fill = data_source,
+                     weight = mean_zip_code_population),
+                 alpha = 0.5) +
+  scale_fill_manual(values = fill_ridb_ca) +
+  scale_color_manual(values = color_ridb_ca) +
+  scale_x_continuous(labels = dollar) +
+  # geom_vline(xintercept = 75277, 
+  #            linetype = "dashed", size = .3, alpha = .5) +
+  # annotate("text", label = "Median household income \nin 2018 in CA ($75,277)", 
+  #          x = 118000, y = .15) +
+  labs(x = "Median Income ($)",
        y = "",
-       title = "Distribution of Median Income in Home in ZIP Codes in 2018",
-       subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
-  scale_x_continuous(limits = c(0, 260000), breaks = seq(0, 260000, 50000), minor_breaks = seq(0, 260000, 25000), labels = comma) +
-  scale_y_continuous(labels = scales::percent) +
+       title = paste0("Median-incomes for <br>California Residents vs. Visitors to ", 
+                      siteInput, ", ", admin_unitInput)) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank()
-        # ## only needed for saving as image
-        # axis.text = element_text(size = 20),
-        # axis.title = element_text(size = 22, face = "bold"),
-        # title = element_text(size = 24, face = "bold")
-        )
+        panel.grid.major.y = element_blank())
+
+plotly(plot_median_income)
 plot_median_income
 ```
 
