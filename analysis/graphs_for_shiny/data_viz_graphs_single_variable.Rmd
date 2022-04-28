@@ -105,7 +105,8 @@ plot_distance_traveled <- ggplot(data = data_plot_distance_traveled) +
           panel.grid.major.y = element_blank())
 
 ggplotly(plot_distance_traveled,
-           tooltip = list("text")) %>% 
+           tooltip = list("text"),
+         dynamicTicks = TRUE) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.5, 
@@ -173,7 +174,8 @@ plot_booking_window <- ggplot(data = data_plot_boooking_window) +
         panel.grid.major.y = element_blank())
 
 ggplotly(plot_booking_window,
-         tooltip = list("text")) %>% 
+         tooltip = list("text"),
+         dynamicTicks = TRUE) %>% 
   layout(margin = list(b = 130, t = 100), 
          annotations =  list(x = 1, 
                              y = -0.5, 
@@ -242,7 +244,8 @@ plot_daily_cost <- ggplot(data = data_plot_daily_cost) +
         panel.grid.major.y = element_blank())
 
 ggplotly(plot_daily_cost,
-         tooltip = list("text")) %>% 
+         tooltip = list("text"),
+         dynamicTicks = TRUE) %>% 
   layout(margin = list(b = 130, t = 100), 
          annotations =  list(x = 1, 
                              y = -0.4, 
@@ -361,7 +364,8 @@ plot_length_of_stay <- ggplot(data = data_plot_length_of_stay) +
         panel.grid.major.y = element_blank())
 
 ggplotly(plot_length_of_stay,
-         tooltip = list("text")) %>% 
+         tooltip = list("text"),
+         dynamicTicks = TRUE) %>% 
   layout(margin = list(b = 130, t = 100), 
          annotations =  list(x = 1, 
                              y = -0.4, 
@@ -412,7 +416,8 @@ plot_site_type <- ggplot(data = data_plot_site_type) +
           panel.grid.major.y = element_blank())
 
 ggplotly(plot_site_type,
-           tooltip = list("text"))
+           tooltip = list("text"),
+         dynamicTicks = TRUE)
 ```
 
 
@@ -520,7 +525,8 @@ plot_race <-
         panel.grid.major.y = element_blank())
 
 ggplotly(plot_race, 
-         tooltip = list("text")) %>%
+         tooltip = list("text"),
+         dynamicTicks = TRUE) %>%
   style(hoverinfo = "none", traces = c(3, 4),
         textposition = "right") %>% 
   layout(showlegend = FALSE)

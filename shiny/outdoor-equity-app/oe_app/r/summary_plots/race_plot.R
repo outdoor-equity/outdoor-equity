@@ -103,7 +103,8 @@ race_plot <- function(admin_unitInput, siteInput){
           panel.grid.major.y = element_blank())
   
   ggplotly(race_plotly,
-           tooltip = list("text")) %>%
+           tooltip = list("text"),
+           dynamicTicks = TRUE) %>%
     style(hoverinfo = "none", traces = c(3, 4),
           textposition = "right") %>% 
     layout(showlegend = FALSE)
