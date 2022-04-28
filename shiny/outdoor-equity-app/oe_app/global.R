@@ -66,7 +66,7 @@ source("r/inputs/observe_event_admin_unit_to_site_dict.R")
 
 # need to move these sourced functions to a new section
 source("r/other_plots/tot_site_agency_plot.R")
-source("r/other_plots/tota_res_agency_plot.R")
+source("r/other_plots/tot_res_agency_plot.R")
 
 # PLOT OBJECTS ----
 

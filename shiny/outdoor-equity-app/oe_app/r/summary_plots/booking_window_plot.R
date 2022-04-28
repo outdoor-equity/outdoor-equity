@@ -22,6 +22,8 @@ booking_window_plot <- function(admin_unitInput, siteInput){
       select(park, booking_window) %>% 
       filter(!is.na(booking_window))
   })
+  
+  print(class(booking_window_rdf))
 
   # wrangling
   x_max <- (round(max(booking_window_rdf()$booking_window) / 5) * 5) + 5 # max x rounded to nearest 5
