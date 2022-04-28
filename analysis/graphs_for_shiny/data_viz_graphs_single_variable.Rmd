@@ -23,7 +23,6 @@ library(tmap)
 library(vroom)
 library(paletteer)
 library(plotly)
-library(jsonlite)
 library(listviewer)
 
 options(scipen = 999)
@@ -472,8 +471,12 @@ data_plot_race <- data_plot_race_ridb %>%
                names_to = "data_source",
                values_to = "race_percent_average") %>% 
   mutate(data_source = factor(data_source, levels = c("RIDB", "CA")),
-         tooltip_text = case_when(data_source == "RIDB" ~ "Visitors to California sites live in <br>communities with an estimated ",
-                                  data_source == "CA" ~ "California has "),
+         tooltip_start = case_when(data_source == "RIDB" ~ "Visitors to California sites live in <br>communities with an estimated ",
+                                  data_source == "CA" ~ ""),
+         tooltip_middle = case_when(data_source == "RIDB" ~ " ",
+                                  data_source == "CA" ~ " of Californians are "),
+         tooltip_end = case_when(data_source == "RIDB" ~ " populations",
+                                  data_source == "CA" ~ ""),
          race = str_replace(string = race,
                             pattern = "Other",
                             replacement = "Other Race(s)"))
@@ -494,7 +497,8 @@ plot_race <-
   geom_col(aes(x = race_percent_average,
                y = reorder(race, race_percent_average),
                fill = data_source,
-               text = paste0(tooltip_text, percent(race_percent_average, accuracy = 0.1), " ", race, " populations.")),
+               text = paste0(tooltip_start, percent(race_percent_average, accuracy = 0.1), 
+                             tooltip_middle, race, tooltip_end)),
            position = "dodge") +
   scale_x_continuous(labels = percent, limits = c(0, x_max)) +
   scale_fill_manual(values = groups_colors_ridb_ca) + 
