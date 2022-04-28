@@ -19,7 +19,8 @@ booking_window_plot <- function(admin_unitInput, siteInput){
     data_joined_2018 %>%
       filter(park %in% siteInput) %>%
       filter(booking_window > 0) %>% 
-      select(park, booking_window)
+      select(park, booking_window) %>% 
+      filter(!is.na(booking_window))
   })
 
   # wrangling
@@ -31,11 +32,12 @@ booking_window_plot <- function(admin_unitInput, siteInput){
   # parameters
   hist_colors <- c("#009900FF", "#00c000")
   
-  # plot for shiny app=
+  # plot for shiny app
+  ggplot(data = booking_window_rdf()) +
     geom_histogram(aes(x = booking_window,
-                                     " of all reservations book their visit between ", xmin, " and ", xmax, 
-                                     "<br>days before the start of their visit", "<br>(", comma(..count.., accuracy = 1), " of ", 
-                                     ", ", admin_unitInput, " in 2018)"))
+                       " of all reservations book their visit between ", xmin, " and ", xmax,
+                       "<br>days before the start of their visit", "<br>(", comma(..count.., accuracy = 1), " of ",
+                       ", ", admin_unitInput, " in 2018)"))
     
   booking_window_plotly <- ggplot(data = booking_window_rdf()) +
     geom_histogram(aes(x = booking_window,
@@ -50,20 +52,20 @@ booking_window_plot <- function(admin_unitInput, siteInput){
                    col = hist_colors[[2]], size = 0.05) +
     labs(x = "Days elapsed from order to visit (each bar = 1 week)",
          y = "",
-         title = paste0("Number of Days Before a Visit that Reservations are Booked", "<br>for ", 
+         title = paste0("Number of Days Before a Visit that Reservations are Booked for<br>", 
                         siteInput, ", ", admin_unitInput)) +
     scale_x_continuous(limits = c(0, x_max), breaks = seq(0, x_max, 30)) +
     scale_y_continuous(labels = comma) +
     geom_vline(xintercept = quant_80,
                linetype = "dashed", alpha = 0.5, color = "#000099") +
-    geom_vline(xintercept = 180, 
-               linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", label = "6 months", 
-             x = 210, y = 65000) +
-    geom_vline(xintercept = 360, 
-               linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", label = "1 year", 
-             x = 380, y = 65000) +
+    # geom_vline(xintercept = 180, 
+    #            linetype = "dashed", size = .3, alpha = .5) +
+    # annotate("text", label = "6 months", 
+    #          x = 210, y = 65000) +
+    # geom_vline(xintercept = 360, 
+    #            linetype = "dashed", size = .3, alpha = .5) +
+    # annotate("text", label = "1 year", 
+    #          x = 380, y = 65000) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank())
@@ -72,10 +74,9 @@ booking_window_plot <- function(admin_unitInput, siteInput){
            tooltip = list("text")) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
-                               y = -0.4, 
-                               text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
-                                             "<br> reserve their visit less than ", quant_80, 
-                                             " days before the start date (shown on plot with dashed line)."), 
+                               y = -0.6, 
+                               text = paste0("80% of reservations reserve their visit less than ", quant_80, 
+                                             " days before the start date <br>(shown on plot with dashed line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 
