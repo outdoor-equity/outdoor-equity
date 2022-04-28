@@ -256,10 +256,8 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO length of stay ----
   else if (input$data_summary == "length_of_stay") {
 
-    length_of_stay_plot(agencyInput = input$agency_summary,
-                        admin_unitInput = input$admin_unit_summary,
-                        siteInput = input$site_summary,
-                        titleInput = input$site_summary)
+    length_of_stay_plot(admin_unitInput = input$admin_unit_summary_1,
+                        siteInput = input$site_summary_1)
 
   } ## EO else if length of stay
 
@@ -283,15 +281,6 @@ output$data_summary_plot_1 <- renderPlotly({
   #
   # } ## EO else if race
 
-  ## SO education ----
-  else if (input$data_summary == "education") {
-
-    education_plot(agencyInput = input$agency_summary,
-                   admin_unitInput = input$admin_unit_summary,
-                   siteInput = input$site_summary,
-                   titleInput = input$site_summary)
-
-  } ## EO else if education
 
   ## SO median income ----
   else if (input$data_summary == "median_income") {
@@ -347,6 +336,14 @@ output$data_summary_plot_2 <- renderPlotly({
                    siteInput = input$site_summary_2)
     
   } ## EO education
+  
+  ## SO length of stay ----
+  else if (input$data_summary == "length_of_stay") {
+    
+    length_of_stay_plot(admin_unitInput = input$admin_unit_summary_2,
+                        siteInput = input$site_summary_2)
+    
+  } # EO length of stay ----
   
 }) ## EO DATA SUMMARY PLOTS 2 
 

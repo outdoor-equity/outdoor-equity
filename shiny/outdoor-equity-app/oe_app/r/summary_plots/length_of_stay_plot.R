@@ -56,19 +56,19 @@ length_of_stay_plot <- function(admin_unitInput, siteInput){
     labs(x = "Length of visit (days)",
          y = "",
          title = paste0("Length of Visit for Reservations at <br>", 
-                        siteInput, ", ", admin_unitInput, " in 2018")) +
+                        siteInput, ", ", admin_unitInput)) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank())
+          panel.grid.major.y = element_blank(),
+          plot.title = element_text(size = 11))
   
   ggplotly(length_of_stay_plotly,
            tooltip = list("text"),
            dynamicTicks = TRUE) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
-                               y = -0.4, 
-                               text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
-                                             "<br>stay less than ", quant_80, " days (shown on plot with dashed line)."), 
+                               y = -0.6, 
+                               text = paste0("80% of reservations stay less than ", quant_80, " days <br>(shown on plot with dashed line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 
