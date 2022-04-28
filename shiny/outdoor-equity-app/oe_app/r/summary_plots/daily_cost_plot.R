@@ -35,16 +35,15 @@ daily_cost_plot <- function(admin_unitInput, siteInput){
     }
   
   print(paste("the class of center bin is", class(center_bin)))
-  
   print(center_bin)
   
   quant_80 <- quantile(x = daily_cost_rdf()$daily_cost,
                        probs = seq(0, 1, 0.1))[[9]] %>% round(0)
   
   print(paste("the class of quant_80 bin is", class(quant_80)))
-  
   print(quant_80)
   
+  print(head(daily_cost_rdf()))
   
   # parameters
   hist_colors <- c("#009900FF", "#00c000")
@@ -63,23 +62,23 @@ daily_cost_plot <- function(admin_unitInput, siteInput){
     labs(x = "Daily cost per visit ($)",
          y = "",
          title = paste0("Daily Cost for Visits to <br>", siteInput, 
-                        ", ", admin_unitInput, " in 2018")) +
+                        ", ", admin_unitInput)) +
     scale_x_continuous(limits = c(0, x_max), labels = dollar) +
     scale_y_continuous(labels = comma) +
     geom_vline(xintercept = quant_80,
                linetype = "dashed", alpha = 0.5, color = "#000099") +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank())
+          panel.grid.major.y = element_blank(),
+          plot.title = element_text(size = 11))
   
   ggplotly(daily_cost_plotly,
            tooltip = list("text"),
            dynamicTicks = TRUE) %>% 
     layout(margin = list(b = 130, t = 100), 
-           annotations =  list(x = 1, 
-                               y = -0.4, 
-                               text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
-                                             "<br>paid less than ", dollar(quant_80), " (shown on plot with dotted line)."), 
+           annotations =  list(x = 5, 
+                               y = -0.6, 
+                               text = paste0("80% of reservations paid less than ", dollar(quant_80), "<br> (shown on plot with dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 
