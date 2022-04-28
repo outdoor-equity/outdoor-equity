@@ -33,7 +33,7 @@ median_income_plot <- function(admin_unitInput, siteInput){
                    fill = groups_colors_ridb_ca[[2]], 
                    alpha = 0.75) +
     # RDF here
-    geom_histogram(data = median_income_rdf(),
+    income_plotly <- geom_histogram(data = median_income_rdf(),
                    aes(x = median_income,
                        y = stat(count) / sum(count),
                        bins = 10), 
@@ -51,5 +51,7 @@ median_income_plot <- function(admin_unitInput, siteInput){
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank())
+  
+  ggplotly(income_plotly)
   
 } # EO function
