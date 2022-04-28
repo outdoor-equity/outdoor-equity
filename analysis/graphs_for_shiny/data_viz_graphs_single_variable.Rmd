@@ -23,6 +23,8 @@ library(tmap)
 library(vroom)
 library(paletteer)
 library(plotly)
+library(jsonlite)
+library(listviewer)
 
 options(scipen = 999)
 
@@ -421,14 +423,14 @@ ggplotly(plot_site_type,
 
 # reservations in CA
 data_plot_race_ridb <- data_ridb_acs_2018 %>%
-  summarize(white = (mean(white, na.rm = TRUE) * 100),
-            black = (mean(black, na.rm = TRUE) * 100),
-            asian = (mean(asian, na.rm = TRUE) * 100),
-            multiracial = (mean(multiracial, na.rm = TRUE) * 100),
-            other = (mean(other, na.rm = TRUE) * 100),
-            native_american = (mean(native_american, na.rm = TRUE) * 100),
-            pacific_islander = (mean(pacific_islander, na.rm = TRUE) * 100),
-            hispanic_latinx = (mean(hispanic_latinx, na.rm = TRUE) * 100)) %>%
+  summarize(white = mean(white, na.rm = TRUE),
+            black = mean(black, na.rm = TRUE),
+            asian = mean(asian, na.rm = TRUE),
+            multiracial = mean(multiracial, na.rm = TRUE),
+            other = mean(other, na.rm = TRUE),
+            native_american = mean(native_american, na.rm = TRUE),
+            pacific_islander = mean(pacific_islander, na.rm = TRUE),
+            hispanic_latinx = mean(hispanic_latinx, na.rm = TRUE)) %>%
   pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
   mutate(race = str_replace(string = race,
                             pattern = "_",
@@ -437,22 +439,22 @@ data_plot_race_ridb <- data_ridb_acs_2018 %>%
 
 # CA population
 data_plot_race_ca <- data_ca_acs_2018 %>%
-  summarize(white = (weighted.mean(white, mean_zip_code_population, 
-                                   na.rm = TRUE) * 100),
-            black = (weighted.mean(black,  mean_zip_code_population,
-                                   na.rm = TRUE) * 100),
-            asian = (weighted.mean(asian, mean_zip_code_population, 
-                                   na.rm = TRUE) * 100),
-            multiracial = (weighted.mean(multiracial, mean_zip_code_population, 
-                                na.rm = TRUE) * 100),
-            other = (weighted.mean(other, mean_zip_code_population, 
-                                   na.rm = TRUE) * 100),
-            native_american = (weighted.mean(native_american, mean_zip_code_population, 
-                                             na.rm = TRUE) * 100),
-            pacific_islander = (weighted.mean(pacific_islander, mean_zip_code_population, 
-                                              na.rm = TRUE) * 100),
-            hispanic_latinx = (weighted.mean(hispanic_latinx, mean_zip_code_population, 
-                                             na.rm = TRUE) * 100)) %>%
+  summarize(white = weighted.mean(white, mean_zip_code_population, 
+                                   na.rm = TRUE),
+            black = weighted.mean(black,  mean_zip_code_population,
+                                   na.rm = TRUE),
+            asian = weighted.mean(asian, mean_zip_code_population, 
+                                   na.rm = TRUE),
+            multiracial = weighted.mean(multiracial, mean_zip_code_population, 
+                                na.rm = TRUE),
+            other = weighted.mean(other, mean_zip_code_population, 
+                                   na.rm = TRUE),
+            native_american = weighted.mean(native_american, mean_zip_code_population, 
+                                             na.rm = TRUE),
+            pacific_islander = weighted.mean(pacific_islander, mean_zip_code_population, 
+                                              na.rm = TRUE),
+            hispanic_latinx = weighted.mean(hispanic_latinx, mean_zip_code_population, 
+                                             na.rm = TRUE)) %>%
   pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
   mutate(race = str_replace(string = race,
                             pattern = "_",
@@ -469,38 +471,53 @@ data_plot_race <- data_plot_race_ridb %>%
   pivot_longer(cols = 2:3,
                names_to = "data_source",
                values_to = "race_percent_average") %>% 
-  mutate(data_source = factor(data_source, levels = c("RIDB", "CA")))
+  mutate(data_source = factor(data_source, levels = c("RIDB", "CA")),
+         tooltip_text = case_when(data_source == "RIDB" ~ "Visitors to California sites live in <br>communities with an estimated ",
+                                  data_source == "CA" ~ "California has "),
+         race = str_replace(string = race,
+                            pattern = "Other",
+                            replacement = "Other Race(s)"))
+
+x_max <- max(data_plot_race$race_percent_average) + 0.1 # max x rounded to nearest 5
 
 ## -- create plot -- ##
 
 # parameters
-groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
+groups_colors_ridb_ca <- c("RIDB" = "#009900FF", 
+                           "CA" = "#666666")
+text_colors_ridb_ca <- c("RIDB" = "#006600", 
+                         "CA" = "#282828")
 
 # plot for shiny app
 plot_race <- 
   ggplot(data = data_plot_race) +
   geom_col(aes(x = race_percent_average,
                y = reorder(race, race_percent_average),
-               fill = data_source),
-           stat = "identity",
+               fill = data_source,
+               text = paste0(tooltip_text, percent(race_percent_average, accuracy = 0.1), " ", race, " populations.")),
            position = "dodge") +
-  scale_fill_manual(values = groups_colors_ridb_ca) +  
+  scale_x_continuous(labels = percent, limits = c(0, x_max)) +
+  scale_fill_manual(values = groups_colors_ridb_ca) + 
   geom_text(aes(x = race_percent_average,
                 y = reorder(race, race_percent_average),
-                label = paste0(round(race_percent_average, 1), "%"),
+                label = percent(race_percent_average, accuracy = 0.1),
                 col = data_source), 
             position = position_dodge(width = 1), 
-            hjust = -0.1, size = 4) +
-  scale_color_manual(values = groups_colors_ridb_ca) +
+            size = 3) +
+  scale_color_manual(values = text_colors_ridb_ca) +
   labs(x = "Percentage (%)",
        y = "",
-       title = "Racial Breakdown of ZIP Codes in 2018",
-       subtitle = "Visitors' home ZIP codes for Overnight Reservations in California \nvs. California Residents") +
-  scale_x_continuous(limits = c(0, 60), breaks = seq(0, 60, 10), minor_breaks = seq(0, 60, 5)) +
+       title = paste0("Estimated Racial Percentages of <br>California Residents vs. Visitors to ", 
+                      siteInput, ", ", admin_unitInput)) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank())
-plot_race
+
+ggplotly(plot_race, 
+         tooltip = list("text")) %>%
+  style(hoverinfo = "none", traces = c(3, 4),
+        textposition = "right") %>% 
+  layout(showlegend = FALSE)
 ```
 
 ### Education
