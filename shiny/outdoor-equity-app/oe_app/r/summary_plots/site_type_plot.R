@@ -47,6 +47,7 @@ site_type_plot <- function(admin_unitInput, siteInput){
           panel.grid.major.y = element_blank())
   
   ggplotly(site_type_plotly,
-           tooltip = list("text"))
+           tooltip = list("text"),
+           dynamicTicks = TRUE)
   
 } # EO function

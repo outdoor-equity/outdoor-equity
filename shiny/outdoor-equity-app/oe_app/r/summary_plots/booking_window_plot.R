@@ -73,7 +73,8 @@ booking_window_plot <- function(admin_unitInput, siteInput){
           panel.grid.major.y = element_blank())
   
   ggplotly(booking_window_plotly,
-           tooltip = list("text")) %>% 
+           tooltip = list("text"),
+           dynamicTicks = TRUE) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.6, 
