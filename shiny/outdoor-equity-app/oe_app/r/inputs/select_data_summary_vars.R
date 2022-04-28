@@ -4,7 +4,7 @@ select_data_summary_vars <- function(){
   
   selectizeInput(inputId = "data_summary",
                  label = "Select a variable",
-                 choices = summary_vars, # add sort later
+                 choices = sort(summary_vars), 
                  multiple = FALSE,
                  options = list(
                    placeholder = "Type to search for a variable",
