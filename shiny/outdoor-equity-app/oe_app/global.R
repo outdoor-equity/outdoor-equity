@@ -45,9 +45,10 @@ source("r/inputs/select_data_summary_vars.R")
 source("r/inputs/select_relationships_vars.R")
 
 ## source summary plot functions ----
-source("r/outputs/summary-boxes-plots.R")
+#source("r/outputs/summary-boxes-plots.R") see if I can get this to work later
 source("r/summary_plots/dist_travel_plot.R")
 source("r/summary_plots/booking_window_plot.R")
+source("r/summary_plots/daily_cost_visitor_plot.R")
 source("r/summary_plots/daily_cost_plot.R")
 source("r/summary_plots/length_of_stay_plot.R")
 source("r/summary_plots/site_type_plot.R")
