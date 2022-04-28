@@ -62,7 +62,8 @@ length_of_stay_plot <- function(admin_unitInput, siteInput){
           panel.grid.major.y = element_blank())
   
   ggplotly(length_of_stay_plotly,
-           tooltip = list("text")) %>% 
+           tooltip = list("text"),
+           dynamicTicks = TRUE) %>% 
     layout(margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.4, 
