@@ -50,7 +50,7 @@ ui <- fluidPage(
                         fluidRow(
                           # SO pick a var input box
                           box(width = 12,
-                              title = "1. Select a variable and how many sites to compare",
+                              title = "Select a variable and how many sites to compare",
                               splitLayout(
                               # choose a var
                               select_data_summary_vars(),
@@ -95,71 +95,43 @@ ui <- fluidPage(
                               ),
                               plotlyOutput(outputId = "data_summary_plot_2") %>%
                                 withSpinner(color = "#0dc5c1")
-                              ), # EO data summary plot 2 output box
-
-                          # SO data summary plot 3 output box
-                          box(id = "num_viz_3",
-                              width = 6,
-                              splitLayout(
-                                # agency input
-                                select_agency(locationId = "summary_3"),
-                                # admin input
-                                select_admin_unit(locationId = "summary_3"),
-                                # site input
-                                select_site(locationId = "summary_3")
-                              ) #,
-                              # plotlyOutput(outputId = "data_summary_plot_3") %>%
-                              #   withSpinner(color = "#0dc5c1")
-                              ), # EO data summary plot 3 output box
-
-                          # SO data summary plot 4 output box
-                          box(id = "num_viz_4",
-                              width = 6,
-                              splitLayout(
-                                # agency input
-                                select_agency(locationId = "summary_4"),
-                                # admin input
-                                select_admin_unit(locationId = "summary_4"),
-                                # site input
-                                select_site(locationId = "summary_4")
-                              )#,
-                              # plotlyOutput(outputId = "data_summary_plot_4") %>%
-                              #   withSpinner(color = "#0dc5c1")
-                          ) # EO data summary plot 3 output box
-                          
+                              ) # EO data summary plot 2 output box
                         ) # EO data summary FR layout
-                        ), #### EO data summary ----
+                        ), #### EO data summary
                
                ### SO data relationships ----
                tabPanel(title = "Data Relationships",
                         fluid = TRUE,
                         
                         titlePanel("Visualize a relationship"),
-                        # data relationships sidebar layout
-                        sidebarLayout(
-                          # data relationships analysis side bar panel
-                          # IMPORTANT NOTE(HD) MAKE SIDEBAR PANEL HORIZONTAL ----
-                          sidebarPanel(
-                            
-                            # data relationship input
-                            select_data_relationship(),
-                            # agency input
-                            select_agency(locationId = "relationships"),
-                            # admin input
-                            select_admin_unit(locationId = "relationships"),
-                            # site input
-                            select_site(locationId = "relationships"),
-
-                          ), # EO data relationships sidebar panel
+                        # SO data relationships FR layout
+                        fluidRow(
+                          # SO pick relationship input box
+                          box(width = 4,
+                              title = "1. Pick a relationship to visualize",
+                              select_data_relationship()
+                          ), # EO pick relationship input box
                           
-                          # data relationships main panel aka visual
-                          mainPanel(
-                            
-                            plotlyOutput(outputId = "data_relationships_plot") %>% 
-                              withSpinner(color="#0dc5c1")
-                        
-                        ) # EO data relationships main panel
-                        ) # EO data relationships sidebar layout
+                          # SO subset relationship data box
+                          box(width = 8,
+                              title = "2. Subset the data",
+                              splitLayout(
+                                # agency input
+                                select_agency(locationId = "relationships"),
+                                # admin input
+                                select_admin_unit(locationId = "relationships"),
+                                # site input
+                                select_site(locationId = "relationships")
+                              ) # EO split layout relationship subset
+                              ), # EO relationship subset box
+                          
+                          # relationships plot output box
+                          box(width = 12,
+                              title =  "Plot goes here",
+                              plotlyOutput(outputId = "data_relationships_plot") %>%
+                                withSpinner(color = "#0dc5c1")
+                              ) # EO relationships plot output box
+                        ) # EO FR data relationships
                         ), #### EO data relationships ----
 
                ### SO visitorsheds ----
@@ -167,55 +139,88 @@ ui <- fluidPage(
                         fluid = TRUE,
                         
                         titlePanel("Visualize a visitorshed"),
-                        # visitorsheds sidebar layout
-                        sidebarLayout(
-                          # visitorsheds sidebar panel
-                          sidebarPanel(
+                        # SO FR visitorsheds   
+                        fluidRow(
+                          # subset visitorshed data box
+                          box(width = 12,
+                              title = "Subset the data",
+                              splitLayout(
+                                # agency input
+                                select_agency(locationId = "visitorsheds"),
+                                # admin input
+                                select_admin_unit(locationId = "visitorsheds"),
+                                # site input
+                                select_site(locationId = "visitorsheds")
+                              ) # EO visitorshed split laytout
+                              ), # EO subset visitorshed data box
                           
-                            # agency input
-                            select_agency(locationId = "visitorsheds",
-                                          isMultiple = FALSE),
-                            # admin input
-                            select_admin_unit(locationId = "visitorsheds",
-                                              isMultiple = FALSE),
-                            # site input 
-                            select_site(locationId = "visitorsheds",
-                                        isMultiple = FALSE),
-                            
-                          ), # EO visitorsheds sidebar panel
+                          # SO US visitorshed map box
+                          box(width = 6,
+                              title = "US Visitorshed",
+                              tmapOutput(outputId = "usVisitorshed_plot") %>% 
+                                withSpinner(color="#0dc5c1")
+                          ), # EO US visitorshed map box
                           
-                          # visitorsheds main panel aka visual
-                          mainPanel(
-                  
-                            fluidRow(
-                              
-                              box(
-                                tmapOutput(outputId = "usVisitorshed_plot") %>% 
-                                  withSpinner(color="#0dc5c1"),
-                                width = 6,
-                                title = "US Visitorshed"
-                              ), # EO box US map
-                              
-                              box(
-                                tmapOutput(outputId = "caVisitorshed_plot") %>% 
-                                  withSpinner(color="#0dc5c1"),
-                                with = 6,
-                                title = "California Visitorshed"
-                              ) # EO box site map
-                            ), # EO fluidRow maps
-                            
-                            fluidRow(
-                              
-                              box(
-                                #DTOutput(outputId = "") %>% withSpinner(color="#0dc5c1"),
-                                width = 12,
-                                title = "Reservable Site Summary"
-                              ) # EO box summary table
-                            ) # EO fluidRow summary table
-
-                            
-                          ) # EO visitorsheds main panel
-                        ) # EO visitorsheds sidebar layout
+                          # SO CA visitorshed map box
+                          box(width = 6,
+                              title = "California Visitorshed",
+                              tmapOutput(outputId = "caVisitorshed_plot") %>% 
+                                withSpinner(color="#0dc5c1"),
+                          ), # EO US visitorshed map box
+                          
+                          # SO visitorshed info box
+                          box(width = 12,
+                              title = "Reservable Site Summary"
+                          ) # EO visitorshed info box
+                        ) # EO FR visitorsheds  
+                        
+                        
+                        
+                        # sidebarLayout(
+                        #   # visitorsheds sidebar panel
+                        #   sidebarPanel(
+                        # 
+                        #     # agency input
+                        #     select_agency(locationId = "visitorsheds",
+                        #     # admin input
+                        #     select_admin_unit(locationId = "visitorsheds"),
+                        #     # site input 
+                        #     select_site(locationId = "visitorsheds"),
+                        #     
+                        #   ), # EO visitorsheds sidebar panel
+                        #   
+                        #   # visitorsheds main panel aka visual
+                        #   mainPanel(
+                        # 
+                        #     fluidRow(
+                        #       
+                        #       box(
+                        #         tmapOutput(outputId = "usVisitorshed_plot") %>% 
+                        #           withSpinner(color="#0dc5c1"),
+                        #         width = 6,
+                        #         title = "US Visitorshed"
+                        #       ), # EO box US map
+                        #       
+                        #       box(
+                        #         tmapOutput(outputId = "caVisitorshed_plot") %>% 
+                        #           withSpinner(color="#0dc5c1"),
+                        #         with = 6,
+                        #         title = "California Visitorshed"
+                        #       ) # EO box site map
+                        #     ), # EO fluidRow maps
+                        #     
+                        #     fluidRow(
+                        #       
+                        #       box(
+                        #         #DTOutput(outputId = "") %>% withSpinner(color="#0dc5c1"),
+                        #         width = 12,
+                        #         title = "Reservable Site Summary"
+                        #       ) # EO box summary table
+                        #     ) # EO fluidRow summary table
+                        # 
+                        #     
+                        #   ) # EO visitorsheds main panel
+                        # ) # EO visitorsheds sidebar layout
                         ) #### EO visitorsheds ----
 
                ), ## EO Analysis tab ----
