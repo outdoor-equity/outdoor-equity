@@ -41,7 +41,7 @@ data_ridb_acs_2018 <- vroom(file = "../../../../data_clean/2018_joined_data.csv"
 
 # ACS CA data
 data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
-                            delim = ",")
+                          delim = ",")
 
 ```
 
@@ -79,42 +79,42 @@ hist_colors <- c("#009900FF", "#00c000")
 
 # plot for shiny app
 plot_distance_traveled <- ggplot(data = data_plot_distance_traveled) +
-    geom_histogram(aes(x = distance_traveled_mi,
-                       text = paste0(percent(..count.. / nrow(data_plot_distance_traveled), accuracy = 0.1), 
-                                     " of all reservations traveled between ", comma(xmin, accuracy = 1), " and ", 
-                                     comma(xmax, accuracy = 1), " miles", "<br>(All reservations to site: ",
-                                     comma(nrow(data_plot_distance_traveled), accuracy = 1), ")")),
-                   binwidth = center_bin * 2,
-                   center = center_bin,
-                   fill = hist_colors[[1]], 
-                   col = hist_colors[[2]], size = 0.05) +
-    scale_x_continuous(limits = c(0, x_max)) +
-    scale_y_continuous(labels = comma) +
-    geom_vline(xintercept = quant_80,
-               linetype = "dashed", alpha = 0.5, color = "#000099") +
-    labs(x = "Distance traveled (miles)",
-         y = "",
-         title = paste0("Distance Traveled from Home to Reservation for <br>", 
-                        siteInput, ", ", admin_unitInput, " in 2018")) +
-    theme_minimal() +
-    theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank())
+  geom_histogram(aes(x = distance_traveled_mi,
+                     text = paste0(percent(..count.. / nrow(data_plot_distance_traveled), accuracy = 0.1), 
+                                   " of all reservations traveled between ", comma(xmin, accuracy = 1), " and ", 
+                                   comma(xmax, accuracy = 1), " miles", "<br>(All reservations to site: ",
+                                   comma(nrow(data_plot_distance_traveled), accuracy = 1), ")")),
+                 binwidth = center_bin * 2,
+                 center = center_bin,
+                 fill = hist_colors[[1]], 
+                 col = hist_colors[[2]], size = 0.05) +
+  scale_x_continuous(limits = c(0, x_max)) +
+  scale_y_continuous(labels = comma) +
+  geom_vline(xintercept = quant_80,
+             linetype = "dashed", alpha = 0.5, color = "#000099") +
+  labs(x = "Distance traveled (miles)",
+       y = "",
+       title = paste0("Distance Traveled from Home to Reservation for <br>", 
+                      siteInput, ", ", admin_unitInput, " in 2018")) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank())
 
 ggplotly(plot_distance_traveled,
-           tooltip = list("text"),
+         tooltip = list("text"),
          dynamicTicks = TRUE) %>% 
-    layout(margin = list(b = 130, t = 100), 
-           annotations =  list(x = 1, 
-                               y = -0.5, 
-                               text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
-                                             "<br>traveled less than ", quant_80, 
-                                             " miles (shown on plot with dotted line)."), 
-                               showarrow = F, 
-                               xre = 'paper', yref = 'paper', 
-                               xanchor = 'left', 
-                               yanchor = 'auto', 
-                               xshift = 0, yshift = 0,
-                               font = list(size = 12, color = "#000099")))
+  layout(margin = list(b = 130, t = 100), 
+         annotations =  list(x = 1, 
+                             y = -0.5, 
+                             text = paste0("80% of reservations to ", siteInput, ", ", admin_unitInput, 
+                                           "<br>traveled less than ", quant_80, 
+                                           " miles (shown on plot with dotted line)."), 
+                             showarrow = F, 
+                             xre = 'paper', yref = 'paper', 
+                             xanchor = 'left', 
+                             yanchor = 'auto', 
+                             xshift = 0, yshift = 0,
+                             font = list(size = 12, color = "#000099")))
 ```
 
 
@@ -130,7 +130,7 @@ data_plot_boooking_window <- data_ridb_acs_2018 %>%
 x_max <- (round(max(data_plot_boooking_window$booking_window) / 5) * 5) + 5 # max x rounded to nearest 5
 
 quant_80 <- quantile(x = data_plot_boooking_window$booking_window,
-                       probs = seq(0, 1, 0.1))[[9]] %>% round(0)
+                     probs = seq(0, 1, 0.1))[[9]] %>% round(0)
 
 ## -- create plot -- ##
 
@@ -156,7 +156,7 @@ plot_booking_window <- ggplot(data = data_plot_boooking_window) +
   scale_x_continuous(limits = c(0, x_max), breaks = seq(0, x_max, 30)) +
   scale_y_continuous(labels = comma) +
   geom_vline(xintercept = quant_80,
-               linetype = "dashed", alpha = 0.5, color = "#000099") +
+             linetype = "dashed", alpha = 0.5, color = "#000099") +
   geom_vline(xintercept = 180, 
              linetype = "dashed", size = .3, alpha = .5) +
   annotate("text", label = "6 months", 
@@ -220,9 +220,9 @@ hist_colors <- c("#009900FF", "#00c000")
 plot_daily_cost <- ggplot(data = data_plot_daily_cost) +
   geom_histogram(aes(x = daily_cost, 
                      text = paste0(percent(..count.. / nrow(data_plot_daily_cost), accuracy = 0.1), 
-                                    " of all reservations paid between ", dollar(xmin), " and ", dollar(xmax),
-                                    "<br>(All reservations to site: ",
-                                    comma(nrow(data_plot_boooking_window), accuracy = 1), ")")),
+                                   " of all reservations paid between ", dollar(xmin), " and ", dollar(xmax),
+                                   "<br>(All reservations to site: ",
+                                   comma(nrow(data_plot_boooking_window), accuracy = 1), ")")),
                  binwidth = center_bin * 2,
                  center = center_bin,
                  fill = hist_colors[[1]], 
@@ -281,9 +281,9 @@ hist_colors <- c("#009900FF", "#00c000")
 plot_daily_cost_visitor <- ggplot(data = data_plot_daily_cost_visitor) +
   geom_histogram(aes(x = daily_cost_per_visitor, 
                      text = paste(percent(..count.. / nrow(data_plot_daily_cost_visitor), accuracy = 0.1), 
-                                    "of all reservations paid between", dollar(xmin), "and", dollar(xmax),
-                                    "<br>(All reservations to site: ",
-                                    comma(nrow(data_plot_daily_cost_visitor), accuracy = 1), ")")),
+                                  "of all reservations paid between", dollar(xmin), "and", dollar(xmax),
+                                  "<br>(All reservations to site: ",
+                                  comma(nrow(data_plot_daily_cost_visitor), accuracy = 1), ")")),
                  binwidth = 1,
                  center = 0.5,
                  fill = hist_colors[[1]], 
@@ -340,9 +340,9 @@ hist_colors <- c("#009900FF", "#00c000")
 plot_length_of_stay <- ggplot(data = data_plot_length_of_stay) +
   geom_histogram(aes(x = length_of_stay,
                      text = paste0(percent(..count.. / nrow(data_plot_length_of_stay), accuracy = 0.1), 
-                                     " of all reservations stay between ", comma(xmin, accuracy = 1), " and ", 
-                                     comma(xmax, accuracy = 1), " days",  "<br>(All reservations to site: ",
-                                     comma(nrow(data_plot_length_of_stay), accuracy = 1), ")")),
+                                   " of all reservations stay between ", comma(xmin, accuracy = 1), " and ", 
+                                   comma(xmax, accuracy = 1), " days",  "<br>(All reservations to site: ",
+                                   comma(nrow(data_plot_length_of_stay), accuracy = 1), ")")),
                  binwidth = 1,
                  center = 0.5,
                  fill = hist_colors[[1]], 
@@ -382,13 +382,13 @@ ggplotly(plot_length_of_stay,
 ## -- data wrangle -- ##
 data_plot_site_type <- data_ridb_acs_2018 %>% 
   select(park, aggregated_site_type) %>% 
-      mutate(aggregated_site_type = str_to_title(string = aggregated_site_type),
-             aggregated_site_type = str_replace(string = aggregated_site_type,
-                                                pattern = "Rv",
-                                                replacement = "RV")) %>% 
+  mutate(aggregated_site_type = str_to_title(string = aggregated_site_type),
+         aggregated_site_type = str_replace(string = aggregated_site_type,
+                                            pattern = "Rv",
+                                            replacement = "RV")) %>% 
   count(aggregated_site_type)
 
- 
+
 ## -- create plot -- ##
 
 # parameters
@@ -396,23 +396,23 @@ hist_colors <- c("#009900FF")
 
 # plot for shiny app
 plot_site_type <- ggplot(data = data_plot_site_type) +
-    geom_col(aes(x = n/sum(n), 
-                 y = reorder(aggregated_site_type, n), 
-                 text = paste0(percent(n/sum(n), accuracy = 1), " of reservations were made to ", 
-                               aggregated_site_type, " sites", "<br>(All reservations to site: ",
-                               comma(sum(n), accuracy = 1), ")")),
-             fill = hist_colors) +
-    scale_x_continuous(labels = percent) +
-    labs(x = "Percentage of Reservations to Selected Site",
-         y = "",
-         title = paste0("Number of Visits by Site Type for <br>", 
-                        admin_unitInput, ", ", siteInput, "in 2018")) +
-    theme_minimal() +
-    theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank())
+  geom_col(aes(x = n/sum(n), 
+               y = reorder(aggregated_site_type, n), 
+               text = paste0(percent(n/sum(n), accuracy = 1), " of reservations were made to ", 
+                             aggregated_site_type, " sites", "<br>(All reservations to site: ",
+                             comma(sum(n), accuracy = 1), ")")),
+           fill = hist_colors) +
+  scale_x_continuous(labels = percent) +
+  labs(x = "Percentage of Reservations to Selected Site",
+       y = "",
+       title = paste0("Number of Visits by Site Type for <br>", 
+                      admin_unitInput, ", ", siteInput, "in 2018")) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank())
 
 ggplotly(plot_site_type,
-           tooltip = list("text"),
+         tooltip = list("text"),
          dynamicTicks = TRUE)
 ```
 
@@ -442,21 +442,21 @@ data_plot_race_ridb <- data_ridb_acs_2018 %>%
 # CA population
 data_plot_race_ca <- data_ca_acs_2018 %>%
   summarize(white = weighted.mean(white, mean_zip_code_population, 
-                                   na.rm = TRUE),
+                                  na.rm = TRUE),
             black = weighted.mean(black,  mean_zip_code_population,
-                                   na.rm = TRUE),
+                                  na.rm = TRUE),
             asian = weighted.mean(asian, mean_zip_code_population, 
-                                   na.rm = TRUE),
+                                  na.rm = TRUE),
             multiracial = weighted.mean(multiracial, mean_zip_code_population, 
-                                na.rm = TRUE),
+                                        na.rm = TRUE),
             other = weighted.mean(other, mean_zip_code_population, 
-                                   na.rm = TRUE),
+                                  na.rm = TRUE),
             native_american = weighted.mean(native_american, mean_zip_code_population, 
-                                             na.rm = TRUE),
+                                            na.rm = TRUE),
             pacific_islander = weighted.mean(pacific_islander, mean_zip_code_population, 
-                                              na.rm = TRUE),
+                                             na.rm = TRUE),
             hispanic_latinx = weighted.mean(hispanic_latinx, mean_zip_code_population, 
-                                             na.rm = TRUE)) %>%
+                                            na.rm = TRUE)) %>%
   pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
   mutate(race = str_replace(string = race,
                             pattern = "_",
@@ -475,11 +475,11 @@ data_plot_race <- data_plot_race_ridb %>%
                values_to = "race_percent_average") %>% 
   mutate(data_source = factor(data_source, levels = c("RIDB", "CA")),
          tooltip_start = case_when(data_source == "RIDB" ~ "Visitors to California sites live in communities with an <br>estimated ",
-                                  data_source == "CA" ~ ""),
+                                   data_source == "CA" ~ ""),
          tooltip_middle = case_when(data_source == "RIDB" ~ " ",
-                                  data_source == "CA" ~ " of Californians are "),
+                                    data_source == "CA" ~ " of Californians are "),
          tooltip_end = case_when(data_source == "RIDB" ~ " populations",
-                                  data_source == "CA" ~ ""),
+                                 data_source == "CA" ~ ""),
          race = str_replace(string = race,
                             pattern = "Other",
                             replacement = "Other Race(s)"))
@@ -541,13 +541,13 @@ data_plot_education_ridb <- data_ridb_acs_2018 %>%
 # CA population
 data_plot_education_ca <- data_ca_acs_2018 %>%
   summarize(hs_GED_or_below = weighted.mean(hs_GED_or_below, mean_zip_code_population, 
-                                             na.rm = TRUE),
+                                            na.rm = TRUE),
             some_college = weighted.mean(some_college, mean_zip_code_population, 
-                                          na.rm = TRUE),
+                                         na.rm = TRUE),
             college = weighted.mean(college, mean_zip_code_population, 
-                                     na.rm = TRUE),
+                                    na.rm = TRUE),
             master_or_above = weighted.mean(master_or_above, mean_zip_code_population, 
-                                             na.rm = TRUE))  %>%
+                                            na.rm = TRUE))  %>%
   pivot_longer(cols = 1:4, names_to = "education", values_to = "education_percent_average")
 
 # join data for plotting
@@ -652,7 +652,7 @@ data_plot_language_ca <- data_ca_acs_2018 %>%
   rename(location_indicator = zip_code) %>% 
   mutate(data_source = "California Residents")
 
-test <- rbind(data_plot_language_ridb, data_plot_language_ca)
+data_plot_language <- rbind(data_plot_language_ridb, data_plot_language_ca)
 
 
 ## -- create plot -- ##
@@ -668,17 +668,16 @@ fill_ridb_ca <- c("Visitors to California Sites" = "#00c000",
 
 # plot for shiny app
 plot_language <- ggplot() +
-  geom_density(data = test,
-             aes(x = not_english_only,
-                 color = data_source,
-                 fill = data_source,
-                 weight = mean_zip_code_population, 
-                 text = data_source),
-             alpha = 0.5) +
+  geom_density(data = data_plot_language,
+               aes(x = not_english_only,
+                   color = data_source,
+                   fill = data_source,
+                   weight = mean_zip_code_population, 
+                   text = data_source),
+               alpha = 0.5) +
   scale_fill_manual(values = fill_ridb_ca) +
   scale_color_manual(values = color_ridb_ca) +
   scale_x_continuous(labels = percent) +
-  scale_y_continuous(labels = comma) +
   labs(x = "Percentage of Population that Speaks a Language Other than English at Home",
        y = "Density",
        title = paste0("Non-English Spken in the Home of <br>California Residents vs. Visitors to ", 
@@ -705,13 +704,13 @@ data_plot_median_income_ridb <- data_ridb_acs_2018 %>%
   select(park, median_income) %>% 
   rename(location_indicator = park) %>% 
   mutate(mean_zip_code_population = 1,
-         data_source = "RIDB")
+         data_source = "Visitors to California Sites")
 
 # CA population
 data_plot_median_income_ca <- data_ca_acs_2018 %>%
   select(zip_code, median_income, mean_zip_code_population) %>% 
   rename(location_indicator = zip_code) %>% 
-  mutate(data_source = "CA")
+  mutate(data_source = "California Residents")
 
 data_plot_median_income <- rbind(data_plot_median_income_ridb, data_plot_median_income_ca)
 
@@ -719,35 +718,37 @@ data_plot_median_income <- rbind(data_plot_median_income_ridb, data_plot_median_
 ## -- create plot -- ##
 
 # parameters
-color_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
-fill_ridb_ca <- c("RIDB" = "#00c000", "CA" = "#848484")
+color_ridb_ca <- c("Visitors to California Sites" = "#009900FF", 
+                   "California Residents" = "#666666")
+fill_ridb_ca <- c("Visitors to California Sites" = "#00c000", 
+                  "California Residents" = "#848484")
 
 # plot for shiny app
 plot_median_income <- ggplot() +
   geom_density(data = data_plot_median_income,
-                 aes(x = median_income,
-                     color = data_source,
-                     fill = data_source,
-                     weight = mean_zip_code_population),
-                 alpha = 0.5) +
+               aes(x = median_income,
+                   color = data_source,
+                   fill = data_source,
+                   weight = mean_zip_code_population,
+                   text = data_source),
+               alpha = 0.5) +
   scale_fill_manual(values = fill_ridb_ca) +
   scale_color_manual(values = color_ridb_ca) +
   scale_x_continuous(labels = dollar) +
-  # geom_vline(xintercept = 75277, 
-  #            linetype = "dashed", size = .3, alpha = .5) +
-  # annotate("text", label = "Median household income \nin 2018 in CA ($75,277)", 
-  #          x = 118000, y = .15) +
-  labs(x = "Median Income ($)",
-       y = "",
-       title = paste0("Median-incomes for <br>California Residents vs. Visitors to ", 
+  labs(x = "Household Median Income (US $)",
+       y = "Density",
+       title = paste0("Median-incomes for California Residents vs. <br>Visitors to ", 
                       siteInput, ", ", admin_unitInput)) +
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank())
 
-plotly(plot_median_income)
-plot_median_income
+ggplotly(plot_median_income, 
+         tooltip = list("text")) %>% 
+  layout(showlegend = FALSE)
 ```
+
+
 
 
 ### Total reservations (by agency)
@@ -779,7 +780,7 @@ plot_agency_site <-
         # axis.text = element_text(size = 12),
         # axis.title = element_text(size = 14, face = "bold"),
         # title = element_text(size = 16, face = "bold")
-        )
+  )
 plot_agency_site
 ```
 
@@ -808,7 +809,7 @@ plot_agency_visits <-
         # axis.text = element_text(size = 12),
         # axis.title = element_text(size = 14, face = "bold"),
         # title = element_text(size = 16, face = "bold")
-        )
+  )
 plot_agency_visits
 ```
 

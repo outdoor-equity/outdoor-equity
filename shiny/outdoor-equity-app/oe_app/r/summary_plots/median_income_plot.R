@@ -10,48 +10,47 @@ median_income_plot <- function(admin_unitInput, siteInput){
     # reservations in CA
     data_joined_2018 %>%
       filter(park %in% siteInput) %>%
-      select(park, customer_zip, median_income)
+      select(park, median_income) %>% 
+      rename(location_indicator = park) %>% 
+      mutate(mean_zip_code_population = 1,
+             data_source = "Visitors to California Sites")
     
   }) # EO RDF
   
   # non RDF
   # CA population
-  data_plot_median_income_ca <- data_ca_acs_2018 %>%
-    select(zip_code, median_income)
+  median_income_ca <- data_ca_acs_2018 %>%
+    select(zip_code, median_income, mean_zip_code_population) %>% 
+    rename(location_indicator = zip_code) %>% 
+    mutate(data_source = "California Residents")
   
-  x_max <- max(median_income_rdf()$education_percent_average) + 0.1 # max x rounded to nearest 5
+  median_income_data_plot <- rbind(median_income_rdf(), median_income_ca)
   
   # parameters
   groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
   
   # plot for shiny app
-  ggplot() +
-    geom_histogram(data = data_plot_median_income_ca,
+  median_income_plotly <- ggplot() +
+    geom_histogram(data = median_income_data_plot,
                    aes(x = median_income,
-                       y = stat(count) / sum(count),
-                       bins = 10),
-                   fill = groups_colors_ridb_ca[[2]], 
-                   alpha = 0.75) +
-    # RDF here
-    income_plotly <- geom_histogram(data = median_income_rdf(),
-                   aes(x = median_income,
-                       y = stat(count) / sum(count),
-                       bins = 10), 
-                   fill = groups_colors_ridb_ca[[1]], 
-                   alpha = 0.75) +
-    scale_x_continuous(limits = c(0, x_max), labels = comma) +
-    scale_y_continuous(labels = percent) +
-    geom_vline(xintercept = 75277, 
-               linetype = "dashed", size = .3, alpha = .5) +
-    annotate("text", label = "Median household income \nin 2018 in CA ($75,277)", 
-             x = 118000, y = .15) +
-    labs(x = "Median Income ($))",
-         y = "",
-         title = paste0("Median Income in Home in ZIP Codes in 2018 for ", siteInput, ", ", admin_unitInput)) +
+                       color = data_source,
+                       fill = data_source,
+                       weight = mean_zip_code_population,
+                       text = data_source),
+                   alpha = 0.5) +
+    scale_fill_manual(values = fill_ridb_ca) +
+    scale_color_manual(values = color_ridb_ca) +
+    scale_x_continuous(labels = dollar) +
+    labs(x = "Household Median Income (US $)",
+         y = "Density",
+         title = paste0("Median-incomes for California Residents vs. <br>Visitors to ", 
+                        siteInput, ", ", admin_unitInput)) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank())
   
-  ggplotly(income_plotly)
+  ggplotly(plot_median_income, 
+           tooltip = list("text")) %>% 
+    layout(showlegend = FALSE)
   
 } # EO function

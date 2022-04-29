@@ -28,7 +28,7 @@ median_income_plot <- function(admin_unitInput, siteInput){
     mutate(data_source = "California Residents")
   
   # join data for plotting
-  language_data_plot <- rbind(data_plot_language_ridb, data_plot_language_ca)
+  language_data_plot <- rbind(language_rdf(), language_ca)
   
   # parameters
   color_ridb_ca <- c("Visitors to California Sites" = "#009900FF", 
