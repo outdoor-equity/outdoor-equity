@@ -20,7 +20,7 @@ library(sf)
 library(patchwork)
 library(scales)
 library(paletteer)
-#library(DT)
+library(DT)
 library(collections)
 library(plotly)
 

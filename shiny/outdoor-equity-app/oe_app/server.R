@@ -429,6 +429,9 @@ output$usVisitorshed_plot <- renderTmap({
   
 }) # EO visitorsheds plots
 
+## SO DATA DOWNLOAD ----
+output$data_download_table <- renderDT(data_joined_2018)
+
 
 
 } ## EO server
