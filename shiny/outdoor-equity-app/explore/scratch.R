@@ -31,8 +31,7 @@ site_type_plotly <- ggplot(data = site_type_test) +
         plot.title = element_text(size = 11))
 
 ggplotly(site_type_plotly,
-         tooltip = list("text"),
-         dynamicTicks = TRUE)
+         tooltip = list("text"))
 
 booking_window_rdf <- data_joined_2018 %>%
   filter(park %in% "Anacapa Island") %>%
