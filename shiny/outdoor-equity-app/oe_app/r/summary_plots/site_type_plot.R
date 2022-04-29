@@ -41,10 +41,11 @@ site_type_plot <- function(admin_unitInput, siteInput){
     labs(x = "Percentage of Reservations to Selected Site",
          y = "",
          title = paste0("Number of Visits by Site Type for <br>", 
-                        admin_unitInput, ", ", siteInput, "in 2018")) +
+                        admin_unitInput, ", ", siteInput, " in 2018")) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank())
+          panel.grid.major.y = element_blank(),
+          plot.title = element_text(size = 11))
   
   ggplotly(site_type_plotly,
            tooltip = list("text"),
