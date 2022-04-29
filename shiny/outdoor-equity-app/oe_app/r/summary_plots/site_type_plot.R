@@ -48,7 +48,6 @@ site_type_plot <- function(admin_unitInput, siteInput){
           plot.title = element_text(size = 11))
   
   ggplotly(site_type_plotly,
-           tooltip = list("text"),
-           dynamicTicks = TRUE)
+           tooltip = list("text"))
   
 } # EO function
