@@ -4,7 +4,7 @@ select_data_relationship <- function(){
   
   selectizeInput(inputId = "data_relationships",
                  label = "Select a data relationship to visualize",
-                 choices = c("Race x Distance traveled",
+                 choices = sort(c("Race x Distance traveled",
                              "Race x Site type",
                              "Race x Booking window",
                              "Race x Daily cost",
@@ -15,8 +15,7 @@ select_data_relationship <- function(){
                              "Language",
                              "Median-income x Distance traveled",
                              "Booking window x Site type",
-                             "Booking window x distance traveled"),
-                 selected = "RIDB",
+                             "Booking window x distance traveled")),
                  multiple = FALSE,
                  options = list(
                    placeholder = "Type to search for a data relationship",
