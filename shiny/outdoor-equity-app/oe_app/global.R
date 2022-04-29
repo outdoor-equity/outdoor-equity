@@ -96,21 +96,7 @@ summary_vars <- c("Distance traveled" = "distance_traveled_mi",
                   "Language" = "not_english_only")
 
 ## relationship vars ----
-compare_vars <- c("Education - High School/GED" = "median_hs_GED_or_below",
-                  "Education - College" = "median_college",
-                  "Education - Some college" = "median_some_college",
-                  "Estimated household income" = "median_median_income",
-                  "Education - Master or above" = "median_master_or_above",
-                  "Language - English only" = "median_english_only",
-                  "Language - Not English only" = "median_not_english_only",
-                  "Race - Asian" = "median_asian",
-                  "Race - Black" = "median_black",
-                  "Race - Hispanic/Latinx" = "median_hispanic_latinx",
-                  "Race - Multiracial" = "median_multiracial",
-                  "Race - Native American" = "median_native_american",
-                  "Race - Pacific Islander" = "median_pacific_islander",
-                  "Race - White" = "median_white",
-                  "Race - Other" = "median_other")
+## ADD HERE IF ONCE SPECIFIC VARS HAVE BEEN CHOSEN
 
 # DICTIONARY ----
 
