@@ -397,7 +397,7 @@ hist_colors <- c("#009900FF")
 # plot for shiny app
 plot_site_type <- ggplot(data = data_plot_site_type) +
   geom_col(aes(x = n/sum(n), 
-               y = reorder(aggregated_site_type, n), 
+               y = reorder(aggregated_site_type, n/sum(n)), 
                text = paste0(percent(n/sum(n), accuracy = 1), " of reservations were made to ", 
                              aggregated_site_type, " sites", "<br>(All reservations to site: ",
                              comma(sum(n), accuracy = 1), ")")),
@@ -412,8 +412,7 @@ plot_site_type <- ggplot(data = data_plot_site_type) +
         panel.grid.major.y = element_blank())
 
 ggplotly(plot_site_type,
-         tooltip = list("text"),
-         dynamicTicks = TRUE)
+         tooltip = list("text"))
 ```
 
 
