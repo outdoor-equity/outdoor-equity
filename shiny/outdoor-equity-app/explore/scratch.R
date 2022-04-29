@@ -3,6 +3,37 @@ library(here)
 library(collections)
 
 
+site_type_test <- data_joined_2018 %>%
+  filter(park %in% "Wawona") %>%
+  select(park, aggregated_site_type) %>% 
+  mutate(aggregated_site_type = str_to_title(string = aggregated_site_type),
+         aggregated_site_type = str_replace(string = aggregated_site_type,
+                                            pattern = "Rv",
+                                            replacement = "RV")) %>% 
+  count(aggregated_site_type)
+
+hist_colors <- c("#009900FF")
+
+site_type_plotly <- ggplot(data = site_type_test) +
+  geom_col(aes(x = n/sum(n), 
+               y = reorder(aggregated_site_type, n), 
+               text = paste0(percent(n/sum(n), accuracy = 1), " of reservations were made to ", 
+                             aggregated_site_type, " sites", "<br>(All reservations to site: ",
+                             comma(sum(n), accuracy = 1), ")")),
+           fill = hist_colors) +
+  scale_x_continuous(labels = percent) +
+  labs(x = "Percentage of Reservations to Selected Site",
+       y = "",
+       title = paste0("Number of Visits by Site Type for in 2018")) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        plot.title = element_text(size = 11))
+
+ggplotly(site_type_plotly,
+         tooltip = list("text"),
+         dynamicTicks = TRUE)
+
 booking_window_rdf <- data_joined_2018 %>%
   filter(park %in% "Anacapa Island") %>%
   filter(booking_window > 0) %>%
