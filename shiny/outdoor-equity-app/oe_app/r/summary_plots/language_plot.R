@@ -1,8 +1,8 @@
-## median income plot and parameters ##
+## language plot and parameters ##
 # used in DATA SUMMARY PLOTS in server
 # using input id's for summary page in ui
 
-median_income_plot <- function(admin_unitInput, siteInput){
+language_plot <- function(admin_unitInput, siteInput){
   
   # reactive data frame 
   language_rdf <- reactive ({
@@ -55,7 +55,8 @@ median_income_plot <- function(admin_unitInput, siteInput){
                         siteInput, ", ", admin_unitInput)) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank())
+          panel.grid.major.y = element_blank(),
+          plot.title = element_text(size = 11))
   
   ggplotly(language_plotly, 
            tooltip = list("text")) %>% 
