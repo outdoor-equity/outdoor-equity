@@ -264,10 +264,8 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO site type ----
   else if (input$data_summary == "aggregated_site_type") {
 
-    site_type_plot(agencyInput = input$agency_summary,
-                   admin_unitInput = input$admin_unit_summary,
-                   siteInput = input$site_summary,
-                   titleInput = input$site_summary)
+    site_type_plot(admin_unitInput = input$admin_unit_summary_1,
+                   siteInput = input$site_summary_1)
 
   } ## EO else if site type
 
@@ -343,7 +341,15 @@ output$data_summary_plot_2 <- renderPlotly({
     length_of_stay_plot(admin_unitInput = input$admin_unit_summary_2,
                         siteInput = input$site_summary_2)
     
-  } # EO length of stay ----
+  } # EO length of stay
+  
+  ## SO site type ----
+  else if (input$data_summary == "aggregated_site_type") {
+    
+    site_type_plot(admin_unitInput = input$admin_unit_summary_2,
+                   siteInput = input$site_summary_2)
+    
+  } ## EO else if site type
   
 }) ## EO DATA SUMMARY PLOTS 2 
 
