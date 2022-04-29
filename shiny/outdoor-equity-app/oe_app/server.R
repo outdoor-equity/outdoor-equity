@@ -289,6 +289,14 @@ output$data_summary_plot_1 <- renderPlotly({
                        titleInput = input$site_summary)
 
   } ## EO else if median income
+  
+  ## SO language ----
+  else if (input$data_summary == "not_english_only") {
+    
+    language_plot(admin_unitInput = input$admin_unit_summary_1, 
+                  siteInput = input$site_summary_1)
+    
+  } ## EO language 
 
 }) ## EO data summary plots
 
@@ -350,6 +358,14 @@ output$data_summary_plot_2 <- renderPlotly({
                    siteInput = input$site_summary_2)
     
   } ## EO else if site type
+  
+  ## SO language ----
+  else if (input$data_summary == "not_english_only") {
+    
+    language_plot(admin_unitInput = input$admin_unit_summary_2, 
+                  siteInput = input$site_summary_2)
+    
+  } ## EO language 
   
 }) ## EO DATA SUMMARY PLOTS 2 
 
