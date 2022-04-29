@@ -123,8 +123,7 @@ ggplotly(plot_distance_traveled,
 ```{r}
 ## -- data wrangle -- ##
 data_plot_boooking_window <- data_ridb_acs_2018 %>% 
-  filter(booking_window > 0,
-         booking_window < 510) %>% 
+  filter(booking_window > 0) %>% 
   select(park, booking_window)
 
 x_max <- (round(max(data_plot_boooking_window$booking_window) / 5) * 5) + 5 # max x rounded to nearest 5
