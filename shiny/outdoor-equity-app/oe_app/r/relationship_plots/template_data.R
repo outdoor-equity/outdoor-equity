@@ -1,18 +1,15 @@
 
-race_dist_travel_data <- function(agencyInput, admin_unitInput, siteInput, 
-                                  race_group, weighted_quartile,
-                                  ridb_df){
+race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb_df){
   # reactive data frame 
   race_dist_travel_rdf <- reactive ({
     
     ridb_df %>%
-      filter(agency %in% agencyInput,
-             admin_unit %in% admin_unitInput,
-             park %in% siteInput) %>%
-      select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
+      filter(park %in% siteInput) %>%
+      select(park, customer_zip, asian, black, hispanic_latinx, 
              multiracial, native_american, other, pacific_islander, white,
              distance_traveled_m) %>% 
       mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+      select(-distance_traveled_m) %>% 
       drop_na(distance_traveled_mi) %>% 
       pivot_longer(cols = 5:12,
                    names_to = "race",
