@@ -50,7 +50,7 @@ ui <- fluidPage(
                         fluidRow(
                           # SO pick a var input box
                           box(width = 12,
-                              title = "1. Select a variable and how many sites to compare",
+                              title = "Select a variable and how many sites to compare",
                               splitLayout(
                               # choose a var
                               select_data_summary_vars(),
@@ -97,38 +97,41 @@ ui <- fluidPage(
                                 withSpinner(color = "#0dc5c1")
                               ) # EO data summary plot 2 output box
                         ) # EO data summary FR layout
-                        ), #### EO data summary ----
+                        ), #### EO data summary
                
                ### SO data relationships ----
                tabPanel(title = "Data Relationships",
                         fluid = TRUE,
                         
                         titlePanel("Visualize a relationship"),
-                        # data relationships sidebar layout
-                        sidebarLayout(
-                          # data relationships analysis side bar panel
-                          # IMPORTANT NOTE(HD) MAKE SIDEBAR PANEL HORIZONTAL ----
-                          sidebarPanel(
-                            
-                            # data relationship input
-                            select_data_relationship(),
-                            # agency input
-                            select_agency(locationId = "relationships"),
-                            # admin input
-                            select_admin_unit(locationId = "relationships"),
-                            # site input
-                            select_site(locationId = "relationships"),
-
-                          ), # EO data relationships sidebar panel
+                        # SO data relationships FR layout
+                        fluidRow(
+                          # SO pick relationship input box
+                          box(width = 4,
+                              title = "1. Pick a relationship to visualize",
+                              select_data_relationship()
+                          ), # EO pick relationship input box
                           
-                          # data relationships main panel aka visual
-                          mainPanel(
-                            
-                            plotlyOutput(outputId = "data_relationships_plot") %>% 
-                              withSpinner(color="#0dc5c1")
-                        
-                        ) # EO data relationships main panel
-                        ) # EO data relationships sidebar layout
+                          # SO subset relationship data box
+                          box(width = 8,
+                              title = "2. Subset the data",
+                              splitLayout(
+                                # agency input
+                                select_agency(locationId = "relationships"),
+                                # admin input
+                                select_admin_unit(locationId = "relationships"),
+                                # site input
+                                select_site(locationId = "relationships")
+                              ) # EO split layout relationship subset
+                              ), # EO relationship subset box
+                          
+                          # relationships plot output box
+                          box(width = 12,
+                              title =  "Plot goes here",
+                              plotlyOutput(outputId = "data_relationships_plot") %>%
+                                withSpinner(color = "#0dc5c1")
+                              ) # EO relationships plot output box
+                        ) # EO FR data relationships
                         ), #### EO data relationships ----
 
                ### SO visitorsheds ----
