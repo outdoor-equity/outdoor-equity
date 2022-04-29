@@ -16,8 +16,8 @@ daily_cost_plot <- function(admin_unitInput, siteInput){
   daily_cost_rdf <- reactive ({
     
     data_joined_2018 %>%
-      filter(park %in% siteInput) %>%
-      filter(daily_cost != "Inf") %>% 
+      filter(park %in% siteInput,
+             daily_cost != "Inf") %>% 
       select(park, daily_cost)
     
   })

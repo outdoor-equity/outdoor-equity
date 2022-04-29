@@ -17,8 +17,9 @@ booking_window_plot <- function(admin_unitInput, siteInput){
   booking_window_rdf <- reactive({
     
     data_joined_2018 %>%
-      filter(park %in% siteInput) %>%
-      filter(booking_window > 0) %>% 
+      filter(park %in% siteInput,
+             booking_window > 0,
+             booking_window != "Inf") %>% 
       select(park, booking_window) %>% 
       filter(!is.na(booking_window))
   })
