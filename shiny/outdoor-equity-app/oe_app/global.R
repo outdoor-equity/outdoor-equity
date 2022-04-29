@@ -55,6 +55,7 @@ source("r/summary_plots/site_type_plot.R")
 source("r/summary_plots/race_plot.R")
 source("r/summary_plots/education_plot.R")
 source("r/summary_plots/median_income_plot.R")
+source("r/summary_plots/language_plot.R")
 
 ## source relationships plot functions ----
 source("r/relationship_plots/race_top_quartile.R")
@@ -91,7 +92,8 @@ summary_vars <- c("Distance traveled" = "distance_traveled_mi",
                   "Site type" = "aggregated_site_type",
                   "Race" = "race",
                   "Education" = "education",
-                  "Median income" = "median_income")
+                  "Median income" = "median_income",
+                  "Language" = "not_english_only")
 
 ## relationship vars ----
 compare_vars <- c("Education - High School/GED" = "median_hs_GED_or_below",
