@@ -199,22 +199,25 @@ data_plot_race_siteType <-
 
 
 ```{r}
-# equestrian
-type_string <- "equestrian"
-data <- data_plot_race_siteType %>% 
-  filter(aggregated_site_type == type_string) %>% 
-  mutate(aggregated_site_type = str_to_title(aggregated_site_type),
-         aggregated_site_type = str_replace(string = aggregated_site_type,
-                                            pattern = "Rv", 
-                                            replacement = "RV"))
-
+## -- create plot -- ##
 # parameters
 race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
                        "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
                        "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
 
+# subset data to site type category
+site_type_categories <- c("equestrian", "remote", "rv only", "rv or tent", "shelter", "tent only", "water")
+
+data_plot_race_siteType_category <- data_plot_race_siteType %>% 
+  filter(aggregated_site_type == site_type_categories[[1]]) %>% 
+  mutate(aggregated_site_type = str_to_title(aggregated_site_type),
+         aggregated_site_type = str_replace(string = aggregated_site_type,
+                                            pattern = "Rv", 
+                                            replacement = "RV"))
+
+# create plot
 plot_race_site_type_equestrian <- 
-  ggplot(data = data) +
+  ggplot(data = data_plot_race_siteType_category) +
   geom_col(aes(x = n,
                y = reorder(race, n),
                fill = race,
@@ -238,257 +241,7 @@ ggplotly(plot_race_site_type_equestrian,
          tooltip = list("text"))
 ```
 
-```{r}
-# remote
-type_string <- "remote"
-data <- data_plot_race_siteType %>% 
-  filter(aggregated_site_type == type_string) %>% 
-  mutate(sum_n = sum(n),
-         percent_n = n / sum_n)
 
-plot_race_site_type_remote <-
-  ggplot(data = data, 
-         aes(x = n,
-             y = reorder(race, n))) +
-  geom_col(aes(x = n,
-               y = reorder(race, n),
-               fill = race,
-               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
-                             scales::percent(n, accuracy = 0.1),
-                             " reservations were made by <br>people who live in ZIP codes with high ", 
-                             str_to_title(race) %>% 
-                               str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
-  ) +
-  scale_fill_manual(values = race_group_colors) +
-  scale_color_manual(values = race_group_colors) +
-  scale_x_continuous(labels = scales::percent) +
-  labs(x = paste("Number of Reservations to ", 
-                 str_to_title(type_string) %>% 
-                   str_replace(string = ., pattern = "Rv", replacement = "RV"), 
-                 "Overnight Reservable Sites"),
-       y = "",
-       title = paste0("Number of Reservations to ", 
-                      str_to_title(type_string) %>% 
-                        str_replace(string = ., pattern = "Rv", replacement = "RV"),
-                      " Sites by <br>Different Racial Groups")) + 
-  theme_minimal() +
-  theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        legend.position = "none")
-
-ggplotly(plot_race_site_type_remote,
-         tooltip = list("text"))
-```
-
-```{r}
-# RV Only
-type_string <- "rv only"
-data <- data_plot_race_siteType %>% 
-  filter(aggregated_site_type == type_string) %>% 
-  mutate(sum_n = sum(n),
-         percent_n = n / sum_n)
-
-plot_race_site_type_rv_only <- 
-  ggplot(data = data, 
-         aes(x = n,
-             y = reorder(race, n))) +
-  geom_col(aes(x = n,
-               y = reorder(race, n),
-               fill = race,
-               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
-                             scales::percent(n, accuracy = 0.1),
-                             " reservations were made by <br>people who live in ZIP codes with high ", 
-                             str_to_title(race) %>% 
-                               str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
-  ) +
-  scale_fill_manual(values = race_group_colors) +
-  scale_color_manual(values = race_group_colors) +
-  scale_x_continuous(labels = scales::percent) +
-  labs(x = paste("Number of Reservations to ", 
-                 str_to_title(type_string) %>% 
-                   str_replace(string = ., pattern = "Rv", replacement = "RV"), 
-                 "Overnight Reservable Sites"),
-       y = "",
-       title = paste0("Number of Reservations to ", 
-                      str_to_title(type_string) %>% 
-                        str_replace(string = ., pattern = "Rv", replacement = "RV"),
-                      " Sites by <br>Different Racial Groups")) + 
-  theme_minimal() +
-  theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        legend.position = "none")
-
-ggplotly(plot_race_site_type_remote,
-         tooltip = list("text"))
-```
-
-```{r}
-# RV or Tent
-type_string <- "rv or tent"
-data <- data_plot_race_siteType %>% 
-  filter(aggregated_site_type == type_string) %>% 
-  mutate(sum_n = sum(n),
-         percent_n = n / sum_n)
-
-plot_race_site_type_rv_or_tent <- 
-  ggplot(data = data, 
-         aes(x = n,
-             y = reorder(race, n))) +
-  geom_col(aes(x = n,
-               y = reorder(race, n),
-               fill = race,
-               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
-                             scales::percent(n, accuracy = 0.1),
-                             " reservations were made by <br>people who live in ZIP codes with high ", 
-                             str_to_title(race) %>% 
-                               str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
-  ) +
-  scale_fill_manual(values = race_group_colors) +
-  scale_color_manual(values = race_group_colors) +
-  scale_x_continuous(labels = scales::percent) +
-  labs(x = paste("Number of Reservations to ", 
-                 str_to_title(type_string) %>% 
-                   str_replace(string = ., pattern = "Rv", replacement = "RV"), 
-                 "Overnight Reservable Sites"),
-       y = "",
-       title = paste0("Number of Reservations to ", 
-                      str_to_title(type_string) %>% 
-                        str_replace(string = ., pattern = "Rv", replacement = "RV"),
-                      " Sites by <br>Different Racial Groups")) + 
-  theme_minimal() +
-  theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        legend.position = "none")
-
-ggplotly(plot_race_site_type_rv_or_tent,
-         tooltip = list("text"))
-```
-
-```{r}
-# Shelter
-type_string <- "shelter"
-data <- data_plot_race_siteType %>% 
-  filter(aggregated_site_type == type_string) %>% 
-  mutate(sum_n = sum(n),
-         percent_n = n / sum_n)
-
-plot_race_site_type_shelter <- 
-  ggplot(data = data, 
-         aes(x = n,
-             y = reorder(race, n))) +
-  geom_col(aes(x = n,
-               y = reorder(race, n),
-               fill = race,
-               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
-                             scales::percent(n, accuracy = 0.1),
-                             " reservations were made by <br>people who live in ZIP codes with high ", 
-                             str_to_title(race) %>% 
-                               str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
-  ) +
-  scale_fill_manual(values = race_group_colors) +
-  scale_color_manual(values = race_group_colors) +
-  scale_x_continuous(labels = scales::percent) +
-  labs(x = paste("Number of Reservations to ", 
-                 str_to_title(type_string) %>% 
-                   str_replace(string = ., pattern = "Rv", replacement = "RV"), 
-                 "Overnight Reservable Sites"),
-       y = "",
-       title = paste0("Number of Reservations to ", 
-                      str_to_title(type_string) %>% 
-                        str_replace(string = ., pattern = "Rv", replacement = "RV"),
-                      " Sites by <br>Different Racial Groups")) + 
-  theme_minimal() +
-  theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        legend.position = "none")
-
-ggplotly(plot_race_site_type_shelter,
-         tooltip = list("text"))
-```
-
-```{r}
-# Tent Only
-type_string <- "tent only"
-data <- data_plot_race_siteType %>% 
-  filter(aggregated_site_type == type_string) %>% 
-  mutate(sum_n = sum(n),
-         percent_n = n / sum_n)
-
-plot_race_site_type_tent_only <- 
-  ggplot(data = data, 
-         aes(x = n,
-             y = reorder(race, n))) +
-  geom_col(aes(x = n,
-               y = reorder(race, n),
-               fill = race,
-               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
-                             scales::percent(n, accuracy = 0.1),
-                             " reservations were made by <br>people who live in ZIP codes with high ", 
-                             str_to_title(race) %>% 
-                               str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
-  ) +
-  scale_fill_manual(values = race_group_colors) +
-  scale_color_manual(values = race_group_colors) +
-  scale_x_continuous(labels = scales::percent) +
-  labs(x = paste("Number of Reservations to ", 
-                 str_to_title(type_string) %>% 
-                   str_replace(string = ., pattern = "Rv", replacement = "RV"), 
-                 "Overnight Reservable Sites"),
-       y = "",
-       title = paste0("Number of Reservations to ", 
-                      str_to_title(type_string) %>% 
-                        str_replace(string = ., pattern = "Rv", replacement = "RV"),
-                      " Sites by <br>Different Racial Groups")) + 
-  theme_minimal() +
-  theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        legend.position = "none")
-
-ggplotly(plot_race_site_type_tent_only,
-         tooltip = list("text"))
-```
-
-```{r}
-# Water
-type_string <- "water"
-data <- data_plot_race_siteType %>% 
-  filter(aggregated_site_type == type_string) %>% 
-  mutate(sum_n = sum(n),
-         percent_n = n / sum_n)
-
-plot_race_site_type_water <- 
-  ggplot(data = data, 
-         aes(x = n,
-             y = reorder(race, n))) +
-  geom_col(aes(x = n,
-               y = reorder(race, n),
-               fill = race,
-               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
-                             scales::percent(n, accuracy = 0.1),
-                             " reservations were made by <br>people who live in ZIP codes with high ", 
-                             str_to_title(race) %>% 
-                               str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), " populations.")),
-  ) +
-  scale_fill_manual(values = race_group_colors) +
-  scale_color_manual(values = race_group_colors) +
-  scale_x_continuous(labels = scales::percent) +
-  labs(x = paste("Number of Reservations to ", 
-                 str_to_title(type_string) %>% 
-                   str_replace(string = ., pattern = "Rv", replacement = "RV"), 
-                 "Overnight Reservable Sites"),
-       y = "",
-       title = paste0("Number of Reservations to ", 
-                      str_to_title(type_string) %>% 
-                        str_replace(string = ., pattern = "Rv", replacement = "RV"),
-                      " Sites by <br>Different Racial Groups")) + 
-  theme_minimal() +
-  theme(plot.background = element_rect("white"),
-        panel.grid.major.y = element_blank(),
-        legend.position = "none")
-
-ggplotly(plot_race_site_type_water,
-         tooltip = list("text"))
-```
 
 
 
