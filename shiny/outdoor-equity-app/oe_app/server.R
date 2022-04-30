@@ -430,7 +430,18 @@ output$usVisitorshed_plot <- renderTmap({
 }) # EO visitorsheds plots
 
 ## SO DATA DOWNLOAD ----
-output$data_download_table <- renderDT(data_joined_2018)
+# create RDF
+data_download_dt <- reactive({
+  
+  data_joined_2018 %>% filter(park %in% input$site_data_download)
+
+})
+# DT table
+output$data_download_table <- renderDT({
+  
+  DT::datatable(data_download_dt())
+  
+})
 
 
 
