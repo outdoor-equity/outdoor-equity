@@ -26,17 +26,29 @@ site_type_plot <- function(admin_unitInput, siteInput){
     
   })
   
+  print(head(site_type_rdf()))
+  print(site_type_rdf()$aggregated_site_type)
+  print(site_type_rdf()$n)
+  print(paste("this length is", dim(site_type_rdf())))
+  
   # parameters
   hist_colors <- c("#009900FF")
   
+  # if statement necessary bc aes in geom_col requires x and y to be length of 1 or same as df
+  col <- geom_col()
+  if (!is.null(site_type_rdf()) && dim(site_type_rdf()) != 0) {
+    print("data is here")
+    col <- geom_col(aes(x = n/sum(n), 
+                        y = reorder(aggregated_site_type, n), 
+                        text = paste0(percent(n/sum(n), accuracy = 1), " of reservations were made to ", 
+                                      aggregated_site_type, " sites", "<br>(All reservations to site: ",
+                                      comma(sum(n), accuracy = 1), ")")),
+                    fill = hist_colors)
+  }
+  
   # plot for shiny app
   site_type_plotly <- ggplot(data = site_type_rdf()) +
-    geom_col(aes(x = n/sum(n), 
-                 y = reorder(aggregated_site_type, n), 
-                 text = paste0(percent(n/sum(n), accuracy = 1), " of reservations were made to ", 
-                               aggregated_site_type, " sites", "<br>(All reservations to site: ",
-                               comma(sum(n), accuracy = 1), ")")),
-             fill = hist_colors) +
+    col + # object contains geom_col 
     scale_x_continuous(labels = percent) +
     labs(x = paste0("Percentage of Reservations to ", siteInput),
          y = "",
@@ -48,5 +60,6 @@ site_type_plot <- function(admin_unitInput, siteInput){
   
   ggplotly(site_type_plotly,
            tooltip = list("text"))
+  
   
 } # EO function

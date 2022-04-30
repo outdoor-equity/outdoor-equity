@@ -44,6 +44,7 @@ daily_cost_plot <- function(admin_unitInput, siteInput){
   print(quant_80)
   
   print(head(daily_cost_rdf()))
+  print(daily_cost_rdf()$daily_cost)
   
   # parameters
   hist_colors <- c("#009900FF", "#00c000")
