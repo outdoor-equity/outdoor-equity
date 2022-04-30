@@ -385,8 +385,7 @@ output$data_relationships_plot <- renderPlotly({
 ### SO race x dist travel ----
 if (input$data_relationships == "Race x Distance traveled") {
   
-race_dist_travel_plot(agencyInput = input$agency_relationships,
-                      admin_unitInput = input$admin_unit_relationships,
+race_dist_travel_plot(admin_unitInput = input$admin_unit_relationships,
                       siteInput = input$site_relationships,
                       race_top_quartile_df = data_race_quants,
                       ridb_df = data_joined_2018)
