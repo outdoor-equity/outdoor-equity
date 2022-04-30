@@ -4,7 +4,7 @@ race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb
   # reactive data frame 
   race_dist_travel_rdf <- reactive ({
     
-    ridb_df %>%
+    data_joined_2018 %>%
       filter(park %in% siteInput) %>%
       select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
              multiracial, native_american, other, pacific_islander, white,
