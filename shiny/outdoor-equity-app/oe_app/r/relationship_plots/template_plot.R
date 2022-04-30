@@ -1,29 +1,29 @@
 
 ## race x distance traveled and parameters ##
 
-race_dist_travel_plot <- function(agencyInput, admin_unitInput, siteInput,
+race_dist_travel_plot <- function(admin_unitInput, siteInput,
                                   race_top_quartile_df, ridb_df){
   
   print(race_dist_travel_data)
   print(ridb_df)
-  print(agencyInput)
   print(admin_unitInput)
   print(siteInput)
   
+  # iterate to create df for plotting
   data_plot_race_distanceTravel <- 
     race_top_quartile_df %>% pmap_dfr(race_dist_travel_data, 
                                       ridb_df = ridb_df, 
-                                      agencyInput = agencyInput, 
-                                      admin_unitInput = admin_unitInput, 
                                       siteInput = siteInput)
   
   print(head(data_plot_race_distanceTravel))
   
-  # create plot
+  ## -- create plot -- ##
+  # parameters
   race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
                          "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
                          "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
   
+  # create plot
   plot_race_distance_traveled <- ggplot(data = data_plot_race_distanceTravel, 
                                         aes(x = mean_distance_traveled_mi,
                                             y = reorder(race, mean_distance_traveled_mi))) +
