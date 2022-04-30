@@ -151,7 +151,7 @@ ui <- fluidPage(
                                 select_admin_unit(locationId = "visitorsheds"),
                                 # site input
                                 select_site(locationId = "visitorsheds")
-                              ) # EO visitorshed split laytout
+                              ) # EO visitorshed split layout
                               ), # EO subset visitorshed data box
                           
                           # SO US visitorshed map box
@@ -172,55 +172,7 @@ ui <- fluidPage(
                           box(width = 12,
                               title = "Reservable Site Summary"
                           ) # EO visitorshed info box
-                        ) # EO FR visitorsheds  
-                        
-                        
-                        
-                        # sidebarLayout(
-                        #   # visitorsheds sidebar panel
-                        #   sidebarPanel(
-                        # 
-                        #     # agency input
-                        #     select_agency(locationId = "visitorsheds",
-                        #     # admin input
-                        #     select_admin_unit(locationId = "visitorsheds"),
-                        #     # site input 
-                        #     select_site(locationId = "visitorsheds"),
-                        #     
-                        #   ), # EO visitorsheds sidebar panel
-                        #   
-                        #   # visitorsheds main panel aka visual
-                        #   mainPanel(
-                        # 
-                        #     fluidRow(
-                        #       
-                        #       box(
-                        #         tmapOutput(outputId = "usVisitorshed_plot") %>% 
-                        #           withSpinner(color="#0dc5c1"),
-                        #         width = 6,
-                        #         title = "US Visitorshed"
-                        #       ), # EO box US map
-                        #       
-                        #       box(
-                        #         tmapOutput(outputId = "caVisitorshed_plot") %>% 
-                        #           withSpinner(color="#0dc5c1"),
-                        #         with = 6,
-                        #         title = "California Visitorshed"
-                        #       ) # EO box site map
-                        #     ), # EO fluidRow maps
-                        #     
-                        #     fluidRow(
-                        #       
-                        #       box(
-                        #         #DTOutput(outputId = "") %>% withSpinner(color="#0dc5c1"),
-                        #         width = 12,
-                        #         title = "Reservable Site Summary"
-                        #       ) # EO box summary table
-                        #     ) # EO fluidRow summary table
-                        # 
-                        #     
-                        #   ) # EO visitorsheds main panel
-                        # ) # EO visitorsheds sidebar layout
+                        ) # EO FR visitorsheds
                         ) #### EO visitorsheds ----
 
                ), ## EO Analysis tab ----
@@ -249,8 +201,8 @@ ui <- fluidPage(
                ), # EO box layout
                # SO box data table
                box(width = 12,
-                   title = "Preview of subsetted table to download" #,
-                   #plotOutput(outputId = ) %>% withSpinner(color="#0dc5c1")
+                   title = "Preview of subsetted table to download",
+                   DT::DTOutput(outputId = "data_download_table")
                    ) # EO box data table
              ) # EO data download FR layout
              ) ## EO Data Download ----
