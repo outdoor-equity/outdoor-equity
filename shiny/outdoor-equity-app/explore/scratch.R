@@ -2,6 +2,23 @@ library(tidyverse)
 library(here)
 library(collections)
 
+race_group <- c("other", "pacific_islander", "multiracial", "asian",
+                "black", "white", "native_american", "hispanic_latinx")
+
+test_df <- data_joined_2018 %>%
+  filter(park %in% "Middle Meadows") %>%
+  select(park, customer_zip, asian, black, hispanic_latinx, 
+         multiracial, native_american, other, pacific_islander, white,
+         distance_traveled_m) %>% 
+  mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+  select(-distance_traveled_m) %>% 
+  drop_na(distance_traveled_mi) %>% 
+  pivot_longer(cols = 4:10,
+               names_to = "race",
+               values_to = "race_percentage") %>% 
+  filter(race %in% paste0(race_group)) %>% 
+  drop_na(race_percentage)
+
 
 site_type_test <- data_joined_2018 %>%
   filter(park %in% "Wawona") %>%
