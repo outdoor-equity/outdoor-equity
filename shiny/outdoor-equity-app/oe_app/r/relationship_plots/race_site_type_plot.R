@@ -1,6 +1,19 @@
 
 ## race x distance traveled and parameters ##
 
+#' Title
+#'
+#' @param admin_unitInput 
+#' @param siteInput 
+#' @param race_top_quartile_df 
+#' @param ridb_df 
+#' @param site_type_string String listing type of site to include in graph. 
+#'     Can be: "equestrian", "remote", "rv only", "rv or tent", "shelter", "tent only", or "water" 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 race_dist_travel_plot <- function(admin_unitInput, siteInput,
                                   race_top_quartile_df, ridb_df,
                                   site_type_string){
