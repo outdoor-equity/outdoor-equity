@@ -9,6 +9,7 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
   print(admin_unitInput)
   print(siteInput)
   
+  # iterate to create df for plotting
   data_plot_race_distanceTravel <- 
     race_top_quartile_df %>% pmap_dfr(race_dist_travel_data, 
                                       ridb_df = ridb_df, 
@@ -16,11 +17,13 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
   
   print(head(data_plot_race_distanceTravel))
   
-  # create plot
+  ## -- create plot -- ##
+  # parameters
   race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
                          "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
                          "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
   
+  # create plot
   plot_race_distance_traveled <- ggplot(data = data_plot_race_distanceTravel, 
                                         aes(x = mean_distance_traveled_mi,
                                             y = reorder(race, mean_distance_traveled_mi))) +
