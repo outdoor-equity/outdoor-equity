@@ -2,6 +2,41 @@ library(tidyverse)
 library(here)
 library(collections)
 
+
+
+test <- data_joined_2018 %>%
+  filter(park %in% "Wawona") %>%
+  select(park, aggregated_site_type) %>% 
+  mutate(aggregated_site_type = str_to_title(string = aggregated_site_type),
+         aggregated_site_type = str_replace(string = aggregated_site_type,
+                                            pattern = "Rv",
+                                            replacement = "RV")) %>% 
+  count(aggregated_site_type) %>% 
+  mutate(percent = n/sum(n))
+
+hist_colors <- c("#009900FF")
+
+# plot for shiny app
+site_type_plotly <- ggplot(data = test) +
+  geom_col(aes(x = percent, 
+               y = reorder(aggregated_site_type, percent), 
+               text = paste0(percent(n/sum(n), accuracy = 1), " of reservations were made to ", 
+                             aggregated_site_type, " sites", "<br>(All reservations to site: ",
+                             comma(sum(n), accuracy = 1), ")")),
+           fill = hist_colors) +
+  scale_x_continuous(labels = percent) +
+  labs(x = paste0("Percentage of Reservations to "),
+       y = "",
+       title = paste0("Number of Visits by Site Type for<br>")) +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        plot.title = element_text(size = 11))
+
+ggplotly(site_type_plotly,
+         tooltip = list("text"))
+
+
 race_group <- c("other", "pacific_islander", "multiracial", "asian",
                 "black", "white", "native_american", "hispanic_latinx")
 
