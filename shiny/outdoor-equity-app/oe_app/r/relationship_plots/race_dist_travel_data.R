@@ -3,7 +3,7 @@ race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb
   # reactive data frame 
   race_dist_travel_rdf <- reactive ({
     
-    ridb_df %>%
+    data_joined_2018 %>%
       filter(park %in% siteInput) %>%
       select(park, customer_zip, asian, black, hispanic_latinx, 
              multiracial, native_american, other, pacific_islander, white,
@@ -11,13 +11,14 @@ race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb
       mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
       select(-distance_traveled_m) %>% 
       drop_na(distance_traveled_mi) %>% 
-      pivot_longer(cols = 5:12,
+      pivot_longer(cols = 4:10, 
                    names_to = "race",
                    values_to = "race_percentage") %>% 
-      filter(race == paste0(race_group)) %>% 
+      filter(race %in% paste0(race_group)) %>% 
       drop_na(race_percentage)
   })
   
+  race_dist_travel_data
   
   max_racial_group_ridb <- race_dist_travel_rdf() %>%
     summarize(max = max(race_percentage))
