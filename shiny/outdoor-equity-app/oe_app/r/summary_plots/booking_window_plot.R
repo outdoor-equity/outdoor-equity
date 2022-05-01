@@ -24,19 +24,31 @@ booking_window_plot <- function(admin_unitInput, siteInput){
       filter(!is.na(booking_window))
   })
   
-  print(class(booking_window_rdf))
+  print(class(booking_window_rdf()))
+  print(paste("length df:", length(booking_window_rdf())))
 
   # wrangling
+  x_max <- numeric(0)
+  if(dim(booking_window_rdf()) != 0) {
+    
   x_max <- (round(max(booking_window_rdf()$booking_window) / 5) * 5) + 5 # max x rounded to nearest 5
+  }
   
+  print(paste("x_max: ", x_max))
+  
+  quant_80 <- numeric()
+  if(dim(booking_window_rdf()) != 0) {
+    
   quant_80 <- quantile(x = booking_window_rdf()$booking_window,
                        probs = seq(0, 1, 0.1))[[9]] %>% round(0)
+  }
    
   # parameters
   hist_colors <- c("#009900FF", "#00c000")
   
   # plot for shiny app
-  booking_window_plotly <- ggplot(data = booking_window_rdf()) +
+  booking_window_plotly <- ggplot(
+    data = booking_window_rdf()) +
     geom_histogram(aes(x = booking_window,
                        text = paste0(percent(..count.. / nrow(booking_window_rdf()), accuracy = 0.1), 
                                      " of all visits are reserved between ", xmin, " and ", xmax, 
@@ -82,4 +94,5 @@ booking_window_plot <- function(admin_unitInput, siteInput){
                                yanchor = 'auto', 
                                xshift = 0, yshift = 0,
                                font = list(size = 12, color = "#000099")))
+  
 } # EO function
