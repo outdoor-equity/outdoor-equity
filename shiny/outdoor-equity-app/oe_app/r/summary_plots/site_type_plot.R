@@ -29,9 +29,9 @@ site_type_plot <- function(admin_unitInput, siteInput){
   # parameters
   hist_colors <- c("#009900FF")
   
-  # if statement necessary bc aes in geom_col requires x and y to be length of 1 or same as df
+  # if statement for an empty df
   col <- geom_col()
-  if (!is.null(site_type_rdf()) && dim(site_type_rdf()) != 0) {
+  if (dim(site_type_rdf()) != 0) {
 
     col <- geom_col(aes(x = n/sum(n), 
                         y = reorder(aggregated_site_type, n), 
