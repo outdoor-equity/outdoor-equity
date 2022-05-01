@@ -221,17 +221,13 @@ observeEvent(input$data_summary, {
   
 })
 
-observeEvent(input$admin_unit_summary_1, input$site_summary_1, {
-  
-req(input$admin_unit_summary_1, input$site_summary_1)
-
 # RENDER PLOTS ----
 ## SO DATA SUMMARY PLOTS 1 ----
 output$data_summary_plot_1 <- renderPlotly({
   ### SO distance traveled ----
   if (input$data_summary == "distance_traveled_mi") {
     
-    #req(input$admin_unit_summary_1, input$site_summary_1)
+    req(input$admin_unit_summary_1, input$site_summary_1)
 
     dist_travel_plot(admin_unitInput = input$admin_unit_summary_1,
                      siteInput = input$site_summary_1)
@@ -241,7 +237,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO booking window ----
   else if (input$data_summary == "booking_window") {
     
-    #req(input$admin_unit_summary_1, input$site_summary_1)
+    req(input$admin_unit_summary_1, input$site_summary_1)
     
     booking_window_plot(admin_unitInput = input$admin_unit_summary_1,
                         siteInput = input$site_summary_1)
@@ -251,7 +247,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO daily cost ----
   else if (input$data_summary == "daily_cost") {
     
-    #req(input$admin_unit_summary_1, input$site_summary_1)
+    req(input$admin_unit_summary_1, input$site_summary_1)
     
     daily_cost_plot(admin_unitInput = input$admin_unit_summary_1,
                     siteInput = input$site_summary_1)
@@ -261,7 +257,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO daily cost per visitor ----
   else if (input$data_summary == "daily_cost_per_visitor") {
     
-    #req(input$admin_unit_summary_1, input$site_summary_1)
+    req(input$admin_unit_summary_1, input$site_summary_1)
 
     daily_cost_visitor_plot(admin_unitInput = input$admin_unit_summary_1,
                             siteInput = input$site_summary_1)
@@ -271,7 +267,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO education ----
   else if (input$data_summary == "education") {
     
-    #req(input$admin_unit_summary_1, input$site_summary_1)
+    req(input$admin_unit_summary_1, input$site_summary_1)
     
     education_plot(admin_unitInput = input$admin_unit_summary_1,
                    siteInput = input$site_summary_1)
@@ -281,7 +277,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO length of stay ----
   else if (input$data_summary == "length_of_stay") {
     
-    #req(input$admin_unit_summary_1, input$site_summary_1)
+    req(input$admin_unit_summary_1, input$site_summary_1)
 
     length_of_stay_plot(admin_unitInput = input$admin_unit_summary_1,
                         siteInput = input$site_summary_1)
@@ -291,7 +287,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO site type ----
   else if (input$data_summary == "aggregated_site_type") {
     
-    #req(input$admin_unit_summary_1, input$site_summary_1)
+    req(input$admin_unit_summary_1, input$site_summary_1)
 
     site_type_plot(admin_unitInput = input$admin_unit_summary_1,
                    siteInput = input$site_summary_1)
@@ -322,7 +318,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO language ----
   else if (input$data_summary == "not_english_only") {
     
-    #req(input$admin_unit_summary_1, input$site_summary_1)
+    req(input$admin_unit_summary_1, input$site_summary_1)
     
     language_plot(admin_unitInput = input$admin_unit_summary_1, 
                   siteInput = input$site_summary_1)
@@ -330,8 +326,6 @@ output$data_summary_plot_1 <- renderPlotly({
   } ## EO language 
 
 }) ## EO data summary plots
-
-}) # EO OE
 
 
 ## DATA SUMMARY PLOTS 2 ----
