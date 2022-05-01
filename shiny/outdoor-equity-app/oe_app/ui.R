@@ -188,16 +188,23 @@ ui <- fluidPage(
                box(width = 12, # Note(HD): not seeing even inputs???
                    splitLayout(cellWidths = c("33.3%", "33.3%", "33.3%"),
                                # select agency
-                               select_agency(locationId = "data_download"),
+                               select_agency(locationId = "data_download",
+                                             isMultiple = TRUE),
                                # select admin unit
-                               select_admin_unit(locationId = "data_download"),
+                               select_admin_unit(locationId = "data_download",
+                                                 isMultiple = TRUE),
                                # select reservable site
-                               select_site(locationId = "data_download"),
-                               tags$head(tags$style(HTML(
-                                 ".shiny-split-layout > div {
-                                 overflow: visible;
-                                 }"
-                   ))) # EO tags$head making drop down visible 
+                               select_site(locationId = "data_download",
+                                           isMultiple = TRUE) #,
+                               # tags$head(tags$style(HTML(
+                               #   ".shiny-split-layout > div {
+                               #   overflow: visible;
+                               #   }
+                               #   .shiny-split-layout .selectize-dropdown {
+                               #   z-index: 2000;
+                               #   }
+                               #   "
+                   #))) # EO tags$head making drop down visible 
                  ) # EO split layout
                ), # EO box layout
                # SO box data table
