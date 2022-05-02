@@ -145,21 +145,25 @@ plot_race_distance_traveled <- ggplot(data = data_plot_race_distanceTravel,
                                " miles, with a median distance of ", 
                                comma(median_distance_traveled_mi, accuracy = 1), 
                                " miles. <br> (Total Reservations: ", 
-                               comma(count, accuracy = 1), ")")),
-             width = .25,
-             size = 4, shape = 21, stroke = 2) +
+                               comma(count, accuracy = 1), ")"), 
+                 size = count),
+             #width = .25,
+             #size = 4, 
+             shape = 21, stroke = 2) +
   scale_fill_manual(values = race_group_colors) +
   scale_color_manual(values = race_group_colors) +
   labs(x = paste("Average Distance Traveled from Home to Site (miles)"),
        y = "",
-       title = "Average Distance Traveled to Reservation for <br>Different Racial Groups") + 
+       title = "Average Distance Traveled to Reservation in 2018 from <br> Communities with High Rates of Different Racial Groups") + 
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank(),
         legend.position = "none")
 
 ggplotly(plot_race_distance_traveled,
-         tooltip = list("text"))
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian"))
 ```
 
 

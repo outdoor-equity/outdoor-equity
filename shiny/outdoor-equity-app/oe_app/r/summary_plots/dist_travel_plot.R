@@ -94,7 +94,9 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
                                xanchor = 'left', 
                                yanchor = 'auto', 
                                xshift = 0, yshift = 0,
-                               font = list(size = 12, color = "#000099")))
+                               font = list(size = 12, color = "#000099"))) %>%
+    config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                         "hoverClosestCartesian", "hoverCompareCartesian"))
   
   
 } # EO function

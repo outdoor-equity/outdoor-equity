@@ -51,6 +51,8 @@ median_income_plot <- function(admin_unitInput, siteInput){
   
   ggplotly(plot_median_income, 
            tooltip = list("text")) %>% 
-    layout(showlegend = FALSE)
+    layout(showlegend = FALSE) %>%
+    config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                         "hoverClosestCartesian", "hoverCompareCartesian"))
   
 } # EO function
