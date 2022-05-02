@@ -1,5 +1,5 @@
  /* making input drop downs visible */
- .shiny-split-layout > div { /* this targes all div tags that have shiny-split-layout class as the parent */
+ .shiny-split-layout > div { /* this targets all div tags that have shiny-split-layout class as the parent */
   overflow: visible;
  }
  
