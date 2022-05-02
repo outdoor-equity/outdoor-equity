@@ -201,8 +201,7 @@ observeEvent(input$num_viz, {
 
     shinydashboardPlus::updateBox(id = "num_viz_1",
                                   action = "update",
-                                  options = list(width = 12,
-                                                 title = "test"))
+                                  options = list(width = 12))
   }
   else if (input$num_viz == 2) {
     
@@ -210,8 +209,7 @@ observeEvent(input$num_viz, {
 
     shinydashboardPlus::updateBox(id = "num_viz_1",
                                   action = "update",
-                                  options = list(title = "another test",
-                                                 width = 6))
+                                  options = list(width = 6))
 
   }
 }) ## EO OE press num_viz
