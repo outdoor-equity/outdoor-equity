@@ -7,6 +7,12 @@ race_plot <- function(admin_unitInput, siteInput){
   # reactive df
   # reservations in CA
   race_rdf <- reactive ({
+    
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
     data_joined_2018 %>%
       filter(park %in% siteInput) %>%
       summarize(white = mean(white, na.rm = TRUE),

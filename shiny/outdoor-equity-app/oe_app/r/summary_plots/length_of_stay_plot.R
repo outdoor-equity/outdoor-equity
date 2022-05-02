@@ -15,6 +15,11 @@ length_of_stay_plot <- function(admin_unitInput, siteInput){
   # reactive data frame 
   length_of_stay_rdf <- reactive ({
     
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
     data_joined_2018 %>%
       filter(park %in% siteInput) %>%
       select(park, length_of_stay)

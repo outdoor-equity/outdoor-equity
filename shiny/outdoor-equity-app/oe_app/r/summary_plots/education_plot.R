@@ -7,6 +7,11 @@ education_plot <- function(admin_unitInput, siteInput){
   # reactive data frame 
   education_rdf <- reactive ({
     
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
     data_plot_education_ridb <- data_joined_2018 %>%
       filter(park %in% siteInput) %>%
       summarize(hs_GED_or_below = mean(hs_GED_or_below, na.rm = TRUE),
