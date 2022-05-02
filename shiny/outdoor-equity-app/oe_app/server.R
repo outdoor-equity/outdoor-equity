@@ -57,7 +57,6 @@ observeEvent(input$agency_summary_4, {
   }) ## EO OE press agency on summary page box 4
 
   
-  
 ### relationships page ----
 observeEvent(input$agency_relationships, {
 
@@ -166,6 +165,7 @@ observeEvent(input$admin_unit_relationships, {
                        )
   }) ## EO press admin unit on relationships page
   
+  
 ### visitorsheds page ----
 observeEvent(input$admin_unit_visitorsheds, {
 
@@ -196,42 +196,36 @@ observeEvent(input$admin_unit_data_download, {
 observeEvent(input$num_viz, {
 
   if (input$num_viz == 1) {
-    
+
     shinyjs::hide(id = "num_viz_2")
-    
-    updateBox(id ="num_viz_1",
-              action = "update",
-              options = list(
-                width = 12
-              ),
-              session)
+
+    shinydashboardPlus::updateBox(id = "num_viz_1",
+                                  action = "update",
+                                  options = list(width = 12))
   }
   else if (input$num_viz == 2) {
-    
+
     shinyjs::show(id = "num_viz_2")
-    
-    updateBox(id = "num_viz_1",
-              action = "update",
-              options = list(
-                width = 6
-              ),
-              session)
-    
+
+    shinydashboardPlus::updateBox(id = "num_viz_1",
+                                  action = "update",
+                                  options = list(width = 6))
+
   }
 }) ## EO OE press num_viz
 
 
   
-observeEvent(input$data_summary, {
-  if (req(input$admin_unit_summary_1, input$site_summary_1)) {
-    # if inputs exist hide emoty input text
-    output$data_summary_text <- renderPrint({ "" })
-  } else {
-    #else show empty input text
-    output$data_summary_text <- renderPrint({ "Please select a reservable site to display a plot" })
-  }
-  
-})
+# observeEvent(input$data_summary, {
+#   if (req(input$admin_unit_summary_1, input$site_summary_1)) {
+#     # if inputs exist hide emoty input text
+#     output$data_summary_text <- renderPrint({ "" })
+#   } else {
+#     #else show empty input text
+#     output$data_summary_text <- renderPrint({ "Please select a reservable site to display a plot" })
+#   }
+#   
+# })
 
 # RENDER PLOTS ----
 ## SO DATA SUMMARY PLOTS 1 ----
@@ -239,7 +233,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ### SO distance traveled ----
   if (input$data_summary == "distance_traveled_mi") {
     
-    req(input$admin_unit_summary_1, input$site_summary_1)
+    #req(input$admin_unit_summary_1, input$site_summary_1)
 
     dist_travel_plot(admin_unitInput = input$admin_unit_summary_1,
                      siteInput = input$site_summary_1)
@@ -249,7 +243,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO booking window ----
   else if (input$data_summary == "booking_window") {
     
-    req(input$admin_unit_summary_1, input$site_summary_1)
+    #req(input$admin_unit_summary_1, input$site_summary_1)
     
     booking_window_plot(admin_unitInput = input$admin_unit_summary_1,
                         siteInput = input$site_summary_1)
@@ -259,7 +253,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO daily cost ----
   else if (input$data_summary == "daily_cost") {
     
-    req(input$admin_unit_summary_1, input$site_summary_1)
+    #req(input$admin_unit_summary_1, input$site_summary_1)
     
     daily_cost_plot(admin_unitInput = input$admin_unit_summary_1,
                     siteInput = input$site_summary_1)
@@ -269,7 +263,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO daily cost per visitor ----
   else if (input$data_summary == "daily_cost_per_visitor") {
     
-    req(input$admin_unit_summary_1, input$site_summary_1)
+    #req(input$admin_unit_summary_1, input$site_summary_1)
 
     daily_cost_visitor_plot(admin_unitInput = input$admin_unit_summary_1,
                             siteInput = input$site_summary_1)
@@ -279,7 +273,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO education ----
   else if (input$data_summary == "education") {
     
-    req(input$admin_unit_summary_1, input$site_summary_1)
+    #req(input$admin_unit_summary_1, input$site_summary_1)
     
     education_plot(admin_unitInput = input$admin_unit_summary_1,
                    siteInput = input$site_summary_1)
@@ -289,7 +283,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO length of stay ----
   else if (input$data_summary == "length_of_stay") {
     
-    req(input$admin_unit_summary_1, input$site_summary_1)
+    #req(input$admin_unit_summary_1, input$site_summary_1)
 
     length_of_stay_plot(admin_unitInput = input$admin_unit_summary_1,
                         siteInput = input$site_summary_1)
@@ -299,7 +293,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO site type ----
   else if (input$data_summary == "aggregated_site_type") {
     
-    req(input$admin_unit_summary_1, input$site_summary_1)
+    #req(input$admin_unit_summary_1, input$site_summary_1)
 
     site_type_plot(admin_unitInput = input$admin_unit_summary_1,
                    siteInput = input$site_summary_1)
@@ -330,7 +324,7 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO language ----
   else if (input$data_summary == "not_english_only") {
     
-    req(input$admin_unit_summary_1, input$site_summary_1)
+    #req(input$admin_unit_summary_1, input$site_summary_1)
     
     language_plot(admin_unitInput = input$admin_unit_summary_1, 
                   siteInput = input$site_summary_1)
@@ -345,6 +339,8 @@ output$data_summary_plot_2 <- renderPlotly({
   ### SO distance traveled ----
   if (input$data_summary == "distance_traveled_mi") {
     
+    #req(input$admin_unit_summary_2, input$site_summary_2)
+    
     dist_travel_plot(admin_unitInput = input$admin_unit_summary_2,
                      siteInput = input$site_summary_2)
     
@@ -352,6 +348,8 @@ output$data_summary_plot_2 <- renderPlotly({
   
   ## SO booking window ----
   else if (input$data_summary == "booking_window") {
+    
+    #req(input$admin_unit_summary_2, input$site_summary_2)
     
     booking_window_plot(admin_unitInput = input$admin_unit_summary_2,
                         siteInput = input$site_summary_2)
@@ -361,6 +359,8 @@ output$data_summary_plot_2 <- renderPlotly({
   ## SO daily cost ----
   else if (input$data_summary == "daily_cost") {
     
+    #req(input$admin_unit_summary_2, input$site_summary_2)
+    
     daily_cost_plot(admin_unitInput = input$admin_unit_summary_2,
                     siteInput = input$site_summary_2)
     
@@ -368,6 +368,8 @@ output$data_summary_plot_2 <- renderPlotly({
   
   ## SO daily cost per visitor ----
   else if (input$data_summary == "daily_cost_per_visitor") {
+    
+    #req(input$admin_unit_summary_2, input$site_summary_2)
     
     daily_cost_visitor_plot(admin_unitInput = input$admin_unit_summary_2,
                             siteInput = input$site_summary_2)
@@ -377,6 +379,8 @@ output$data_summary_plot_2 <- renderPlotly({
   ## SO education ----
   else if (input$data_summary == "education") {
     
+    #req(input$admin_unit_summary_2, input$site_summary_2)
+    
     education_plot(admin_unitInput = input$admin_unit_summary_2,
                    siteInput = input$site_summary_2)
     
@@ -384,6 +388,8 @@ output$data_summary_plot_2 <- renderPlotly({
   
   ## SO length of stay ----
   else if (input$data_summary == "length_of_stay") {
+    
+    #req(input$admin_unit_summary_2, input$site_summary_2)
     
     length_of_stay_plot(admin_unitInput = input$admin_unit_summary_2,
                         siteInput = input$site_summary_2)
@@ -393,6 +399,8 @@ output$data_summary_plot_2 <- renderPlotly({
   ## SO site type ----
   else if (input$data_summary == "aggregated_site_type") {
     
+    #req(input$admin_unit_summary_2, input$site_summary_2)
+    
     site_type_plot(admin_unitInput = input$admin_unit_summary_2,
                    siteInput = input$site_summary_2)
     
@@ -400,6 +408,8 @@ output$data_summary_plot_2 <- renderPlotly({
   
   ## SO language ----
   else if (input$data_summary == "not_english_only") {
+    
+    #req(input$admin_unit_summary_2, input$site_summary_2)
     
     language_plot(admin_unitInput = input$admin_unit_summary_2, 
                   siteInput = input$site_summary_2)
