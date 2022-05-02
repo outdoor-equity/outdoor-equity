@@ -55,7 +55,9 @@ site_type_plot <- function(admin_unitInput, siteInput){
           plot.title = element_text(size = 11))
   
   ggplotly(site_type_plotly,
-           tooltip = list("text"))
+           tooltip = list("text")) %>%
+    config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                         "hoverClosestCartesian", "hoverCompareCartesian"))
   
   
 } # EO function

@@ -106,6 +106,8 @@ race_plot <- function(admin_unitInput, siteInput){
            tooltip = list("text")) %>%
     style(hoverinfo = "none", traces = c(3, 4),
           textposition = "right") %>% 
-    layout(showlegend = FALSE)
+    layout(showlegend = FALSE) %>%
+    config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                         "hoverClosestCartesian", "hoverCompareCartesian"))
   
 } # EO function
