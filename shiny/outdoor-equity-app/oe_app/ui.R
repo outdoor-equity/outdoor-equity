@@ -62,7 +62,7 @@ ui <- fluidPage(
                               #### SO select number of visuals ----
                               selectizeInput(inputId = "num_viz",
                                              label = "Select number of visuals",
-                                             choices = c(1, 2, 3, 4),
+                                             choices = c(1, 2),
                                              multiple = FALSE,
                                              options = list(
                                                placeholder = "Select number of visuals",
@@ -74,7 +74,7 @@ ui <- fluidPage(
                           
                           # SO data summary plot 1 output box
                           box(id = "num_viz_1",
-                              width = 6,
+                              width = 12,
                               splitLayout(
                                 # agency input
                                 select_agency(locationId = "summary_1"),
