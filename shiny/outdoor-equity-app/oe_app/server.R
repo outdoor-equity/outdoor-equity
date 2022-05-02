@@ -420,6 +420,8 @@ data_race_quants <-
          "weighted_quartile" = .) %>%
   as.data.frame()
 
+print(data_race_quants)
+
 #if (req(input$admin_unit_relationships, input$site_relationships, data_race_quants, data_joined_2018))
 output$data_relationships_plot <- renderPlotly({
 ### SO race x dist travel ----
