@@ -1,0 +1,9 @@
+ /* making input drop downs visible */
+ .shiny-split-layout > div { /* this targes all div tags that have shiny-split-layout class as the parent */
+  overflow: visible;
+ }
+ 
+ .shiny-split-layout .selectize-dropdown {
+  z-index: 2000; /* z-index are layers */
+ }
+ 

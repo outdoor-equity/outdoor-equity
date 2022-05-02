@@ -3,6 +3,11 @@ ui <- fluidPage(
   # use shiny dashboard elements in shiny
   useShinydashboard(),
   useShinyjs(),
+  tags$head(
+    tags$link(rel = "stylesheet",
+              type = "text/css",
+              href = "styles.css")
+  ), # EO tag$head
   
   # set theme ----
   theme = bs_theme(bootswatch = "minty"),

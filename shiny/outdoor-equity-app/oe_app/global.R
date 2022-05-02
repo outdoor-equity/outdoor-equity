@@ -7,7 +7,8 @@ library(rsconnect)
 library(bslib)
 library(tidycensus)
 library(shiny)
-library(shinydashboard)
+library(shinydashboard) 
+library(shinydashboardPlus) # updateBox() 
 library(shinyWidgets)
 library(shinycssloaders) # loading icon 
 library(shinyjs) # hide / show boxes in ui
