@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 
 library(tidyverse)
 library(here)
@@ -40,7 +40,7 @@ data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
 
 ## Race x ____
 
-```{r}
+```{r, eval=TRUE}
 # create function to get weighted quartile value for each group (in quartile function .R)
 race_top_quartile <- function(race_group, acs_df = data_ca_acs_2018){
   
@@ -78,8 +78,8 @@ data_race_quants <-
 
 ### Race x distance traveled
 
-```{r}
-# function to make plot df
+```{r, eval=TRUE}
+## -- create function to make plot df -- ##
 function_plot_race_distanceTravel <- function(race_group, weighted_quartile,
                                               ridb_df = data_ridb_acs_2018){
   
@@ -100,7 +100,10 @@ function_plot_race_distanceTravel <- function(race_group, weighted_quartile,
   
   df_racial_group_i <- df_racial_group_i_longer %>%
     filter(race_percentage >= weighted_quartile) %>% 
-    summarize(mean_distance_traveled_mi = mean(distance_traveled_mi)) %>% 
+    summarize(median_distance_traveled_mi = median(distance_traveled_mi),
+              quartile_lower = quantile(distance_traveled_mi)[[2]],
+              quartile_upper = quantile(distance_traveled_mi)[[4]],
+              count = n()) %>% 
     mutate(race = paste0(race_group)) %>% 
     relocate(race, .before = 1) %>% 
     mutate(race = str_replace(string = race,
@@ -116,7 +119,7 @@ function_plot_race_distanceTravel <- function(race_group, weighted_quartile,
 ```
 
 
-```{r}
+```{r, eval=TRUE}
 ## -- run function through purrr -- ##
 data_plot_race_distanceTravel <- 
   data_race_quants %>% 
@@ -130,15 +133,19 @@ race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F0
 
 # plotly
 plot_race_distance_traveled <- ggplot(data = data_plot_race_distanceTravel, 
-                                      aes(x = mean_distance_traveled_mi,
-                                          y = reorder(race, mean_distance_traveled_mi))) +
+                                      aes(x = median_distance_traveled_mi,
+                                          y = reorder(race, median_distance_traveled_mi))) +
   geom_segment(aes(xend = 0, yend = race)) +
-  geom_point(aes(x = mean_distance_traveled_mi,
-                 y = reorder(race, mean_distance_traveled_mi),
-                 color = race, fill = race,
-                 text = paste("People who live in ZIP codes with high", 
-                              str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), "populations",
-                              "<br>travel an estimated distance of", round(mean_distance_traveled_mi, 0), "miles to overnight reservable sites.")),
+  geom_point(aes(color = race, fill = race,
+                 text = paste0("Typically people who live in ZIP codes with high ", 
+                               str_to_title(race) %>% 
+                                 str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), 
+                               " populations<br>travel between ", comma(quartile_lower, accuracy = 1), 
+                               " and ", comma(quartile_upper, accuracy = 1), 
+                               " miles, with a median distance of ", 
+                               comma(median_distance_traveled_mi, accuracy = 1), 
+                               " miles. <br> (Total Reservations: ", 
+                               comma(count, accuracy = 1), ")")),
              width = .25,
              size = 4, shape = 21, stroke = 2) +
   scale_fill_manual(values = race_group_colors) +
@@ -159,7 +166,7 @@ ggplotly(plot_race_distance_traveled,
 ### Race x site type 
 
 ```{r}
-# create function to make plot df
+## -- create function to make plot df -- ##
 function_plot_race_siteType <- function(race_group, weighted_quartile,
                                         ridb_df = data_ridb_acs_2018){
   
@@ -243,6 +250,103 @@ ggplotly(plot_race_site_type_equestrian,
 
 
 
+### Race x booking window 
+
+```{r}
+## -- create function to make plot df -- ##
+function_plot_race_bookWindow <- function(race_group, weighted_quartile,
+                                        ridb_df = data_ridb_acs_2018){
+  
+  df_race_group <- ridb_df %>% 
+    select(park, customer_zip, asian, black, hispanic_latinx, 
+           multiracial, native_american, other, pacific_islander, white,
+           booking_window) %>% 
+    drop_na(booking_window) %>% 
+    pivot_longer(cols = 3:10,
+                 names_to = "race",
+                 values_to = "race_percentage") %>% 
+    filter(race == race_group) %>%
+    drop_na(race_percentage) %>% 
+    filter(race_percentage >= weighted_quartile) %>% 
+    summarize(median_booking_window = median(booking_window)) %>% 
+    mutate(race = paste0(race_group)) %>%  ## BACK TO i
+    relocate(race, .before = 1) %>% 
+    mutate(race = str_replace(string = race,
+                              pattern = "_",
+                              replacement = " "),
+           race = str_to_title(race),
+           race = str_replace(string = race,
+                              pattern = "Other",
+                              replacement = "Other Race(s)"))
+  
+  return(df_race_group)
+}
+```
+
+```{r}
+## -- run function through purrr -- ##
+data_plot_race_bookWindow <- 
+  data_race_quants %>% 
+  pmap_dfr(function_plot_race_bookWindow)
+
+## -- create plot -- ##
+# parameters
+race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+
+# plotly
+plot_race_booking_window <- ggplot(data = data_plot_race_bookWindow, 
+                                      aes(x = median_booking_window,
+                                          y = reorder(race, median_booking_window))) +
+  geom_segment(aes(xend = 0, yend = race)) +
+  geom_point(aes(x = median_booking_window,
+                 y = reorder(race, median_booking_window),
+                 color = race, fill = race,
+                 text = paste("People who live in ZIP codes with high", 
+                              str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), 
+                              "populations",
+                             "<br>tend to make their reservations", round(median_booking_window, 0), "days before their visit to overnight reservable sites.")),
+             width = .25,
+             size = 4, shape = 21, stroke = 2) +
+  scale_fill_manual(values = race_group_colors) +
+  scale_color_manual(values = race_group_colors) +
+  labs(x = paste("Average Number of Days from Order Date to Reservation Date"),
+       y = "",
+       title = "Average Number of Days in Advance <br>Reservation is Booked for Different Racial Groups") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_race_booking_window,
+         tooltip = list("text"))
+```
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+## -- create function to make plot df -- ##
+
+```
+
+```{r}
+## -- run function through purrr -- ##
+
+## -- create plot -- ##
+
+# parameters
+
+# plotly
+```
 
 
 ```{r, eval=TRUE}
