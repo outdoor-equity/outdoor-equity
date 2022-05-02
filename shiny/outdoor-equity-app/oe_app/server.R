@@ -196,16 +196,28 @@ observeEvent(input$admin_unit_data_download, {
 observeEvent(input$num_viz, {
 
   if (input$num_viz == 1) {
+    
     shinyjs::hide(id = "num_viz_2")
-    # update box width?
+    
+    updateBox(id ="num_viz_1",
+              action = "update",
+              options = list(
+                width = 12
+              ),
+              session)
   }
   else if (input$num_viz == 2) {
+    
     shinyjs::show(id = "num_viz_2")
+    
+    updateBox(id = "num_viz_1",
+              action = "update",
+              options = list(
+                width = 6
+              ),
+              session)
+    
   }
-  # else (input$num_viz == 3) {
-  #   shinyjs::hide(id %in% c("num_viz_1", "num_viz_2"))
-  # }
-
 }) ## EO OE press num_viz
 
 
