@@ -3,6 +3,7 @@ ui <- fluidPage(
   # use shiny dashboard elements in shiny
   useShinydashboard(),
   useShinyjs(),
+  # call css styles sheet
   tags$head(
     tags$link(rel = "stylesheet",
               type = "text/css",
@@ -74,7 +75,7 @@ ui <- fluidPage(
                           
                           # SO data summary plot 1 output box
                           box(id = "num_viz_1",
-                              width = 12,
+                              width = 6,
                               splitLayout(
                                 # agency input
                                 select_agency(locationId = "summary_1"),
@@ -84,8 +85,7 @@ ui <- fluidPage(
                                 select_site(locationId = "summary_1")
                               ),
                               plotlyOutput(outputId = "data_summary_plot_1") %>%
-                                withSpinner(color = "#0dc5c1"),
-                              textOutput(outputId = "data_summary_text")
+                                withSpinner(color = "#0dc5c1")
                           ), # EO data summary plot 1 output box
                           
                           # SO data summary plot 2 output box
@@ -138,48 +138,48 @@ ui <- fluidPage(
                                 withSpinner(color = "#0dc5c1")
                               ) # EO relationships plot output box
                         ) # EO FR data relationships
-                        ), #### EO data relationships ----
+                        )#, #### EO data relationships ----
 
                ### SO visitorsheds ----
-               tabPanel(title = "Visitorsheds",
-                        fluid = TRUE,
-                        
-                        titlePanel("Visualize a visitorshed"),
-                        # SO FR visitorsheds   
-                        fluidRow(
-                          # subset visitorshed data box
-                          box(width = 12,
-                              title = "Subset the data",
-                              splitLayout(
-                                # agency input
-                                select_agency(locationId = "visitorsheds"),
-                                # admin input
-                                select_admin_unit(locationId = "visitorsheds"),
-                                # site input
-                                select_site(locationId = "visitorsheds")
-                              ) # EO visitorshed split layout
-                              ), # EO subset visitorshed data box
-                          
-                          # SO US visitorshed map box
-                          box(width = 6,
-                              title = "US Visitorshed",
-                              tmapOutput(outputId = "usVisitorshed_plot") %>% 
-                                withSpinner(color="#0dc5c1")
-                          ), # EO US visitorshed map box
-                          
-                          # SO CA visitorshed map box
-                          box(width = 6,
-                              title = "California Visitorshed",
-                              tmapOutput(outputId = "caVisitorshed_plot") %>% 
-                                withSpinner(color="#0dc5c1"),
-                          ), # EO US visitorshed map box
-                          
-                          # SO visitorshed info box
-                          box(width = 12,
-                              title = "Reservable Site Summary"
-                          ) # EO visitorshed info box
-                        ) # EO FR visitorsheds
-                        ) #### EO visitorsheds ----
+               # tabPanel(title = "Visitorsheds",
+               #          fluid = TRUE,
+               #          
+               #          titlePanel("Visualize a visitorshed"),
+               #          # SO FR visitorsheds   
+               #          fluidRow(
+               #            # subset visitorshed data box
+               #            box(width = 12,
+               #                title = "Subset the data",
+               #                splitLayout(
+               #                  # agency input
+               #                  select_agency(locationId = "visitorsheds"),
+               #                  # admin input
+               #                  select_admin_unit(locationId = "visitorsheds"),
+               #                  # site input
+               #                  select_site(locationId = "visitorsheds")
+               #                ) # EO visitorshed split layout
+               #                ), # EO subset visitorshed data box
+               #            
+               #            # SO US visitorshed map box
+               #            box(width = 6,
+               #                title = "US Visitorshed",
+               #                tmapOutput(outputId = "usVisitorshed_plot") %>% 
+               #                  withSpinner(color="#0dc5c1")
+               #            ), # EO US visitorshed map box
+               #            
+               #            # SO CA visitorshed map box
+               #            box(width = 6,
+               #                title = "California Visitorshed",
+               #                tmapOutput(outputId = "caVisitorshed_plot") %>% 
+               #                  withSpinner(color="#0dc5c1"),
+               #            ), # EO US visitorshed map box
+               #            
+               #            # SO visitorshed info box
+               #            box(width = 12,
+               #                title = "Reservable Site Summary"
+               #            ) # EO visitorshed info box
+               #          ) # EO FR visitorsheds
+               #          ) #### EO visitorsheds ----
 
                ), ## EO Analysis tab ----
     
@@ -190,7 +190,7 @@ ui <- fluidPage(
              # SO data download FR layout
              fluidRow(
                # SO box inputs
-               box(width = 12, # Note(HD): not seeing even inputs???
+               box(width = 12,
                    splitLayout(cellWidths = c("33.3%", "33.3%", "33.3%"),
                                # select agency
                                select_agency(locationId = "data_download",
@@ -200,16 +200,7 @@ ui <- fluidPage(
                                                  isMultiple = TRUE),
                                # select reservable site
                                select_site(locationId = "data_download",
-                                           isMultiple = TRUE) #,
-                               # tags$head(tags$style(HTML(
-                               #   ".shiny-split-layout > div {
-                               #   overflow: visible;
-                               #   }
-                               #   .shiny-split-layout .selectize-dropdown {
-                               #   z-index: 2000;
-                               #   }
-                               #   "
-                   #))) # EO tags$head making drop down visible 
+                                           isMultiple = TRUE) 
                  ) # EO split layout
                ), # EO box layout
                # SO box data table
