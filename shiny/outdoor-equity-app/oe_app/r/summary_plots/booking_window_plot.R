@@ -16,6 +16,11 @@ booking_window_plot <- function(admin_unitInput, siteInput){
   # reactive data frame
   booking_window_rdf <- reactive({
     
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
     data_joined_2018 %>%
       filter(park %in% siteInput,
              booking_window > 0,
