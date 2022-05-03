@@ -1,5 +1,5 @@
 
-race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb_df){
+race_booking_window_data <- function(siteInput, race_group, weighted_quartile, ridb_df){
   # reactive data frame 
   race_booking_window_rdf <- reactive ({
     

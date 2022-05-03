@@ -801,7 +801,7 @@ for (i in seq_along(racial_groups)){
   weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$race_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
   
   df_racial_group_i_longer <- data_ridb_acs_2018 %>% 
-    select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
+    select(park, customer_zip, asian, black, hispanic_latinx, 
            multiracial, native_american, other, pacific_islander, white,
            length_of_stay) %>% 
     drop_na(length_of_stay) %>% 

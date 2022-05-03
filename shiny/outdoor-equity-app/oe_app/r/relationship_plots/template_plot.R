@@ -1,8 +1,8 @@
 
 ## race x distance traveled and parameters ##
 
-race_dist_travel_plot <- function(admin_unitInput, siteInput,
-                                  race_top_quartile_df, ridb_df){
+race___plot <- function(admin_unitInput, siteInput,
+                        race_top_quartile_df, ridb_df){
   
   print(race_dist_travel_data)
   print(ridb_df)
@@ -10,7 +10,7 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
   print(siteInput)
   
   plot_data <- 
-    race_top_quartile_df %>% pmap_dfr(race_dist_travel_data, 
+    race_top_quartile_df %>% pmap_dfr(race___data, 
                                       ridb_df = ridb_df, 
                                       siteInput = siteInput)
   
@@ -30,33 +30,7 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
   } else if (nrow(plot_data) > 0){
     
     plotly <- ggplot(data = plot_data, 
-                     aes(x = median_distance_traveled_mi,
-                         y = reorder(race, median_distance_traveled_mi))) +
-      geom_segment(aes(xend = 0, yend = race)) +
-      geom_point(aes(color = race, fill = race,
-                     text = paste0(comma(count, accuracy = 1), 
-                                   " unique visits were made by people who live in ZIP codes<br>with high ",
-                                   str_to_title(race) %>% 
-                                     str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), 
-                                   " populations. Typically these visitors traveled between<br>",
-                                   comma(quartile_lower, accuracy = 1), 
-                                   " and ", comma(quartile_upper, accuracy = 1), 
-                                   " miles, with a median distance of ", 
-                                   comma(median_distance_traveled_mi, accuracy = 1), 
-                                   " miles.")),
-                 size = 3.5, 
-                 shape = 21, stroke = 2) +
-      scale_y_discrete(expand = c(0.3, 0)) +
-      scale_fill_manual(values = race_group_colors) +
-      scale_color_manual(values = race_group_colors) +
-      labs(x = paste("Estimated Distance Traveled from Home to Site (miles)"),
-           y = "",
-           title = paste0("Distance Traveled by Different Racial Groups to<br>", 
-                          siteInput, ", ", admin_unitInput, " in 2018")) + 
-      theme_minimal() +
-      theme(plot.background = element_rect("white"),
-            panel.grid.major.y = element_blank(),
-            legend.position = "none")
+                     ...)
     
     ggplotly(plotly,
              tooltip = list("text")) %>%
