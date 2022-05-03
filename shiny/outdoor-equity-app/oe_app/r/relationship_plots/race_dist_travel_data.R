@@ -33,6 +33,6 @@ race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb
     
   })
   
-  return(race_dist_travel_rdf)
+  return(race_dist_travel_rdf())
   
 } # EO function
