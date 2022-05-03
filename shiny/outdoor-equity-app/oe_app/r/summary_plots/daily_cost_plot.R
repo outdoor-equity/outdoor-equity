@@ -73,7 +73,11 @@ daily_cost_plot <- function(admin_unitInput, siteInput){
   ggplotly(daily_cost_plotly,
            tooltip = list("text"),
            dynamicTicks = TRUE) %>% 
-    layout(margin = list(b = 130, t = 100), 
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Daily Cost for Visits'),
+                        font = list(size = 15)),
+           margin = list(b = 130, t = 100), 
            annotations =  list(x = 5, 
                                y = -0.6, 
                                text = paste0("80% of reservations paid less than ", dollar(quant_80), "<br> (shown on plot with dotted line)."), 
