@@ -38,7 +38,7 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
                                    " unique visits were made by people who live in ZIP codes<br>with high ",
                                    str_to_title(race) %>% 
                                      str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), 
-                                   " populations. Typically folks reserved their visit between<br>",
+                                   " populations. Typically these visitors reserved their visit between<br>",
                                    comma(quartile_lower, accuracy = 1), 
                                    " and ", comma(quartile_upper, accuracy = 1), 
                                    " days before the start of their trip, with a median booking window of ", 
