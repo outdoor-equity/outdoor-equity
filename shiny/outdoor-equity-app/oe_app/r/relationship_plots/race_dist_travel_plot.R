@@ -38,7 +38,7 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
                                    " unique visits were made by people who live in ZIP codes<br>with high ",
                                    str_to_title(race) %>% 
                                      str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), 
-                                   " populations. Typically folks traveled between<br>",
+                                   " populations. Typically these visitors traveled between<br>",
                                    comma(quartile_lower, accuracy = 1), 
                                    " and ", comma(quartile_upper, accuracy = 1), 
                                    " miles, with a median distance of ", 
@@ -63,7 +63,7 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
       config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                            "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
       add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                      x = -0.15, xref = 'paper', y = 0.95, yref = 'paper', 
+                      x = -0.1, xref = 'paper', y = 0.95, yref = 'paper', 
                       showarrow = FALSE)
     
   } # EO else if
