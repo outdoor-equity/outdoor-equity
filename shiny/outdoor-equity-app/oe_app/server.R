@@ -289,8 +289,8 @@ output$data_summary_plot_1 <- renderPlotly({
   ## SO race ----
   else if (input$data_summary == "race") {
 
-    race_plot(admin_unitInput = input$admin_unit_summary_2,
-              siteInput = input$site_summary_2)
+    race_plot(admin_unitInput = input$admin_unit_summary_1,
+              siteInput = input$site_summary_1)
 
   } ## EO else if race
 
@@ -399,7 +399,8 @@ output$data_summary_plot_2 <- renderPlotly({
 }) ## EO DATA SUMMARY PLOTS 2 
 
 ## SO RELATIONSHIPS PLOTS NO REACTIVE ----
-### race wrangling ----
+### SO race x dist travel ----
+### race wrangling
 race_group <- c("other", "pacific_islander", "multiracial", "asian",
                  "black", "white", "native_american", "hispanic_latinx")
 # “high” cutoff value
@@ -410,11 +411,8 @@ data_race_quants <-
          "weighted_quartile" = .) %>%
   as.data.frame()
 
-print(data_race_quants)
-
-#if (req(input$admin_unit_relationships, input$site_relationships, data_race_quants, data_joined_2018))
 output$data_relationships_plot <- renderPlotly({
-### SO race x dist travel ----
+### SO race x dist travel plot function
 if (input$data_relationships == "Race x Distance traveled") {
   
 race_dist_travel_plot(admin_unitInput = input$admin_unit_relationships,
