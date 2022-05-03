@@ -62,7 +62,9 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
             legend.position = "none")
     
     ggplotly(race_distance_traveled_plotly,
-             tooltip = list("text"))  
+             tooltip = list("text")) %>%
+      config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                           "hoverClosestCartesian", "hoverCompareCartesian"))
     
   } # EO else if
   
