@@ -69,9 +69,6 @@ race_site_type_plot <- function(admin_unitInput, siteInput,
            title = paste0("Number of Reservations to ", str_to_title(site_type_categories[[1]]) %>% 
                             str_replace(string = ., pattern = "Rv", replacement = "RV"),
                           " Sites by <br> People from Communities with High Rates of Different Racial Groups")) + 
-      annotate(geom = "text", 
-               x = 250, y = 9,
-               label = "Reservations from ZIP codes with high proportions of:") +
       theme_minimal() +
       theme(plot.background = element_rect("white"),
             panel.grid.major.y = element_blank(),
@@ -80,7 +77,10 @@ race_site_type_plot <- function(admin_unitInput, siteInput,
     ggplotly(race_site_type_plotly,
              tooltip = list("text")) %>%
       config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
-                                           "hoverClosestCartesian", "hoverCompareCartesian"))  
+                                           "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+      add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                      x = -0.15, xref = 'paper', y = 0.97, yref = 'paper', 
+                      showarrow = FALSE)  
   } # EO else if
   
 } # EO function

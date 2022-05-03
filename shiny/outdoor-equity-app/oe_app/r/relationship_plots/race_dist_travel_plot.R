@@ -49,9 +49,6 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
       scale_y_discrete(expand = c(0.3, 0)) +
       scale_fill_manual(values = race_group_colors) +
       scale_color_manual(values = race_group_colors) +
-      annotate(geom = "text", 
-               x = 50, y = 9,
-               label = "Reservations from ZIP codes with high proportions of:") +
       labs(x = paste("Estimated Distance Traveled from Home to Site (miles)"),
            y = "",
            title = paste0("Distance Traveled by Different Racial Groups to<br>", 
@@ -64,7 +61,10 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
     ggplotly(race_distance_traveled_plotly,
              tooltip = list("text")) %>%
       config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
-                                           "hoverClosestCartesian", "hoverCompareCartesian"))
+                                           "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+      add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                      x = -0.15, xref = 'paper', y = 0.95, yref = 'paper', 
+                      showarrow = FALSE)
     
   } # EO else if
   
