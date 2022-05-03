@@ -3,6 +3,48 @@ library(here)
 library(collections)
 
 
+test <- data_joined_2018 %>%
+  filter(park %in% "Wawona") %>%
+  select(park, median_income) %>% 
+  rename(location_indicator = park) %>% 
+  mutate(mean_zip_code_population = 1,
+         data_source = "Visitors to California Sites")
+
+median_income_ca_test <- data_ca_acs_2018 %>%
+  select(zip_code, median_income, mean_zip_code_population) %>% 
+  rename(location_indicator = zip_code) %>% 
+  mutate(data_source = "California Residents")
+
+median_income_plot_df_test <- rbind(test, median_income_ca_test)
+
+color_ridb_ca <- c("Visitors to California Sites" = "#009900FF", 
+                   "California Residents" = "#666666")
+fill_ridb_ca <- c("Visitors to California Sites" = "#00c000", 
+                  "California Residents" = "#848484")
+
+median_income_plotly_test <- ggplot() +
+  geom_histogram(data = median_income_plot_df_test,
+                 aes(x = median_income,
+                     color = data_source,
+                     fill = data_source,
+                     #weight = mean_zip_code_population,
+                     text = data_source),
+                 alpha = 0.5) +
+  scale_fill_manual(values = fill_ridb_ca) +
+  scale_color_manual(values = color_ridb_ca) +
+  scale_x_continuous(labels = dollar) +
+  labs(x = "Household Median Income (US $)",
+       y = "Density") +
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank())
+
+ggplotly(median_income_plotly_test, 
+         tooltip = list("text")) %>% 
+  layout(showlegend = FALSE) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian"))
+
 
 test <- data_joined_2018 %>%
   filter(park %in% "Wawona") %>%

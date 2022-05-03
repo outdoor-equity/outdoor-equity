@@ -298,14 +298,12 @@ output$data_summary_plot_1 <- renderPlotly({
 
 
   ## SO median income ----
-  # else if (input$data_summary == "median_income") {
-  # 
-  #   median_income_plot(agencyInput = input$agency_summary,
-  #                      admin_unitInput = input$admin_unit_summary,
-  #                      siteInput = input$site_summary,
-  #                      titleInput = input$site_summary)
-  # 
-  # } ## EO else if median income
+  else if (input$data_summary == "median_income") {
+
+    median_income_plot(admin_unitInput = input$admin_unit_summary_1,
+                       siteInput = input$site_summary_1)
+
+  } ## EO else if median income
   
   ## SO language ----
   else if (input$data_summary == "not_english_only") {
@@ -375,6 +373,14 @@ output$data_summary_plot_2 <- renderPlotly({
                    siteInput = input$site_summary_2)
     
   } ## EO else if site type
+  
+  ## SO median income ----
+  else if (input$data_summary == "median_income") {
+    
+    median_income_plot(admin_unitInput = input$admin_unit_summary_2,
+                       siteInput = input$site_summary_2)
+    
+  } ## EO else if median income
   
   ## SO language ----
   else if (input$data_summary == "not_english_only") {

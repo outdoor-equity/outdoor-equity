@@ -55,9 +55,10 @@ median_income_plot <- function(admin_unitInput, siteInput){
                         siteInput, ", ", admin_unitInput)) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank())
+          panel.grid.major.y = element_blank(),
+          plot.title = element_text(size = 11))
   
-  ggplotly(plot_median_income, 
+  ggplotly(median_income_plotly, 
            tooltip = list("text")) %>% 
     layout(showlegend = FALSE) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
