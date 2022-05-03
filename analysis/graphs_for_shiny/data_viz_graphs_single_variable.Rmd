@@ -62,9 +62,9 @@ x_max <- (round(max(data_plot_distance_traveled$distance_traveled_mi) / 5) * 5) 
 
 center_bin <-
   if (x_max > 100) {
-    round((max(data_plot_distance_traveled$distance_traveled_mi) / 100) / 5) * 5
+    (round((max(data_plot_distance_traveled$distance_traveled_mi) / 100) / 5) * 5) + 5
   } else if (x_max > 10) {
-    round((max(data_plot_distance_traveled$distance_traveled_mi) / 10) / 5) * 5
+    (round((max(data_plot_distance_traveled$distance_traveled_mi) / 10) / 5) * 5) + 5
   } else {
     0.5
   }
@@ -201,9 +201,9 @@ x_max <- (round(max(data_plot_daily_cost$daily_cost) / 5) * 5) + 5 # max x round
 
 center_bin <-
   if (x_max > 100) {
-    round((max(data_plot_daily_cost$daily_cost) / 100) / 5) * 5
+    (round((max(data_plot_daily_cost$daily_cost) / 100) / 5) * 5) + 5
   } else if (x_max > 10) {
-    round((max(data_plot_daily_cost$daily_cost) / 10) / 5) * 5
+    (round((max(data_plot_daily_cost$daily_cost) / 10) / 5) * 5) + 5
   } else {
     0.5
   }
