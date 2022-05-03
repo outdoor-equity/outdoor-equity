@@ -63,7 +63,7 @@ ui <- fluidPage(
                               select_data_summary_vars(),
                               #### SO select number of visuals ----
                               selectizeInput(inputId = "num_viz",
-                                             label = "Select number of visuals",
+                                             label = "Select 1 to see single site, or 2 if you want to compare two different sites",
                                              choices = c(1, 2),
                                              multiple = FALSE,
                                              options = list(
