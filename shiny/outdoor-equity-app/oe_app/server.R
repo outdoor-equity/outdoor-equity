@@ -424,6 +424,8 @@ race_dist_travel_plot(admin_unitInput = input$admin_unit_relationships,
    
 }) ## EO relationships plots 
 
+### SO race x site type ----
+
 ## SO VISITORSHEDS PLOTS YES REACTIVE ----
 ### yosemite plot ----
 output$caVisitorshed_plot <- renderTmap({
@@ -468,9 +470,17 @@ data_download_dt <- reactive({
 # DT table
 output$data_download_table <- renderDT({
   
-  DT::datatable(data_download_dt())
+  DT::datatable(data_download_dt(),
+                extensions = 'Buttons',
+                options = list(
+                  server = FALSE,
+                  paging = TRUE,
+                  pageLength = 12,
+                  buttons = c('csv', 'excel'),
+                  dom = 'Bfrtip'
+                ))
   
-})
+}) # EO render data table
 
 
 
