@@ -39,7 +39,7 @@ median_income_plot <- function(admin_unitInput, siteInput){
   
   # plot for shiny app
   median_income_plotly <- ggplot() +
-    geom_density(data = data_plot_median_income,
+    geom_density(data = median_income_data_plot,
                  aes(x = median_income,
                      color = data_source,
                      fill = data_source,
