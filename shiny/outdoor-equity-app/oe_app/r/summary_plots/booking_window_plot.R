@@ -64,10 +64,10 @@ booking_window_plot <- function(admin_unitInput, siteInput){
                    center = 7 / 2,
                    fill = hist_colors[[1]], 
                    col = hist_colors[[2]], size = 0.05) +
-    labs(x = "Days elapsed from order to visit (each bar = 1 week)",
-         y = "",
-         title = paste0("Number of days between reservation made and start of visit for<br>", 
-                        siteInput, ", ", admin_unitInput)) +
+    labs(x = "Days in advance before visit (each bar = 1 week)",
+         y = "") +
+         #title = paste0("Number of days between reservation made and start of visit for<br>", 
+                        #siteInput, ", ", admin_unitInput)) +
     scale_x_continuous(limits = c(0, x_max), breaks = seq(0, x_max, 30)) +
     scale_y_continuous(labels = comma) +
     geom_vline(xintercept = quant_80,
@@ -82,13 +82,16 @@ booking_window_plot <- function(admin_unitInput, siteInput){
     #          x = 380, y = 65000) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank(),
-          plot.title = element_text(size = 11))
+          panel.grid.major.y = element_blank())
   
   ggplotly(booking_window_plotly,
            tooltip = list("text"),
            dynamicTicks = TRUE) %>% 
-    layout(margin = list(b = 130, t = 100), 
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Number of days from reservation to start of visit'),
+                        font = list(size = 15)),
+           margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.6, 
                                text = paste0("80% of reservations reserve their visit less than ", quant_80, 
@@ -101,5 +104,6 @@ booking_window_plot <- function(admin_unitInput, siteInput){
                                font = list(size = 12, color = "#000099"))) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian"))
+  
   
 } # EO function
