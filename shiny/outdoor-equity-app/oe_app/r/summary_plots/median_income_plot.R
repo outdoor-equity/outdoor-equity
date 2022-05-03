@@ -32,7 +32,6 @@ median_income_plot <- function(admin_unitInput, siteInput){
   median_income_data_plot <- rbind(median_income_rdf(), median_income_ca)
   
   # parameters
-  # Note(HD): Do we need these colors? groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
   color_ridb_ca <- c("Visitors to California Sites" = "#009900FF", 
                      "California Residents" = "#666666")
   fill_ridb_ca <- c("Visitors to California Sites" = "#00c000", 
@@ -40,13 +39,13 @@ median_income_plot <- function(admin_unitInput, siteInput){
   
   # plot for shiny app
   median_income_plotly <- ggplot() +
-    geom_histogram(data = median_income_data_plot,
-                   aes(x = median_income,
-                       color = data_source,
-                       fill = data_source,
-                       #weight = mean_zip_code_population, Note(HD): Need to talk about weight
-                       text = data_source),
-                   alpha = 0.5) +
+    geom_density(data = data_plot_median_income,
+                 aes(x = median_income,
+                     color = data_source,
+                     fill = data_source,
+                     weight = mean_zip_code_population,
+                     text = data_source),
+                 alpha = 0.5) +
     scale_fill_manual(values = fill_ridb_ca) +
     scale_color_manual(values = color_ridb_ca) +
     scale_x_continuous(labels = dollar) +
