@@ -29,10 +29,6 @@ length_of_stay_plot <- function(admin_unitInput, siteInput){
   # wrangling
   x_max <- (round(max(length_of_stay_rdf()$length_of_stay) / 5) * 5) + 5 # max value x rounded up to nearest 5
   
-  print(paste("the class of center bin is", class(center_bin)))
-  
-  print(center_bin)
-  
   quant_80 <- quantile(x = length_of_stay_rdf()$length_of_stay,
                        probs = seq(0, 1, 0.1))[[9]] %>% round(0)
   
