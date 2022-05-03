@@ -36,9 +36,9 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
   
   center_bin <-
     if (max(dist_travel_rdf()$distance_traveled_mi) > 100) {
-      round((max(dist_travel_rdf()$distance_traveled_mi) / 100) / 5) * 5
+      (round((max(dist_travel_rdf()$distance_traveled_mi) / 100) / 5) * 5) + 5
     } else if (max(dist_travel_rdf()$distance_traveled_mi) > 10) {
-      round((max(dist_travel_rdf()$distance_traveled_mi) / 10) / 5) * 5
+      (round((max(dist_travel_rdf()$distance_traveled_mi) / 10) / 5) * 5) + 5
     } else {
       0.5
     }
