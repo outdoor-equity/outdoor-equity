@@ -281,7 +281,7 @@ function_plot_race_bookWindow <- function(race_group, weighted_quartile,
               quartile_lower = quantile(booking_window)[[2]],
               quartile_upper = quantile(booking_window)[[4]],
               count = n()) %>% 
-    mutate(race = paste0(race_group)) %>%  ## BACK TO i
+    mutate(race = paste0(race_group)) %>%
     relocate(race, .before = 1) %>% 
     mutate(race = str_replace(string = race,
                               pattern = "_",
