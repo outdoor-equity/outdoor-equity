@@ -214,18 +214,7 @@ observeEvent(input$num_viz, {
   }
 }) ## EO OE press num_viz
 
-
   
-# observeEvent(input$data_summary, {
-#   if (req(input$admin_unit_summary_1, input$site_summary_1)) {
-#     # if inputs exist hide emoty input text
-#     output$data_summary_text <- renderPrint({ "" })
-#   } else {
-#     #else show empty input text
-#     output$data_summary_text <- renderPrint({ "Please select a reservable site to display a plot" })
-#   }
-#   
-# })
 
 # RENDER PLOTS ----
 ## SO DATA SUMMARY PLOTS 1 ----
