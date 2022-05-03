@@ -38,18 +38,10 @@ daily_cost_plot <- function(admin_unitInput, siteInput){
     } else {
       0.5
     }
-  
-  print(paste("the class of center bin is", class(center_bin)))
-  print(center_bin)
+
   
   quant_80 <- quantile(x = daily_cost_rdf()$daily_cost,
                        probs = seq(0, 1, 0.1))[[9]] %>% round(0)
-  
-  print(paste("the class of quant_80 bin is", class(quant_80)))
-  print(quant_80)
-  
-  print(head(daily_cost_rdf()))
-  print(daily_cost_rdf()$daily_cost)
   
   # parameters
   hist_colors <- c("#009900FF", "#00c000")
@@ -81,7 +73,11 @@ daily_cost_plot <- function(admin_unitInput, siteInput){
   ggplotly(daily_cost_plotly,
            tooltip = list("text"),
            dynamicTicks = TRUE) %>% 
-    layout(margin = list(b = 130, t = 100), 
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Daily Cost for Visits'),
+                        font = list(size = 15)),
+           margin = list(b = 130, t = 100), 
            annotations =  list(x = 5, 
                                y = -0.6, 
                                text = paste0("80% of reservations paid less than ", dollar(quant_80), "<br> (shown on plot with dotted line)."), 
