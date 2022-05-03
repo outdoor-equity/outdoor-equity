@@ -24,30 +24,38 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
   # create plot (or say no such site type if none exist at siteInput)
   if (nrow(data_race_dist_travel) == 0){
     
-    print(paste0("There are no sites at ", siteInput, ", ", admin_unitInput, " that come from communities that fall into the high range for any racial groups."))
+    print(paste0("There are no sites at ", siteInput, ", ", admin_unitInput, 
+                 " that come from communities that fall into the high range for any racial groups."))
     
   } else if (nrow(data_race_dist_travel) > 0){
     
     race_distance_traveled_plotly <- ggplot(data = data_race_dist_travel, 
-                                          aes(x = mean_distance_traveled_mi,
-                                              y = reorder(race, mean_distance_traveled_mi))) +
+                                            aes(x = median_distance_traveled_mi,
+                                                y = reorder(race, median_distance_traveled_mi))) +
       geom_segment(aes(xend = 0, yend = race)) +
-      geom_point(aes(x = mean_distance_traveled_mi,
-                     y = reorder(race, mean_distance_traveled_mi),
-                     color = race, fill = race,
-                     text = paste("People who live in ZIP codes with high", 
-                                  str_to_title(race) %>% 
-                                    str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), 
-                                  "populations", "<br>travel an estimated distance of", 
-                                  round(mean_distance_traveled_mi, 0), 
-                                  "miles to overnight reservable sites.")),
-                 width = .25,
-                 size = 4, shape = 21, stroke = 2) +
+      geom_point(aes(color = race, fill = race,
+                     text = paste0(comma(count, accuracy = 1), 
+                                   " unique visits were made by people who live in ZIP codes<br>with high ",
+                                   str_to_title(race) %>% 
+                                     str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), 
+                                   " populations. Typically folks traveled between<br>",
+                                   comma(quartile_lower, accuracy = 1), 
+                                   " and ", comma(quartile_upper, accuracy = 1), 
+                                   " miles, with a median distance of ", 
+                                   comma(median_distance_traveled_mi, accuracy = 1), 
+                                   " miles.")),
+                 size = 3.5, 
+                 shape = 21, stroke = 2) +
+      scale_y_discrete(expand = c(0.3, 0)) +
       scale_fill_manual(values = race_group_colors) +
       scale_color_manual(values = race_group_colors) +
-      labs(x = paste("Average Distance Traveled from Home to Site (miles)"),
+      annotate(geom = "text", 
+               x = 50, y = 9,
+               label = "Reservations from ZIP codes with high proportions of:") +
+      labs(x = paste("Estimated Distance Traveled from Home to Site (miles)"),
            y = "",
-           title = paste0("Average Distance Traveled to ", siteInput, ", ", admin_unitInput, " for <br>Different Racial Groups")) + 
+           title = paste0("Distance Traveled by Different Racial Groups to<br>", 
+                          siteInput, ", ", admin_unitInput, " in 2018")) + 
       theme_minimal() +
       theme(plot.background = element_rect("white"),
             panel.grid.major.y = element_blank(),
