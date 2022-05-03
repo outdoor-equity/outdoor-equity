@@ -32,7 +32,11 @@ median_income_plot <- function(admin_unitInput, siteInput){
   median_income_data_plot <- rbind(median_income_rdf(), median_income_ca)
   
   # parameters
-  groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
+  # Note(HD): Do we need these colors? groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
+  color_ridb_ca <- c("Visitors to California Sites" = "#009900FF", 
+                     "California Residents" = "#666666")
+  fill_ridb_ca <- c("Visitors to California Sites" = "#00c000", 
+                    "California Residents" = "#848484")
   
   # plot for shiny app
   median_income_plotly <- ggplot() +
@@ -40,7 +44,7 @@ median_income_plot <- function(admin_unitInput, siteInput){
                    aes(x = median_income,
                        color = data_source,
                        fill = data_source,
-                       weight = mean_zip_code_population,
+                       #weight = mean_zip_code_population, Note(HD): Need to talk about weight
                        text = data_source),
                    alpha = 0.5) +
     scale_fill_manual(values = fill_ridb_ca) +
@@ -52,9 +56,10 @@ median_income_plot <- function(admin_unitInput, siteInput){
                         siteInput, ", ", admin_unitInput)) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank())
+          panel.grid.major.y = element_blank(),
+          plot.title = element_text(size = 11))
   
-  ggplotly(plot_median_income, 
+  ggplotly(median_income_plotly, 
            tooltip = list("text")) %>% 
     layout(showlegend = FALSE) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
