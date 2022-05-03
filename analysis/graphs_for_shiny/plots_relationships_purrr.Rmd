@@ -76,6 +76,69 @@ data_race_quants <-
 ```
 
 
+```{r}
+## -- create plot showing numbers of reservations for each "high" racial group -- ##
+function_plot_top_race_reservations <- function(race_group, weighted_quartile,
+                                              ridb_df = data_ridb_acs_2018){
+  df <- ridb_df %>% 
+    select(park, customer_zip, asian, black, hispanic_latinx, 
+           multiracial, native_american, other, pacific_islander, white) %>% 
+    pivot_longer(cols = 3:10,
+                 names_to = "race",
+                 values_to = "race_percentage") %>% 
+    filter(race == paste0(race_group)) %>% 
+    drop_na(race_percentage) %>% 
+    filter(race_percentage >= weighted_quartile) %>% 
+    summarize(count = n()) %>% 
+    mutate(race = paste0(race_group)) %>% 
+    relocate(race, .before = 1) %>% 
+    mutate(race = str_replace(string = race,
+                              pattern = "_",
+                              replacement = " "),
+           race = str_to_title(race),
+           race = str_replace(string = race,
+                              pattern = "Other",
+                              replacement = "Other Race(s)"))
+  
+  return(df)
+}
+
+## -- run function through purrr -- ##
+data_plot_race_top_race_reservations <- 
+  data_race_quants %>% 
+  pmap_dfr(function_plot_top_race_reservations)
+
+
+## -- create plotly -- ##
+plot <- ggplot(data = data_plot_race_top_race_reservations) +
+  geom_col(aes(x = count,
+               y = reorder(race, count),
+               fill = race,
+               text = paste0(comma(count, accuracy = 1), 
+                             " reservations were made by <br>people who live in ZIP codes with high ", 
+                             race, " populations."))) +
+  scale_x_continuous(labels = comma) +
+  scale_y_discrete(expand = c(0.3, 0)) +
+  scale_fill_manual(values = race_group_colors) +
+  scale_color_manual(values = race_group_colors) +
+  labs(x = paste("Number of Reservations"),
+       y = "",
+       title = paste0("Number of Reservations by <br> People from Communities with High Rates of Different Racial Groups")) + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.15, xref = 'paper', y = 0.97, yref = 'paper', 
+                  showarrow = FALSE)
+```
+
+
 ### Race x distance traveled
 
 ```{r}
@@ -174,7 +237,7 @@ ggplotly(plot_race_distance_traveled,
 function_plot_race_siteType <- function(race_group, weighted_quartile,
                                         ridb_df = data_ridb_acs_2018){
   
-  df_racial_group <- ridb_df %>% 
+  df <- ridb_df %>% 
     select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
            multiracial, native_american, other, pacific_islander, white,
            aggregated_site_type) %>% 
@@ -197,7 +260,7 @@ function_plot_race_siteType <- function(race_group, weighted_quartile,
                               pattern = "Other",
                               replacement = "Other Race(s)"))
   
-  return(df_racial_group)
+  return(df)
 }
 ```
 
@@ -266,7 +329,7 @@ ggplotly(plot_race_site_type_equestrian,
 function_plot_race_bookWindow <- function(race_group, weighted_quartile,
                                         ridb_df = data_ridb_acs_2018){
   
-  df_race_group <- ridb_df %>% 
+  df <- ridb_df %>% 
     select(park, customer_zip, asian, black, hispanic_latinx, 
            multiracial, native_american, other, pacific_islander, white,
            booking_window) %>% 
@@ -291,7 +354,7 @@ function_plot_race_bookWindow <- function(race_group, weighted_quartile,
                               pattern = "Other",
                               replacement = "Other Race(s)"))
   
-  return(df_race_group)
+  return(df)
 }
 ```
 
@@ -354,7 +417,7 @@ ggplotly(plot_race_booking_window,
 function_plot_race_dailyCost <- function(race_group, weighted_quartile,
                                          ridb_df = data_ridb_acs_2018){
   
-  df_race_group <- ridb_df %>% 
+  df <- ridb_df %>% 
     select(park, customer_zip, asian, black, hispanic_latinx, 
            multiracial, native_american, other, pacific_islander, white,
            daily_cost) %>% 
@@ -380,7 +443,7 @@ function_plot_race_dailyCost <- function(race_group, weighted_quartile,
                               pattern = "Other",
                               replacement = "Other Race(s)"))
   
-  return(df_race_group)
+  return(df)
 }
 ```
 
@@ -437,6 +500,96 @@ ggplotly(plot_race_daily_cost,
                   showarrow = FALSE)
 ```
 
+
+### Race x daily cost per visitor
+
+```{r}
+## -- create function to make plot df -- ##
+function_plot_race_dailyCostPerVisitor <- function(race_group, weighted_quartile,
+                                         ridb_df = data_ridb_acs_2018){
+  
+  df <- ridb_df %>% 
+    select(park, customer_zip, asian, black, hispanic_latinx, 
+           multiracial, native_american, other, pacific_islander, white,
+           daily_cost_per_visitor) %>% 
+    drop_na(daily_cost_per_visitor) %>% 
+    filter(daily_cost_per_visitor != Inf) %>% 
+    pivot_longer(cols = 3:10,
+                 names_to = "race",
+                 values_to = "race_percentage") %>% 
+    filter(race == race_group) %>%
+    drop_na(race_percentage) %>% 
+    filter(race_percentage >= weighted_quartile) %>% 
+    summarize(median_daily_cost_per_visitor = median(daily_cost_per_visitor),
+              quartile_lower = quantile(daily_cost_per_visitor)[[2]],
+              quartile_upper = quantile(daily_cost_per_visitor)[[4]],
+              count = n()) %>% 
+    mutate(race = paste0(race_group)) %>%  ## BACK TO i
+    relocate(race, .before = 1) %>% 
+    mutate(race = str_replace(string = race,
+                              pattern = "_",
+                              replacement = " "),
+           race = str_to_title(race),
+           race = str_replace(string = race,
+                              pattern = "Other",
+                              replacement = "Other Race(s)"))
+  
+  return(df)
+}
+```
+
+```{r}
+## -- run function through purrr -- ##
+data_plot_race_dailyCostPerVisitor <- 
+  data_race_quants %>% 
+  pmap_dfr(function_plot_race_dailyCostPerVisitor)
+
+## -- create plot -- ##
+
+# parameters
+race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                              "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                              "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+
+# plotly
+plot_race_daily_cost_per_visitor <- ggplot(data = data_plot_race_dailyCostPerVisitor, 
+                                      aes(x = median_daily_cost_per_visitor,
+                                          y = reorder(race, median_daily_cost_per_visitor))) +
+  geom_segment(aes(xend = 0, yend = race)) +
+  geom_point(aes(color = race, fill = race,
+                 text = paste0(comma(count, accuracy = 1), 
+                               " unique visits were made by people who live in ZIP codes<br>with high ",
+                               str_to_title(race) %>% 
+                                 str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), 
+                               " populations. Typically these visitors paid between<br>",
+                               dollar(quartile_lower), 
+                               " and ", dollar(quartile_upper), 
+                               " per day for reservations, with a median of ", 
+                               dollar(median_daily_cost_per_visitor), 
+                               ".")),
+             size = 3.5, 
+             shape = 21, stroke = 2) +
+  scale_x_continuous(labels = dollar) +
+  scale_y_discrete(expand = c(0.3, 0)) +
+  scale_fill_manual(values = race_group_colors) +
+  scale_color_manual(values = race_group_colors) +
+  labs(x = paste("Estimated Daily Cost per Visitor (US $)"),
+       y = "",
+       title = paste0("Daily Costs per Visitor Paid by Different Racial Groups to<br>", 
+                      siteInput, ", ", admin_unitInput, " in 2018")) + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_race_daily_cost_per_visitor,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.15, xref = 'paper', y = 0.95, yref = 'paper', 
+                  showarrow = FALSE)
+```
 
 
 

@@ -1,7 +1,7 @@
 
 ## race x distance traveled and parameters ##
 
-race_dist_travel_plot <- function(admin_unitInput, siteInput,
+race_booking_window_plot <- function(admin_unitInput, siteInput,
                                   race_top_quartile_df, ridb_df){
   
   print(race_dist_travel_data)
