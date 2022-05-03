@@ -1,9 +1,14 @@
 
 race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb_df){
   # reactive data frame 
-  race_dist_travel_rdf <- reactive ({
+  rdf <- reactive ({
     
-    data_joined_2018 %>%
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
+    ridb_df %>%
       filter(park %in% siteInput) %>%
       select(park, customer_zip, asian, black, hispanic_latinx, 
              multiracial, native_american, other, pacific_islander, white,
@@ -33,6 +38,6 @@ race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb
     
   })
   
-  return(race_dist_travel_rdf())
+  return(rdf())
   
 } # EO function
