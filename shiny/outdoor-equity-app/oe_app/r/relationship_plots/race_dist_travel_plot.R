@@ -24,7 +24,7 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
   # create plot (or say no such site type if none exist at siteInput)
   if (nrow(data_race_dist_travel) == 0){
     
-    print(paste0("There are no sites at ", siteInput, ", ", admin_unitInput, 
+    print(paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
                  " that come from communities that fall into the high range for any racial groups."))
     
   } else if (nrow(data_race_dist_travel) > 0){
