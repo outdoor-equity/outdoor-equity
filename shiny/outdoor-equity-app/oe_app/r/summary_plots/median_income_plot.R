@@ -7,6 +7,11 @@ median_income_plot <- function(admin_unitInput, siteInput){
   # reactive data frame 
   median_income_rdf <- reactive ({
     
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
     # reservations in CA
     data_joined_2018 %>%
       filter(park %in% siteInput) %>%

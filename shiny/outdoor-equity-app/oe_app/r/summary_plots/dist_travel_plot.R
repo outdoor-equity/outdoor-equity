@@ -16,6 +16,11 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
   # reactive data frame 
   dist_travel_rdf <- reactive ({
     
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
     data_joined_2018 %>%
       filter(park %in% siteInput) %>%
       mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>%

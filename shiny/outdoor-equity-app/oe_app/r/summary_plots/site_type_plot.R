@@ -15,6 +15,11 @@ site_type_plot <- function(admin_unitInput, siteInput){
   # reactive data frame 
   site_type_rdf <- reactive ({
     
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
     data_joined_2018 %>%
       filter(park %in% siteInput) %>%
       select(park, aggregated_site_type) %>% 

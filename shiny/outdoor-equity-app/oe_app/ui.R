@@ -2,6 +2,7 @@
 ui <- fluidPage(
   # use shiny dashboard elements in shiny
   useShinydashboard(),
+  useShinydashboardPlus(),
   useShinyjs(),
   # call css styles sheet
   tags$head(
@@ -75,7 +76,7 @@ ui <- fluidPage(
                           
                           # SO data summary plot 1 output box
                           box(id = "num_viz_1",
-                              width = 6,
+                              width = 12,
                               splitLayout(
                                 # agency input
                                 select_agency(locationId = "summary_1"),
