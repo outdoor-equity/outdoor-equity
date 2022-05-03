@@ -8,7 +8,7 @@ race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb
            "Please select a reservable site to visualize.")
     ) # EO validate
     
-    data_joined_2018 %>%
+    ridb_df %>%
       filter(park %in% siteInput) %>%
       select(park, customer_zip, asian, black, hispanic_latinx, 
              multiracial, native_american, other, pacific_islander, white,
