@@ -2,6 +2,22 @@ library(tidyverse)
 library(here)
 library(collections)
 
+test <- data_joined_2018 %>%
+  filter(park %in% "Wawona") %>%
+  summarize(white = mean(white, na.rm = TRUE),
+            black = mean(black, na.rm = TRUE),
+            asian = mean(asian, na.rm = TRUE),
+            multiracial = mean(multiracial, na.rm = TRUE),
+            other = mean(other, na.rm = TRUE),
+            native_american = mean(native_american, na.rm = TRUE),
+            pacific_islander = mean(pacific_islander, na.rm = TRUE),
+            hispanic_latinx = mean(hispanic_latinx, na.rm = TRUE)) %>%
+  pivot_longer(cols = 1:8, names_to = "race", values_to = "race_percent_average") %>% 
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race))
+
 
 test <- data_joined_2018 %>%
   filter(park %in% "Wawona") %>%

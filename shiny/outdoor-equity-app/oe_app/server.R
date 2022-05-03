@@ -287,14 +287,12 @@ output$data_summary_plot_1 <- renderPlotly({
   } ## EO else if site type
 
   ## SO race ----
-  # else if (input$data_summary == "race") {
-  #
-  #   race_plot(agencyInput = input$agency_summary,
-  #             admin_unitInput = input$admin_unit_summary,
-  #             siteInput = input$site_summary,
-  #             titleInput = input$site_summary)
-  #
-  # } ## EO else if race
+  else if (input$data_summary == "race") {
+
+    race_plot(admin_unitInput = input$admin_unit_summary_2,
+              siteInput = input$site_summary_2)
+
+  } ## EO else if race
 
 
   ## SO median income ----
@@ -373,6 +371,14 @@ output$data_summary_plot_2 <- renderPlotly({
                    siteInput = input$site_summary_2)
     
   } ## EO else if site type
+  
+  ## SO race ----
+  else if (input$data_summary == "race") {
+    
+    race_plot(admin_unitInput = input$admin_unit_summary_2,
+              siteInput = input$site_summary_2)
+    
+  } ## EO else if race
   
   ## SO median income ----
   else if (input$data_summary == "median_income") {
