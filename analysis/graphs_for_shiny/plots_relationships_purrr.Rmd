@@ -244,7 +244,7 @@ plot_race_site_type_equestrian <-
                             str_replace(string = ., pattern = "Rv", replacement = "RV"),
                       " Sites by <br> People from Communities with High Rates of Different Racial Groups")) + 
   annotate(geom = "text", 
-           x = 200, y = 9,
+           x = 250, y = 9, hjust = 0,
            label = "Reservations from ZIP codes with high proportions of:") +
   theme_minimal() +
   theme(plot.background = element_rect("white"),

@@ -6,17 +6,18 @@ race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb
     
     data_joined_2018 %>%
       filter(park %in% siteInput) %>%
-      select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
+      select(park, customer_zip, asian, black, hispanic_latinx, 
              multiracial, native_american, other, pacific_islander, white,
              aggregated_site_type) %>% 
       drop_na(aggregated_site_type) %>% 
-      pivot_longer(cols = 5:12,
+      pivot_longer(cols = 3:10,
                    names_to = "race",
                    values_to = "race_percentage") %>% 
       filter(race == paste0(race_group)) %>%
       drop_na(race_percentage) %>%
       filter(race_percentage >= weighted_quartile) %>% 
       count(race, aggregated_site_type) %>% 
+      rename(count = n) %>%
       mutate(race = paste0(race_group)) %>%
       relocate(race, .before = 1) %>% 
       mutate(race = str_replace(string = race,
