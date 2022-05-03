@@ -77,6 +77,8 @@ race_plot <- function(admin_unitInput, siteInput){
                               pattern = "Other",
                               replacement = "Other Race(s)"))
   
+  print(paste("race data plot:", head(race_data_plot)))
+  
   x_max <- max(race_rdf()$race_percent_average) + 0.1 # max x rounded to nearest 5
   
   # parameters
@@ -84,7 +86,7 @@ race_plot <- function(admin_unitInput, siteInput){
   text_colors_ridb_ca <- c("RIDB" = "#006600", "CA" = "#282828")
   
   # plot for shiny app
-  race_plotly <- ggplot(data = race_rdf()) +
+  race_plotly <- ggplot(data = race_data_plot) +
     geom_col(aes(x = race_percent_average,
                  y = reorder(race, race_percent_average),
                  fill = data_source,
