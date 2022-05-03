@@ -9,8 +9,8 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
   print(admin_unitInput)
   print(siteInput)
   
-  data_race_dist_travel <- 
-    race_top_quartile_df %>% pmap_dfr(race_dist_travel_data, 
+  data_race_booking_window <- 
+    race_top_quartile_df %>% pmap_dfr(race_booking_window_data, 
                                       ridb_df = ridb_df, 
                                       siteInput = siteInput)
   
@@ -22,36 +22,36 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
                          "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
   
   # create plot (or say no such site type if none exist at siteInput)
-  if (nrow(data_race_dist_travel) == 0){
+  if (nrow(data_race_booking_window) == 0){
     
     print(paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
                  " that come from communities that fall into the high range for any racial groups."))
     
-  } else if (nrow(data_race_dist_travel) > 0){
+  } else if (nrow(data_race_booking_window) > 0){
     
-    race_distance_traveled_plotly <- ggplot(data = data_race_dist_travel, 
-                                            aes(x = median_distance_traveled_mi,
-                                                y = reorder(race, median_distance_traveled_mi))) +
+    race_distance_traveled_plotly <- ggplot(data = data_race_booking_window, 
+                                            aes(x = median_booking_window,
+                                                y = reorder(race, median_booking_window))) +
       geom_segment(aes(xend = 0, yend = race)) +
       geom_point(aes(color = race, fill = race,
                      text = paste0(comma(count, accuracy = 1), 
                                    " unique visits were made by people who live in ZIP codes<br>with high ",
                                    str_to_title(race) %>% 
                                      str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), 
-                                   " populations. Typically folks traveled between<br>",
+                                   " populations. Typically folks reserved their visit between<br>",
                                    comma(quartile_lower, accuracy = 1), 
                                    " and ", comma(quartile_upper, accuracy = 1), 
-                                   " miles, with a median distance of ", 
-                                   comma(median_distance_traveled_mi, accuracy = 1), 
-                                   " miles.")),
+                                   " days before the start of their trip, with a median booking window of ", 
+                                   comma(median_booking_window, accuracy = 1), 
+                                   " days.")),
                  size = 3.5, 
                  shape = 21, stroke = 2) +
       scale_y_discrete(expand = c(0.3, 0)) +
       scale_fill_manual(values = race_group_colors) +
       scale_color_manual(values = race_group_colors) +
-      labs(x = paste("Estimated Distance Traveled from Home to Site (miles)"),
+      labs(x = paste("Estimated Number of Days in Advance Site is Reserved (days)"),
            y = "",
-           title = paste0("Distance Traveled by Different Racial Groups to<br>", 
+           title = paste0("Number of Days in Advance Site is Reserved by Different Racial Groups to<br>", 
                           siteInput, ", ", admin_unitInput, " in 2018")) + 
       theme_minimal() +
       theme(plot.background = element_rect("white"),

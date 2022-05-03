@@ -46,37 +46,41 @@ race_site_type_plot <- function(admin_unitInput, siteInput,
   # create plot (or say no such site type if none exist at siteInput)
   if (nrow(data_race_site_type) == 0){
     
-    print(paste0("There are no ", str_to_title(site_type_string) %>% 
+    print(paste0("There are either no ", str_to_title(site_type_string) %>% 
                    str_replace(string = ., pattern = "Rv", replacement = "RV"), " 
-                 sites at ", siteInput, ", ", admin_unitInput, "."))
+                 sites at ", siteInput, ", ", admin_unitInput, 
+                 "<bror there are no reservations that come from communities that fall into the high range for any racial groups."))
     
   } else if (nrow(data_race_site_type) > 0){
     
     race_site_type_plotly <- ggplot(data = data_race_site_type) +
-      geom_col(aes(x = n,
-                   y = reorder(race, n),
+      geom_col(aes(x = count,
+                   y = reorder(race, count),
                    fill = race,
                    text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
-                                 comma(n, accuracy = 1), 
+                                 comma(count, accuracy = 1), 
                                  " reservations were made by <br>people who live in ZIP codes with high ", 
                                  race, " populations."))) +
+      scale_y_discrete(expand = c(0.3, 0)) +
       scale_fill_manual(values = race_group_colors) +
       scale_color_manual(values = race_group_colors) +
-      labs(x = paste("Number of Reservations to", str_to_title(site_type_string) %>% 
-                       str_replace(string = ., pattern = "Rv", replacement = "RV"), 
-                     "Overnight Reservable Sites"),
+      labs(x = paste("Number of Reservations"),
            y = "",
-           title = paste0("Number of Reservations to ", 
-                          str_to_title(site_type_string) %>% 
+           title = paste0("Number of Reservations to ", str_to_title(site_type_categories[[1]]) %>% 
                             str_replace(string = ., pattern = "Rv", replacement = "RV"),
-                          " Sites by <br>Different Racial Groups")) + 
+                          " Sites by <br> People from Communities with High Rates of Different Racial Groups")) + 
       theme_minimal() +
       theme(plot.background = element_rect("white"),
             panel.grid.major.y = element_blank(),
             legend.position = "none")
     
     ggplotly(race_site_type_plotly,
-             tooltip = list("text"))   
+             tooltip = list("text")) %>%
+      config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                           "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+      add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                      x = -0.15, xref = 'paper', y = 0.97, yref = 'paper', 
+                      showarrow = FALSE)  
   } # EO else if
   
 } # EO function

@@ -5,7 +5,7 @@ date: "4/19/2022"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, eval=TRUE}
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 
 library(tidyverse)
@@ -78,27 +78,22 @@ data_race_quants <-
 
 ### Race x distance traveled
 
-```{r, eval=TRUE}
+```{r}
 ## -- create function to make plot df -- ##
 function_plot_race_distanceTravel <- function(race_group, weighted_quartile,
                                               ridb_df = data_ridb_acs_2018){
   
-  df_racial_group_i_longer <- ridb_df %>% 
-    select(agency, admin_unit, park, customer_zip, asian, black, hispanic_latinx, 
+  df <- ridb_df %>% 
+    select(park, customer_zip, asian, black, hispanic_latinx, 
            multiracial, native_american, other, pacific_islander, white,
            distance_traveled_m) %>% 
     mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
     drop_na(distance_traveled_mi) %>% 
-    pivot_longer(cols = 5:12,
+    pivot_longer(cols = 3:10,
                  names_to = "race",
                  values_to = "race_percentage") %>% 
     filter(race == paste0(race_group)) %>% 
-    drop_na(race_percentage)
-  
-  max_racial_group_ridb <- df_racial_group_i_longer %>%
-    summarize(max = max(race_percentage))
-  
-  df_racial_group_i <- df_racial_group_i_longer %>%
+    drop_na(race_percentage) %>% 
     filter(race_percentage >= weighted_quartile) %>% 
     summarize(median_distance_traveled_mi = median(distance_traveled_mi),
               quartile_lower = quantile(distance_traveled_mi)[[2]],
@@ -114,16 +109,17 @@ function_plot_race_distanceTravel <- function(race_group, weighted_quartile,
                               pattern = "Other",
                               replacement = "Other Race(s)"))
   
-  return(df_racial_group_i)
+  return(df)
 }
 ```
 
 
-```{r, eval=TRUE}
+```{r}
 ## -- run function through purrr -- ##
 data_plot_race_distanceTravel <- 
   data_race_quants %>% 
   pmap_dfr(function_plot_race_distanceTravel)
+
 
 ## -- create plot -- ##
 # parameters
@@ -137,24 +133,25 @@ plot_race_distance_traveled <- ggplot(data = data_plot_race_distanceTravel,
                                           y = reorder(race, median_distance_traveled_mi))) +
   geom_segment(aes(xend = 0, yend = race)) +
   geom_point(aes(color = race, fill = race,
-                 text = paste0("Typically people who live in ZIP codes with high ", 
+                 text = paste0(comma(count, accuracy = 1), 
+                               " unique visits were made by people who live in ZIP codes<br>with high ",
                                str_to_title(race) %>% 
                                  str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), 
-                               " populations<br>travel between ", comma(quartile_lower, accuracy = 1), 
+                               " populations. Typically folks traveled between<br>",
+                               comma(quartile_lower, accuracy = 1), 
                                " and ", comma(quartile_upper, accuracy = 1), 
                                " miles, with a median distance of ", 
                                comma(median_distance_traveled_mi, accuracy = 1), 
-                               " miles. <br> (Total Reservations: ", 
-                               comma(count, accuracy = 1), ")"), 
-                 size = count),
-             #width = .25,
-             #size = 4, 
+                               " miles.")),
+             size = 3.5, 
              shape = 21, stroke = 2) +
+  scale_y_discrete(expand = c(0.3, 0)) +
   scale_fill_manual(values = race_group_colors) +
   scale_color_manual(values = race_group_colors) +
-  labs(x = paste("Average Distance Traveled from Home to Site (miles)"),
+  labs(x = paste("Estimated Distance Traveled from Home to Site (miles)"),
        y = "",
-       title = "Average Distance Traveled to Reservation in 2018 from <br> Communities with High Rates of Different Racial Groups") + 
+       title = paste0("Distance Traveled by Different Racial Groups to<br>", 
+                      siteInput, ", ", admin_unitInput, " in 2018")) + 
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank(),
@@ -163,7 +160,10 @@ plot_race_distance_traveled <- ggplot(data = data_plot_race_distanceTravel,
 ggplotly(plot_race_distance_traveled,
          tooltip = list("text")) %>%
   config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
-                                       "hoverClosestCartesian", "hoverCompareCartesian"))
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.15, xref = 'paper', y = 0.95, yref = 'paper', 
+                  showarrow = FALSE)
 ```
 
 
@@ -186,6 +186,7 @@ function_plot_race_siteType <- function(race_group, weighted_quartile,
     drop_na(race_percentage) %>%
     filter(race_percentage >= weighted_quartile) %>% 
     count(race, aggregated_site_type) %>% 
+    rename(count = n) %>% 
     mutate(race = paste0(race_group)) %>%
     relocate(race, .before = 1) %>% 
     mutate(race = str_replace(string = race,
@@ -206,10 +207,8 @@ function_plot_race_siteType <- function(race_group, weighted_quartile,
 data_plot_race_siteType <- 
   data_race_quants %>% 
   pmap_dfr(function_plot_race_siteType)
-```
 
 
-```{r}
 ## -- create plot -- ##
 # parameters
 race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
@@ -229,27 +228,33 @@ data_plot_race_siteType_category <- data_plot_race_siteType %>%
 # create plot
 plot_race_site_type_equestrian <- 
   ggplot(data = data_plot_race_siteType_category) +
-  geom_col(aes(x = n,
-               y = reorder(race, n),
+  geom_col(aes(x = count,
+               y = reorder(race, count),
                fill = race,
                text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
-                             comma(n, accuracy = 1), 
+                             comma(count, accuracy = 1), 
                              " reservations were made by <br>people who live in ZIP codes with high ", 
                              race, " populations."))) +
+  scale_y_discrete(expand = c(0.3, 0)) +
   scale_fill_manual(values = race_group_colors) +
   scale_color_manual(values = race_group_colors) +
   labs(x = paste("Number of Reservations"),
        y = "",
-       title = paste0("Number of Reservations to ", str_to_title(type_string) %>% 
+       title = paste0("Number of Reservations to ", str_to_title(site_type_categories[[1]]) %>% 
                             str_replace(string = ., pattern = "Rv", replacement = "RV"),
-                      " Sites by <br>Different Racial Groups")) + 
+                      " Sites by <br> People from Communities with High Rates of Different Racial Groups")) + 
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank(),
         legend.position = "none")
 
 ggplotly(plot_race_site_type_equestrian,
-         tooltip = list("text"))
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.15, xref = 'paper', y = 0.97, yref = 'paper', 
+                  showarrow = FALSE)
 ```
 
 
@@ -272,8 +277,11 @@ function_plot_race_bookWindow <- function(race_group, weighted_quartile,
     filter(race == race_group) %>%
     drop_na(race_percentage) %>% 
     filter(race_percentage >= weighted_quartile) %>% 
-    summarize(median_booking_window = median(booking_window)) %>% 
-    mutate(race = paste0(race_group)) %>%  ## BACK TO i
+    summarize(median_booking_window = median(booking_window),
+              quartile_lower = quantile(booking_window)[[2]],
+              quartile_upper = quantile(booking_window)[[4]],
+              count = n()) %>% 
+    mutate(race = paste0(race_group)) %>%
     relocate(race, .before = 1) %>% 
     mutate(race = str_replace(string = race,
                               pattern = "_",
@@ -304,27 +312,38 @@ plot_race_booking_window <- ggplot(data = data_plot_race_bookWindow,
                                       aes(x = median_booking_window,
                                           y = reorder(race, median_booking_window))) +
   geom_segment(aes(xend = 0, yend = race)) +
-  geom_point(aes(x = median_booking_window,
-                 y = reorder(race, median_booking_window),
-                 color = race, fill = race,
-                 text = paste("People who live in ZIP codes with high", 
-                              str_to_title(race) %>% str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), 
-                              "populations",
-                             "<br>tend to make their reservations", round(median_booking_window, 0), "days before their visit to overnight reservable sites.")),
-             width = .25,
-             size = 4, shape = 21, stroke = 2) +
+  geom_point(aes(color = race, fill = race,
+                 text = paste0(comma(count, accuracy = 1), 
+                               " unique visits were made by people who live in ZIP codes<br>with high ",
+                               str_to_title(race) %>% 
+                                 str_replace(string = ., pattern = "\\(S\\)", "\\(s\\)"), 
+                               " populations. Typically folks reserved their visit between<br>",
+                               comma(quartile_lower, accuracy = 1), 
+                               " and ", comma(quartile_upper, accuracy = 1), 
+                               " days before the start of their trip, with a median booking window of ", 
+                               comma(median_booking_window, accuracy = 1), 
+                               " days.")),
+             size = 3.5, 
+             shape = 21, stroke = 2) +
+  scale_y_discrete(expand = c(0.3, 0)) +
   scale_fill_manual(values = race_group_colors) +
   scale_color_manual(values = race_group_colors) +
-  labs(x = paste("Average Number of Days from Order Date to Reservation Date"),
+  labs(x = paste("Estimated Number of Days in Advance Site is Reserved (days)"),
        y = "",
-       title = "Average Number of Days in Advance <br>Reservation is Booked for Different Racial Groups") + 
+       title = paste0("Number of Days in Advance Site is Reserved by Different Racial Groups to<br>", 
+                      siteInput, ", ", admin_unitInput, " in 2018")) + 
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank(),
         legend.position = "none")
 
 ggplotly(plot_race_booking_window,
-         tooltip = list("text"))
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.15, xref = 'paper', y = 0.95, yref = 'paper', 
+                  showarrow = FALSE)
 ```
 
 

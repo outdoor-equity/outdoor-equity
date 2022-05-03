@@ -11,31 +11,28 @@ race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb
       mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
       select(-distance_traveled_m) %>% 
       drop_na(distance_traveled_mi) %>% 
-      pivot_longer(cols = 4:10, 
+      pivot_longer(cols = 3:10, 
                    names_to = "race",
                    values_to = "race_percentage") %>% 
       filter(race %in% paste0(race_group)) %>% 
-      drop_na(race_percentage)
+      drop_na(race_percentage) %>% 
+      filter(race_percentage >= weighted_quartile) %>% 
+      summarize(median_distance_traveled_mi = median(distance_traveled_mi),
+                quartile_lower = quantile(distance_traveled_mi)[[2]],
+                quartile_upper = quantile(distance_traveled_mi)[[4]],
+                count = n()) %>% 
+      mutate(race = paste0(race_group)) %>% 
+      relocate(race, .before = 1) %>% 
+      mutate(race = str_replace(string = race,
+                                pattern = "_",
+                                replacement = " "),
+             race = str_to_title(race),
+             race = str_replace(string = race,
+                                pattern = "Other",
+                                replacement = "Other Race(s)"))
+    
   })
   
-  race_dist_travel_data
-  
-  max_racial_group_ridb <- race_dist_travel_rdf() %>%
-    summarize(max = max(race_percentage))
-  
-  df_racial_group_i <- race_dist_travel_rdf() %>%
-    filter(race_percentage >= weighted_quartile) %>% 
-    summarize(mean_distance_traveled_mi = mean(distance_traveled_mi)) %>% 
-    mutate(race = paste0(race_group)) %>% 
-    relocate(race, .before = 1) %>% 
-    mutate(race = str_replace(string = race,
-                              pattern = "_",
-                              replacement = " "),
-           race = str_to_title(race),
-           race = str_replace(string = race,
-                              pattern = "Other",
-                              replacement = "Other Race(s)"))
-  
-  return(df_racial_group_i)
+  return(race_dist_travel_rdf())
   
 } # EO function

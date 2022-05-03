@@ -1,24 +1,25 @@
 
 race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb_df){
-  
   # reactive data frame 
-  race_dist_travel_rdf <- reactive ({
+  race_booking_window_rdf <- reactive ({
     
     data_joined_2018 %>%
       filter(park %in% siteInput) %>%
       select(park, customer_zip, asian, black, hispanic_latinx, 
              multiracial, native_american, other, pacific_islander, white,
-             aggregated_site_type) %>% 
-      drop_na(aggregated_site_type) %>% 
+             booking_window) %>% 
+      drop_na(booking_window) %>% 
       pivot_longer(cols = 3:10,
                    names_to = "race",
                    values_to = "race_percentage") %>% 
-      filter(race == paste0(race_group)) %>%
-      drop_na(race_percentage) %>%
+      filter(race == race_group) %>%
+      drop_na(race_percentage) %>% 
       filter(race_percentage >= weighted_quartile) %>% 
-      count(race, aggregated_site_type) %>% 
-      rename(count = n) %>%
-      mutate(race = paste0(race_group)) %>%
+      summarize(median_booking_window = median(booking_window),
+                quartile_lower = quantile(booking_window)[[2]],
+                quartile_upper = quantile(booking_window)[[4]],
+                count = n()) %>% 
+      mutate(race = paste0(race_group)) %>%  ## BACK TO i
       relocate(race, .before = 1) %>% 
       mutate(race = str_replace(string = race,
                                 pattern = "_",
@@ -27,8 +28,9 @@ race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb
              race = str_replace(string = race,
                                 pattern = "Other",
                                 replacement = "Other Race(s)"))
+    
   })
   
-  return(race_dist_travel_rdf())
+  return(race_booking_window_rdf())
   
 } # EO function
