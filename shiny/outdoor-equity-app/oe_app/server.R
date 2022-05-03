@@ -214,18 +214,7 @@ observeEvent(input$num_viz, {
   }
 }) ## EO OE press num_viz
 
-
   
-# observeEvent(input$data_summary, {
-#   if (req(input$admin_unit_summary_1, input$site_summary_1)) {
-#     # if inputs exist hide emoty input text
-#     output$data_summary_text <- renderPrint({ "" })
-#   } else {
-#     #else show empty input text
-#     output$data_summary_text <- renderPrint({ "Please select a reservable site to display a plot" })
-#   }
-#   
-# })
 
 # RENDER PLOTS ----
 ## SO DATA SUMMARY PLOTS 1 ----
@@ -424,6 +413,8 @@ race_dist_travel_plot(admin_unitInput = input$admin_unit_relationships,
    
 }) ## EO relationships plots 
 
+### SO race x site type ----
+
 ## SO VISITORSHEDS PLOTS YES REACTIVE ----
 ### yosemite plot ----
 output$caVisitorshed_plot <- renderTmap({
@@ -468,9 +459,17 @@ data_download_dt <- reactive({
 # DT table
 output$data_download_table <- renderDT({
   
-  DT::datatable(data_download_dt())
+  DT::datatable(data_download_dt(),
+                extensions = 'Buttons',
+                options = list(
+                  server = FALSE,
+                  paging = TRUE,
+                  pageLength = 12,
+                  buttons = c('csv', 'excel'),
+                  dom = 'Bfrtip'
+                ))
   
-})
+}) # EO render data table
 
 
 
