@@ -67,7 +67,7 @@ race_plot <- function(admin_unitInput, siteInput){
                  names_to = "data_source",
                  values_to = "race_percent_average") %>% 
     mutate(data_source = factor(data_source, levels = c("RIDB", "CA")),
-           tooltip_start = case_when(data_source == "RIDB" ~ "Visitors to California sites live in <br>communities with an estimated ",
+           tooltip_start = case_when(data_source == "RIDB" ~ "Visitors to this site live in <br>communities with an estimated ",
                                      data_source == "CA" ~ ""),
            tooltip_middle = case_when(data_source == "RIDB" ~ " ",
                                       data_source == "CA" ~ " of Californians are "),
