@@ -1080,10 +1080,10 @@ for (i in seq_along(education_groups)){
   weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$education_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
   
   df_education_group_i_longer <- data_ridb_acs_2018 %>% 
-    select(agency, admin_unit, park, customer_zip, hs_GED_or_below, 
+    select(park, customer_zip, hs_GED_or_below, 
            some_college, college, master_or_above, aggregated_site_type) %>% 
     drop_na(aggregated_site_type) %>% 
-    pivot_longer(cols = 5:8,
+    pivot_longer(cols = 3:6,
                  names_to = "education",
                  values_to = "education_percentage") %>% 
     filter(education == education_groups[[i]]) %>% ## BACK TO i

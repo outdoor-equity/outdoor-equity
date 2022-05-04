@@ -775,6 +775,7 @@ function_plot_education_distanceTravel <- function(education_group, weighted_qua
 
 
 ```{r}
+## -- run function through purrr -- ##
 data_plot_education_distanceTravel <- 
   data_education_quants %>% 
   pmap_dfr(function_plot_education_distanceTravel)
@@ -826,6 +827,115 @@ ggplotly(plot_education_distance_traveled,
 ```
 
 
+### Education x site type
+
+```{r}
+## -- create function to make plot df -- ##
+function_plot_education_siteType <- function(education_group, weighted_quartile,
+                                              ridb_df = data_ridb_acs_2018){
+  
+  df <- ridb_df %>% 
+    select(park, customer_zip, hs_GED_or_below, 
+           some_college, college, master_or_above, aggregated_site_type) %>% 
+    drop_na(aggregated_site_type) %>% 
+    pivot_longer(cols = 3:6,
+                 names_to = "education",
+                 values_to = "education_percentage") %>% 
+    filter(education == paste0(education_group)) %>% 
+    drop_na(education_percentage) %>% 
+    filter(education_percentage >= weighted_quartile) %>% 
+    count(education, aggregated_site_type) %>% 
+    rename(count = n) %>% 
+    mutate(education = paste0(education_group)) %>% 
+    relocate(education, .before = 1) %>%
+    mutate(education = str_replace_all(string = education,
+                                       pattern = "_",
+                                       replacement = " "),
+           education = str_to_title(education),
+           education = str_replace(string = education,
+                                   pattern = "Hs Ged Or", 
+                                   replacement = "HS, GED, or"),
+           education = str_replace(string = education,
+                                   pattern = "Some College",
+                                   replacement = "Some College or Trade School"),
+           education = str_replace(string = education,
+                                   pattern = "^College$",
+                                   replacement = "Associates or Bachelors Degree"),
+           education = str_replace(string = education,
+                                   pattern = "Master Or Above",
+                                   replacement = "Masters Degree or Above"),
+           education_y_lab = case_when(education == "HS, GED, or Below" ~ "HS, GED,\nor Below",
+                                       education == "Some College or Trade School" ~ "Some College or\nTrade School",
+                                       education == "Associates or Bachelors Degree" ~ "Associates or\nBachelors Degree",
+                                       education == "Masters Degree or Above" ~ "Masters Degree\nor Above"),
+           education_y_lab = factor(education_y_lab, levels = c("HS, GED,\nor Below", 
+                                                    "Some College or\nTrade School", 
+                                                    "Associates or\nBachelors Degree", 
+                                                    "Masters Degree\nor Above")))
+  
+  return(df)
+}
+```
+
+```{r}
+## -- run function through purrr -- ##
+data_plot_education_siteType <- 
+  data_education_quants %>% 
+  pmap_dfr(function_plot_education_siteType)
+
+## -- create plot -- ##
+
+# parameters
+education_group_colors <- c("HS, GED,\nor Below" = "#a6cee3", "Some College or\nTrade School"  = "#1f78b4", 
+                      "Associates or\nBachelors Degree" = "#b2df8a", "Masters Degree\nor Above" = "#33a02c")
+
+# subset data to site type category
+site_type_categories <- c("equestrian", "remote", "rv only", "rv or tent", "shelter", "tent only", "water")
+
+data_plot_education_siteType_category <- data_plot_education_siteType %>% 
+  filter(aggregated_site_type == site_type_categories[[1]]) %>% 
+  mutate(aggregated_site_type = str_to_title(aggregated_site_type),
+         aggregated_site_type = str_replace(string = aggregated_site_type,
+                                            pattern = "Rv", 
+                                            replacement = "RV"))
+
+# plotly
+plot_education_distance_traveled <- ggplot(data = data_plot_education_siteType_category) +
+  geom_col(aes(x = count,
+               y = education_y_lab,
+               fill = education_y_lab,
+               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
+                             comma(count, accuracy = 1), 
+                             " reservations were made by <br>people who live in ZIP codes with high ", 
+                             education, " populations."))) +
+  scale_y_discrete(expand = c(0.5, 0)) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
+  labs(x = paste("Number of Reservations"),
+       y = "",
+       title = paste0("Number of Reservations to ", str_to_title(site_type_categories[[1]]) %>% 
+                        str_replace(string = ., pattern = "Rv", replacement = "RV"),
+                      " Sites by <br> People from Communities with High Rates of Different Racial Groups")) + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+
+ggplotly(plot_education_distance_traveled,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                    '<br>',
+                                    "Number of Reservations to ", str_to_title(site_type_categories[[1]]) %>%
+                                      str_replace(string = ., pattern = "Rv", replacement = "RV"), 
+                                    " Sites by Visitors with Different Levels of Education"),
+                      font = list(size = 15))) %>%  
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.15, xref = 'paper', y = 0.93, yref = 'paper', 
+                  showarrow = FALSE)
+```
 
 
 
