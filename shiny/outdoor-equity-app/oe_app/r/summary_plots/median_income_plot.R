@@ -49,11 +49,12 @@ median_income_plot <- function(admin_unitInput, siteInput){
     scale_fill_manual(values = fill_ridb_ca) +
     scale_color_manual(values = color_ridb_ca) +
     scale_x_continuous(labels = dollar) +
+    scale_y_continuous(labels = NULL) +
     labs(x = "Household Median Income (US $)",
-         y = "Density") +
+         y = NULL) +
     theme_minimal() +
-    theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank())
+    theme(plot.background = element_rect("white"))
+          #panel.grid.major.y = element_blank())
   
   ggplotly(median_income_plotly, 
            tooltip = list("text")) %>% 
