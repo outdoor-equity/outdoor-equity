@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE, eval=TRUE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 
 library(tidyverse)
 library(here)
@@ -1316,17 +1316,16 @@ plot_education_daily_cost <- ggplot(data = data_plot_education_lengthStay,
   geom_segment(aes(xend = 0, yend = education_y_lab)) +
   geom_point(aes(color = education_y_lab, fill = education_y_lab,
                  text = paste0(comma(count, accuracy = 1), 
-                               " unique visits were made by people who live in ZIP codes with high rates of<br>",
+                               " unique visits were made by people who live in ZIP codes with<br>high rates of ",
                                education, 
-                               " as the highest level of education. Typically these visitors<br>traveled between ",
+                               " as the highest level of education.<br>Typically these visitor stay between ",
                                comma(quartile_lower, accuracy = 1), 
                                " and ", comma(quartile_upper, accuracy = 1), 
-                               " miles, with a median distance of ", 
+                               " days, with a median stay of ", 
                                comma(median_length_of_stay, accuracy = 1), 
-                               " miles.")),
+                               " days")),
              size = 3.5, 
              shape = 21, stroke = 2) +
-  scale_x_continuous(labels = dollar) +
   scale_y_discrete(expand = c(0.35, 0)) +
   scale_fill_manual(values = education_group_colors) +
   scale_color_manual(values = education_group_colors) +
@@ -1349,6 +1348,12 @@ ggplotly(plot_education_daily_cost,
                   x = -0.15, xref = 'paper', y = 0.93, yref = 'paper', 
                   showarrow = FALSE)
 ```
+
+
+
+## Language x ____
+
+
 
 
 
