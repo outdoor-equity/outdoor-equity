@@ -55,21 +55,22 @@ length_of_stay_plot <- function(admin_unitInput, siteInput){
     geom_vline(xintercept = quant_80,
                linetype = "dashed", alpha = 0.5, color = "#000099") +
     labs(x = "Length of visit (days)",
-         y = "",
-         title = paste0("Length of Visit for Reservations at <br>", 
-                        siteInput, ", ", admin_unitInput)) +
+         y = "") +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank(),
-          plot.title = element_text(size = 11))
+          panel.grid.major.y = element_blank())
   
   ggplotly(length_of_stay_plotly,
            tooltip = list("text"),
            dynamicTicks = TRUE) %>% 
-    layout(margin = list(b = 130, t = 100), 
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Length of Visit of Reservations'),
+                        font = list(size = 15)),
+           margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.6, 
-                               text = paste0("80% of reservations stay less than ", quant_80, " days <br>(shown on plot with dashed line)."), 
+                               text = paste0("80% of reservations stay less than ", '<b>', quant_80, '</b>', " days <br>(shown on plot with dashed line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 

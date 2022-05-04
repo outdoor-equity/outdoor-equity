@@ -28,9 +28,6 @@ booking_window_plot <- function(admin_unitInput, siteInput){
       select(park, booking_window) %>% 
       filter(!is.na(booking_window))
   })
-  
-  print(class(booking_window_rdf()))
-  print(paste("length df:", length(booking_window_rdf())))
 
   # wrangling
   x_max <- numeric(0)
@@ -38,8 +35,6 @@ booking_window_plot <- function(admin_unitInput, siteInput){
     
   x_max <- (round(max(booking_window_rdf()$booking_window) / 5) * 5) + 5 # max x rounded to nearest 5
   }
-  
-  print(paste("x_max: ", x_max))
   
   quant_80 <- numeric()
   if(dim(booking_window_rdf()) != 0) {
@@ -66,8 +61,6 @@ booking_window_plot <- function(admin_unitInput, siteInput){
                    col = hist_colors[[2]], size = 0.05) +
     labs(x = "Days in advance before visit (each bar = 1 week)",
          y = "") +
-         #title = paste0("Number of days between reservation made and start of visit for<br>", 
-                        #siteInput, ", ", admin_unitInput)) +
     scale_x_continuous(limits = c(0, x_max), breaks = seq(0, x_max, 30)) +
     scale_y_continuous(labels = comma) +
     geom_vline(xintercept = quant_80,
@@ -94,7 +87,7 @@ booking_window_plot <- function(admin_unitInput, siteInput){
            margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.6, 
-                               text = paste0("80% of reservations reserve their visit less than ", quant_80, 
+                               text = paste0("80% of reservations reserve their visit less than ", '<b>', quant_80, '</b>', 
                                              " days before the start date <br>(shown on plot with dashed line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 

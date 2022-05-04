@@ -67,7 +67,7 @@ race_plot <- function(admin_unitInput, siteInput){
                  names_to = "data_source",
                  values_to = "race_percent_average") %>% 
     mutate(data_source = factor(data_source, levels = c("RIDB", "CA")),
-           tooltip_start = case_when(data_source == "RIDB" ~ "Visitors to California sites live in <br>communities with an estimated ",
+           tooltip_start = case_when(data_source == "RIDB" ~ "Visitors to this site live in <br>communities with an estimated ",
                                      data_source == "CA" ~ ""),
            tooltip_middle = case_when(data_source == "RIDB" ~ " ",
                                       data_source == "CA" ~ " of Californians are "),
@@ -103,9 +103,7 @@ race_plot <- function(admin_unitInput, siteInput){
               size = 3) +
     scale_color_manual(values = text_colors_ridb_ca) +
     labs(x = "Percentage (%)",
-         y = "",
-         title = paste0("Estimated Racial Percentages of <br>California Residents vs. Visitors to ", 
-                        siteInput, ", ", admin_unitInput)) +
+         y = "") +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank())
@@ -114,7 +112,11 @@ race_plot <- function(admin_unitInput, siteInput){
            tooltip = list("text")) %>%
     style(hoverinfo = "none", traces = c(3, 4),
           textposition = "right") %>% 
-    layout(showlegend = FALSE) %>%
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Estimated Racial Percentages of California Residents vs. Visitors'),
+                        font = list(size = 15)),
+           showlegend = FALSE) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian"))
   

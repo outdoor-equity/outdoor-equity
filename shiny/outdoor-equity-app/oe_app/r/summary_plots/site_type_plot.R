@@ -52,15 +52,17 @@ site_type_plot <- function(admin_unitInput, siteInput){
     col + # object contains geom_col 
     scale_x_continuous(labels = percent) +
     labs(x = paste0("Percentage of Reservations to ", siteInput),
-         y = "",
-         title = paste0("Number of Visits by Site Type for<br>", siteInput, ", ", admin_unitInput)) +
+         y = "") +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank(),
-          plot.title = element_text(size = 11))
+          panel.grid.major.y = element_blank())
   
   ggplotly(site_type_plotly,
            tooltip = list("text")) %>%
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Number of Visits by Site Type'),
+                        font = list(size = 15))) %>% 
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian"))
   

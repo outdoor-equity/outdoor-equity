@@ -33,11 +33,6 @@ daily_cost_visitor_plot <- function(admin_unitInput, siteInput){
   quant_80 <- quantile(x = daily_cost_visitor_rdf()$daily_cost_per_visitor,
                        probs = seq(0, 1, 0.1))[[9]] %>% round(0)
   
-  print(paste("the class of quant_80 bin is", class(quant_80)))
-  print(quant_80)
-  
-  print(head(daily_cost_visitor_rdf()))
-  
   
   # parameters
   hist_colors <- c("#009900FF", "#00c000")
@@ -54,25 +49,26 @@ daily_cost_visitor_plot <- function(admin_unitInput, siteInput){
                    fill = hist_colors[[1]], 
                    col = hist_colors[[2]], size = 0.05) +
     labs(x = "Daily cost per visitor ($)",
-         y = "",
-         title = paste0("Daily Cost per Visitor for Visits to <br>", siteInput, 
-                        ", ", admin_unitInput)) +
+         y = "") +
     scale_x_continuous(limits = c(0, x_max), labels = dollar) +
     scale_y_continuous(labels = comma) +
     geom_vline(xintercept = quant_80,
                linetype = "dashed", alpha = 0.5, color = "#000099") +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank(),
-          plot.title = element_text(size = 11))
+          panel.grid.major.y = element_blank())
   
   ggplotly(daily_cost_plotly,
            tooltip = list("text"),
            dynamicTicks = TRUE) %>% 
-    layout(margin = list(b = 130, t = 100), 
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Daily Cost per Visitor'),
+                        font = list(size = 15)),
+                        margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.6, 
-                               text = paste0("80% of reservations paid less than ", dollar(quant_80), 
+                               text = paste0("80% of reservations paid less than ", '<b>', dollar(quant_80), '</b>',
                                              " per visitor per day <br>(shown on plot with dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
