@@ -1,5 +1,5 @@
 
-race___data <- function(siteInput, race_group, weighted_quartile, ridb_df){
+education___data <- function(siteInput, education_group, weighted_quartile, ridb_df){
   # reactive data frame 
   rdf <- reactive ({
     

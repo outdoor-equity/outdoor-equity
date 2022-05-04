@@ -40,7 +40,7 @@ data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
 
 ## Race x ____
 
-```{r, eval=TRUE}
+```{r}
 # create function to get weighted quartile value for each group (in quartile function .R)
 race_top_quartile <- function(race_group, acs_df = data_ca_acs_2018){
   
@@ -686,7 +686,7 @@ ggplotly(plot_race_daily_cost_per_visitor,
 
 ## Education x ____
 
-```{r}
+```{r, eval=TRUE}
 # create function to get weighted quartile value for each group (in quartile function .R)
 education_top_quartile <- function(education_group, acs_df = data_ca_acs_2018){
   
@@ -714,7 +714,7 @@ education_group <- c("hs_GED_or_below", "some_college", "college", "master_or_ab
 data_education_quants <- 
   education_group %>% 
   map_dbl(education_top_quartile) %>% 
-  cbind("education_group" = race_group, 
+  cbind("education_group" = education_group, 
         "weighted_quartile" = .) %>% 
   as.data.frame()
 ```
@@ -722,18 +722,17 @@ data_education_quants <-
 
 ### Education x distance traveled 
 
-```{r}
+```{r, eval=TRUE}
 ## -- create function to make plot df -- ##
 function_plot_education_distanceTravel <- function(education_group, weighted_quartile,
                                               ridb_df = data_ridb_acs_2018){
   
   df <- ridb_df %>% 
-    select(park, customer_zip, asian, black, hispanic_latinx, 
-           multiracial, native_american, other, pacific_islander, white,
-           distance_traveled_m) %>% 
+    select(park, customer_zip, hs_GED_or_below, some_college, 
+           college, master_or_above, distance_traveled_m) %>% 
     mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
     drop_na(distance_traveled_mi) %>% 
-    pivot_longer(cols = 3:10,
+    pivot_longer(cols = 3:6,
                  names_to = "education",
                  values_to = "education_percentage") %>% 
     filter(education == paste0(education_group)) %>% 
@@ -745,13 +744,30 @@ function_plot_education_distanceTravel <- function(education_group, weighted_qua
               count = n()) %>% 
     mutate(education = paste0(education_group)) %>% 
     relocate(education, .before = 1) %>% 
-    mutate(education = str_replace(string = education,
+    mutate(education = str_replace_all(string = education,
                               pattern = "_",
                               replacement = " "),
-           education = str_to_title(race),
+           education = str_to_title(education),
            education = str_replace(string = education,
-                              pattern = "Other",
-                              replacement = "Other Race(s)"))
+                                   pattern = "Hs Ged Or", 
+                                   replacement = "HS, GED, or"),
+           education = str_replace(string = education,
+                                   pattern = "Some College",
+                                   replacement = "Some College or Trade School"),
+           education = str_replace(string = education,
+                                   pattern = "^College$",
+                                   replacement = "Associates or Bachelors Degree"),
+           education = str_replace(string = education,
+                                   pattern = "Master Or Above",
+                                   replacement = "Masters Degree or Above"),
+           education_y_lab = case_when(education == "HS, GED, or Below" ~ "HS, GED,\nor Below",
+                                       education == "Some College or Trade School" ~ "Some College or\nTrade School",
+                                       education == "Associates or Bachelors Degree" ~ "Associates or\nBachelors Degree",
+                                       education == "Masters Degree or Above" ~ "Masters Degree\nor Above"),
+           education_y_lab = factor(education_y_lab, levels = c("HS, GED,\nor Below", 
+                                                    "Some College or\nTrade School", 
+                                                    "Associates or\nBachelors Degree", 
+                                                    "Masters Degree\nor Above")))
   
   return(df)
 }
@@ -766,19 +782,19 @@ data_plot_education_distanceTravel <-
 
 ## -- create plot -- ##
 # parameters
-education_group_colors <- c("HS, GED, or Below" = "#a6cee3", "Some College or Trade School"  = "#1f78b4", 
-                      "Associates or Bachelors Degree" = "#b2df8a", "Masters Degree or Above" = "#33a02c")
+education_group_colors <- c("HS, GED,\nor Below" = "#a6cee3", "Some College or\nTrade School"  = "#1f78b4", 
+                      "Associates or\nBachelors Degree" = "#b2df8a", "Masters Degree\nor Above" = "#33a02c")
 
 # plotly
 plot_education_distance_traveled <- ggplot(data = data_plot_education_distanceTravel, 
                                       aes(x = median_distance_traveled_mi,
-                                          y = reorder(education, median_distance_traveled_mi))) +
-  geom_segment(aes(xend = 0, yend = education)) +
-  geom_point(aes(color = education, fill = education,
+                                          y = education_y_lab)) +
+  geom_segment(aes(xend = 0, yend = education_y_lab)) +
+  geom_point(aes(color = education_y_lab, fill = education_y_lab,
                  text = paste0(comma(count, accuracy = 1), 
-                               " unique visits were made by people who live in ZIP codes<br>with high ",
-                               str_to_title(education), 
-                               " populations. Typically folks traveled between<br>",
+                               " unique visits were made by people who live in ZIP codes with high rates of<br>",
+                               education, 
+                               " as the highest level of education. Typically these visitors<br>traveled between ",
                                comma(quartile_lower, accuracy = 1), 
                                " and ", comma(quartile_upper, accuracy = 1), 
                                " miles, with a median distance of ", 
@@ -786,13 +802,11 @@ plot_education_distance_traveled <- ggplot(data = data_plot_education_distanceTr
                                " miles.")),
              size = 3.5, 
              shape = 21, stroke = 2) +
-  scale_y_discrete(expand = c(0.3, 0)) +
+  scale_y_discrete(expand = c(0.35, 0)) +
   scale_fill_manual(values = education_group_colors) +
   scale_color_manual(values = education_group_colors) +
   labs(x = paste("Estimated Distance Traveled from Home to Site (miles)"),
-       y = "",
-       title = paste0("Distance Traveled by Groups with Different Levels of Highest Education to<br>", 
-                      siteInput, ", ", admin_unitInput, " in 2018")) + 
+       y = "") + 
   theme_minimal() +
   theme(plot.background = element_rect("white"),
         panel.grid.major.y = element_blank(),
@@ -802,8 +816,12 @@ ggplotly(plot_education_distance_traveled,
          tooltip = list("text")) %>%
   config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                        "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Distance Traveled by Visitors with Different Levels of Education'),
+                        font = list(size = 15))) %>%  
   add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                  x = -0.15, xref = 'paper', y = 0.95, yref = 'paper', 
+                  x = -0.15, xref = 'paper', y = 0.93, yref = 'paper', 
                   showarrow = FALSE)
 ```
 

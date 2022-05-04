@@ -1,8 +1,8 @@
 
-## race x distance traveled and parameters ##
+## education x distance traveled and parameters ##
 
-race___plot <- function(admin_unitInput, siteInput,
-                        race_top_quartile_df, ridb_df){
+education___plot <- function(admin_unitInput, siteInput,
+                        education_top_quartile_df, ridb_df){
   
   print(race_dist_travel_data)
   print(ridb_df)
