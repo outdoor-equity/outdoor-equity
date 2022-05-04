@@ -99,20 +99,21 @@ education_plot <- function(admin_unitInput, siteInput){
               size = 4) +
     scale_color_manual(values = text_colors_ridb_ca) +
     labs(x = "Percentage (%)",
-         y = "",
-         title = paste0("Estimated Highest Level of Education of <br>California Residents vs. Visitors to ", 
-                        siteInput, ", ", admin_unitInput)) +
+         y = "") +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank(),
-          plot.title = element_text(size = 11),
           axis.text.y = element_text(size = 9))
   
   ggplotly(education_plotly,
            tooltip = list("text")) %>%
     style(hoverinfo = "none", traces = c(3, 4),
           textposition = "right") %>% 
-    layout(showlegend = FALSE) %>%
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Estimated Highest Level of Education of California Residents vs. Visitors'),
+                        font = list(size = 15)),
+           showlegend = FALSE) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian"))
   

@@ -29,8 +29,6 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
     
   })
   
-  print(class(dist_travel_rdf))
-  
   # wrangling
   x_max <- (round(max(dist_travel_rdf()$distance_traveled_mi) / 5) * 5) + 5 # max x rounded to nearest 5
   
@@ -43,16 +41,8 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
       0.5
     }
   
-  print(paste("the class of center bin is", class(center_bin)))
-  
-  print(center_bin)
-  
   quant_80 <- quantile(x = dist_travel_rdf()$distance_traveled_mi,
                        probs = seq(0, 1, 0.1))[[9]] %>% round(0)
-  
-  print(paste("the class of quant_80 bin is", class(quant_80)))
-  
-  print(quant_80)
   
   
   # parameters
@@ -74,18 +64,19 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
     geom_vline(xintercept = quant_80,
                linetype = "dashed", alpha = 0.5, color = "#000099") +
     labs(x = "Distance traveled (miles)",
-         y = "",
-         title = paste0("Distance Traveled from Home to Reservation for <br>", 
-                        siteInput, ", ", admin_unitInput, " in 2018")) +
+         y = "") +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank(),
-          plot.title = element_text(size = 11))
+          panel.grid.major.y = element_blank())
   
   ggplotly(dist_travel_plotly,
            tooltip = list("text"),
            dynamicTicks = TRUE) %>% 
-    layout(margin = list(b = 130, t = 100), 
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Distance Traveled from Home to Reservation'),
+                        font = list(size = 15)),
+                        margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.6, 
                                text = paste0("80% of reservations to traveled less than ", quant_80, " miles <br>(shown on plot with dotted line)."), 

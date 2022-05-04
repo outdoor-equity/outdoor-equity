@@ -58,24 +58,21 @@ daily_cost_plot <- function(admin_unitInput, siteInput){
                    fill = hist_colors[[1]], 
                    col = hist_colors[[2]], size = 0.05) +
     labs(x = "Daily cost per visit ($)",
-         y = "",
-         title = paste0("Daily Cost for Visits to <br>", siteInput, 
-                        ", ", admin_unitInput)) +
+         y = "") +
     scale_x_continuous(limits = c(0, x_max), labels = dollar) +
     scale_y_continuous(labels = comma) +
     geom_vline(xintercept = quant_80,
                linetype = "dashed", alpha = 0.5, color = "#000099") +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank(),
-          plot.title = element_text(size = 11))
+          panel.grid.major.y = element_blank())
   
   ggplotly(daily_cost_plotly,
            tooltip = list("text"),
            dynamicTicks = TRUE) %>% 
     layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                       '<br>',
-                                      'Daily Cost for Visits'),
+                                      'Daily Cost of Visits'),
                         font = list(size = 15)),
            margin = list(b = 130, t = 100), 
            annotations =  list(x = 5, 

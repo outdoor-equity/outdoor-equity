@@ -55,17 +55,18 @@ language_plot <- function(admin_unitInput, siteInput){
     scale_x_continuous(labels = percent) +
     scale_y_continuous(labels = comma) +
     labs(x = "Percentage of Population that Speaks a Language Other than English at Home",
-         y = "Density",
-         title = paste0("Non-English Spken in the Home of <br>California Residents vs. Visitors to ", 
-                        siteInput, ", ", admin_unitInput)) +
+         y = "Density") +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
-          panel.grid.major.y = element_blank(),
-          plot.title = element_text(size = 11))
+          panel.grid.major.y = element_blank())
   
   ggplotly(language_plotly, 
            tooltip = list("text")) %>% 
-    layout(showlegend = FALSE) %>%
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Non-English Spoken in the Home of California Residents vs. Visitors'),
+                        font = list(size = 15)),
+           showlegend = FALSE) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian"))
   
