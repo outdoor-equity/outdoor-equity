@@ -682,7 +682,138 @@ ggplotly(plot_race_daily_cost_per_visitor,
                   x = -0.15, xref = 'paper', y = 0.95, yref = 'paper', 
                   showarrow = FALSE)
 ```
+
+
+## Education x ____
+
+```{r}
+# create function to get weighted quartile value for each group (in quartile function .R)
+education_top_quartile <- function(education_group, acs_df = data_ca_acs_2018){
+  
+  df_ca_bin_breaks <- acs_df %>%
+    select(zip_code, hs_GED_or_below, some_college, college, master_or_above, mean_zip_code_population) %>% 
+    pivot_longer(cols = 2:5,
+                 names_to = "education",
+                 values_to = "education_percentage") %>% 
+    filter(education == education_group) %>% 
+    drop_na(education_percentage)
+  
+  weighted_half <- weighted.mean(x = df_ca_bin_breaks$education_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(education_percentage >= weighted_half)
+  
+  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$education_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  return(weighted_quartile)
+}
+
+## -- run function through purrr -- ##
+education_group <- c("hs_GED_or_below", "some_college", "college", "master_or_above")
+
+# quartile df (in server.R)
+data_education_quants <- 
+  education_group %>% 
+  map_dbl(education_top_quartile) %>% 
+  cbind("education_group" = race_group, 
+        "weighted_quartile" = .) %>% 
+  as.data.frame()
 ```
+
+
+### Education x distance traveled 
+
+```{r}
+## -- create function to make plot df -- ##
+function_plot_education_distanceTravel <- function(education_group, weighted_quartile,
+                                              ridb_df = data_ridb_acs_2018){
+  
+  df <- ridb_df %>% 
+    select(park, customer_zip, asian, black, hispanic_latinx, 
+           multiracial, native_american, other, pacific_islander, white,
+           distance_traveled_m) %>% 
+    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+    drop_na(distance_traveled_mi) %>% 
+    pivot_longer(cols = 3:10,
+                 names_to = "education",
+                 values_to = "education_percentage") %>% 
+    filter(education == paste0(education_group)) %>% 
+    drop_na(education_percentage) %>% 
+    filter(education_percentage >= weighted_quartile) %>% 
+    summarize(median_distance_traveled_mi = median(distance_traveled_mi),
+              quartile_lower = quantile(distance_traveled_mi)[[2]],
+              quartile_upper = quantile(distance_traveled_mi)[[4]],
+              count = n()) %>% 
+    mutate(education = paste0(education_group)) %>% 
+    relocate(education, .before = 1) %>% 
+    mutate(education = str_replace(string = education,
+                              pattern = "_",
+                              replacement = " "),
+           education = str_to_title(race),
+           education = str_replace(string = education,
+                              pattern = "Other",
+                              replacement = "Other Race(s)"))
+  
+  return(df)
+}
+```
+
+
+```{r}
+data_plot_education_distanceTravel <- 
+  data_education_quants %>% 
+  pmap_dfr(function_plot_education_distanceTravel)
+
+
+## -- create plot -- ##
+# parameters
+education_group_colors <- c("HS, GED, or Below" = "#a6cee3", "Some College or Trade School"  = "#1f78b4", 
+                      "Associates or Bachelors Degree" = "#b2df8a", "Masters Degree or Above" = "#33a02c")
+
+# plotly
+plot_education_distance_traveled <- ggplot(data = data_plot_education_distanceTravel, 
+                                      aes(x = median_distance_traveled_mi,
+                                          y = reorder(education, median_distance_traveled_mi))) +
+  geom_segment(aes(xend = 0, yend = education)) +
+  geom_point(aes(color = education, fill = education,
+                 text = paste0(comma(count, accuracy = 1), 
+                               " unique visits were made by people who live in ZIP codes<br>with high ",
+                               str_to_title(education), 
+                               " populations. Typically folks traveled between<br>",
+                               comma(quartile_lower, accuracy = 1), 
+                               " and ", comma(quartile_upper, accuracy = 1), 
+                               " miles, with a median distance of ", 
+                               comma(median_distance_traveled_mi, accuracy = 1), 
+                               " miles.")),
+             size = 3.5, 
+             shape = 21, stroke = 2) +
+  scale_y_discrete(expand = c(0.3, 0)) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
+  labs(x = paste("Estimated Distance Traveled from Home to Site (miles)"),
+       y = "",
+       title = paste0("Distance Traveled by Groups with Different Levels of Highest Education to<br>", 
+                      siteInput, ", ", admin_unitInput, " in 2018")) + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_education_distance_traveled,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.15, xref = 'paper', y = 0.95, yref = 'paper', 
+                  showarrow = FALSE)
+```
+
+
+
+
+
+
+
+
 
 
 
@@ -701,7 +832,6 @@ ggplotly(plot_race_daily_cost_per_visitor,
 
 # plotly
 ```
-
 
 ```{r, eval=TRUE}
 end_time <- Sys.time()
