@@ -110,6 +110,12 @@ data_plot_race_top_race_reservations <-
 
 
 ## -- create plotly -- ##
+# parameters
+race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                       "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                       "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+
+# plotly
 plot <- ggplot(data = data_plot_race_top_race_reservations) +
   geom_col(aes(x = count,
                y = reorder(race, count),
@@ -720,9 +726,97 @@ data_education_quants <-
 ```
 
 
+
+```{r}
+## -- create plot showing numbers of reservations for each "high" racial group -- ##
+function_plot_top_education_reservations <- function(education_group, weighted_quartile,
+                                              ridb_df = data_ridb_acs_2018){
+  df <- ridb_df %>% 
+    select(park, customer_zip, hs_GED_or_below, some_college, college, master_or_above) %>% 
+    pivot_longer(cols = 3:6,
+                 names_to = "education",
+                 values_to = "education_percentage") %>% 
+    filter(education == paste0(education_group)) %>% 
+    drop_na(education_percentage) %>% 
+    filter(education_percentage >= weighted_quartile) %>% 
+    summarize(count = n()) %>% 
+    mutate(education = paste0(education_group)) %>% 
+    relocate(education, .before = 1) %>% 
+    mutate(education = str_replace_all(string = education,
+                              pattern = "_",
+                              replacement = " "),
+           education = str_to_title(education),
+           education = str_replace(string = education,
+                                   pattern = "Hs Ged Or", 
+                                   replacement = "HS, GED, or"),
+           education = str_replace(string = education,
+                                   pattern = "Some College",
+                                   replacement = "Some College or Trade School"),
+           education = str_replace(string = education,
+                                   pattern = "^College$",
+                                   replacement = "Associates or Bachelors Degree"),
+           education = str_replace(string = education,
+                                   pattern = "Master Or Above",
+                                   replacement = "Masters Degree or Above"),
+           education_y_lab = case_when(education == "HS, GED, or Below" ~ "HS, GED,\nor Below",
+                                       education == "Some College or Trade School" ~ "Some College or\nTrade School",
+                                       education == "Associates or Bachelors Degree" ~ "Associates or\nBachelors Degree",
+                                       education == "Masters Degree or Above" ~ "Masters Degree\nor Above"),
+           education_y_lab = factor(education_y_lab, levels = c("HS, GED,\nor Below", 
+                                                    "Some College or\nTrade School", 
+                                                    "Associates or\nBachelors Degree", 
+                                                    "Masters Degree\nor Above")))
+  
+  return(df)
+}
+
+## -- run function through purrr -- ##
+data_plot_top_education_reservations <- 
+  data_education_quants %>% 
+  pmap_dfr(function_plot_top_education_reservations)
+
+
+## -- create plotly -- ##
+# parameters
+education_group_colors <- c("HS, GED,\nor Below" = "#a6cee3", "Some College or\nTrade School"  = "#1f78b4", 
+                      "Associates or\nBachelors Degree" = "#b2df8a", "Masters Degree\nor Above" = "#33a02c")
+
+#plotly
+plot <- ggplot(data = data_plot_top_education_reservations) +
+  geom_col(aes(x = count,
+               y = education_y_lab,
+               fill = education_y_lab,
+               text = paste0(comma(count, accuracy = 1), 
+                             " reservations were made by <br>people who live in ZIP codes with high ", 
+                             education, " populations."))) +
+  scale_x_continuous(labels = comma) +
+  scale_y_discrete(expand = c(0.4, 0)) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
+  labs(x = paste("Number of Reservations"),
+       y = "",
+       title = paste0("Number of Reservations by <br> People from Communities with High Rates of Different Education Levels")) + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.15, xref = 'paper', y = 0.97, yref = 'paper', 
+                  showarrow = FALSE)
+```
+
+
+
+
+
 ### Education x distance traveled 
 
-```{r, eval=TRUE}
+```{r}
 ## -- create function to make plot df -- ##
 function_plot_education_distanceTravel <- function(education_group, weighted_quartile,
                                               ridb_df = data_ridb_acs_2018){
@@ -1148,6 +1242,114 @@ ggplotly(plot_education_daily_cost,
                   x = -0.15, xref = 'paper', y = 0.93, yref = 'paper', 
                   showarrow = FALSE)
 ```
+
+
+
+### Education x length of stay 
+
+```{r}
+## -- create function to make plot df -- ##
+function_plot_education_lengthStay <- function(education_group, weighted_quartile,
+                                              ridb_df = data_ridb_acs_2018){
+  
+  df <- ridb_df %>% 
+    select(park, customer_zip, hs_GED_or_below, 
+           some_college, college, master_or_above, length_of_stay) %>% 
+    drop_na(length_of_stay) %>% 
+  pivot_longer(cols = 3:6,
+               names_to = "education",
+               values_to = "education_percentage") %>% 
+    filter(education == education_group) %>% 
+    drop_na(education_percentage) %>% 
+    filter(education_percentage >= weighted_quartile) %>% 
+    summarize(median_length_of_stay = median(length_of_stay),
+              quartile_lower = quantile(length_of_stay)[[2]],
+              quartile_upper = quantile(length_of_stay)[[4]],
+              count = n()) %>% 
+    mutate(education = paste0(education_group)) %>% 
+    relocate(education, .before = 1) %>%   
+    mutate(education = str_replace_all(string = education,
+                              pattern = "_",
+                              replacement = " "),
+           education = str_to_title(education),
+           education = str_replace(string = education,
+                                   pattern = "Hs Ged Or", 
+                                   replacement = "HS, GED, or"),
+           education = str_replace(string = education,
+                                   pattern = "Some College",
+                                   replacement = "Some College or Trade School"),
+           education = str_replace(string = education,
+                                   pattern = "^College$",
+                                   replacement = "Associates or Bachelors Degree"),
+           education = str_replace(string = education,
+                                   pattern = "Master Or Above",
+                                   replacement = "Masters Degree or Above"),
+           education_y_lab = case_when(education == "HS, GED, or Below" ~ "HS, GED,\nor Below",
+                                       education == "Some College or Trade School" ~ "Some College or\nTrade School",
+                                       education == "Associates or Bachelors Degree" ~ "Associates or\nBachelors Degree",
+                                       education == "Masters Degree or Above" ~ "Masters Degree\nor Above"),
+           education_y_lab = factor(education_y_lab, levels = c("HS, GED,\nor Below", 
+                                                    "Some College or\nTrade School", 
+                                                    "Associates or\nBachelors Degree", 
+                                                    "Masters Degree\nor Above")))
+  
+  return(df)
+}
+```
+
+```{r}
+## -- run function through purrr -- ##
+data_plot_education_lengthStay <- 
+  data_education_quants %>% 
+  pmap_dfr(function_plot_education_lengthStay)
+
+
+## -- create plot -- ##
+# parameters
+education_group_colors <- c("HS, GED,\nor Below" = "#a6cee3", "Some College or\nTrade School"  = "#1f78b4", 
+                      "Associates or\nBachelors Degree" = "#b2df8a", "Masters Degree\nor Above" = "#33a02c")
+
+# plotly
+plot_education_daily_cost <- ggplot(data = data_plot_education_lengthStay, 
+                                      aes(x = median_length_of_stay,
+                                          y = education_y_lab)) +
+  geom_segment(aes(xend = 0, yend = education_y_lab)) +
+  geom_point(aes(color = education_y_lab, fill = education_y_lab,
+                 text = paste0(comma(count, accuracy = 1), 
+                               " unique visits were made by people who live in ZIP codes with high rates of<br>",
+                               education, 
+                               " as the highest level of education. Typically these visitors<br>traveled between ",
+                               comma(quartile_lower, accuracy = 1), 
+                               " and ", comma(quartile_upper, accuracy = 1), 
+                               " miles, with a median distance of ", 
+                               comma(median_length_of_stay, accuracy = 1), 
+                               " miles.")),
+             size = 3.5, 
+             shape = 21, stroke = 2) +
+  scale_x_continuous(labels = dollar) +
+  scale_y_discrete(expand = c(0.35, 0)) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
+  labs(x = "Estimated Length of Stay (days)",
+       y = "") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_education_daily_cost,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+    layout(title = list(text = paste0("<b>", siteInput, "<br>", admin_unitInput, "</b>",
+                                      "<br>",
+                                      "Length of Stay by Visitors with Different Levels of Education"),
+                        font = list(size = 15))) %>%  
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.15, xref = 'paper', y = 0.93, yref = 'paper', 
+                  showarrow = FALSE)
+```
+
 
 
 
