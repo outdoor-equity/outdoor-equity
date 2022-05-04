@@ -70,7 +70,7 @@ length_of_stay_plot <- function(admin_unitInput, siteInput){
            margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.6, 
-                               text = paste0("80% of reservations stay less than ", quant_80, " days <br>(shown on plot with dashed line)."), 
+                               text = paste0("80% of reservations stay less than ", '<b>', quant_80, '</b>', " days <br>(shown on plot with dashed line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 

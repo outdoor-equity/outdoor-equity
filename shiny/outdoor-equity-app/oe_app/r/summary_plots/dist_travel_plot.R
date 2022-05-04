@@ -79,7 +79,7 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
                         margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.6, 
-                               text = paste0("80% of reservations to traveled less than ", quant_80, " miles <br>(shown on plot with dotted line)."), 
+                               text = paste0("80% of reservations to traveled less than ", '<b>', quant_80, '</b>', " miles <br>(shown on plot with dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 

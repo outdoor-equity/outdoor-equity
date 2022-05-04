@@ -87,7 +87,7 @@ booking_window_plot <- function(admin_unitInput, siteInput){
            margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.6, 
-                               text = paste0("80% of reservations reserve their visit less than ", quant_80, 
+                               text = paste0("80% of reservations reserve their visit less than ", '<b>', quant_80, '</b>', 
                                              " days before the start date <br>(shown on plot with dashed line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 

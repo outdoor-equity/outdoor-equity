@@ -77,7 +77,7 @@ daily_cost_plot <- function(admin_unitInput, siteInput){
            margin = list(b = 130, t = 100), 
            annotations =  list(x = 5, 
                                y = -0.6, 
-                               text = paste0("80% of reservations paid less than ", dollar(quant_80), "<br> (shown on plot with dotted line)."), 
+                               text = paste0("80% of reservations paid less than ", '<b>', dollar(quant_80), '</b>', "<br> (shown on plot with dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'left', 

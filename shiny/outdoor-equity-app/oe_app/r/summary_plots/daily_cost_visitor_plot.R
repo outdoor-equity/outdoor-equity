@@ -68,7 +68,7 @@ daily_cost_visitor_plot <- function(admin_unitInput, siteInput){
                         margin = list(b = 130, t = 100), 
            annotations =  list(x = 1, 
                                y = -0.6, 
-                               text = paste0("80% of reservations paid less than ", dollar(quant_80), 
+                               text = paste0("80% of reservations paid less than ", '<b>', dollar(quant_80), '</b>',
                                              " per visitor per day <br>(shown on plot with dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
