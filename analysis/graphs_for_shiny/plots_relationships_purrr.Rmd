@@ -692,7 +692,7 @@ ggplotly(plot_race_daily_cost_per_visitor,
 
 ## Education x ____
 
-```{r, eval=TRUE}
+```{r }
 # create function to get weighted quartile value for each group (in quartile function .R)
 education_top_quartile <- function(education_group, acs_df = data_ca_acs_2018){
   
