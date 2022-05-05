@@ -59,9 +59,13 @@ source("r/summary_plots/median_income_plot.R")
 source("r/summary_plots/language_plot.R")
 
 ## source relationships plot functions ----
+# race X dist travel
 source("r/relationship_plots/race_top_quartile.R")
 source("r/relationship_plots/race_dist_travel_data.R")
 source("r/relationship_plots/race_dist_travel_plot.R")
+# race x site
+source("r/relationship_plots/race_site_type_data.R")
+source("r/relationship_plots/race_site_type_plot.R")
 
 ## source observe event functions ----
 source("r/inputs/observe_event_agency_to_admin_dict.R")
