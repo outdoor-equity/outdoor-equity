@@ -419,7 +419,7 @@ race_dist_travel_plot(admin_unitInput = input$admin_unit_relationships,
 ### yosemite plot ----
 output$caVisitorshed_plot <- renderTmap({
   
-  tm_shape(data_zip_geometries_ca) +
+  tm_shape(data_zip_geometries_ca_simple) +
     tm_fill(col = "number_reservations",
             title = "Number of Visits",
             palette = "PuRd",
@@ -436,7 +436,7 @@ output$caVisitorshed_plot <- renderTmap({
 
 output$usVisitorshed_plot <- renderTmap({
   
-  tm_shape(data_geometries_us) +
+  tm_shape(data_geometries_us_simple) +
     tm_borders(col = "grey", alpha = 0.5) +
     tm_fill(col = "number_reservations",
             title = "Number of Visits",
@@ -466,7 +466,8 @@ output$data_download_table <- renderDT({
                   paging = TRUE,
                   pageLength = 12,
                   buttons = c('csv', 'excel'),
-                  dom = 'Bfrtip'
+                  dom = 'Bfrtip',
+                  columnDefs = list(visible = TRUE)
                 ))
   
 }) # EO render data table
