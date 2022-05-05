@@ -24,6 +24,7 @@ library(paletteer)
 library(DT)
 library(collections)
 library(plotly)
+library(rmapshaper)
 
 reactlog_enable()
 
