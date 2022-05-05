@@ -702,15 +702,26 @@ data_plot_median_income_ridb <- data_ridb_acs_2018 %>%
   select(park, median_income) %>% 
   rename(location_indicator = park) %>% 
   mutate(mean_zip_code_population = 1,
-         data_source = "Visitors to California Sites")
+         total_observations = sum(mean_zip_code_population)) %>% 
+  group_by(median_income) %>% 
+  summarise(count = n(),
+            zip_pop = round(sum(mean_zip_code_population), 0),
+            total_observations = mean(total_observations)) %>% 
+  mutate(data_source = "Visitors to California Sites")
 
 # CA population
 data_plot_median_income_ca <- data_ca_acs_2018 %>%
   select(zip_code, median_income, mean_zip_code_population) %>% 
   rename(location_indicator = zip_code) %>% 
+  mutate(total_observations = sum(mean_zip_code_population)) %>% 
+  group_by(median_income) %>% 
+  summarise(count = n(),
+            zip_pop = round(sum(mean_zip_code_population), 0),
+            total_observations = mean(total_observations)) %>% 
   mutate(data_source = "California Residents")
 
-data_plot_median_income <- rbind(data_plot_median_income_ridb, data_plot_median_income_ca)
+data_plot_median_income <- rbind(data_plot_median_income_ridb, data_plot_median_income_ca) %>% 
+  mutate(proportion = zip_pop / total_observations)
 
 
 ## -- create plot -- ##
@@ -720,6 +731,7 @@ color_ridb_ca <- c("Visitors to California Sites" = "#009900FF",
                    "California Residents" = "#666666")
 fill_ridb_ca <- c("Visitors to California Sites" = "#00c000", 
                   "California Residents" = "#848484")
+
 
 # plot for shiny app
 plot_median_income <- ggplot() +
