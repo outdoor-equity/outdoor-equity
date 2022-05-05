@@ -66,7 +66,7 @@ race_site_type_plot <- function(admin_unitInput, siteInput,
       scale_color_manual(values = race_group_colors) +
       labs(x = paste("Number of Reservations"),
            y = "",
-           title = paste0("Number of Reservations to ", str_to_title(site_type_categories[[1]]) %>% 
+           title = paste0("Number of Reservations to ", str_to_title(site_type_string) %>% 
                             str_replace(string = ., pattern = "Rv", replacement = "RV"),
                           " Sites by <br> People from Communities with High Rates of Different Racial Groups")) + 
       theme_minimal() +
