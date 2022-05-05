@@ -138,48 +138,48 @@ ui <- fluidPage(
                                 withSpinner(color = "#0dc5c1")
                               ) # EO relationships plot output box
                         ) # EO FR data relationships
-                        )#, #### EO data relationships ----
+                        ), #### EO data relationships
 
                ### SO visitorsheds ----
-               # tabPanel(title = "Visitorsheds",
-               #          fluid = TRUE,
-               #          
-               #          titlePanel("Visualize a visitorshed"),
-               #          # SO FR visitorsheds   
-               #          fluidRow(
-               #            # subset visitorshed data box
-               #            box(width = 12,
-               #                title = "Subset the data",
-               #                splitLayout(
-               #                  # agency input
-               #                  select_agency(locationId = "visitorsheds"),
-               #                  # admin input
-               #                  select_admin_unit(locationId = "visitorsheds"),
-               #                  # site input
-               #                  select_site(locationId = "visitorsheds")
-               #                ) # EO visitorshed split layout
-               #                ), # EO subset visitorshed data box
-               #            
-               #            # SO US visitorshed map box
-               #            box(width = 6,
-               #                title = "US Visitorshed",
-               #                tmapOutput(outputId = "usVisitorshed_plot") %>% 
-               #                  withSpinner(color="#0dc5c1")
-               #            ), # EO US visitorshed map box
-               #            
-               #            # SO CA visitorshed map box
-               #            box(width = 6,
-               #                title = "California Visitorshed",
-               #                tmapOutput(outputId = "caVisitorshed_plot") %>% 
-               #                  withSpinner(color="#0dc5c1"),
-               #            ), # EO US visitorshed map box
-               #            
-               #            # SO visitorshed info box
-               #            box(width = 12,
-               #                title = "Reservable Site Summary"
-               #            ) # EO visitorshed info box
-               #          ) # EO FR visitorsheds
-               #          ) #### EO visitorsheds ----
+               tabPanel(title = "Visitorsheds",
+                        fluid = TRUE,
+                        
+                        titlePanel("Visualize a visitorshed"),
+                        # SO FR visitorsheds
+                        fluidRow(
+                          # SO subset visitorshed data box
+                          box(width = 12,
+                              title = "Subset the data",
+                              splitLayout(
+                                # agency input
+                                select_agency(locationId = "visitorsheds"),
+                                # admin input
+                                select_admin_unit(locationId = "visitorsheds"),
+                                # site input
+                                select_site(locationId = "visitorsheds")
+                              ) # EO splitLayout visitorshed
+                          ), # EO subset visitorshed data box
+                          
+                          # SO US visitorshed map box
+                          box(width = 6,
+                              title = "US Visitorshed",
+                              tmapOutput(outputId = "usVisitorshed_plot") %>% 
+                                withSpinner(color="#0dc5c1")
+                          ), # EO US visitorshed map box
+                          
+                          # SO CA visitorshed map box
+                          box(width = 6,
+                              title = "CA Visitorshed",
+                              tmapOutput(outputId = "caVisitorshed_plot") %>% 
+                                withSpinner(color="#0dc5c1")
+                          ), # EO CA visitorshed map box
+                          
+                          # SO visitorshed info box
+                          box(width = 12,
+                              title = "Summary Stats of Site"
+                          ) # EO visitorshed info box
+                        ) # EO FR visitorsheds
+                        ) # EO tabpanel visitorsheds
 
                ), ## EO Analysis tab ----
     
