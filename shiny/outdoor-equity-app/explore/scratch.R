@@ -2,6 +2,18 @@ library(tidyverse)
 library(here)
 library(collections)
 
+tm_shape(data_zip_geometries_ca) +
+  tm_fill(col = "number_reservations",
+          title = "Number of Visits",
+          palette = "PuRd",
+          style = "jenks",
+          n = 10, 
+          popup.vars = c("Total Visits" = "number_reservations")) +
+  tm_shape(data_yosemite_upper_pines_geom) +
+  tm_dots(col = "#009900FF", size = 0.1, alpha = 0.9,
+          id = "park") +
+  tm_view(set.view = c(-119.559917, 37.061753, 6))
+
 test <- data_joined_2018 %>%
   filter(park %in% "Wawona") %>%
   summarize(white = mean(white, na.rm = TRUE),
