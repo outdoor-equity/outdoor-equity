@@ -215,15 +215,15 @@ observeEvent(input$num_viz, {
 }) ## EO OE press num_viz
 
 ## SO OE press site relationship plots ----
-observeEvent(input$data_relationships, {
-  
-  if(input$data_relationships == "Race x Site type") {
-    
-    shinyjs::hide(id = "data_relationships_plot")
-    
-  }
-  
-})
+# observeEvent(input$data_relationships, {
+#   
+#   if(input$data_relationships == "Race x Site type") {
+#     
+#     shinyjs::hide(id = "data_relationships_plot")
+#     
+#   }
+#   
+# })
   
 
 # RENDER PLOTS ----
@@ -413,16 +413,17 @@ data_race_quants <-
 
 ### SO race x dist travel ----
 
-output$data_relationships_plot_test <- renderPlot({
-  
-if (input$data_relationships == "Race x Site type") {
-  
-  ggplot(data_joined_2018, aes(x = median_income)) +
-    geom_histogram()
-  
-}
-  
-})
+# TEST
+# output$data_relationships_plot_test <- renderPlot({
+# 
+# if (input$data_relationships == "Race x Site type") {
+# 
+#   ggplot(data_joined_2018, aes(x = median_income)) +
+#     geom_histogram()
+# 
+# }
+#   
+# })
 
 output$data_relationships_plot <- renderPlotly({
 ### SO race x dist travel plot function
