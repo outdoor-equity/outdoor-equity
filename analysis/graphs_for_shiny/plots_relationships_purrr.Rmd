@@ -1429,14 +1429,15 @@ data_plot_top_language_reservations <-
          language = str_replace(string = language,
                                 pattern = "english",
                                 replacement = "English"),
-         language_y_axis = case_when(language == "speak only English at home" ~ "Speak Only<br>English At Home",
-                                     language == "speak language(s) other than English at home" ~ "Speak Language(s) Other<br>Than English At Home"))
+         language_y_axis = case_when(language == "speak only English at home" ~ "People Who Speak Only<br>English At Home",
+                                     language == "speak language(s) other than English at home" ~ "People Who Speak<br>Language(s) Other Than<br>English At Home"))
   
 
 
 ## -- create plotly -- ##
 # parameters
-language_group_colors <- c("Speak Only<br>English At Home" = "#66c2a5", "Speak Language(s) Other<br>Than English At Home" = "#8da0cb")
+language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5", 
+                           "People Who Speak<br>Language(s) Other Than<br>English At Home" = "#8da0cb")
 
 #plotly
 plot <- ggplot(data = data_plot_top_language_reservations) +
@@ -1506,8 +1507,8 @@ function_plot_language_distanceTravel <- function(language_group, weighted_quart
            language = str_replace(string = language,
                                   pattern = "english",
                                   replacement = "English"),
-           language_y_lab = case_when(language == "speak only English at home" ~ "Speak Only<br>English At Home",
-                                       language == "speak language(s) other than English at home" ~ "Speak Language(s) Other<br>Than English At Home"))
+           language_y_lab = case_when(language == "speak only English at home" ~ "People Who Speak Only<br>English At Home",
+                                     language == "speak language(s) other than English at home" ~ "People Who Speak<br>Language(s) Other Than<br>English At Home"))
   
   return(df)
 }
@@ -1523,7 +1524,8 @@ data_plot_language_distanceTravel <-
 
 ## -- create plot -- ##
 # parameters
-language_group_colors <- c("Speak Only<br>English At Home" = "#66c2a5", "Speak Language(s) Other<br>Than English At Home" = "#8da0cb")
+language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5", 
+                           "People Who Speak<br>Language(s) Other Than<br>English At Home" = "#8da0cb")
 
 # plotly
 plot_education_distance_traveled <- ggplot(data = data_plot_language_distanceTravel, 
@@ -1561,7 +1563,7 @@ ggplotly(plot_education_distance_traveled,
                                       'Distance Traveled by Visitors with Different Home Lanugages'),
                         font = list(size = 15))) %>%  
   add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                  x = -0.15, xref = 'paper', y = 0.9, yref = 'paper', 
+                  x = -0.5, xref = 'paper', y = 0.9, yref = 'paper', 
                   showarrow = FALSE)
 ```
 
@@ -1598,8 +1600,8 @@ function_plot_language_siteType <- function(language_group, weighted_quartile,
            language = str_replace(string = language,
                                   pattern = "english",
                                   replacement = "English"),
-           language_y_lab = case_when(language == "speak only English at home" ~ "Speak Only<br>English At Home",
-                                       language == "speak language(s) other than English at home" ~ "Speak Language(s) Other<br>Than English At Home"))
+           language_y_lab = case_when(language == "speak only English at home" ~ "People Who Speak Only<br>English At Home",
+                                      language == "speak language(s) other than English at home" ~ "People Who Speak<br>Language(s) Other Than<br>English At Home"))
   
   return(df)
 }
@@ -1614,7 +1616,8 @@ data_plot_language_siteType <-
 ## -- create plot -- ##
 
 # parameters
-language_group_colors <- c("Speak Only<br>English At Home" = "#66c2a5", "Speak Language(s) Other<br>Than English At Home" = "#8da0cb")
+language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5", 
+                           "People Who Speak<br>Language(s) Other Than<br>English At Home" = "#8da0cb")
 
 # subset data to site type category
 site_type_categories <- c("equestrian", "remote", "rv only", "rv or tent", "shelter", "tent only", "water")
@@ -1633,7 +1636,7 @@ plot_language_site_type <- ggplot(data = data_plot_language_siteType_category) +
                fill = language_y_lab,
                text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
                              comma(count, accuracy = 1), 
-                             " reservations were made by <br>people who live in ZIP codes with high rates of people who speak ",
+                             " reservations were made by <br>people who live in ZIP codes with high rates of people who ",
                                language, "."))) +
   scale_y_discrete(expand = c(0.9, 0)) +
   scale_fill_manual(values = language_group_colors) +
@@ -1657,7 +1660,7 @@ ggplotly(plot_language_site_type,
                                     " Sites by Visitors with Different Languages"),
                       font = list(size = 15))) %>%  
   add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                  x = -0.15, xref = 'paper', y = 0.93, yref = 'paper', 
+                  x = -0.4, xref = 'paper', y = 0.93, yref = 'paper', 
                   showarrow = FALSE)
 ```
 
