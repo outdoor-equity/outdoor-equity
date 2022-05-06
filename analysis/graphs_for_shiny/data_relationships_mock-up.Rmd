@@ -1855,11 +1855,11 @@ for (i in seq_along(language_groups)){
   weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
   
   df_language_group_i_longer <- data_ridb_acs_2018 %>% 
-    select(agency, admin_unit, park, customer_zip, english_only, not_english_only,
+    select(park, customer_zip, english_only, not_english_only,
            distance_traveled_m) %>% 
     mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
     drop_na(distance_traveled_mi) %>% 
-  pivot_longer(cols = 5:6,
+    pivot_longer(cols = 3:4,
                names_to = "language",
                values_to = "language_percentage") %>% 
     filter(language == language_groups[[i]]) %>% ## BACK TO i
