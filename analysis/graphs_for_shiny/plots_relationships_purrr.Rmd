@@ -1964,6 +1964,105 @@ ggplotly(plot_education_dailyCost,
 ```
 
 
+### Language x daily cost per person
+
+```{r}
+## -- create function to make plot df -- ##
+function_plot_language_dailyCostPerPerson <- function(language_group, weighted_quartile,
+                                              ridb_df = data_ridb_acs_2018){
+  
+  df <- ridb_df %>% 
+    select(park, customer_zip, english_only, not_english_only,
+           daily_cost_per_visitor) %>% 
+    drop_na(daily_cost_per_visitor) %>% 
+    pivot_longer(cols = 3:4,
+               names_to = "language",
+               values_to = "language_percentage") %>% 
+    filter(language == language_group) %>% 
+    drop_na(language_percentage) %>% 
+    filter(language_percentage >= weighted_quartile) %>% 
+    summarize(median_daily_cost_per_visitor = median(daily_cost_per_visitor),
+              quartile_lower = quantile(daily_cost_per_visitor)[[2]],
+              quartile_upper = quantile(daily_cost_per_visitor)[[4]],
+              count = n()) %>% 
+    mutate(language = paste0(language_group)) %>% 
+    relocate(language, .before = 1) %>% 
+    mutate(language = str_replace_all(string = language,
+                                      pattern = "_",
+                                      replacement = " "),
+           language = str_replace(string = language,
+                                  pattern = "^english only$",
+                                  replacement = "Speak Only English at Home"),
+           language = str_replace(string = language,
+                                  pattern = "^not english only$",
+                                  replacement = "Speak Language(s) Other Than English at Home"),
+           language = str_to_lower(language),
+           language = str_replace(string = language,
+                                  pattern = "english",
+                                  replacement = "English"),
+           language_y_lab = case_when(language == "speak only English at home" ~ "People Who Speak Only<br>English At Home",
+                                     language == "speak language(s) other than English at home" ~ "People Who Speak<br>Language(s) Other Than<br>English At Home"))
+  
+  return(df)
+}
+```
+
+
+```{r}
+## -- run function through purrr -- ##
+data_plot_language_dailyCostPerPerson <- 
+  data_language_quants %>% 
+  pmap_dfr(function_plot_language_dailyCostPerPerson)
+
+
+## -- create plot -- ##
+# parameters
+language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5", 
+                           "People Who Speak<br>Language(s) Other Than<br>English At Home" = "#8da0cb")
+
+# plotly
+plot_education_dailyCostPerPerson <- ggplot(data = data_plot_language_dailyCostPerPerson, 
+                                      aes(x = median_daily_cost_per_visitor,
+                                          y = language_y_lab)) +
+  geom_segment(aes(xend = 0, yend = language_y_lab)) +
+  geom_point(aes(color = language_y_lab, fill = language_y_lab,
+                 text = paste0(comma(count, accuracy = 1), 
+                               " unique visits were made by people who live in ZIP codes with high rates of<br>people who ",
+                               language, 
+                               ". Typically these visitors<br>paid between ",
+                               dollar(quartile_lower), 
+                               " and ", dollar(quartile_upper), 
+                               " per person, with a median of ", 
+                               dollar(median_daily_cost_per_visitor), 
+                               ".")),
+             size = 3.5, 
+             shape = 21, stroke = 2) +
+  scale_x_continuous(labels = dollar) +
+  scale_y_discrete(expand_scale(mult = 0.1)) +
+  scale_fill_manual(values = language_group_colors) +
+  scale_color_manual(values = language_group_colors) +
+  labs(x = "Estimated Daily Cost per Person (US $)",
+       y = "") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_education_dailyCostPerPerson,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Daily Cost Paid per Person by Visitors with Different Home Lanugages'),
+                        font = list(size = 15))) %>%  
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.5, xref = 'paper', y = 0.9, yref = 'paper', 
+                  showarrow = FALSE)
+```
+
+
+
 
 
 

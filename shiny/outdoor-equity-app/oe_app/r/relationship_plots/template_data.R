@@ -1,5 +1,5 @@
 
-education___data <- function(siteInput, language_group, weighted_quartile, ridb_df){
+language___data <- function(siteInput, language_group, weighted_quartile, ridb_df){
   # reactive data frame 
   rdf <- reactive ({
     
