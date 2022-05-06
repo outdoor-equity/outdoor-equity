@@ -1631,7 +1631,7 @@ language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5
                            "People Who Speak<br>Language(s) Other Than<br>English At Home" = "#8da0cb")
 
 # plotly
-plot_education_distance_traveled <- ggplot(data = data_plot_language_distanceTravel, 
+plot_language_distance_traveled <- ggplot(data = data_plot_language_distanceTravel, 
                                       aes(x = median_distance_traveled_mi,
                                           y = language_y_lab)) +
   geom_segment(aes(xend = 0, yend = language_y_lab)) +
@@ -1657,7 +1657,7 @@ plot_education_distance_traveled <- ggplot(data = data_plot_language_distanceTra
         panel.grid.major.y = element_blank(),
         legend.position = "none")
 
-ggplotly(plot_education_distance_traveled,
+ggplotly(plot_language_distance_traveled,
          tooltip = list("text")) %>%
   config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                        "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
@@ -1826,7 +1826,7 @@ language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5
                            "People Who Speak<br>Language(s) Other Than<br>English At Home" = "#8da0cb")
 
 # plotly
-plot_education_distance_traveled <- ggplot(data = data_plot_language_bookingWindow, 
+plot_language_booking_window <- ggplot(data = data_plot_language_bookingWindow, 
                                       aes(x = median_booking_window,
                                           y = language_y_lab)) +
   geom_segment(aes(xend = 0, yend = language_y_lab)) +
@@ -1852,7 +1852,7 @@ plot_education_distance_traveled <- ggplot(data = data_plot_language_bookingWind
         panel.grid.major.y = element_blank(),
         legend.position = "none")
 
-ggplotly(plot_education_distance_traveled,
+ggplotly(plot_language_booking_window,
          tooltip = list("text")) %>%
   config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                        "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
@@ -1923,7 +1923,7 @@ language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5
                            "People Who Speak<br>Language(s) Other Than<br>English At Home" = "#8da0cb")
 
 # plotly
-plot_education_dailyCost <- ggplot(data = data_plot_language_dailyCost, 
+plot_language_dailyCost <- ggplot(data = data_plot_language_dailyCost, 
                                       aes(x = median_daily_cost,
                                           y = language_y_lab)) +
   geom_segment(aes(xend = 0, yend = language_y_lab)) +
@@ -1950,7 +1950,7 @@ plot_education_dailyCost <- ggplot(data = data_plot_language_dailyCost,
         panel.grid.major.y = element_blank(),
         legend.position = "none")
 
-ggplotly(plot_education_dailyCost,
+ggplotly(plot_language_dailyCost,
          tooltip = list("text")) %>%
   config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                        "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
@@ -2021,7 +2021,7 @@ language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5
                            "People Who Speak<br>Language(s) Other Than<br>English At Home" = "#8da0cb")
 
 # plotly
-plot_education_dailyCostPerPerson <- ggplot(data = data_plot_language_dailyCostPerPerson, 
+plot_language_dailyCostPerPerson <- ggplot(data = data_plot_language_dailyCostPerPerson, 
                                       aes(x = median_daily_cost_per_visitor,
                                           y = language_y_lab)) +
   geom_segment(aes(xend = 0, yend = language_y_lab)) +
@@ -2048,7 +2048,7 @@ plot_education_dailyCostPerPerson <- ggplot(data = data_plot_language_dailyCostP
         panel.grid.major.y = element_blank(),
         legend.position = "none")
 
-ggplotly(plot_education_dailyCostPerPerson,
+ggplotly(plot_language_dailyCostPerPerson,
          tooltip = list("text")) %>%
   config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                        "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
@@ -2060,6 +2060,106 @@ ggplotly(plot_education_dailyCostPerPerson,
                   x = -0.5, xref = 'paper', y = 0.9, yref = 'paper', 
                   showarrow = FALSE)
 ```
+
+
+### Language x length of stay
+
+```{r}
+## -- create function to make plot df -- ##
+function_plot_language_lengthStay <- function(language_group, weighted_quartile,
+                                              ridb_df = data_ridb_acs_2018){
+  
+  df <- ridb_df %>% 
+    select(park, customer_zip, english_only, not_english_only,
+           length_of_stay) %>% 
+    drop_na(length_of_stay) %>% 
+    pivot_longer(cols = 3:4,
+               names_to = "language",
+               values_to = "language_percentage") %>% 
+    filter(language == language_group) %>% 
+    drop_na(language_percentage) %>% 
+    filter(language_percentage >= weighted_quartile) %>% 
+    summarize(median_length_of_stay = median(length_of_stay),
+              quartile_lower = quantile(length_of_stay)[[2]],
+              quartile_upper = quantile(length_of_stay)[[4]],
+              count = n()) %>% 
+    mutate(language = paste0(language_group)) %>% 
+    relocate(language, .before = 1) %>% 
+    mutate(language = str_replace_all(string = language,
+                                      pattern = "_",
+                                      replacement = " "),
+           language = str_replace(string = language,
+                                  pattern = "^english only$",
+                                  replacement = "Speak Only English at Home"),
+           language = str_replace(string = language,
+                                  pattern = "^not english only$",
+                                  replacement = "Speak Language(s) Other Than English at Home"),
+           language = str_to_lower(language),
+           language = str_replace(string = language,
+                                  pattern = "english",
+                                  replacement = "English"),
+           language_y_lab = case_when(language == "speak only English at home" ~ "People Who Speak Only<br>English At Home",
+                                     language == "speak language(s) other than English at home" ~ "People Who Speak<br>Language(s) Other Than<br>English At Home"))
+  
+  return(df)
+}
+```
+
+
+```{r}
+## -- run function through purrr -- ##
+data_plot_language_lengthStay <- 
+  data_language_quants %>% 
+  pmap_dfr(function_plot_language_lengthStay)
+
+
+## -- create plot -- ##
+# parameters
+language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5", 
+                           "People Who Speak<br>Language(s) Other Than<br>English At Home" = "#8da0cb")
+
+# plotly
+plot_language_length_of_stay <- ggplot(data = data_plot_language_lengthStay, 
+                                      aes(x = median_length_of_stay,
+                                          y = language_y_lab)) +
+  geom_segment(aes(xend = 0, yend = language_y_lab)) +
+  geom_point(aes(color = language_y_lab, fill = language_y_lab,
+                 text = paste0(comma(count, accuracy = 1), 
+                               " unique visits were made by people who live in ZIP codes with high rates of<br>people who ",
+                               language, 
+                               ". Typically these visitors<br>stay between ",
+                               comma(quartile_lower, accuracy = 1), 
+                               " and ", comma(quartile_upper, accuracy = 1), 
+                               " days, with a median stay of ", 
+                               comma(median_length_of_stay, accuracy = 1), 
+                               " days")),
+             size = 3.5, 
+             shape = 21, stroke = 2) +
+  scale_y_discrete(expand_scale(mult = 0.1)) +
+  scale_fill_manual(values = language_group_colors) +
+  scale_color_manual(values = language_group_colors) +
+  labs(x = paste("Estimated Length of Stay (days)"),
+       y = "") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_language_length_of_stay,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Length of Stay by Visitors with Different Home Lanugages'),
+                        font = list(size = 15))) %>%  
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.5, xref = 'paper', y = 0.9, yref = 'paper', 
+                  showarrow = FALSE)
+```
+
+
+
 
 
 
