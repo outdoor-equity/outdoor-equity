@@ -3,12 +3,11 @@
 
 median_income_dist_travel_plot <- function(admin_unitInput, siteInput, ridb_df){
   
-  print(language_dist_travel_data)
   print(ridb_df)
   print(admin_unitInput)
   print(siteInput)
   
-  plot_data <- median_income_dist_travel_data(ridb_df = ridb_df, siteInput = siteInput)
+  plot_data <- median_income_booking_window_data(ridb_df = ridb_df, siteInput = siteInput)
   
   print(head(plot_data))
   
@@ -16,25 +15,25 @@ median_income_dist_travel_plot <- function(admin_unitInput, siteInput, ridb_df){
   
   # create plot (or say no such site type if none exist at siteInput)
   plotly <- ggplot(data = plot_data, 
-                   aes(x = median_distance_traveled_mi,
+                   aes(x = median_booking_window,
                        y = median_income_binned)) +
     geom_segment(aes(xend = 0, yend = median_income_binned)) +
     geom_point(aes(color = median_income_binned, fill = median_income_binned,
                    text = paste0(comma(count, accuracy = 1), 
                                  " unique visits were made by people who live in ZIP codes with a<br>median household income between ",
                                  median_income_binned, 
-                                 ". Typically these visitors<br>traveled between ",
+                                 ". Typically these visitors<br>reserved their site between ",
                                  comma(quartile_lower, accuracy = 1), 
                                  " and ", comma(quartile_upper, accuracy = 1), 
-                                 " miles, with a median distance of ", 
-                                 comma(median_distance_traveled_mi, accuracy = 1), 
-                                 " miles.")),
+                                 " days, with a median of ", 
+                                 comma(median_booking_window, accuracy = 1), 
+                                 " days")),
                size = 3.5, 
                shape = 21, stroke = 2) +
     scale_y_discrete(expand = c(0.2, 0)) +
     scale_fill_viridis_d(direction = -1) +
     scale_color_viridis_d(direction = -1) +
-    labs(x = paste("Estimated Distance Traveled from Home to Site (miles)"),
+    labs(x = "Estimated Number of Days in Advance Site is Reserved",
          y = "") + 
     theme_minimal() +
     theme(plot.background = element_rect("white"),
@@ -47,7 +46,7 @@ median_income_dist_travel_plot <- function(admin_unitInput, siteInput, ridb_df){
                                          "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
     layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                       '<br>',
-                                      'Distance Traveled by Visitors with Different Median Household Incomes'),
+                                      'Number of Days in Advance Site is Reserved by Different Median Household Incomes'),
                         font = list(size = 15)))
   
 } # EO function
