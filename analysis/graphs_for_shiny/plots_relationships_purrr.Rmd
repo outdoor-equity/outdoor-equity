@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE, eval=TRUE}
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 
 library(tidyverse)
 library(here)
@@ -39,6 +39,8 @@ data_ca_acs_2018 <- vroom(file = "../../../../data_clean/2018_ca_acs_all.csv",
 ```
 
 ## Race x ____
+
+### High categories df
 
 ```{r}
 # create function to get weighted quartile value for each group (in quartile function .R)
@@ -691,6 +693,8 @@ ggplotly(plot_race_daily_cost_per_visitor,
 
 
 ## Education x ____
+
+### High categories df
 
 ```{r }
 # create function to get weighted quartile value for each group (in quartile function .R)
@@ -1353,10 +1357,309 @@ ggplotly(plot_education_daily_cost,
 
 ## Language x ____
 
+### High categories df
+
+```{r }
+# create function to get weighted quartile value for each group (in quartile function .R)
+language_top_quartile <- function(language_group, acs_df = data_ca_acs_2018){
+  
+  df_ca_bin_breaks <- acs_df %>%
+    select(zip_code, english_only, not_english_only, mean_zip_code_population) %>% 
+    pivot_longer(cols = 2:3,
+                 names_to = "language",
+                 values_to = "language_percentage") %>% 
+    filter(language == language_group) %>% 
+    drop_na(language_percentage)
+  
+  weighted_half <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  df_ca_bin_breaks <- df_ca_bin_breaks %>% filter(language_percentage >= weighted_half)
+  
+  weighted_quartile <- weighted.mean(x = df_ca_bin_breaks$language_percentage, w = df_ca_bin_breaks$mean_zip_code_population)
+  
+  return(weighted_quartile)
+}
+
+## -- run function through purrr -- ##
+language_group <- c("english_only", "not_english_only")
+
+# quartile df (in server.R)
+data_language_quants <- 
+  language_group %>% 
+  map_dbl(language_top_quartile) %>% 
+  cbind("language_group" = language_group, 
+        "weighted_quartile" = .) %>% 
+  as.data.frame()
+```
 
 
+```{r}
+## -- create plot showing numbers of reservations for each "high" racial group -- ##
+function_plot_top_language_reservations <- function(language_group, weighted_quartile,
+                                                    ridb_df = data_ridb_acs_2018){
+  df <- ridb_df %>% 
+    select(park, customer_zip, english_only, not_english_only) %>% 
+    pivot_longer(cols = 3:4,
+                 names_to = "language",
+                 values_to = "language_percentage") %>% 
+    filter(language == paste0(language_group)) %>% 
+    drop_na(language_percentage) %>% 
+    filter(language_percentage >= weighted_quartile) %>% 
+    summarize(count = n()) %>% 
+    mutate(language = paste0(language_group)) %>% 
+    relocate(language, .before = 1) %>% 
+    mutate(language = str_replace_all(string = language,
+                              pattern = "_",
+                              replacement = " "),
+           language = str_replace(string = language,
+                                  pattern = "^english only$",
+                                  replacement = "Speak Only English at Home"),
+           language = str_replace(string = language,
+                                  pattern = "^not english only$",
+                                  replacement = "Speak Language(s) Other Than English at Home"))
+  
+  return(df)
+}
+
+## -- run function through purrr -- ##
+data_plot_top_language_reservations <- 
+  data_language_quants %>% 
+  pmap_dfr(function_plot_top_language_reservations) %>% 
+  mutate(language = str_to_lower(language),
+         language = str_replace(string = language,
+                                pattern = "english",
+                                replacement = "English"),
+         language_y_axis = case_when(language == "speak only English at home" ~ "Speak Only<br>English At Home",
+                                     language == "speak language(s) other than English at home" ~ "Speak Language(s) Other<br>Than English At Home"))
+  
 
 
+## -- create plotly -- ##
+# parameters
+language_group_colors <- c("Speak Only<br>English At Home" = "#66c2a5", "Speak Language(s) Other<br>Than English At Home" = "#8da0cb")
+
+#plotly
+plot <- ggplot(data = data_plot_top_language_reservations) +
+  geom_col(aes(x = count,
+               y = language_y_axis,
+               fill = language_y_axis,
+               text = paste0(comma(count, accuracy = 1), 
+                             " reservations were made by people who live in ZIP codes<br>with high rates people who speak ", 
+                             language, "."))) +
+  scale_x_continuous(labels = comma) +
+  scale_y_discrete(expand = c(0.9, 0)) +
+  scale_fill_manual(values = language_group_colors) +
+  scale_color_manual(values = language_group_colors) +
+  labs(x = paste("Number of Reservations"),
+       y = "",
+       title = paste0("Number of Reservations by People from Communities with High Rates of <br> Languages Other than English Spoken at Home")) + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.15, xref = 'paper', y = 0.97, yref = 'paper', 
+                  showarrow = FALSE)
+```
+
+
+### Language x distance traveled
+
+
+```{r}
+## -- create function to make plot df -- ##
+function_plot_language_distanceTravel <- function(language_group, weighted_quartile,
+                                              ridb_df = data_ridb_acs_2018){
+  
+  df <- ridb_df %>% 
+    select(park, customer_zip, english_only, not_english_only,
+           distance_traveled_m) %>% 
+    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+    drop_na(distance_traveled_mi) %>% 
+    pivot_longer(cols = 3:4,
+               names_to = "language",
+               values_to = "language_percentage") %>% 
+    filter(language == language_group) %>% 
+    drop_na(language_percentage) %>% 
+    filter(language_percentage >= weighted_quartile) %>% 
+    summarize(median_distance_traveled_mi = median(distance_traveled_mi),
+              quartile_lower = quantile(distance_traveled_mi)[[2]],
+              quartile_upper = quantile(distance_traveled_mi)[[4]],
+              count = n()) %>% 
+    mutate(language = paste0(language_group)) %>% 
+    relocate(language, .before = 1) %>% 
+    mutate(language = str_replace_all(string = language,
+                                      pattern = "_",
+                                      replacement = " "),
+           language = str_replace(string = language,
+                                  pattern = "^english only$",
+                                  replacement = "Speak Only English at Home"),
+           language = str_replace(string = language,
+                                  pattern = "^not english only$",
+                                  replacement = "Speak Language(s) Other Than English at Home"),
+           language = str_to_lower(language),
+           language = str_replace(string = language,
+                                  pattern = "english",
+                                  replacement = "English"),
+           language_y_lab = case_when(language == "speak only English at home" ~ "Speak Only<br>English At Home",
+                                       language == "speak language(s) other than English at home" ~ "Speak Language(s) Other<br>Than English At Home"))
+  
+  return(df)
+}
+```
+
+
+```{r}
+## -- run function through purrr -- ##
+data_plot_language_distanceTravel <- 
+  data_language_quants %>% 
+  pmap_dfr(function_plot_language_distanceTravel)
+
+
+## -- create plot -- ##
+# parameters
+language_group_colors <- c("Speak Only<br>English At Home" = "#66c2a5", "Speak Language(s) Other<br>Than English At Home" = "#8da0cb")
+
+# plotly
+plot_education_distance_traveled <- ggplot(data = data_plot_language_distanceTravel, 
+                                      aes(x = median_distance_traveled_mi,
+                                          y = language_y_lab)) +
+  geom_segment(aes(xend = 0, yend = language_y_lab)) +
+  geom_point(aes(color = language_y_lab, fill = language_y_lab,
+                 text = paste0(comma(count, accuracy = 1), 
+                               " unique visits were made by people who live in ZIP codes with high rates of<br>people who speak ",
+                               language, 
+                               ". Typically these visitors<br>traveled between ",
+                               comma(quartile_lower, accuracy = 1), 
+                               " and ", comma(quartile_upper, accuracy = 1), 
+                               " miles, with a median distance of ", 
+                               comma(median_distance_traveled_mi, accuracy = 1), 
+                               " miles.")),
+             size = 3.5, 
+             shape = 21, stroke = 2) +
+  scale_y_discrete(expand_scale(mult = 0.1)) +
+  scale_fill_manual(values = language_group_colors) +
+  scale_color_manual(values = language_group_colors) +
+  labs(x = paste("Estimated Distance Traveled from Home to Site (miles)"),
+       y = "") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_education_distance_traveled,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Distance Traveled by Visitors with Different Home Lanugages'),
+                        font = list(size = 15))) %>%  
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.15, xref = 'paper', y = 0.9, yref = 'paper', 
+                  showarrow = FALSE)
+```
+
+### Language x site type
+
+```{r}
+## -- create function to make plot df -- ##
+function_plot_language_siteType <- function(language_group, weighted_quartile,
+                                            ridb_df = data_ridb_acs_2018){
+  
+  df <- ridb_df %>% 
+    select(park, customer_zip, english_only, not_english_only, aggregated_site_type) %>% 
+    drop_na(aggregated_site_type) %>% 
+    pivot_longer(cols = 3:4,
+                 names_to = "language",
+                 values_to = "language_percentage") %>% 
+    filter(language == language_group) %>% 
+    drop_na(language_percentage) %>% 
+    filter(language_percentage >= weighted_quartile) %>% 
+    count(language, aggregated_site_type) %>% 
+    rename(count = n) %>% 
+    mutate(language = paste0(language_group)) %>% 
+    relocate(language, .before = 1) %>%
+    mutate(language = str_replace_all(string = language,
+                                      pattern = "_",
+                                      replacement = " "),
+           language = str_replace(string = language,
+                                  pattern = "^english only$",
+                                  replacement = "Speak Only English at Home"),
+           language = str_replace(string = language,
+                                  pattern = "^not english only$",
+                                  replacement = "Speak Language(s) Other Than English at Home"),
+           language = str_to_lower(language),
+           language = str_replace(string = language,
+                                  pattern = "english",
+                                  replacement = "English"),
+           language_y_lab = case_when(language == "speak only English at home" ~ "Speak Only<br>English At Home",
+                                       language == "speak language(s) other than English at home" ~ "Speak Language(s) Other<br>Than English At Home"))
+  
+  return(df)
+}
+```
+
+```{r}
+## -- run function through purrr -- ##
+data_plot_language_siteType <- 
+  data_language_quants %>% 
+  pmap_dfr(function_plot_language_siteType)
+
+## -- create plot -- ##
+
+# parameters
+language_group_colors <- c("Speak Only<br>English At Home" = "#66c2a5", "Speak Language(s) Other<br>Than English At Home" = "#8da0cb")
+
+# subset data to site type category
+site_type_categories <- c("equestrian", "remote", "rv only", "rv or tent", "shelter", "tent only", "water")
+
+data_plot_language_siteType_category <- data_plot_language_siteType %>% 
+  filter(aggregated_site_type == site_type_categories[[1]]) %>% 
+  mutate(aggregated_site_type = str_to_title(aggregated_site_type),
+         aggregated_site_type = str_replace(string = aggregated_site_type,
+                                            pattern = "Rv", 
+                                            replacement = "RV"))
+
+# plotly
+plot_language_site_type <- ggplot(data = data_plot_language_siteType_category) +
+  geom_col(aes(x = count,
+               y = language_y_lab,
+               fill = language_y_lab,
+               text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
+                             comma(count, accuracy = 1), 
+                             " reservations were made by <br>people who live in ZIP codes with high rates of people who speak ",
+                               language, "."))) +
+  scale_y_discrete(expand = c(0.9, 0)) +
+  scale_fill_manual(values = language_group_colors) +
+  scale_color_manual(values = language_group_colors) +
+  labs(x = paste("Number of Reservations"),
+       y = "") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+
+ggplotly(plot_language_site_type,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                    '<br>',
+                                    "Number of Reservations to ", str_to_title(site_type_categories[[1]]) %>%
+                                      str_replace(string = ., pattern = "Rv", replacement = "RV"), 
+                                    " Sites by Visitors with Different Languages"),
+                      font = list(size = 15))) %>%  
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.15, xref = 'paper', y = 0.93, yref = 'paper', 
+                  showarrow = FALSE)
+```
 
 
 
