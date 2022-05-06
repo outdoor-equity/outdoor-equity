@@ -136,7 +136,7 @@ ui <- fluidPage(
                           box(width = 12,
                               plotlyOutput(outputId = "data_relationships_plot") %>%
                                 withSpinner(color = "#0dc5c1"),
-                              plotOutput(outputId = "data_relationships_plot_test")
+                              uiOutput(outputId = "data_relationships_plot_test")
                               ) # EO relationships plot output box
                         ) # EO FR data relationships
                         ), #### EO data relationships
