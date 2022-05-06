@@ -38,10 +38,10 @@ data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds")
 data_yosemite_upper_pines_geom <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_geom.rds")
 data_zip_geometries_ca <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_zip_geometries_ca.rds")
 # simplifying geoms
-data_zip_geometries_ca_simple <- data_zip_geometries_ca %>% rmapshaper::ms_simplify()
+data_zip_geometries_ca_simple <- data_zip_geometries_ca %>% rmapshaper::ms_simplify(keep = 0.004)
 data_geometries_us <- readRDS("data/2018_data_map_us_yosemite_upper_pines_geometries_us.rds")
 # simplifying geoms
-data_geometries_us_simple <- data_geometries_us %>% rmapshaper::ms_simplify()
+data_geometries_us_simple <- data_geometries_us %>% rmapshaper::ms_simplify(keep = 0.006)
 
 # SOURCE FUNCTIONS ----
 ## source input functions ----
