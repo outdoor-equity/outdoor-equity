@@ -329,7 +329,6 @@ ggplotly(plot_race_site_type_equestrian,
 ```
 
 
-
 ### Race x booking window 
 
 ```{r}
@@ -598,7 +597,6 @@ ggplotly(plot_race_daily_cost_per_visitor,
                   x = -0.15, xref = 'paper', y = 0.95, yref = 'paper', 
                   showarrow = FALSE)
 ```
-
 
 
 ### Race x length of stay 
@@ -1037,7 +1035,6 @@ ggplotly(plot_education_distance_traveled,
 
 
 ### Education x booking window
-
 
 ```{r}
 ## -- create function to make plot df -- ##
@@ -1578,7 +1575,6 @@ ggplotly(plot,
 
 ### Language x distance traveled
 
-
 ```{r}
 ## -- create function to make plot df -- ##
 function_plot_language_distanceTravel <- function(language_group, weighted_quartile,
@@ -1641,7 +1637,7 @@ plot_education_distance_traveled <- ggplot(data = data_plot_language_distanceTra
   geom_segment(aes(xend = 0, yend = language_y_lab)) +
   geom_point(aes(color = language_y_lab, fill = language_y_lab,
                  text = paste0(comma(count, accuracy = 1), 
-                               " unique visits were made by people who live in ZIP codes with high rates of<br>people who speak ",
+                               " unique visits were made by people who live in ZIP codes with high rates of<br>people who ",
                                language, 
                                ". Typically these visitors<br>traveled between ",
                                comma(quartile_lower, accuracy = 1), 
@@ -1673,6 +1669,7 @@ ggplotly(plot_education_distance_traveled,
                   x = -0.5, xref = 'paper', y = 0.9, yref = 'paper', 
                   showarrow = FALSE)
 ```
+
 
 ### Language x site type
 
@@ -1772,9 +1769,7 @@ ggplotly(plot_language_site_type,
 ```
 
 
-
 ### Language x booking window
-
 
 ```{r}
 ## -- create function to make plot df -- ##
@@ -1837,7 +1832,7 @@ plot_education_distance_traveled <- ggplot(data = data_plot_language_bookingWind
   geom_segment(aes(xend = 0, yend = language_y_lab)) +
   geom_point(aes(color = language_y_lab, fill = language_y_lab,
                  text = paste0(comma(count, accuracy = 1), 
-                               " unique visits were made by people who live in ZIP codes with high rates of<br>people who speak ",
+                               " unique visits were made by people who live in ZIP codes with high rates of<br>people who ",
                                language, 
                                ". Typically these visitors<br>traveled between ",
                                comma(quartile_lower, accuracy = 1), 
@@ -1871,6 +1866,102 @@ ggplotly(plot_education_distance_traveled,
 ```
 
 
+### Language x daily cost
+
+```{r}
+## -- create function to make plot df -- ##
+function_plot_language_dailyCost <- function(language_group, weighted_quartile,
+                                              ridb_df = data_ridb_acs_2018){
+  
+  df <- ridb_df %>% 
+    select(park, customer_zip, english_only, not_english_only,
+           daily_cost) %>% 
+    drop_na(daily_cost) %>% 
+    pivot_longer(cols = 3:4,
+               names_to = "language",
+               values_to = "language_percentage") %>% 
+    filter(language == language_group) %>% 
+    drop_na(language_percentage) %>% 
+    filter(language_percentage >= weighted_quartile) %>% 
+    summarize(median_daily_cost = median(daily_cost),
+              quartile_lower = quantile(daily_cost)[[2]],
+              quartile_upper = quantile(daily_cost)[[4]],
+              count = n()) %>% 
+    mutate(language = paste0(language_group)) %>% 
+    relocate(language, .before = 1) %>% 
+    mutate(language = str_replace_all(string = language,
+                                      pattern = "_",
+                                      replacement = " "),
+           language = str_replace(string = language,
+                                  pattern = "^english only$",
+                                  replacement = "Speak Only English at Home"),
+           language = str_replace(string = language,
+                                  pattern = "^not english only$",
+                                  replacement = "Speak Language(s) Other Than English at Home"),
+           language = str_to_lower(language),
+           language = str_replace(string = language,
+                                  pattern = "english",
+                                  replacement = "English"),
+           language_y_lab = case_when(language == "speak only English at home" ~ "People Who Speak Only<br>English At Home",
+                                     language == "speak language(s) other than English at home" ~ "People Who Speak<br>Language(s) Other Than<br>English At Home"))
+  
+  return(df)
+}
+```
+
+
+```{r}
+## -- run function through purrr -- ##
+data_plot_language_dailyCost <- 
+  data_language_quants %>% 
+  pmap_dfr(function_plot_language_dailyCost)
+
+
+## -- create plot -- ##
+# parameters
+language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5", 
+                           "People Who Speak<br>Language(s) Other Than<br>English At Home" = "#8da0cb")
+
+# plotly
+plot_education_dailyCost <- ggplot(data = data_plot_language_dailyCost, 
+                                      aes(x = median_daily_cost,
+                                          y = language_y_lab)) +
+  geom_segment(aes(xend = 0, yend = language_y_lab)) +
+  geom_point(aes(color = language_y_lab, fill = language_y_lab,
+                 text = paste0(comma(count, accuracy = 1), 
+                               " unique visits were made by people who live in ZIP codes with high rates of<br>people who ",
+                               language, 
+                               ". Typically these visitors<br>paid between ",
+                               dollar(quartile_lower), 
+                               " and ", dollar(quartile_upper), 
+                               " miles, with a median of ", 
+                               dollar(median_daily_cost), 
+                               ".")),
+             size = 3.5, 
+             shape = 21, stroke = 2) +
+  scale_x_continuous(labels = dollar) +
+  scale_y_discrete(expand_scale(mult = 0.1)) +
+  scale_fill_manual(values = language_group_colors) +
+  scale_color_manual(values = language_group_colors) +
+  labs(x = "Estimated Daily Cost per Reservation (US $)",
+       y = "") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_education_dailyCost,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Daily Cost Paid by Visitors with Different Home Lanugages'),
+                        font = list(size = 15))) %>%  
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.5, xref = 'paper', y = 0.9, yref = 'paper', 
+                  showarrow = FALSE)
+```
 
 
 

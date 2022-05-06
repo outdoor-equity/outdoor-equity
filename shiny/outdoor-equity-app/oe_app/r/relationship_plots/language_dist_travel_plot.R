@@ -34,7 +34,7 @@ language___plot <- function(admin_unitInput, siteInput,
       geom_segment(aes(xend = 0, yend = language_y_lab)) +
       geom_point(aes(color = language_y_lab, fill = language_y_lab,
                      text = paste0(comma(count, accuracy = 1), 
-                                   " unique visits were made by people who live in ZIP codes with high rates of<br>people who speak ",
+                                   " unique visits were made by people who live in ZIP codes with high rates of<br>people who ",
                                    language, 
                                    ". Typically these visitors<br>traveled between ",
                                    comma(quartile_lower, accuracy = 1), 

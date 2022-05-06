@@ -1,16 +1,16 @@
 
 ## education x distance traveled and parameters ##
 
-language_booking_window_plot <- function(admin_unitInput, siteInput,
-                                         language_top_quartile_df, ridb_df){
+language_daily_cost_plot <- function(admin_unitInput, siteInput,
+                            language_top_quartile_df, ridb_df){
   
-  print(language_booking_window_data)
+  print(language_daily_cost_data)
   print(ridb_df)
   print(admin_unitInput)
   print(siteInput)
   
   plot_data <- 
-    education_top_quartile_df %>% pmap_dfr(language_booking_window_data, 
+    education_top_quartile_df %>% pmap_dfr(language_daily_cost_data, 
                                            ridb_df = ridb_df, 
                                            siteInput = siteInput)
   
@@ -29,25 +29,26 @@ language_booking_window_plot <- function(admin_unitInput, siteInput,
   } else if (nrow(plot_data) > 0){
     
     plotly <- ggplot(data = plot_data, 
-                     aes(x = median_booking_window,
+                     aes(x = median_daily_cost,
                          y = language_y_lab)) +
       geom_segment(aes(xend = 0, yend = language_y_lab)) +
       geom_point(aes(color = language_y_lab, fill = language_y_lab,
                      text = paste0(comma(count, accuracy = 1), 
                                    " unique visits were made by people who live in ZIP codes with high rates of<br>people who ",
                                    language, 
-                                   ". Typically these visitors<br>traveled between ",
-                                   comma(quartile_lower, accuracy = 1), 
-                                   " and ", comma(quartile_upper, accuracy = 1), 
-                                   " miles, with a median distance of ", 
-                                   comma(median_booking_window, accuracy = 1), 
-                                   " miles.")),
+                                   ". Typically these visitors<br>paid between ",
+                                   dollar(quartile_lower), 
+                                   " and ", dollar(quartile_upper), 
+                                   " miles, with a median of ", 
+                                   dollar(median_daily_cost), 
+                                   ".")),
                  size = 3.5, 
                  shape = 21, stroke = 2) +
+      scale_x_continuous(labels = dollar) +
       scale_y_discrete(expand_scale(mult = 0.1)) +
       scale_fill_manual(values = language_group_colors) +
       scale_color_manual(values = language_group_colors) +
-      labs(x = paste("Estimated Distance Traveled from Home to Site (miles)"),
+      labs(x = "Estimated Daily Cost per Reservation (US $)",
            y = "") + 
       theme_minimal() +
       theme(plot.background = element_rect("white"),
@@ -60,7 +61,7 @@ language_booking_window_plot <- function(admin_unitInput, siteInput,
                                            "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
       layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                         '<br>',
-                                        'Number of Days in Advance Site is Reserved by Visitors with Different Home Lanugages'),
+                                        'Daily Cost Paid by Visitors with Different Home Lanugages'),
                           font = list(size = 15))) %>%  
       add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
                       x = -0.5, xref = 'paper', y = 0.9, yref = 'paper', 
