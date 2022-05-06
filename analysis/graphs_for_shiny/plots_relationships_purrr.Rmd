@@ -915,7 +915,7 @@ ggplotly(plot_education_distance_traveled,
          tooltip = list("text")) %>%
   config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                        "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
-    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+  layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                       '<br>',
                                       'Distance Traveled by Visitors with Different Levels of Education'),
                         font = list(size = 15))) %>%  
@@ -1034,6 +1034,113 @@ ggplotly(plot_education_distance_traveled,
                   x = -0.15, xref = 'paper', y = 0.93, yref = 'paper', 
                   showarrow = FALSE)
 ```
+
+
+### Education x booking window
+
+
+```{r}
+## -- create function to make plot df -- ##
+function_plot_education_bookWindow <- function(education_group, weighted_quartile,
+                                        ridb_df = data_ridb_acs_2018){
+  
+  df <- ridb_df %>% 
+    select(park, customer_zip, hs_GED_or_below, some_college, 
+           college, master_or_above, booking_window) %>% 
+    drop_na(booking_window) %>% 
+    pivot_longer(cols = 3:6,
+                 names_to = "education",
+                 values_to = "education_percentage") %>% 
+    filter(education == education_group) %>% 
+    drop_na(education_percentage) %>% 
+    filter(education_percentage >= weighted_quartile) %>% 
+    summarize(median_booking_window = median(booking_window),
+              quartile_lower = quantile(booking_window)[[2]],
+              quartile_upper = quantile(booking_window)[[4]],
+              count = n()) %>% 
+    mutate(education = paste0(education_group)) %>% 
+    relocate(education, .before = 1) %>% 
+    mutate(education = str_replace_all(string = education,
+                              pattern = "_",
+                              replacement = " "),
+           education = str_to_title(education),
+           education = str_replace(string = education,
+                                   pattern = "Hs Ged Or", 
+                                   replacement = "HS, GED, or"),
+           education = str_replace(string = education,
+                                   pattern = "Some College",
+                                   replacement = "Some College or Trade School"),
+           education = str_replace(string = education,
+                                   pattern = "^College$",
+                                   replacement = "Associates or Bachelors Degree"),
+           education = str_replace(string = education,
+                                   pattern = "Master Or Above",
+                                   replacement = "Masters Degree or Above"),
+           education_y_lab = case_when(education == "HS, GED, or Below" ~ "HS, GED,\nor Below",
+                                       education == "Some College or Trade School" ~ "Some College or\nTrade School",
+                                       education == "Associates or Bachelors Degree" ~ "Associates or\nBachelors Degree",
+                                       education == "Masters Degree or Above" ~ "Masters Degree\nor Above"),
+           education_y_lab = factor(education_y_lab, levels = c("HS, GED,\nor Below", 
+                                                    "Some College or\nTrade School", 
+                                                    "Associates or\nBachelors Degree", 
+                                                    "Masters Degree\nor Above")))
+  
+  return(df)
+}
+```
+
+```{r}
+## -- run function through purrr -- ##
+data_plot_education_bookWindow <- 
+  data_education_quants %>% 
+  pmap_dfr(function_plot_education_bookWindow)
+
+## -- create plot -- ##
+# parameters
+education_group_colors <- c("HS, GED,\nor Below" = "#a6cee3", "Some College or\nTrade School"  = "#1f78b4", 
+                            "Associates or\nBachelors Degree" = "#b2df8a", "Masters Degree\nor Above" = "#33a02c")
+
+# plotly
+plot_education_booking_window <- ggplot(data = data_plot_education_bookWindow, 
+                                      aes(x = median_booking_window,
+                                          y = education_y_lab)) +
+  geom_segment(aes(xend = 0, yend = education_y_lab)) +
+  geom_point(aes(color = education_y_lab, 
+                 fill = education_y_lab,
+                 text = paste0(comma(count, accuracy = 1), 
+                               " unique visits were made by people who live in ZIP codes with high<br>",
+                               education, 
+                               " populations. Typically folks reserved their visit between<br>",
+                               comma(quartile_lower, accuracy = 1), 
+                               " and ", comma(quartile_upper, accuracy = 1), 
+                               " days before the start of their trip, with a median booking window of ", 
+                               comma(median_booking_window, accuracy = 1), 
+                               " days.")),
+             size = 3.5, 
+             shape = 21, stroke = 2) +
+  scale_y_discrete(expand = c(0.4, 0)) +
+  scale_fill_manual(values = education_group_colors) +
+  scale_color_manual(values = education_group_colors) +
+  labs(x = paste("Estimated Number of Days in Advance Site is Reserved (days)"),
+       y = "") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_education_booking_window,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+  layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Number of Days in Advance Site is Reserved by Visitors with Different Levels of Education'),
+                        font = list(size = 15))) %>% 
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.15, xref = 'paper', y = 0.93, yref = 'paper', 
+                  showarrow = FALSE)
+```
+
 
 
 ### Education x daily cost 
@@ -1663,6 +1770,106 @@ ggplotly(plot_language_site_type,
                   x = -0.4, xref = 'paper', y = 0.93, yref = 'paper', 
                   showarrow = FALSE)
 ```
+
+
+
+### Language x booking window
+
+
+```{r}
+## -- create function to make plot df -- ##
+function_plot_language_bookingWindow <- function(language_group, weighted_quartile,
+                                              ridb_df = data_ridb_acs_2018){
+  
+  df <- ridb_df %>% 
+    select(park, customer_zip, english_only, not_english_only,
+           booking_window) %>% 
+    drop_na(booking_window) %>% 
+    pivot_longer(cols = 3:4,
+               names_to = "language",
+               values_to = "language_percentage") %>% 
+    filter(language == language_group) %>% 
+    drop_na(language_percentage) %>% 
+    filter(language_percentage >= weighted_quartile) %>% 
+    summarize(median_booking_window = median(booking_window),
+              quartile_lower = quantile(booking_window)[[2]],
+              quartile_upper = quantile(booking_window)[[4]],
+              count = n()) %>% 
+    mutate(language = paste0(language_group)) %>% 
+    relocate(language, .before = 1) %>% 
+    mutate(language = str_replace_all(string = language,
+                                      pattern = "_",
+                                      replacement = " "),
+           language = str_replace(string = language,
+                                  pattern = "^english only$",
+                                  replacement = "Speak Only English at Home"),
+           language = str_replace(string = language,
+                                  pattern = "^not english only$",
+                                  replacement = "Speak Language(s) Other Than English at Home"),
+           language = str_to_lower(language),
+           language = str_replace(string = language,
+                                  pattern = "english",
+                                  replacement = "English"),
+           language_y_lab = case_when(language == "speak only English at home" ~ "People Who Speak Only<br>English At Home",
+                                     language == "speak language(s) other than English at home" ~ "People Who Speak<br>Language(s) Other Than<br>English At Home"))
+  
+  return(df)
+}
+```
+
+
+```{r}
+## -- run function through purrr -- ##
+data_plot_language_bookingWindow <- 
+  data_language_quants %>% 
+  pmap_dfr(function_plot_language_bookingWindow)
+
+
+## -- create plot -- ##
+# parameters
+language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5", 
+                           "People Who Speak<br>Language(s) Other Than<br>English At Home" = "#8da0cb")
+
+# plotly
+plot_education_distance_traveled <- ggplot(data = data_plot_language_bookingWindow, 
+                                      aes(x = median_booking_window,
+                                          y = language_y_lab)) +
+  geom_segment(aes(xend = 0, yend = language_y_lab)) +
+  geom_point(aes(color = language_y_lab, fill = language_y_lab,
+                 text = paste0(comma(count, accuracy = 1), 
+                               " unique visits were made by people who live in ZIP codes with high rates of<br>people who speak ",
+                               language, 
+                               ". Typically these visitors<br>traveled between ",
+                               comma(quartile_lower, accuracy = 1), 
+                               " and ", comma(quartile_upper, accuracy = 1), 
+                               " miles, with a median distance of ", 
+                               comma(median_booking_window, accuracy = 1), 
+                               " miles.")),
+             size = 3.5, 
+             shape = 21, stroke = 2) +
+  scale_y_discrete(expand_scale(mult = 0.1)) +
+  scale_fill_manual(values = language_group_colors) +
+  scale_color_manual(values = language_group_colors) +
+  labs(x = paste("Estimated Distance Traveled from Home to Site (miles)"),
+       y = "") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_education_distance_traveled,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Distance Traveled by Visitors with Different Home Lanugages'),
+                        font = list(size = 15))) %>%  
+  add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                  x = -0.5, xref = 'paper', y = 0.9, yref = 'paper', 
+                  showarrow = FALSE)
+```
+
 
 
 
