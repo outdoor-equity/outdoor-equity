@@ -2,6 +2,13 @@ library(tidyverse)
 library(here)
 library(collections)
 
+
+data_joined_2018 %>% 
+  filter(park == "Wawona")
+
+ggplot(data_joined_2018, aes(x = median_income)) +
+  geom_histogram()
+
 tm_shape(data_zip_geometries_ca) +
   tm_fill(col = "number_reservations",
           title = "Number of Visits",

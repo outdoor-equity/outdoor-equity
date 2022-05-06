@@ -214,6 +214,16 @@ observeEvent(input$num_viz, {
   }
 }) ## EO OE press num_viz
 
+## SO OE press site relationship plots ----
+# observeEvent(input$data_relationships, {
+#   
+#   if(input$data_relationships == "Race x Site type") {
+#     
+#     shinyjs::hide(id = "data_relationships_plot")
+#     
+#   }
+#   
+# })
   
 
 # RENDER PLOTS ----
@@ -388,17 +398,32 @@ output$data_summary_plot_2 <- renderPlotly({
 }) ## EO DATA SUMMARY PLOTS 2 
 
 ## SO RELATIONSHIPS PLOTS NO REACTIVE ----
-### SO race x dist travel ----
-### race wrangling
+
+### SO race wrangling ----
+# race wrangling used for all race relationship plots
 race_group <- c("other", "pacific_islander", "multiracial", "asian",
-                 "black", "white", "native_american", "hispanic_latinx")
-# “high” cutoff value
+                "black", "white", "native_american", "hispanic_latinx")
+# “high” cutoff value for all race relationship plots
 data_race_quants <-
   race_group %>%
   map_dbl(race_top_quartile, acs_df = data_ca_acs_2018) %>%
   cbind("race_group" = race_group,
-         "weighted_quartile" = .) %>%
+        "weighted_quartile" = .) %>%
   as.data.frame()
+
+### SO race x dist travel ----
+
+# TEST
+# output$data_relationships_plot_test <- renderPlot({
+# 
+# if (input$data_relationships == "Race x Site type") {
+# 
+#   ggplot(data_joined_2018, aes(x = median_income)) +
+#     geom_histogram()
+# 
+# }
+#   
+# })
 
 output$data_relationships_plot <- renderPlotly({
 ### SO race x dist travel plot function
@@ -410,10 +435,58 @@ race_dist_travel_plot(admin_unitInput = input$admin_unit_relationships,
                       ridb_df = data_joined_2018)
   
 } # EO race x dist travel
+  
+### SO race x site type ---- 
+  # else if (input$data_relationships == "Race x Site type") {
+  #   
+  #   # race_site_type_plot(admin_unitInput = input$admin_unit_relationships, 
+  #   #                     siteInput = input$site_relationships,
+  #   #                     race_top_quartile_df = data_race_quants, 
+  #   #                     ridb_df = data_joined_2018,
+  #   #                     site_type_string = "equestrian")
+  #   
+  #   # race_site_type_plot(admin_unitInput = input$admin_unit_relationships, 
+  #   #                     siteInput = input$site_relationships,
+  #   #                     race_top_quartile_df = data_race_quants, 
+  #   #                     ridb_df = data_joined_2018,
+  #   #                     site_type_string = "remote")
+  #   # 
+  #   # race_site_type_plot(admin_unitInput = input$admin_unit_relationships, 
+  #   #                     siteInput = input$site_relationships,
+  #   #                     race_top_quartile_df = data_race_quants, 
+  #   #                     ridb_df = data_joined_2018,
+  #   #                     site_type_string = "rv only")
+  #   # 
+  #   # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+  #   #                     siteInput = input$site_relationships,
+  #   #                     race_top_quartile_df = data_race_quants,
+  #   #                     ridb_df = data_joined_2018,
+  #   #                     site_type_string = "rv or tent")
+  #   # 
+  #   # race_site_type_plot(admin_unitInput = input$admin_unit_relationships, 
+  #   #                     siteInput = input$site_relationships,
+  #   #                     race_top_quartile_df = data_race_quants, 
+  #   #                     ridb_df = data_joined_2018,
+  #   #                     site_type_string = "shelter")
+  #   # 
+  #   # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+  #   #                     siteInput = input$site_relationships,
+  #   #                     race_top_quartile_df = data_race_quants,
+  #   #                     ridb_df = data_joined_2018,
+  #   #                     site_type_string = "tent only")
+  #   # 
+  #   # 
+  #   # race_site_type_plot(admin_unitInput = input$admin_unit_relationships, 
+  #   #                     siteInput = input$site_relationships,
+  #   #                     race_top_quartile_df = data_race_quants, 
+  #   #                     ridb_df = data_joined_2018,
+  #   #                     site_type_string = "water")
+  # }
    
 }) ## EO relationships plots 
 
-### SO race x site type ----
+
+
 
 ## SO VISITORSHEDS PLOTS YES REACTIVE ----
 ### yosemite plot ----
