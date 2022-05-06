@@ -1764,7 +1764,7 @@ ggplotly(plot_language_site_type,
                                     '<br>',
                                     "Number of Reservations to ", str_to_title(site_type_categories[[1]]) %>%
                                       str_replace(string = ., pattern = "Rv", replacement = "RV"), 
-                                    " Sites by Visitors with Different Languages"),
+                                    " Sites by Visitors with Different Home Lanugages"),
                       font = list(size = 15))) %>%  
   add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
                   x = -0.4, xref = 'paper', y = 0.93, yref = 'paper', 
@@ -1861,9 +1861,9 @@ ggplotly(plot_education_distance_traveled,
          tooltip = list("text")) %>%
   config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                        "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
-    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+  layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                       '<br>',
-                                      'Distance Traveled by Visitors with Different Home Lanugages'),
+                                      'Number of Days in Advance Site is Reserved by Visitors with Different Home Lanugages'),
                         font = list(size = 15))) %>%  
   add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
                   x = -0.5, xref = 'paper', y = 0.9, yref = 'paper', 

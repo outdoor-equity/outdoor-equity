@@ -17,7 +17,8 @@ language___plot <- function(admin_unitInput, siteInput,
   print(head(plot_data))
   
   # create plot
-  language_group_colors <- c("Speak Only<br>English At Home" = "#66c2a5", "Speak Language(s) Other<br>Than English At Home" = "#8da0cb")
+  language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5", 
+                             "People Who Speak<br>Language(s) Other Than<br>English At Home" = "#8da0cb")
   
   # create plot (or say no such site type if none exist at siteInput)
   if (nrow(plot_data) == 0){
