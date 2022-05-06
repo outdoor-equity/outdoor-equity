@@ -1,0 +1,57 @@
+
+median_income_dist_travel_data <- function(siteInput, ridb_df){
+  # reactive data frame 
+  rdf <- reactive ({
+    
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
+    ridb_df %>%
+      filter(park %in% siteInput) %>%
+      select(park, customer_zip, median_income, distance_traveled_m) %>% 
+      mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+      drop_na(median_income) %>% 
+      mutate(median_income_binned = factor(case_when(median_income <= median_income_binned[[2]] ~ 
+                                                       paste(dollar(median_income_binned[[1]]), "-", dollar(median_income_binned[[2]])),
+                                                     median_income > median_income_binned[[2]] & median_income <= median_income_binned[[3]] ~ 
+                                                       paste(dollar(median_income_binned[[2]]), "-", dollar(median_income_binned[[3]])),
+                                                     median_income > median_income_binned[[3]] & median_income <= median_income_binned[[4]] ~ 
+                                                       paste(dollar(median_income_binned[[3]]), "-", dollar(median_income_binned[[4]])),
+                                                     median_income > median_income_binned[[4]] & median_income <= median_income_binned[[5]] ~ 
+                                                       paste(dollar(median_income_binned[[4]]), "-", dollar(median_income_binned[[5]])),
+                                                     median_income > median_income_binned[[5]] & median_income <= median_income_binned[[6]] ~ 
+                                                       paste(dollar(median_income_binned[[5]]), "-", dollar(median_income_binned[[6]])),
+                                                     median_income > median_income_binned[[6]] & median_income <= median_income_binned[[7]] ~ 
+                                                       paste(dollar(median_income_binned[[6]]), "-", dollar(median_income_binned[[7]])),
+                                                     median_income > median_income_binned[[7]] & median_income <= median_income_binned[[8]] ~ 
+                                                       paste(dollar(median_income_binned[[7]]), "-", dollar(median_income_binned[[8]])),
+                                                     median_income > median_income_binned[[8]] & median_income <= median_income_binned[[9]] ~ 
+                                                       paste(dollar(median_income_binned[[8]]), "-", dollar(median_income_binned[[9]])),
+                                                     median_income > median_income_binned[[9]] & median_income <= median_income_binned[[10]] ~ 
+                                                       paste(dollar(median_income_binned[[9]]), "-", dollar(median_income_binned[[10]])),
+                                                     median_income > median_income_binned[[10]] ~ 
+                                                       paste(dollar(median_income_binned[[10]]), "-", dollar(median_income_binned[[11]]))),
+                                           levels = c(paste(dollar(median_income_binned[[1]]), "-", dollar(median_income_binned[[2]])),
+                                                      paste(dollar(median_income_binned[[2]]), "-", dollar(median_income_binned[[3]])),
+                                                      paste(dollar(median_income_binned[[3]]), "-", dollar(median_income_binned[[4]])),
+                                                      paste(dollar(median_income_binned[[4]]), "-", dollar(median_income_binned[[5]])),
+                                                      paste(dollar(median_income_binned[[5]]), "-", dollar(median_income_binned[[6]])),
+                                                      paste(dollar(median_income_binned[[6]]), "-", dollar(median_income_binned[[7]])),
+                                                      paste(dollar(median_income_binned[[7]]), "-", dollar(median_income_binned[[8]])),
+                                                      paste(dollar(median_income_binned[[8]]), "-", dollar(median_income_binned[[9]])),
+                                                      paste(dollar(median_income_binned[[9]]), "-", dollar(median_income_binned[[10]])),
+                                                      paste(dollar(median_income_binned[[10]]), "-", dollar(median_income_binned[[11]])))
+      )) %>% 
+      group_by(median_income_binned) %>% 
+      summarize(median_distance_traveled_mi = median(distance_traveled_mi),
+                quartile_lower = quantile(distance_traveled_mi)[[2]],
+                quartile_upper = quantile(distance_traveled_mi)[[4]],
+                count = n())
+    
+  }) #EO reactive df
+  
+  return(rdf())
+  
+} # EO function

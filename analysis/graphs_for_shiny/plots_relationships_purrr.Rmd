@@ -2159,13 +2159,127 @@ ggplotly(plot_language_length_of_stay,
 ```
 
 
+## Median-income x ____
+
+```{r }
+# create function to get weighted quartile value for each group (in quartile function .R)
+function_median_income_binned <- function(acs_df = data_ca_acs_2018){
+  
+  unweighetd <- acs_df %>%
+    select(zip_code, median_income, mean_zip_code_population) %>% 
+    drop_na(median_income) %>%  
+    mutate(mean_zip_code_population = round(mean_zip_code_population, 0)) %>% 
+    uncount(mean_zip_code_population)
+  
+  deciles <- quantile(unweighetd$median_income, probs = seq(0, 1, 1/10))
+    
+    return(deciles)
+}
+```
 
 
+### Median-income x distance traveled
+
+```{r}
+## -- create function to make plot df -- ##
+function_plot_median_income_distanceTravel <- function(acs_df = data_ca_acs_2018,
+                                                       ridb_df = data_ridb_acs_2018){
+  
+  median_income_binned <- function_median_income_binned(acs_df = acs_df)
+  
+  df <- ridb_df %>% 
+    select(park, customer_zip, median_income, distance_traveled_m) %>% 
+    mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
+    drop_na(median_income) %>% 
+    mutate(median_income_binned = factor(case_when(median_income <= median_income_binned[[2]] ~ 
+                                              paste(dollar(median_income_binned[[1]]), "-", dollar(median_income_binned[[2]])),
+                                            median_income > median_income_binned[[2]] & median_income <= median_income_binned[[3]] ~ 
+                                              paste(dollar(median_income_binned[[2]]), "-", dollar(median_income_binned[[3]])),
+                                            median_income > median_income_binned[[3]] & median_income <= median_income_binned[[4]] ~ 
+                                              paste(dollar(median_income_binned[[3]]), "-", dollar(median_income_binned[[4]])),
+                                            median_income > median_income_binned[[4]] & median_income <= median_income_binned[[5]] ~ 
+                                              paste(dollar(median_income_binned[[4]]), "-", dollar(median_income_binned[[5]])),
+                                            median_income > median_income_binned[[5]] & median_income <= median_income_binned[[6]] ~ 
+                                              paste(dollar(median_income_binned[[5]]), "-", dollar(median_income_binned[[6]])),
+                                            median_income > median_income_binned[[6]] & median_income <= median_income_binned[[7]] ~ 
+                                              paste(dollar(median_income_binned[[6]]), "-", dollar(median_income_binned[[7]])),
+                                            median_income > median_income_binned[[7]] & median_income <= median_income_binned[[8]] ~ 
+                                              paste(dollar(median_income_binned[[7]]), "-", dollar(median_income_binned[[8]])),
+                                            median_income > median_income_binned[[8]] & median_income <= median_income_binned[[9]] ~ 
+                                              paste(dollar(median_income_binned[[8]]), "-", dollar(median_income_binned[[9]])),
+                                            median_income > median_income_binned[[9]] & median_income <= median_income_binned[[10]] ~ 
+                                              paste(dollar(median_income_binned[[9]]), "-", dollar(median_income_binned[[10]])),
+                                            median_income > median_income_binned[[10]] ~ 
+                                              paste(dollar(median_income_binned[[10]]), "-", dollar(median_income_binned[[11]]))),
+                                         levels = c(paste(dollar(median_income_binned[[1]]), "-", dollar(median_income_binned[[2]])),
+                                                    paste(dollar(median_income_binned[[2]]), "-", dollar(median_income_binned[[3]])),
+                                                    paste(dollar(median_income_binned[[3]]), "-", dollar(median_income_binned[[4]])),
+                                                    paste(dollar(median_income_binned[[4]]), "-", dollar(median_income_binned[[5]])),
+                                                    paste(dollar(median_income_binned[[5]]), "-", dollar(median_income_binned[[6]])),
+                                                    paste(dollar(median_income_binned[[6]]), "-", dollar(median_income_binned[[7]])),
+                                                    paste(dollar(median_income_binned[[7]]), "-", dollar(median_income_binned[[8]])),
+                                                    paste(dollar(median_income_binned[[8]]), "-", dollar(median_income_binned[[9]])),
+                                                    paste(dollar(median_income_binned[[9]]), "-", dollar(median_income_binned[[10]])),
+                                                    paste(dollar(median_income_binned[[10]]), "-", dollar(median_income_binned[[11]])))
+                                         )) %>% 
+    group_by(median_income_binned) %>% 
+    summarize(median_distance_traveled_mi = median(distance_traveled_mi),
+              quartile_lower = quantile(distance_traveled_mi)[[2]],
+              quartile_upper = quantile(distance_traveled_mi)[[4]],
+              count = n())
+  
+  return(df)
+}
+```
+
+```{r}
+## -- run function through purrr -- ##
+plot_data_income_distanceTravel <- function_plot_median_income_distanceTravel(acs_df = data_ca_acs_2018,
+                                                                              ridb_df = data_ridb_acs_2018)
+
+## -- create plot -- ##
+
+# parameters
+
+# plotly
+plot_income_distance_traveled <- ggplot(data = plot_data_income_distanceTravel, 
+                                      aes(x = median_distance_traveled_mi,
+                                          y = median_income_binned)) +
+  geom_segment(aes(xend = 0, yend = median_income_binned)) +
+  geom_point(aes(color = median_income_binned, fill = median_income_binned,
+                 text = paste0(comma(count, accuracy = 1), 
+                               " unique visits were made by people who live in ZIP codes with a<br>median household income between ",
+                               median_income_binned, 
+                               ". Typically these visitors<br>traveled between ",
+                               comma(quartile_lower, accuracy = 1), 
+                               " and ", comma(quartile_upper, accuracy = 1), 
+                               " miles, with a median distance of ", 
+                               comma(median_distance_traveled_mi, accuracy = 1), 
+                               " miles.")),
+             size = 3.5, 
+             shape = 21, stroke = 2) +
+  scale_y_discrete(expand = c(0.2, 0)) +
+  scale_fill_viridis_d(direction = -1) +
+  scale_color_viridis_d(direction = -1) +
+  labs(x = paste("Estimated Distance Traveled from Home to Site (miles)"),
+       y = "") + 
+  theme_minimal() +
+  theme(plot.background = element_rect("white"),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")
+
+ggplotly(plot_income_distance_traveled,
+         tooltip = list("text")) %>%
+  config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                       "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Distance Traveled by Visitors with Different Median Household Incomes'),
+                        font = list(size = 15)))
+```
 
 
-
-
-
+### Median-income x site type
 
 ```{r}
 ## -- create function to make plot df -- ##
@@ -2181,6 +2295,81 @@ ggplotly(plot_language_length_of_stay,
 
 # plotly
 ```
+
+
+### Median-income x booking window
+
+```{r}
+## -- create function to make plot df -- ##
+
+```
+
+```{r}
+## -- run function through purrr -- ##
+
+## -- create plot -- ##
+
+# parameters
+
+# plotly
+```
+
+
+
+
+### Median-income x daily cost
+
+```{r}
+## -- create function to make plot df -- ##
+
+```
+
+```{r}
+## -- run function through purrr -- ##
+
+## -- create plot -- ##
+
+# parameters
+
+# plotly
+```
+
+
+### Median-income x daily cost per visitor
+
+```{r}
+## -- create function to make plot df -- ##
+
+```
+
+```{r}
+## -- run function through purrr -- ##
+
+## -- create plot -- ##
+
+# parameters
+
+# plotly
+```
+
+
+### Median-income x length of stay
+
+```{r}
+## -- create function to make plot df -- ##
+
+```
+
+```{r}
+## -- run function through purrr -- ##
+
+## -- create plot -- ##
+
+# parameters
+
+# plotly
+```
+
 
 ```{r, eval=TRUE}
 end_time <- Sys.time()
