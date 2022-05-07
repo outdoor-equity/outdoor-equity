@@ -8,7 +8,6 @@
 #'
 #' @examples
 
-
 education_top_quartile <- function(education_group, acs_df){
   
   df <- acs_df %>%

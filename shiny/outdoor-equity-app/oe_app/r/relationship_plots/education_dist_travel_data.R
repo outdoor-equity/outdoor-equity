@@ -1,4 +1,15 @@
 
+#' Education x Daily Cost per Visitor Data
+#'
+#' @param siteInput User pick for site
+#' @param education_group String indicating educational category of interest
+#' @param weighted_quartile Value of 3rd quartile for educational category
+#' @param ridb_df RIDB dataframe object name
+#'
+#' @return Reactive dataframe of all reservations that fall above 3rd quartile value for given educational category at user picked site
+#'
+#' @examples
+
 education_dist_travel_data <- function(siteInput, education_group, weighted_quartile, ridb_df){
   # reactive data frame 
   rdf <- reactive ({
@@ -9,23 +20,30 @@ education_dist_travel_data <- function(siteInput, education_group, weighted_quar
     ) # EO validate
     
     ridb_df %>%
+      # filter to user site of choice
       filter(park %in% siteInput) %>%
-      select(park, customer_zip, hs_GED_or_below, some_college, 
-             college, master_or_above, distance_traveled_m) %>% 
+      # select to variables of interest
+      select(park, customer_zip, 
+             hs_GED_or_below, some_college, college, master_or_above, 
+             distance_traveled_m) %>% 
       mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>% 
       drop_na(distance_traveled_mi) %>% 
       pivot_longer(cols = 3:6,
                    names_to = "education",
                    values_to = "education_percentage") %>% 
-      filter(education == paste0(education_group)) %>% 
+      # filter for specific educational category
+      filter(education == education_group) %>% 
       drop_na(education_percentage) %>% 
+      # filter rows that fall above 3rd quartile value
       filter(education_percentage >= weighted_quartile) %>% 
+      # summarize to inner quartile range, median, and total reservations
       summarize(median_distance_traveled_mi = median(distance_traveled_mi),
                 quartile_lower = quantile(distance_traveled_mi)[[2]],
                 quartile_upper = quantile(distance_traveled_mi)[[4]],
                 count = n()) %>% 
       mutate(education = paste0(education_group)) %>% 
       relocate(education, .before = 1) %>% 
+      # updated education category name strings for plotting
       mutate(education = str_replace_all(string = education,
                                          pattern = "_",
                                          replacement = " "),
