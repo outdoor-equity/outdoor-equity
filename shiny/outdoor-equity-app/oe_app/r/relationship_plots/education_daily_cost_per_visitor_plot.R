@@ -11,8 +11,8 @@
 #'
 #' @examples
 
-education_daily_cost_plot <- function(admin_unitInput, siteInput,
-                                      education_top_quartile_df, ridb_df){
+education_daily_cost_per_visitor_plot <- function(admin_unitInput, siteInput,
+                                                  education_top_quartile_df, ridb_df){
   
   # iterate through dataframe of all educational categories and 3rd quartile values
   # return combined dataframe of reservations in "high" range for all categories
@@ -21,11 +21,11 @@ education_daily_cost_plot <- function(admin_unitInput, siteInput,
                                            ridb_df = ridb_df, 
                                            siteInput = siteInput)
   
-  validate(
-    need(nrow(plot_data) == 0,
-         paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
-                " that come from communities in the high range for any educational category"))
-  ) # EO validate
+  # validate(
+  #   need(nrow(plot_data) == 0,
+  #        paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
+  #               " that come from communities in the high range for any educational category"))
+  # ) # EO validate
   
   # parameters
   education_group_colors <- c("HS, GED,\nor Below" = "#a6cee3", "Some College or\nTrade School"  = "#1f78b4", 
@@ -40,7 +40,7 @@ education_daily_cost_plot <- function(admin_unitInput, siteInput,
                    text = paste0(comma(count, accuracy = 1), 
                                  " unique visits were made by people who live in ZIP codes with high rates of<br>",
                                  education, 
-                                 " as the highest level of education. Typically these visitors<br>pay between ",
+                                 " as the highest level of education. Typically these visitors<br>paid between ",
                                  dollar(quartile_lower), " and ", dollar(quartile_upper), 
                                  " per day per person, with a median of ", 
                                  dollar(median_daily_cost_per_visitor), 

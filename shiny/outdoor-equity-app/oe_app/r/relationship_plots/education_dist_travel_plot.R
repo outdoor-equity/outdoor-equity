@@ -21,11 +21,11 @@ education_dist_travel_plot <- function(admin_unitInput, siteInput,
                                            ridb_df = ridb_df, 
                                            siteInput = siteInput)
   
-  validate(
-    need(nrow(plot_data) == 0,
-         paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
-                " that come from communities in the high range for any educational category"))
-  ) # EO validate
+  # validate(
+  #   need(nrow(plot_data) == 0,
+  #        paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
+  #               " that come from communities in the high range for any educational category"))
+  # ) # EO validate
   
   # parameters
   education_group_colors <- c("HS, GED,\nor Below" = "#a6cee3", "Some College or\nTrade School"  = "#1f78b4", 

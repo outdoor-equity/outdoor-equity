@@ -25,18 +25,18 @@ education_site_type_plot <- function(admin_unitInput, siteInput,
                                            siteInput = siteInput) %>% 
     # filter to indicated site type and update string for plotting
     filter(aggregated_site_type == site_type_string) %>% 
-    mutate(aggregated_site_type = str_to_title(aggregated_site_type),
-           aggregated_site_type = str_replace(string = aggregated_site_type,
-                                              pattern = "Rv", 
+    mutate(aggregated_site_type = str_replace(string = aggregated_site_type,
+                                              pattern = "rv", 
                                               replacement = "RV"))
+  print(head(plot_data))
   
-  validate(
-    need(nrow(plot_data) == 0,
-         paste0("There are either no ", site_type_string %>% 
-                  str_replace(string = ., pattern = "Rv", replacement = "RV"), " 
-                 sites at ", siteInput, ", ", admin_unitInput, 
-                "<bror there are no reservations at the site that come from communities that fall into the high range for any racial groups."))
-  ) # EO validate
+  # validate(
+  #   need(nrow(plot_data) == 0,
+  #        paste0("There are either no ", site_type_string %>% 
+  #                 str_replace(string = ., pattern = "rv", replacement = "RV"), " 
+  #                sites at ", siteInput, ", ", admin_unitInput, 
+  #               "<bror there are no reservations at the site that come from communities that fall into the high range for any educational groups."))
+  # ) # EO validate
   
   # parameters
   education_group_colors <- c("HS, GED,\nor Below" = "#a6cee3", "Some College or\nTrade School"  = "#1f78b4", 
@@ -47,8 +47,9 @@ education_site_type_plot <- function(admin_unitInput, siteInput,
       geom_col(aes(x = count,
                    y = education_y_lab,
                    fill = education_y_lab,
-                   text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
-                                 comma(count, accuracy = 1), 
+                   text = paste0("Of visits to ", 
+                                 aggregated_site_type, 
+                                 " overnight reservable sites, ", comma(count, accuracy = 1), 
                                  " reservations were made by <br>people who live in ZIP codes with high rates of ", 
                                  education, " as the highest level of education"))) +
       scale_y_discrete(expand = c(0.5, 0)) +
@@ -68,7 +69,7 @@ education_site_type_plot <- function(admin_unitInput, siteInput,
                                            "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
       layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                         '<br>',
-                                        "Number of Reservations to ", str_to_title(site_type_categories[[1]]) %>%
+                                        "Number of Reservations to ", str_to_title(site_type_string) %>%
                                           str_replace(string = ., pattern = "Rv", replacement = "RV"), 
                                         " Sites by Visitors with Different Levels of Education"),
                           font = list(size = 15))) %>%  
