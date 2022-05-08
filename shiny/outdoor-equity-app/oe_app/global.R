@@ -38,7 +38,7 @@ data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds")
 data_yosemite_upper_pines_geom <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_geom.rds")
 data_zip_geometries_ca <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_zip_geometries_ca.rds")
 # simplifying geoms
-data_zip_geometries_ca_simple <- data_zip_geometries_ca %>% rmapshaper::ms_simplify(keep = 0.004)
+data_zip_geometries_ca_simple <- data_zip_geometries_ca %>% rmapshaper::ms_simplify(keep = 0.003)
 data_geometries_us <- readRDS("data/2018_data_map_us_yosemite_upper_pines_geometries_us.rds")
 # simplifying geoms
 data_geometries_us_simple <- data_geometries_us %>% rmapshaper::ms_simplify(keep = 0.006)
@@ -50,7 +50,6 @@ source("r/inputs/select_admin_unit.R")
 source("r/inputs/select_site.R")
 source("r/inputs/select_data_summary_vars.R")
 source("r/inputs/select_relationships_vars.R")
-
 
 ## source summary plot functions ----
 #source("r/outputs/summary-boxes-plots.R") see if I can get this to work later
@@ -65,97 +64,88 @@ source("r/summary_plots/education_plot.R")
 source("r/summary_plots/median_income_plot.R")
 source("r/summary_plots/language_plot.R")
 
-
 ## source relationships plot functions ----
-# education top quartile
+# calculating bins (quartiles, deciles) 
 source("r/relationship_plots/education_top_quartile.R")
-# education X booking window
+source("r/relationship_plots/race_top_quartile.R")
+source("r/relationship_plots/language_top_quartile.R")
+source("r/relationship_plots/median_income_deciles.R")
+# edu x booking window
 source("r/relationship_plots/education_booking_window_data.R")
 source("r/relationship_plots/education_booking_window_plot.R")
-# education X daily cost
+# edu x daily cost
 source("r/relationship_plots/education_daily_cost_data.R")
 source("r/relationship_plots/education_daily_cost_plot.R")
-# education X daily cost per visitor
+# edu x daily cost per visitor
 source("r/relationship_plots/education_daily_cost_per_visitor_data.R")
 source("r/relationship_plots/education_daily_cost_per_visitor_plot.R")
-# education X dist travel
+# edu x dist travel 
 source("r/relationship_plots/education_dist_travel_data.R")
 source("r/relationship_plots/education_dist_travel_plot.R")
-# education X length of stay
+# edu x length of stay
 source("r/relationship_plots/education_length_of_stay_data.R")
 source("r/relationship_plots/education_length_of_stay_plot.R")
-# education x site
+# edu x site type
 source("r/relationship_plots/education_site_type_data.R")
 source("r/relationship_plots/education_site_type_plot.R")
-
-# language top quartile
-source("r/relationship_plots/language_top_quartile.R")
-# language X booking window
+# lang x booking window
 source("r/relationship_plots/language_booking_window_data.R")
 source("r/relationship_plots/language_booking_window_plot.R")
-# language X daily cost
+# lang x daily cost
 source("r/relationship_plots/language_daily_cost_data.R")
 source("r/relationship_plots/language_daily_cost_plot.R")
-# language X daily cost per visitor
+# lang x daily cost per visitor
 source("r/relationship_plots/language_daily_cost_per_visitor_data.R")
 source("r/relationship_plots/language_daily_cost_per_visitor_plot.R")
-# language X dist travel
+# lang x dist travel
 source("r/relationship_plots/language_dist_travel_data.R")
 source("r/relationship_plots/language_dist_travel_plot.R")
-# language X length of stay
+# lang x length of stay
 source("r/relationship_plots/language_length_of_stay_data.R")
 source("r/relationship_plots/language_length_of_stay_plot.R")
-# language x site
+# lang x site type
 source("r/relationship_plots/language_site_type_data.R")
 source("r/relationship_plots/language_site_type_plot.R")
-
-# median-income decile values
-source("r/relationship_plots/median_income_deciles.R")
-# median-income X booking window
+# median income x booking window
 source("r/relationship_plots/median_income_booking_window_data.R")
 source("r/relationship_plots/median_income_booking_window_plot.R")
-# median-income X daily cost
+# median income x daily cost
 source("r/relationship_plots/median_income_daily_cost_data.R")
 source("r/relationship_plots/median_income_daily_cost_plot.R")
-# median-income X daily cost per visitor
+# median income x daily cost per visitor
 source("r/relationship_plots/median_income_daily_cost_per_visitor_data.R")
 source("r/relationship_plots/median_income_daily_cost_per_visitor_plot.R")
-# median-income X dist travel
+# median income x dist travel
 source("r/relationship_plots/median_income_dist_travel_data.R")
 source("r/relationship_plots/median_income_dist_travel_plot.R")
-# median-income X length of stay
+# median income x length of stay
 source("r/relationship_plots/median_income_length_of_stay_data.R")
 source("r/relationship_plots/median_income_length_of_stay_plot.R")
-# median-income x site
+# median income x site type
 source("r/relationship_plots/median_income_site_type_data.R")
 source("r/relationship_plots/median_income_site_type_plot.R")
-
-# race top quartile
-source("r/relationship_plots/race_top_quartile.R")
-# race X booking window
+# race x booking window
 source("r/relationship_plots/race_booking_window_data.R")
 source("r/relationship_plots/race_booking_window_plot.R")
-# race X daily cost
+# race x daily cost
 source("r/relationship_plots/race_daily_cost_data.R")
 source("r/relationship_plots/race_daily_cost_plot.R")
-# race X daily cost per visitor
+# race x daily cost per visitor
 source("r/relationship_plots/race_daily_cost_per_visitor_data.R")
 source("r/relationship_plots/race_daily_cost_per_visitor_plot.R")
 # race X dist travel
 source("r/relationship_plots/race_dist_travel_data.R")
 source("r/relationship_plots/race_dist_travel_plot.R")
-# race X length of stay
+# race x length of stay
 source("r/relationship_plots/race_length_of_stay_data.R")
 source("r/relationship_plots/race_length_of_stay_plot.R")
-# race x site
+# race x site type
 source("r/relationship_plots/race_site_type_data.R")
 source("r/relationship_plots/race_site_type_plot.R")
-
 
 ## source observe event functions ----
 source("r/inputs/observe_event_agency_to_admin_dict.R")
 source("r/inputs/observe_event_admin_unit_to_site_dict.R")
-
 
 # need to move these sourced functions to a new section
 source("r/other_plots/tot_site_agency_plot.R")
