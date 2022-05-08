@@ -21,6 +21,8 @@ race_daily_cost_per_visitor_plot <- function(admin_unitInput, siteInput,
                                       ridb_df = ridb_df, 
                                       siteInput = siteInput)
   
+  print(head(plot_data))
+  
   # validate(
   #   need(nrow(plot_data) == 0,
   #        paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
@@ -34,8 +36,8 @@ race_daily_cost_per_visitor_plot <- function(admin_unitInput, siteInput,
   
   # create plot
   plotly <- ggplot(data = plot_data, 
-                   aes(x = median_daily_cost,
-                       y = reorder(race, median_daily_cost))) +
+                   aes(x = median_daily_cost_per_visitor,
+                       y = reorder(race, median_daily_cost_per_visitor))) +
     geom_segment(aes(xend = 0, yend = race)) +
     geom_point(aes(color = race, fill = race,
                    text = paste0(comma(count, accuracy = 1), 
@@ -44,7 +46,7 @@ race_daily_cost_per_visitor_plot <- function(admin_unitInput, siteInput,
                                  dollar(quartile_lower), 
                                  " and ", dollar(quartile_upper), 
                                  " per day per person, with a median of ", 
-                                 dollar(median_daily_cost), 
+                                 dollar(median_daily_cost_per_visitor), 
                                  ".")),
                size = 3.5, 
                shape = 21, stroke = 2) +

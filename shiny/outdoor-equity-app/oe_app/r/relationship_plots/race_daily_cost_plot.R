@@ -11,7 +11,7 @@
 #'
 #' @examples
 
-race_dist_travel_plot <- function(admin_unitInput, siteInput,
+race_daily_cost_plot <- function(admin_unitInput, siteInput,
                                   race_top_quartile_df, ridb_df){
   
   # iterate through dataframe of all racial categories and 3rd quartile values
