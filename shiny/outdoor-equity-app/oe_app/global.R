@@ -109,7 +109,7 @@ source("r/relationship_plots/language_length_of_stay_plot.R")
 source("r/relationship_plots/language_site_type_data.R")
 source("r/relationship_plots/language_site_type_plot.R")
 
-# median-income top quartile
+# median-income decile values
 source("r/relationship_plots/median_income_deciles.R")
 # median-income X booking window
 source("r/relationship_plots/median_income_booking_window_data.R")

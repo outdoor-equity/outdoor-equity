@@ -1,5 +1,5 @@
 
-median_income_site_type_data <- function(siteInput, ridb_df, site_type_string){
+median_income_site_type_data <- function(siteInput, ridb_df, median_income_binned, site_type_string){
   # reactive data frame 
   rdf <- reactive ({
     
@@ -45,10 +45,9 @@ median_income_site_type_data <- function(siteInput, ridb_df, site_type_string){
       )) %>% 
       group_by(aggregated_site_type, median_income_binned) %>% 
       summarize(count = n()) %>% 
-      filter(aggregated_site_type == site_type_categories[[1]]) %>% 
-      mutate(aggregated_site_type = str_to_title(aggregated_site_type),
-             aggregated_site_type = str_replace(string = aggregated_site_type,
-                                                pattern = "Rv", 
+      filter(aggregated_site_type == site_type_string) %>% 
+      mutate(aggregated_site_type = str_replace(string = aggregated_site_type,
+                                                pattern = "rv", 
                                                 replacement = "RV"))
     
   }) #EO reactive df

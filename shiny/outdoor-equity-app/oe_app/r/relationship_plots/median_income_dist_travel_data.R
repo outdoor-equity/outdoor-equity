@@ -1,5 +1,5 @@
 
-median_income_dist_travel_data <- function(siteInput, ridb_df){
+median_income_dist_travel_data <- function(siteInput, ridb_df, median_income_binned){
   # reactive data frame 
   rdf <- reactive ({
     

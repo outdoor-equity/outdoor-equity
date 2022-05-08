@@ -1,5 +1,5 @@
 
-median_income_length_of_stay_data <- function(siteInput, ridb_df){
+median_income_length_of_stay_data <- function(siteInput, ridb_df, median_income_binned){
   # reactive data frame 
   rdf <- reactive ({
     

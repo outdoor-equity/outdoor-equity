@@ -447,6 +447,11 @@ data_language_quants <-
         "weighted_quartile" = .) %>%
   as.data.frame()
 
+### SO median-income wrangling ----
+# median-income wrangling used for all median-income relationship plots
+median_income_decile_list <- median_income_deciles(acs_df = data_ca_acs_2018) %>% 
+  as.list()
+
 ### SO relationships plots 
 output$data_relationships_plot <- renderPlotly({
   
@@ -632,6 +637,98 @@ output$data_relationships_plot <- renderPlotly({
     #                          site_type_string = "water")
     
   } # EO language x site type
+  
+  
+  ### SO median-income x booking window plot function
+  else if (input$data_relationships == "Median-income x Booking window") {
+    
+    median_income_booking_window_plot(admin_unitInput = input$admin_unit_relationships,
+                                 siteInput = input$site_relationships,
+                                 ridb_df = data_joined_2018,
+                                 median_income_binned = median_income_decile_list)
+    
+  } # EO median-income x booking window
+  
+  ### SO median-income x daily cost plot function
+  else if (input$data_relationships == "Median-income x Daily cost") {
+    
+    median_income_daily_cost_plot(admin_unitInput = input$admin_unit_relationships,
+                             siteInput = input$site_relationships,
+                             ridb_df = data_joined_2018,
+                             median_income_binned = median_income_decile_list)
+    
+  } # EO median-income x daily cost
+  
+  ### SO median-income x daily cost per visitor plot function
+  else if (input$data_relationships == "Median-income x Daily cost per visitor") {
+    
+    median_income_daily_cost_per_visitor_plot(admin_unitInput = input$admin_unit_relationships,
+                                         siteInput = input$site_relationships,
+                                         ridb_df = data_joined_2018,
+                                         median_income_binned = median_income_decile_list)
+    
+  } # EO median-income x daily cost per visitor
+  
+  ### SO median-income x dist traveled plot function
+  else if (input$data_relationships == "Median-income x Distance traveled") {
+    
+    median_income_dist_travel_plot(admin_unitInput = input$admin_unit_relationships,
+                              siteInput = input$site_relationships,
+                              ridb_df = data_joined_2018,
+                              median_income_binned = median_income_decile_list)
+    
+  } # EO median-income x dist traveled
+  
+  ### SO median-income x length of stay function
+  else if (input$data_relationships == "Median-income x Length of stay") {
+    
+    median_income_length_of_stay_plot(admin_unitInput = input$admin_unit_relationships,
+                                 siteInput = input$site_relationships,
+                                 ridb_df = data_joined_2018,
+                                 median_income_binned = median_income_decile_list)
+    
+  } # EO median-income x length of stay
+  
+  ### SO median-income x site type function
+  else if (input$data_relationships == "Median-income x Site type") {
+    
+    median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+                            siteInput = input$site_relationships,
+                            ridb_df = data_joined_2018,
+                            median_income_binned = median_income_decile_list,
+                            site_type_string = "equestrian")
+    # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+    #                          siteInput = input$site_relationships,
+    #                          ridb_df = data_joined_2018,
+    #                          median_income_binned = median_income_decile_list,
+    #                          site_type_string = "remote")
+    # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+    #                          siteInput = input$site_relationships,
+    #                          ridb_df = data_joined_2018,
+    #                          median_income_binned = median_income_decile_list,
+    #                          site_type_string = "rv only")
+    # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+    #                          siteInput = input$site_relationships,
+    #                          ridb_df = data_joined_2018,
+    #                          median_income_binned = median_income_decile_list,
+    #                          site_type_string = "rv or tent")
+    # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+    #                          siteInput = input$site_relationships,
+    #                          ridb_df = data_joined_2018,
+    #                          median_income_binned = median_income_decile_list,
+    #                          site_type_string = "shelter")
+    # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+    #                          siteInput = input$site_relationships,
+    #                          ridb_df = data_joined_2018,
+    #                          median_income_binned = median_income_decile_list,
+    #                          site_type_string = "tent only")
+    # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+    #                          siteInput = input$site_relationships,
+    #                          ridb_df = data_joined_2018,
+    #                          median_income_binned = median_income_decile_list,
+    #                          site_type_string = "water")
+    
+  } # EO median-income x site type
   
   
   ### SO race x dist travel plot function

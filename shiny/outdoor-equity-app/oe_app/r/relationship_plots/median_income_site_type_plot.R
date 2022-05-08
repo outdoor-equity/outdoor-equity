@@ -1,14 +1,15 @@
 
 ## education x distance traveled and parameters ##
 
-median_income_dist_travel_plot <- function(admin_unitInput, siteInput, 
-                                           ridb_df, site_type_string){
+median_income_site_type_plot <- function(admin_unitInput, siteInput, 
+                                           ridb_df, median_income_binned, site_type_string){
   
   print(ridb_df)
   print(admin_unitInput)
   print(siteInput)
   
   plot_data <- median_income_site_type_data(ridb_df = ridb_df, siteInput = siteInput, 
+                                            median_income_binned = median_income_binned,
                                             site_type_string = site_type_string)
   
   print(head(plot_data))
@@ -20,7 +21,7 @@ median_income_dist_travel_plot <- function(admin_unitInput, siteInput,
     geom_col(aes(x = count,
                  y = median_income_binned,
                  fill = median_income_binned,
-                 text = paste0("Of visits to ", site_type_string, " overnight reservable sites, ", 
+                 text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
                                comma(count, accuracy = 1), 
                                " reservations were made by <br>people who live in ZIP codes with median household incomes between ",
                                median_income_binned, "."))) +
@@ -40,7 +41,9 @@ median_income_dist_travel_plot <- function(admin_unitInput, siteInput,
                                          "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
     layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                       '<br>',
-                                      "Number of Reservations to ", str_to_title(site_type_string), 
+                                      "Number of Reservations to ", 
+                                      str_to_title(site_type_string) %>% 
+                                        str_replace(string = ., pattern = "Rv", replacement = "RV"), 
                                       " Sites by Visitors with Different Median Household Incomes"),
                         font = list(size = 15)))
 

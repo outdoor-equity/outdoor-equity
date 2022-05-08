@@ -1,13 +1,14 @@
 
 ## education x distance traveled and parameters ##
 
-median_income_dist_travel_plot <- function(admin_unitInput, siteInput, ridb_df){
+median_income_daily_cost_per_visitor_plot <- function(admin_unitInput, siteInput, ridb_df, median_income_binned){
   
   print(ridb_df)
   print(admin_unitInput)
   print(siteInput)
   
-  plot_data <- median_income_daily_cost_per_visitor(ridb_df = ridb_df, siteInput = siteInput)
+  plot_data <- median_income_daily_cost_per_visitor_data(ridb_df = ridb_df, siteInput = siteInput, 
+                                                    median_income_binned = median_income_binned)
   
   print(head(plot_data))
   

@@ -1,5 +1,5 @@
 
-median_income_daily_cost_per_visitor <- function(siteInput, ridb_df){
+median_income_daily_cost_per_visitor_data <- function(siteInput, ridb_df, median_income_binned){
   # reactive data frame 
   rdf <- reactive ({
     
