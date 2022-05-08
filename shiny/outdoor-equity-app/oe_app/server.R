@@ -397,7 +397,7 @@ output$data_summary_plot_2 <- renderPlotly({
   
 }) ## EO DATA SUMMARY PLOTS 2 
 
-## SO RELATIONSHIPS PLOTS NO REACTIVE ----
+## SO RELATIONSHIPS PLOTS ----
 
 ### SO race wrangling ----
 # race wrangling used for all race relationship plots
@@ -456,10 +456,10 @@ median_income_decile_list <- median_income_deciles(acs_df = data_ca_acs_2018) %>
 
 
 
-### SO relationships plots 
+### SO relationships plots ----
 output$data_relationships_plot <- renderPlotly({
   
-  ### SO education x booking window plot function
+  #### SO education x booking window plot function ----
   if (input$data_relationships == "Education x Booking window") {
     
     education_booking_window_plot(admin_unitInput = input$admin_unit_relationships,
@@ -469,7 +469,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO education x booking window
   
-  ### SO education x daily cost plot function
+  #### SO education x daily cost plot function ----
   else if (input$data_relationships == "Education x Daily cost") {
     
     education_daily_cost_plot(admin_unitInput = input$admin_unit_relationships,
@@ -479,7 +479,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO education x daily cost
   
-  ### SO education x daily cost per visitor plot function
+  #### SO education x daily cost per visitor plot function ----
   else if (input$data_relationships == "Education x Daily cost per visitor") {
     
     education_daily_cost_per_visitor_plot(admin_unitInput = input$admin_unit_relationships,
@@ -489,7 +489,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO education x daily cost per visitor
   
-  ### SO education x dist traveled plot function
+  #### SO education x dist traveled plot function ----
   else if (input$data_relationships == "Education x Distance traveled") {
     
     education_dist_travel_plot(admin_unitInput = input$admin_unit_relationships,
@@ -499,7 +499,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO education x dist traveled
   
-  ### SO education x length of stay function
+  #### SO education x length of stay function ----
   else if (input$data_relationships == "Education x Length of stay") {
     
     education_length_of_stay_plot(admin_unitInput = input$admin_unit_relationships,
@@ -509,7 +509,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO education x length of stay
   
-  ### SO education x site type function
+  #### SO education x site type function ----
   else if (input$data_relationships == "Education x Site type") {
     
     education_site_type_plot(admin_unitInput = input$admin_unit_relationships,
@@ -551,7 +551,7 @@ output$data_relationships_plot <- renderPlotly({
   } # EO education x site type
   
   
-  ### SO language x booking window plot function
+  #### SO language x booking window plot function ----
   else if (input$data_relationships == "Language x Booking window") {
     
     language_booking_window_plot(admin_unitInput = input$admin_unit_relationships,
@@ -561,7 +561,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO language x booking window
   
-  ### SO language x daily cost plot function
+  #### SO language x daily cost plot function ----
   else if (input$data_relationships == "Language x Daily cost") {
     
     language_daily_cost_plot(admin_unitInput = input$admin_unit_relationships,
@@ -571,7 +571,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO language x daily cost
   
-  ### SO language x daily cost per visitor plot function
+  #### SO language x daily cost per visitor plot function ----
   else if (input$data_relationships == "Language x Daily cost per visitor") {
     
     language_daily_cost_per_visitor_plot(admin_unitInput = input$admin_unit_relationships,
@@ -581,7 +581,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO language x daily cost per visitor
   
-  ### SO language x dist traveled plot function
+  #### SO language x dist traveled plot function ----
   else if (input$data_relationships == "Language x Distance traveled") {
     
     language_dist_travel_plot(admin_unitInput = input$admin_unit_relationships,
@@ -591,7 +591,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO language x dist traveled
   
-  ### SO language x length of stay function
+  #### SO language x length of stay function ----
   else if (input$data_relationships == "Language x Length of stay") {
     
     language_length_of_stay_plot(admin_unitInput = input$admin_unit_relationships,
@@ -601,7 +601,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO language x length of stay
   
-  ### SO language x site type function
+  #### SO language x site type function ----
   else if (input$data_relationships == "Language x Site type") {
     
     language_site_type_plot(admin_unitInput = input$admin_unit_relationships,
@@ -643,7 +643,7 @@ output$data_relationships_plot <- renderPlotly({
   } # EO language x site type
   
   
-  ### SO median-income x booking window plot function
+  #### SO median-income x booking window plot function ----
   else if (input$data_relationships == "Median-income x Booking window") {
     
     median_income_booking_window_plot(admin_unitInput = input$admin_unit_relationships,
@@ -653,7 +653,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO median-income x booking window
   
-  ### SO median-income x daily cost plot function
+  #### SO median-income x daily cost plot function ----
   else if (input$data_relationships == "Median-income x Daily cost") {
     
     median_income_daily_cost_plot(admin_unitInput = input$admin_unit_relationships,
@@ -663,7 +663,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO median-income x daily cost
   
-  ### SO median-income x daily cost per visitor plot function
+  #### SO median-income x daily cost per visitor plot function ----
   else if (input$data_relationships == "Median-income x Daily cost per visitor") {
     
     median_income_daily_cost_per_visitor_plot(admin_unitInput = input$admin_unit_relationships,
@@ -673,7 +673,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO median-income x daily cost per visitor
   
-  ### SO median-income x dist traveled plot function
+  #### SO median-income x dist traveled plot function ----
   else if (input$data_relationships == "Median-income x Distance traveled") {
     
     median_income_dist_travel_plot(admin_unitInput = input$admin_unit_relationships,
@@ -683,7 +683,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO median-income x dist traveled
   
-  ### SO median-income x length of stay function
+  #### SO median-income x length of stay function ----
   else if (input$data_relationships == "Median-income x Length of stay") {
     
     median_income_length_of_stay_plot(admin_unitInput = input$admin_unit_relationships,
@@ -693,7 +693,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO median-income x length of stay
   
-  ### SO median-income x site type function
+  #### SO median-income x site type function ----
   else if (input$data_relationships == "Median-income x Site type") {
     
     median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
@@ -735,7 +735,7 @@ output$data_relationships_plot <- renderPlotly({
   } # EO median-income x site type
   
   
-  ### SO race x booking window plot function
+  #### SO race x booking window plot function ----
   if (input$data_relationships == "Race x Booking window") {
     
     race_booking_window_plot(admin_unitInput = input$admin_unit_relationships,
@@ -745,7 +745,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO race x booking window
   
-  ### SO race x daily cost plot function
+  #### SO race x daily cost plot function ----
   else if (input$data_relationships == "Race x Daily cost") {
     
     race_daily_cost_plot(admin_unitInput = input$admin_unit_relationships,
@@ -755,7 +755,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO race x daily cost
   
-  ### SO race x daily cost per visitor plot function
+  #### SO race x daily cost per visitor plot function ----
   else if (input$data_relationships == "Race x Daily cost per visitor") {
     
     race_daily_cost_per_visitor_plot(admin_unitInput = input$admin_unit_relationships,
@@ -765,7 +765,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO race x daily cost per visitor
   
-  ### SO race x dist traveled plot function
+  #### SO race x dist traveled plot function ----
   else if (input$data_relationships == "Race x Distance traveled") {
     
     race_dist_travel_plot(admin_unitInput = input$admin_unit_relationships,
@@ -775,7 +775,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO race x dist traveled
   
-  ### SO race x length of stay function
+  #### SO race x length of stay function ----
   else if (input$data_relationships == "Race x Length of stay") {
     
     race_length_of_stay_plot(admin_unitInput = input$admin_unit_relationships,
@@ -785,7 +785,7 @@ output$data_relationships_plot <- renderPlotly({
     
   } # EO race x length of stay
   
-  ### SO race x site type function
+  #### SO race x site type function ----
   else if (input$data_relationships == "Race x Site type") {
     
     race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
