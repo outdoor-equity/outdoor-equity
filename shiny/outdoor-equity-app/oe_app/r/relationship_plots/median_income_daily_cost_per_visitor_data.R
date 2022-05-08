@@ -1,4 +1,14 @@
 
+#' Median-income x Daily Cost per Visitor Data
+#'
+#' @param siteInput User pick for site
+#' @param ridb_df RIDB dataframe object name
+#' @param median_income_binned List of decile values
+#'
+#' @return Reactive dataframe of all reservations group into deciles
+#'
+#' @examples
+
 median_income_daily_cost_per_visitor_data <- function(siteInput, ridb_df, median_income_binned){
   # reactive data frame 
   rdf <- reactive ({
@@ -9,9 +19,12 @@ median_income_daily_cost_per_visitor_data <- function(siteInput, ridb_df, median
     ) # EO validate
     
     ridb_df %>%
+      # filter to user site of choice
       filter(park %in% siteInput) %>%
+      # select to variables of interest
       select(park, customer_zip, median_income, daily_cost_per_visitor) %>% 
       drop_na(median_income) %>% 
+      # split data into median-income decile groups
       mutate(median_income_binned = factor(case_when(median_income <= median_income_binned[[2]] ~ 
                                                        paste(dollar(median_income_binned[[1]]), "-", dollar(median_income_binned[[2]])),
                                                      median_income > median_income_binned[[2]] & median_income <= median_income_binned[[3]] ~ 
@@ -43,6 +56,7 @@ median_income_daily_cost_per_visitor_data <- function(siteInput, ridb_df, median
                                                       paste(dollar(median_income_binned[[9]]), "-", dollar(median_income_binned[[10]])),
                                                       paste(dollar(median_income_binned[[10]]), "-", dollar(median_income_binned[[11]])))
       )) %>% 
+      # summarize to inner quartile range, median, and total reservations
       group_by(median_income_binned) %>% 
       summarize(median_daily_cost_per_visitor = median(daily_cost_per_visitor),
                 quartile_lower = quantile(daily_cost_per_visitor)[[2]],

@@ -1,20 +1,22 @@
 
-## education x distance traveled and parameters ##
+#' Median-income x Daily Cost per Visitor Plotly
+#'
+#' @param admin_unitInput User pick for admin unit
+#' @param siteInput User pick for site
+#' @param ridb_df RIDB dataframe object name
+#' @param median_income_binned List of decile values
+#'
+#' @return Plotly of median-income categories compared to daily cost per visitor
+#'
+#' @examples
 
 median_income_daily_cost_per_visitor_plot <- function(admin_unitInput, siteInput, ridb_df, median_income_binned){
   
-  print(ridb_df)
-  print(admin_unitInput)
-  print(siteInput)
-  
+  # categorize and summarize data to median-income decile groups
   plot_data <- median_income_daily_cost_per_visitor_data(ridb_df = ridb_df, siteInput = siteInput, 
                                                     median_income_binned = median_income_binned)
   
-  print(head(plot_data))
-  
   # create plot
-  
-  # create plot (or say no such site type if none exist at siteInput)
   plotly <- ggplot(data = plot_data, 
                    aes(x = median_daily_cost_per_visitor,
                        y = median_income_binned)) +
@@ -42,6 +44,7 @@ median_income_daily_cost_per_visitor_plot <- function(admin_unitInput, siteInput
           panel.grid.major.y = element_blank(),
           legend.position = "none")
   
+  # create plotly
   ggplotly(plotly,
            tooltip = list("text")) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 

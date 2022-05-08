@@ -1,20 +1,22 @@
 
-## education x distance traveled and parameters ##
+#' Median-income x Length of Stay Plotly
+#'
+#' @param admin_unitInput User pick for admin unit
+#' @param siteInput User pick for site
+#' @param ridb_df RIDB dataframe object name
+#' @param median_income_binned List of decile values
+#'
+#' @return Plotly of median-income categories compared to length of stay
+#'
+#' @examples
 
 median_income_length_of_stay_plot <- function(admin_unitInput, siteInput, ridb_df, median_income_binned){
   
-  print(ridb_df)
-  print(admin_unitInput)
-  print(siteInput)
-  
+  # categorize and summarize data to median-income decile groups
   plot_data <- median_income_length_of_stay_data(ridb_df = ridb_df, siteInput = siteInput, 
                                                  median_income_binned = median_income_binned)
   
-  print(head(plot_data))
-  
   # create plot
-  
-  # create plot (or say no such site type if none exist at siteInput)
   plotly <- ggplot(data = plot_data, 
                    aes(x = median_length_of_stay,
                        y = median_income_binned)) +
@@ -26,7 +28,7 @@ median_income_length_of_stay_plot <- function(admin_unitInput, siteInput, ridb_d
                                  ". Typically these visitors<br>stay between ",
                                  comma(quartile_lower, accuracy = 1), 
                                  " and ", comma(quartile_upper, accuracy = 1), 
-                                 " days, with a median distance of ", 
+                                 " days, with a median stay of ", 
                                  comma(median_length_of_stay, accuracy = 1), 
                                  " days")),
                size = 3.5, 
@@ -41,6 +43,7 @@ median_income_length_of_stay_plot <- function(admin_unitInput, siteInput, ridb_d
           panel.grid.major.y = element_blank(),
           legend.position = "none")
   
+  # create plotly
   ggplotly(plotly,
            tooltip = list("text")) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 

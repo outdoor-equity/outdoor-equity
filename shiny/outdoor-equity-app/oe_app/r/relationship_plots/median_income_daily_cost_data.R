@@ -56,8 +56,8 @@ median_income_daily_cost_data <- function(siteInput, ridb_df, median_income_binn
                                                       paste(dollar(median_income_binned[[9]]), "-", dollar(median_income_binned[[10]])),
                                                       paste(dollar(median_income_binned[[10]]), "-", dollar(median_income_binned[[11]])))
       )) %>% 
-      group_by(median_income_binned) %>% 
       # summarize to inner quartile range, median, and total reservations
+      group_by(median_income_binned) %>% 
       summarize(median_daily_cost = median(daily_cost),
                 quartile_lower = quantile(daily_cost)[[2]],
                 quartile_upper = quantile(daily_cost)[[4]],
