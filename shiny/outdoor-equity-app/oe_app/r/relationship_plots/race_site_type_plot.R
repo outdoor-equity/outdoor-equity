@@ -1,6 +1,4 @@
 
-## race x distance traveled and parameters ##
-
 #' Title
 #'
 #' @param admin_unitInput 
@@ -65,10 +63,7 @@ race_site_type_plot <- function(admin_unitInput, siteInput,
       scale_fill_manual(values = race_group_colors) +
       scale_color_manual(values = race_group_colors) +
       labs(x = paste("Number of Reservations"),
-           y = "",
-           title = paste0("Number of Reservations to ", str_to_title(site_type_string) %>% 
-                            str_replace(string = ., pattern = "Rv", replacement = "RV"),
-                          " Sites by <br> People from Communities with High Rates of Different Racial Groups")) + 
+           y = "") + 
       theme_minimal() +
       theme(plot.background = element_rect("white"),
             panel.grid.major.y = element_blank(),
@@ -78,6 +73,12 @@ race_site_type_plot <- function(admin_unitInput, siteInput,
              tooltip = list("text")) %>%
       config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                            "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+      layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                        '<br>',
+                                        "Number of Reservations to ", str_to_title(site_type_string) %>%
+                                          str_replace(string = ., pattern = "rv", replacement = "RV"), 
+                                        " Sites by Visitors of Different Racial Groups"),
+                          font = list(size = 15))) %>% 
       add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
                       x = -0.15, xref = 'paper', y = 0.97, yref = 'paper', 
                       showarrow = FALSE)  

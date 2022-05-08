@@ -56,7 +56,7 @@ median_income_site_type_data <- function(siteInput, ridb_df, median_income_binne
                                                       paste(dollar(median_income_binned[[9]]), "-", dollar(median_income_binned[[10]])),
                                                       paste(dollar(median_income_binned[[10]]), "-", dollar(median_income_binned[[11]])))
       )) %>% 
-      # summarize to inner quartile range, median, and total reservations
+      # summarize to total reservations for each site type
       group_by(aggregated_site_type, median_income_binned) %>% 
       summarize(count = n()) %>% 
       filter(aggregated_site_type == site_type_string) %>% 
