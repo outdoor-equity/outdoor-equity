@@ -33,7 +33,7 @@ race_length_of_stay_data <- function(siteInput, race_group, weighted_quartile, r
                    names_to = "race",
                    values_to = "race_percentage") %>% 
       # filter for specific racial category
-      filter(race == race_group) %>% 
+      filter(race %in% race_group) %>% 
       drop_na(race_percentage) %>% 
       # filter rows that fall above 3rd quartile value
       filter(race_percentage >= weighted_quartile) %>% 
