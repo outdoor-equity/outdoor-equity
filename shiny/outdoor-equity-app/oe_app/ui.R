@@ -206,7 +206,8 @@ ui <- fluidPage(
                ), # EO box layout
                # SO box data table
                box(width = 12,
-                   title = "Preview of subsetted table to download",
+                   #actionButton("prev_five", "Previous Columns"),
+                   #actionButton("next_five", "Next Columns"),
                    DT::DTOutput(outputId = "data_download_table")
                    ) # EO box data table
              ) # EO data download FR layout
