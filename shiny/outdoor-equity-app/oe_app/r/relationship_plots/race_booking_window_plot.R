@@ -21,11 +21,11 @@ race_booking_window_plot <- function(admin_unitInput, siteInput,
                                       ridb_df = ridb_df, 
                                       siteInput = siteInput)
   
-  # validate(
-  #   need(nrow(plot_data) == 0,
-  #        paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
-  #               " that come from communities in the high range for any racial categories."))
-  # ) # EO validate
+  validate(need(
+    nrow(data_race_booking_window) > 0,
+    paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
+           " that come from communities in the high range for any racial categories.")
+  )) # EO validate
   
   # parameters
   race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
