@@ -153,6 +153,9 @@ source("r/other_plots/tot_res_agency_plot.R")
 
 # PLOT OBJECTS ----
 
+# columns data_joined_2018
+cols_data_joined_2018 <- as.vector(names(data_joined_2018))
+
 # CA objects ----
 ## CA agency list ----
 ca_agency <- as.vector(unique(data_joined_2018$agency))
