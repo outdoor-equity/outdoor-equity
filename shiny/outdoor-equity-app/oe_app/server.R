@@ -216,48 +216,6 @@ observeEvent(input$num_viz, {
 
   
 
-## SO OE press column buttons ----
-# cols <- reactiveValues()   
-# cols$showing <- 1:5    
-# 
-# # show the next five columns 
-# observeEvent(input$next_five, {
-#     # stop when the last column is displayed
-#   if (cols$showing[[length(cols$showing)]] < length(df)) {
-#     
-#     hideCols(proxy, cols$showing, reset = FALSE) # hide displayed cols
-#     cols$showing <- cols$showing + 5
-#     showCols(proxy, cols$showing, reset = FALSE) # show the next five 
-#     
-#   } # EO of if statement
-#   
-#   }) # EO OE press column buttons next five columns
-#   
-#   #similar mechanism but reversed to show the previous cols
-# observeEvent(input$prev_five, {
-#     # stop when the first column is displayed
-#   if (cols$showing[[1]] > 1) {
-#     
-#     hideCols(proxy, cols$showing, reset = FALSE) # hide displayed cols
-#     cols$showing <- cols$showing - 5
-#     showCols(proxy, cols$showing, reset = FALSE) # show previous five
-#     
-#   } # EO if statement
-#   
-#   }) # EO OE press column buttons next five columns
-  
-## SO OE press site relationship plots ----
-# observeEvent(input$data_relationships, {
-#   
-#   if(input$data_relationships == "Race x Site type") {
-#     
-#     shinyjs::hide(id = "data_relationships_plot")
-#     
-#   }
-#   
-# })
-  
-
 # RENDER PLOTS ----
 ## SO DATA SUMMARY PLOTS 1 ----
 output$data_summary_plot_1 <- renderPlotly({
@@ -882,34 +840,39 @@ output$usVisitorshed_plot <- renderTmap({
 # create RDF
 data_download_dt <- reactive({
   
-  data_joined_2018 %>% filter(park %in% input$site_data_download)
+  data_joined_2018 %>% 
+    filter(park %in% input$site_data_download)
 
 })
 # DT table
 output$data_download_table <- renderDT({
   
-  #if(input$site_data_download != "") {
-  
   DT::datatable(data_download_dt(),
-                extensions = 'Buttons',
+                caption = htmltools::tags$caption(
+                  style = "caption-side: top; text-align: left",
+                  htmltools::em("Preview of selected dataset")),
+                class = "cell-border stripe",
+                rownames = FALSE,
+                #extensions = 'Buttons',
                 options = list(
-                  #columnDefs = list(list(visible = FALSE, targets = 1:length(df))), # hide all columns
                   server = TRUE,
-                  autoWidth = TRUE,
                   paging = TRUE,
-                  pageLength = 12,
-                  scrollx = TRUE,
-                  buttons = c('csv', 'excel'),
-                  dom = 'Bifrtp'
+                  pageLength = 5,
+                  autoWidth = TRUE,
+                  #buttons = c('csv', 'excel'),
+                  dom = 'Brtip',
+                  columnDefs = list(list(targets = "_all", 
+                                         className = "dt-center"))
                 ))
-  
-  #proxy <- dataTableProxy('data_download_table')
-  #showCols(proxy, 1:5, reset = FALSE) # show the first five cols (because the columns are now all hidden)
-  
-  #} # EO if statement 
   
 }) # EO render data table
 
-
+# data download handler
+output$data_download <- downloadHandler(
+  filename = "my_ridb_data.csv",
+  content = function(file){
+    write.csv(data_download_dt(), file)
+  }
+) # EO data download handler
 
 } ## EO server
