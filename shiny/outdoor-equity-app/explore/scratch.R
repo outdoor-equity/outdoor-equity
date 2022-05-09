@@ -2,6 +2,8 @@ library(tidyverse)
 library(here)
 library(collections)
 
+test_dt <- data_joined_2018 %>% filter(park %in% "Wawona") %>% str_to_title()
+
 race_group <- c("other", "pacific_islander", "multiracial", "asian",
                 "black", "white", "native_american", "hispanic_latinx")
 
