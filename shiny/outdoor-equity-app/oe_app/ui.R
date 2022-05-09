@@ -187,11 +187,12 @@ ui <- fluidPage(
     ## Data Download ----
     tabPanel("Data Download", icon = icon("download-alt", lib = "glyphicon"),
              
-             titlePanel("Create a subsetted dataset to download"),
+             #titlePanel("Create a subsetted dataset to download"),
              # SO data download FR layout
              fluidRow(
                # SO box inputs
                box(width = 12,
+                   title = NULL,
                    splitLayout(cellWidths = c("33.3%", "33.3%", "33.3%"),
                                # select agency
                                select_agency(locationId = "data_download",
@@ -201,15 +202,35 @@ ui <- fluidPage(
                                                  isMultiple = TRUE),
                                # select reservable site
                                select_site(locationId = "data_download",
-                                           isMultiple = TRUE) 
+                                           isMultiple = TRUE),
                  ) # EO split layout
                ), # EO box layout
+               box(id = "cols_data_download",
+                   width = 12,
+                   checkboxGroupInput(inputId = "cols_data_download",
+                                      label = "Select columns",
+                                      choices = cols_data_joined_2018,
+                                      selected = cols_data_joined_2018,
+                                      inline = TRUE),
+                   tags$head(tags$style('#cols_data_download .box-header{ display: none}')),
+                   tags$head(tags$style(HTML(
+                     ".checkbox-inline { 
+                    margin-left: 0px;
+                    margin-right: 10px;
+          }
+         .checkbox-inline+.checkbox-inline {
+                    margin-left: 0px;
+                    margin-right: 10px;
+          }")
+                   ))),
                # SO box data table
-               box(width = 12,
-                   #actionButton("prev_five", "Previous Columns"),
-                   #actionButton("next_five", "Next Columns"),
+               box(id = "download_box",
+                   width = 12,
+                   downloadButton(outputId = "data_download",
+                                  label = "Download selection as CSV"),
                    DT::DTOutput(outputId = "data_download_table")
-                   ) # EO box data table
+                   ), # EO box data table
+               tags$head(tags$style('#download_box .box-header{ display: none}')) # remove title from box
              ) # EO data download FR layout
              ) ## EO Data Download ----
     
