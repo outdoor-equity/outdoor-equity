@@ -680,7 +680,7 @@ plot_race_length_of_stay <- ggplot(data = data_plot_race_lengthOfStay,
         panel.grid.major.y = element_blank(),
         legend.position = "none")
 
-ggplotly(plot_race_daily_cost_per_visitor,
+ggplotly(plot_race_length_of_stay,
          tooltip = list("text")) %>%
   config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                        "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
