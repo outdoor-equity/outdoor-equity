@@ -2,6 +2,50 @@ library(tidyverse)
 library(here)
 library(collections)
 
+race_group <- c("other", "pacific_islander", "multiracial", "asian",
+                "black", "white", "native_american", "hispanic_latinx")
+
+data_race_quants <-
+  race_group %>%
+  map_dbl(race_top_quartile, acs_df = data_ca_acs_2018) %>%
+  cbind("race_group" = race_group,
+        "weighted_quartile" = .) %>%
+  as.data.frame()
+
+test_race_stay <- data_joined_2018 %>% 
+  filter(park %in% "Wawona") %>%
+  # select to variables of interest
+  select(park, customer_zip, 
+         asian, black, hispanic_latinx, multiracial, 
+         native_american, other, pacific_islander, white,
+         length_of_stay) %>% 
+  drop_na(length_of_stay) %>% 
+  filter(length_of_stay >= 0) %>% 
+  pivot_longer(cols = 3:10,
+               names_to = "race",
+               values_to = "race_percentage") %>% 
+  # filter for specific racial category
+  filter(race %in% race_group) %>% 
+  drop_na(race_percentage) %>% 
+  # filter rows that fall above 3rd quartile value
+  filter(race_percentage >= data_race_quants$weighted_quartile) %>% 
+  # summarize to inner quartile range, median, and total reservations
+  # NOTE HD: Are you missing a group by here?
+  summarize(median_length_of_stay = median(length_of_stay),
+            quartile_lower = quantile(length_of_stay)[[2]],
+            quartile_upper = quantile(length_of_stay)[[4]],
+            count = n()) %>% 
+  # updated racial category name strings for plotting
+  mutate(race = paste0(race_group)) %>% 
+  relocate(race, .before = 1) %>% 
+  mutate(race = str_replace(string = race,
+                            pattern = "_",
+                            replacement = " "),
+         race = str_to_title(race),
+         race = str_replace(string = race,
+                            pattern = "Other",
+                            replacement = "Other Race(s)"))
+
 
 data_joined_2018 %>% 
   filter(park == "Wawona")
