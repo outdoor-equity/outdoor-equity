@@ -440,22 +440,6 @@ median_income_decile_list <- median_income_deciles(acs_df = data_ca_acs_2018) %>
 
 
 
-### SO race x dist travel ----
-
-# TEST
-# output$data_relationships_plot_test <- renderPlot({
-# 
-# if (input$data_relationships == "Race x Site type") {
-# 
-#   ggplot(data_joined_2018, aes(x = median_income)) +
-#     geom_histogram()
-# 
-# }
-#   
-# })
-
-
-
 ### SO relationships plots ----
 output$data_relationships_plot <- renderPlotly({
   
