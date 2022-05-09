@@ -16,10 +16,9 @@ education_booking_window_plot <- function(admin_unitInput, siteInput,
   
   # iterate through dataframe of all educational categories and 3rd quartile values
   # return combined dataframe of reservations in "high" range for all categories
-  plot_data <- 
-    education_top_quartile_df %>% pmap_dfr(education_booking_window_data, 
-                                           ridb_df = ridb_df, 
-                                           siteInput = siteInput)
+  plot_data <- education_top_quartile_df %>% pmap_dfr(education_booking_window_data, 
+                                                      ridb_df = ridb_df,
+                                                      siteInput = siteInput)
   
   # validate(
   #   need(nrow(plot_data) == 0,
