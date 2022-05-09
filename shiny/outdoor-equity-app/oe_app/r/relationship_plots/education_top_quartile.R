@@ -1,4 +1,3 @@
-
 #' Education ACS Variable 3rd Quartile Value
 #'
 #' @param education_group String indicating educational category of interest

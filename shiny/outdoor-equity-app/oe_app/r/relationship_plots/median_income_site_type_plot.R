@@ -1,4 +1,3 @@
-
 #' Median-income x Site Type Plotly
 #'
 #' @param admin_unitInput User pick for admin unit
@@ -17,6 +16,12 @@ median_income_site_type_plot <- function(admin_unitInput, siteInput,
   plot_data <- median_income_site_type_data(ridb_df = ridb_df, siteInput = siteInput, 
                                             median_income_binned = median_income_binned,
                                             site_type_string = site_type_string)
+  
+  validate(
+    need(nrow(plot_data) > 0,
+         paste0("There are no ", site_type_string %>%
+                  str_replace(string = ., pattern = "Rv", replacement = "RV"), " sites at ", siteInput, ", ", admin_unitInput, "."))
+  ) # EO validate
   
   # create plot
   plotly <- ggplot(data = plot_data) +

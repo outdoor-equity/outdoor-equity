@@ -17,15 +17,16 @@ education_daily_cost_per_visitor_plot <- function(admin_unitInput, siteInput,
   # iterate through dataframe of all educational categories and 3rd quartile values
   # return combined dataframe of reservations in "high" range for all categories
   plot_data <- 
-    education_top_quartile_df %>% pmap_dfr(education_daily_cost_data, 
+    education_top_quartile_df %>% pmap_dfr(education_daily_cost_per_visitor_data, 
                                            ridb_df = ridb_df, 
                                            siteInput = siteInput)
   
-  # validate(
-  #   need(nrow(plot_data) == 0,
-  #        paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
-  #               " that come from communities in the high range for any educational category"))
-  # ) # EO validate
+  validate(
+    need(nrow(plot_data) > 0,
+         paste0("There are no reservations to ", siteInput, ", ", admin_unitInput,
+                " that come from communities in the high range for any educational categories."))
+  ) # EO validate
+
   
   # parameters
   education_group_colors <- c("HS, GED,\nor Below" = "#a6cee3", "Some College or\nTrade School"  = "#1f78b4", 
@@ -68,7 +69,7 @@ education_daily_cost_per_visitor_plot <- function(admin_unitInput, siteInput,
                                       'Daily Cost per Person Paid by Visitors with Different Levels of Education'),
                         font = list(size = 15))) %>%  
     add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                    x = -0.15, xref = 'paper', y = 0.93, yref = 'paper', 
+                    x = -0.065, xref = 'paper', y = 0.98, yref = 'paper', 
                     showarrow = FALSE)
   
 } # EO function

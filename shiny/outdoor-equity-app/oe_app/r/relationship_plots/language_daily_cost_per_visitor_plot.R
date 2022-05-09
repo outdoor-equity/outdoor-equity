@@ -21,11 +21,11 @@ language_daily_cost_per_visitor_plot <- function(admin_unitInput, siteInput,
                                           ridb_df = ridb_df, 
                                           siteInput = siteInput)
   
-  # validate(
-  #   need(nrow(plot_data) == 0,
-  #        paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
-  #               " that come from communities in the high range for any language categories."))
-  # ) # EO validate
+  validate(
+    need(nrow(plot_data) > 0,
+         paste0("There are no reservations to ", siteInput, ", ", admin_unitInput,
+                " that come from communities in the high range for any language categories."))
+  ) # EO validate
   
   # parameters
   language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5", 
@@ -69,7 +69,7 @@ language_daily_cost_per_visitor_plot <- function(admin_unitInput, siteInput,
                                       'Daily Cost Paid per Person by Visitors with Different Home Lanugages'),
                         font = list(size = 15))) %>%  
     add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                    x = -0.5, xref = 'paper', y = 0.9, yref = 'paper', 
+                    x = -0.099, xref = 'paper', y = 1, yref = 'paper', 
                     showarrow = FALSE)
   
 } # EO function

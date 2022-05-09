@@ -1,4 +1,3 @@
-
 #' Education x Daily Cost Data
 #'
 #' @param siteInput User pick for site

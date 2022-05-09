@@ -10,7 +10,7 @@
 #'
 #' @examples
 
-education_daily_cost_data <- function(siteInput, education_group, weighted_quartile, ridb_df){
+education_daily_cost_per_visitor_data <- function(siteInput, education_group, weighted_quartile, ridb_df){
   # reactive data frame 
   rdf <- reactive ({
     
