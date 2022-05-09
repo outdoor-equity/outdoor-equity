@@ -214,6 +214,38 @@ observeEvent(input$num_viz, {
   }
 }) ## EO OE press num_viz
 
+  
+
+## SO OE press column buttons ----
+# cols <- reactiveValues()   
+# cols$showing <- 1:5    
+# 
+# # show the next five columns 
+# observeEvent(input$next_five, {
+#     # stop when the last column is displayed
+#   if (cols$showing[[length(cols$showing)]] < length(df)) {
+#     
+#     hideCols(proxy, cols$showing, reset = FALSE) # hide displayed cols
+#     cols$showing <- cols$showing + 5
+#     showCols(proxy, cols$showing, reset = FALSE) # show the next five 
+#     
+#   } # EO of if statement
+#   
+#   }) # EO OE press column buttons next five columns
+#   
+#   #similar mechanism but reversed to show the previous cols
+# observeEvent(input$prev_five, {
+#     # stop when the first column is displayed
+#   if (cols$showing[[1]] > 1) {
+#     
+#     hideCols(proxy, cols$showing, reset = FALSE) # hide displayed cols
+#     cols$showing <- cols$showing - 5
+#     showCols(proxy, cols$showing, reset = FALSE) # show previous five
+#     
+#   } # EO if statement
+#   
+#   }) # EO OE press column buttons next five columns
+  
 ## SO OE press site relationship plots ----
 # observeEvent(input$data_relationships, {
 #   
@@ -856,16 +888,25 @@ data_download_dt <- reactive({
 # DT table
 output$data_download_table <- renderDT({
   
+  #if(input$site_data_download != "") {
+  
   DT::datatable(data_download_dt(),
                 extensions = 'Buttons',
                 options = list(
-                  server = FALSE,
+                  #columnDefs = list(list(visible = FALSE, targets = 1:length(df))), # hide all columns
+                  server = TRUE,
+                  autoWidth = TRUE,
                   paging = TRUE,
                   pageLength = 12,
+                  scrollx = TRUE,
                   buttons = c('csv', 'excel'),
-                  dom = 'Bfrtip',
-                  columnDefs = list(visible = TRUE)
+                  dom = 'Bifrtp'
                 ))
+  
+  #proxy <- dataTableProxy('data_download_table')
+  #showCols(proxy, 1:5, reset = FALSE) # show the first five cols (because the columns are now all hidden)
+  
+  #} # EO if statement 
   
 }) # EO render data table
 
