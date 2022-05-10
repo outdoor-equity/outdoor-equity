@@ -30,13 +30,12 @@ race_site_type_plot <- function(admin_unitInput, siteInput,
                                               pattern = "Rv", 
                                               replacement = "RV"))
   
-  # validate(
-  #   need(nrow(plot_data) == 0,
-  #        paste0("There are either no ", site_type_string %>% 
-  #                 str_replace(string = ., pattern = "Rv", replacement = "RV"), " 
-  #                sites at ", siteInput, ", ", admin_unitInput, 
-  #               "<bror there are no reservations at the site that come from communities that fall into the high range for any language groups."))
-  # ) # EO validate
+  validate(need(
+    nrow(plot_data) > 0,
+    paste0("There are no ", site_type_string %>% str_replace(string = ., pattern = "Rv", replacement = "RV"), 
+           " sites at ", siteInput, ", ", admin_unitInput, ".")
+  )) # EO validate
+  
   
   # parameters
   race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
@@ -75,7 +74,7 @@ race_site_type_plot <- function(admin_unitInput, siteInput,
                                       " Sites by Visitors of Different Racial Groups"),
                         font = list(size = 15))) %>% 
     add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                    x = -0.15, xref = 'paper', y = 0.97, yref = 'paper', 
+                    x = -0.05, xref = 'paper', y = 1, yref = 'paper', 
                     showarrow = FALSE)
 
 } # EO function
