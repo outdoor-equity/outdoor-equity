@@ -132,12 +132,19 @@ ui <- fluidPage(
                               ) # EO split layout relationship subset
                               ), # EO relationship subset box
                           
-                          # relationships plot output box
-                          box(width = 12,
+                          # dynamic relationships plot output box
+                          box(width = 8,
                               plotlyOutput(outputId = "data_relationships_plot") %>%
-                                withSpinner(color = "#0dc5c1") #,
-                              #uiOutput(outputId = "data_relationships_plot_test")
-                              ) # EO relationships plot output box
+                                withSpinner(color = "#0dc5c1"),
+                              uiOutput(outputId = "relationships_tab_layout")
+                              ), # EO relationships plot output box
+                          
+                          # context relationships plot 
+                          box(width = 4,
+                              plotlyOutput(outputId = "high_relationships_plot") %>% 
+                                withSpinner(color = "#0dc5c1")
+                              
+                              ) # EO context relationship plot box
                         ) # EO FR data relationships
                         ), #### EO data relationships
 

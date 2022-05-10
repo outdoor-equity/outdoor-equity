@@ -65,6 +65,9 @@ source("r/summary_plots/median_income_plot.R")
 source("r/summary_plots/language_plot.R")
 
 ## source relationships plot functions ----
+# quartile plots
+source("r/relationship_plots/race_top_quartile_res_data.R")
+source("r/relationship_plots/race_top_quartile_res_plot.R")
 # calculating bins (quartiles, deciles) 
 source("r/relationship_plots/education_top_quartile.R")
 source("r/relationship_plots/race_top_quartile.R")
