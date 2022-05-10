@@ -755,16 +755,17 @@ server <- function(input, output, session) {
       )
 
     } # EO race x booking window
-    # 
-    # #### SO race x daily cost plot function ----
+
+    #### SO race x daily cost plot function ----
     # else if (input$data_relationships == "Race x Daily cost") {
+    #   
     #   race_daily_cost_plot(
     #     admin_unitInput = input$admin_unit_relationships,
     #     siteInput = input$site_relationships,
     #     race_top_quartile_df = data_race_quants,
     #     ridb_df = data_joined_2018
     #   )
-    #   
+    # 
     # } # EO race x daily cost
     # 
     # #### SO race x daily cost per visitor plot function ----
