@@ -182,7 +182,12 @@ server <- function(input, output, session) {
     }
   }) ## EO OE press num_viz
   
-  
+  # RENDER UI ----
+  ## SO data relationship render ui ----
+  output$relationships_tab_layout <- renderUI({
+    
+    
+  })
   
   # RENDER PLOTS ----
   ## SO DATA SUMMARY PLOTS 1 ----
