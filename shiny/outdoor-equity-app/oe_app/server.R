@@ -745,8 +745,8 @@ server <- function(input, output, session) {
     } # EO median-income x site type
 
     #### SO race x booking window plot function ----
-    if (input$data_relationships == "Race x Booking window") {
-      
+    else if (input$data_relationships == "Race x Booking window") {
+
       race_booking_window_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
@@ -757,91 +757,95 @@ server <- function(input, output, session) {
     } # EO race x booking window
 
     #### SO race x daily cost plot function ----
-    # else if (input$data_relationships == "Race x Daily cost") {
-    #   
-    #   race_daily_cost_plot(
-    #     admin_unitInput = input$admin_unit_relationships,
-    #     siteInput = input$site_relationships,
-    #     race_top_quartile_df = data_race_quants,
-    #     ridb_df = data_joined_2018
-    #   )
-    # 
-    # } # EO race x daily cost
-    # 
-    # #### SO race x daily cost per visitor plot function ----
-    # else if (input$data_relationships == "Race x Daily cost per visitor") {
-    #   race_daily_cost_per_visitor_plot(
-    #     admin_unitInput = input$admin_unit_relationships,
-    #     siteInput = input$site_relationships,
-    #     race_top_quartile_df = data_race_quants,
-    #     ridb_df = data_joined_2018
-    #   )
-    #   
-    # } # EO race x daily cost per visitor
-    # 
-    # #### SO race x dist traveled plot function ----
-    # else if (input$data_relationships == "Race x Distance traveled") {
-    #   race_dist_travel_plot(
-    #     admin_unitInput = input$admin_unit_relationships,
-    #     siteInput = input$site_relationships,
-    #     race_top_quartile_df = data_race_quants,
-    #     ridb_df = data_joined_2018
-    #   )
-    #   
-    # } # EO race x dist traveled
-    # 
-    # #### SO race x length of stay function ----
-    # else if (input$data_relationships == "Race x Length of stay") {
-    #   race_length_of_stay_plot(
-    #     admin_unitInput = input$admin_unit_relationships,
-    #     siteInput = input$site_relationships,
-    #     race_top_quartile_df = data_race_quants,
-    #     ridb_df = data_joined_2018
-    #   )
-    #   
-    # } # EO race x length of stay
-    # 
-    # #### SO race x site type function ----
-    # else if (input$data_relationships == "Race x Site type") {
-    #   race_site_type_plot(
-    #     admin_unitInput = input$admin_unit_relationships,
-    #     siteInput = input$site_relationships,
-    #     race_top_quartile_df = data_race_quants,
-    #     ridb_df = data_joined_2018,
-    #     site_type_string = "equestrian"
-    #   )
-    #   # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-    #   #                          siteInput = input$site_relationships,
-    #   #                          race_top_quartile_df = data_race_quants,
-    #   #                          ridb_df = data_joined_2018,
-    #   #                          site_type_string = "remote")
-    #   # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-    #   #                          siteInput = input$site_relationships,
-    #   #                          race_top_quartile_df = data_race_quants,
-    #   #                          ridb_df = data_joined_2018,
-    #   #                          site_type_string = "rv only")
-    #   # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-    #   #                          siteInput = input$site_relationships,
-    #   #                          race_top_quartile_df = data_race_quants,
-    #   #                          ridb_df = data_joined_2018,
-    #   #                          site_type_string = "rv or tent")
-    #   # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-    #   #                          siteInput = input$site_relationships,
-    #   #                          race_top_quartile_df = data_race_quants,
-    #   #                          ridb_df = data_joined_2018,
-    #   #                          site_type_string = "shelter")
-    #   # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-    #   #                          siteInput = input$site_relationships,
-    #   #                          race_top_quartile_df = data_race_quants,
-    #   #                          ridb_df = data_joined_2018,
-    #   #                          site_type_string = "tent only")
-    #   # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-    #   #                          siteInput = input$site_relationships,
-    #   #                          race_top_quartile_df = data_race_quants,
-    #   #                          ridb_df = data_joined_2018,
-    #   #                          site_type_string = "water")
-    #   
-    # } # EO race x site type
+    else if (input$data_relationships == "Race x Daily cost") {
+
+      race_daily_cost_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        race_top_quartile_df = data_race_quants,
+        ridb_df = data_joined_2018
+      )
+
+    } # EO race x daily cost
+
+    #### SO race x daily cost per visitor plot function ----
+    else if (input$data_relationships == "Race x Daily cost per visitor") {
+      
+      race_daily_cost_per_visitor_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        race_top_quartile_df = data_race_quants,
+        ridb_df = data_joined_2018
+      )
+
+    } # EO race x daily cost per visitor
+
+    #### SO race x dist traveled plot function ----
+    else if (input$data_relationships == "Race x Distance traveled") {
+      
+      race_dist_travel_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        race_top_quartile_df = data_race_quants,
+        ridb_df = data_joined_2018
+      )
+
+    } # EO race x dist traveled
+
+    #### SO race x length of stay function ----
+    else if (input$data_relationships == "Race x Length of stay") {
+      
+      race_length_of_stay_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        race_top_quartile_df = data_race_quants,
+        ridb_df = data_joined_2018
+      )
+
+    } # EO race x length of stay
+
+    #### SO race x site type function ----
+    else if (input$data_relationships == "Race x Site type") {
+      
+      race_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        race_top_quartile_df = data_race_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "equestrian"
+      )
+      # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+      #                          siteInput = input$site_relationships,
+      #                          race_top_quartile_df = data_race_quants,
+      #                          ridb_df = data_joined_2018,
+      #                          site_type_string = "remote")
+      # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+      #                          siteInput = input$site_relationships,
+      #                          race_top_quartile_df = data_race_quants,
+      #                          ridb_df = data_joined_2018,
+      #                          site_type_string = "rv only")
+      # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+      #                          siteInput = input$site_relationships,
+      #                          race_top_quartile_df = data_race_quants,
+      #                          ridb_df = data_joined_2018,
+      #                          site_type_string = "rv or tent")
+      # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+      #                          siteInput = input$site_relationships,
+      #                          race_top_quartile_df = data_race_quants,
+      #                          ridb_df = data_joined_2018,
+      #                          site_type_string = "shelter")
+      # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+      #                          siteInput = input$site_relationships,
+      #                          race_top_quartile_df = data_race_quants,
+      #                          ridb_df = data_joined_2018,
+      #                          site_type_string = "tent only")
+      # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+      #                          siteInput = input$site_relationships,
+      #                          race_top_quartile_df = data_race_quants,
+      #                          ridb_df = data_joined_2018,
+      #                          site_type_string = "water")
+
+    } # EO race x site type
     
   }) # EO relationships plots
   
