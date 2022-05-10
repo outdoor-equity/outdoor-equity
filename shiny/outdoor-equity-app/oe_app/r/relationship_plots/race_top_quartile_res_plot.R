@@ -1,0 +1,68 @@
+
+#' Race Number of Reservations Above Top Quartile Data Plotly
+#'
+#' @param admin_unitInput User pick for admin unit
+#' @param siteInput User pick for site
+#' @param education_top_quartile_df Name of dataframe of values to iterate through for all 
+#'     racial categories and 3rd quartile values associated with each
+#' @param ridb_df RIDB dataframe object name
+#'
+#' @return Plotly of racial categories compared to distance traveled
+#'
+#' @examples
+
+race_top_quartile_res_plot <- function(admin_unitInput, siteInput,
+                                  race_top_quartile_df, ridb_df){
+  
+  # iterate through dataframe of all racial categories and 3rd quartile values
+  # return combined dataframe of reservations in "high" range for all categories
+  data_top_quartile_res_travel <- 
+    race_top_quartile_df %>% pmap_dfr(race_top_quartile_res_data, 
+                                      ridb_df = ridb_df, 
+                                      siteInput = siteInput)
+  
+  validate(need(
+    nrow(data_top_quartile_res_travel) > 0,
+    paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
+           " that come from communities in the high range for any racial categories.")
+  )) # EO validate
+  
+  # parameters
+  race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
+                         "Asian" = "#009E73", "Black" = "#F0E442", "White" = "#0072B2", 
+                         "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
+  
+  # create plot
+  plotly <- ggplot(data = data_top_quartile_res_travel) +
+    geom_col(aes(x = count,
+                 y = reorder(race, count),
+                 fill = race,
+                 text = paste0(comma(count, accuracy = 1), 
+                               " reservations were made by <br>people who live in ZIP codes with high ", 
+                               race, " populations."))) +
+    scale_x_continuous(labels = comma) +
+    scale_y_discrete(expand = c(0.3, 0)) +
+    scale_fill_manual(values = race_group_colors) +
+    scale_color_manual(values = race_group_colors) +
+    labs(x = paste("Number of Reservations"),
+         y = "",
+         title = paste0("Number of Reservations by <br> People from Communities with High Rates of Different Racial Groups")) + 
+    theme_minimal() +
+    theme(plot.background = element_rect("white"),
+          panel.grid.major.y = element_blank(),
+          legend.position = "none")
+  
+  # create plotly
+  ggplotly(plotly,
+           tooltip = list("text")) %>%
+    config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+                                         "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+                                      '<br>',
+                                      'Distance Traveled by Different Racial Groups'),
+                        font = list(size = 15))) %>%
+    add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
+                    x = -0.05, xref = 'paper', y = 1, yref = 'paper', 
+                    showarrow = FALSE)
+  
+} # EO function

@@ -75,7 +75,10 @@ race_plot <- function(admin_unitInput, siteInput){
                                    data_source == "CA" ~ ""),
            race = str_replace(string = race,
                               pattern = "Other",
-                              replacement = "Other Race(s)"))
+                              replacement = "Other Race(s)"),
+           race = factor(race, ordered = TRUE,
+                         levels = c("Hispanic Latinx", "White", "Asian", "Black", "Multiracial",
+                                    "Native American", "Pacific Islander", "Other Race(s)")))
   
   print(paste("race data plot:", head(race_data_plot)))
   
@@ -88,7 +91,7 @@ race_plot <- function(admin_unitInput, siteInput){
   # plot for shiny app
   race_plotly <- ggplot(data = race_data_plot) +
     geom_col(aes(x = race_percent_average,
-                 y = reorder(race, race_percent_average),
+                 y = reorder(race, desc(race)),
                  fill = data_source,
                  text = paste0(tooltip_start, percent(race_percent_average, accuracy = 0.1), 
                                tooltip_middle, race, tooltip_end)),
@@ -97,7 +100,7 @@ race_plot <- function(admin_unitInput, siteInput){
     scale_y_discrete(expand = c(0.3, 0)) +
     scale_fill_manual(values = groups_colors_ridb_ca) + 
     geom_text(aes(x = race_percent_average,
-                  y = reorder(race, race_percent_average),
+                  y = reorder(race, desc(race)),
                   label = percent(race_percent_average, accuracy = 0.1),
                   col = data_source), 
               position = position_dodge(width = 1), 
