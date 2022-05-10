@@ -63,6 +63,7 @@ median_income_plot <- function(admin_unitInput, siteInput){
                                       'Median-incomes for California Residents vs. Visitors'),
                         font = list(size = 15)),
            showlegend = FALSE,
+           xaxis = list(tickformat = "$.2f"),
            margin = list(b = 130, t = 100),
            annotations =  list(x = 250000/2, y = -0.75, 
                                text = paste0("The shape of the curve can give you a sense of the distribution of median-income.<br>",
