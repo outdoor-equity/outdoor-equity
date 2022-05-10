@@ -50,7 +50,9 @@ race_top_quartile_res_plot <- function(admin_unitInput, siteInput,
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank(),
-          legend.position = "none")
+          legend.position = "none",
+          axis.title.x = element_text(size = 8),
+          axis.title.y = element_text(size = 8))
   
   # create plotly
   ggplotly(plotly,
@@ -60,9 +62,12 @@ race_top_quartile_res_plot <- function(admin_unitInput, siteInput,
     layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                       '<br>',
                                       'Distance Traveled by Different Racial Groups'),
-                        font = list(size = 15))) %>%
+                        font = list(size = 10.5)),
+           height = 405,
+           width = 340) %>%
     add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                    x = -0.05, xref = 'paper', y = 1, yref = 'paper', 
-                    showarrow = FALSE)
+                    x = -0.55, xref = 'paper', y = 0.95, yref = 'paper', 
+                    showarrow = FALSE,
+                    font = list(size = 10.5))
   
 } # EO function
