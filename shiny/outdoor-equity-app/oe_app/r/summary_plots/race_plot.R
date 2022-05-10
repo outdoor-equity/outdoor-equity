@@ -94,6 +94,7 @@ race_plot <- function(admin_unitInput, siteInput){
                                tooltip_middle, race, tooltip_end)),
              position = "dodge") +
     scale_x_continuous(labels = percent, limits = c(0, x_max)) +
+    scale_y_discrete(expand = c(0.3, 0)) +
     scale_fill_manual(values = groups_colors_ridb_ca) + 
     geom_text(aes(x = race_percent_average,
                   y = reorder(race, race_percent_average),
