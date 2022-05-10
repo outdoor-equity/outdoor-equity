@@ -198,7 +198,7 @@ ui <- fluidPage(
              # SO data download FR layout
              fluidRow(
                # SO box inputs
-               box(width = 12,
+               box(width = 6,
                    title = NULL,
                    splitLayout(cellWidths = c("33.3%", "33.3%", "33.3%"),
                                # select agency
@@ -213,23 +213,13 @@ ui <- fluidPage(
                  ) # EO split layout
                ), # EO box layout
                box(id = "cols_data_download",
-                   width = 12,
+                   width = 6,
                    checkboxGroupInput(inputId = "cols_data_download",
                                       label = "Select columns",
                                       choices = cols_data_joined_2018,
                                       selected = cols_data_joined_2018,
                                       inline = TRUE),
-                   tags$head(tags$style('#cols_data_download .box-header{ display: none}')),
-                   tags$head(tags$style(HTML(
-                     ".checkbox-inline { 
-                    margin-left: 0px;
-                    margin-right: 10px;
-          }
-         .checkbox-inline+.checkbox-inline {
-                    margin-left: 0px;
-                    margin-right: 10px;
-          }")
-                   ))),
+                   tags$head(tags$style('#cols_data_download .box-header{ display: none}'))),
                # SO box data table
                box(id = "download_box",
                    width = 12,
