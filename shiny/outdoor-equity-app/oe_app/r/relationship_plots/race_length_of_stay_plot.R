@@ -21,11 +21,11 @@ race_length_of_stay_plot <- function(admin_unitInput, siteInput,
                                       ridb_df = ridb_df, 
                                       siteInput = siteInput)
   
-  # validate(
-  #   need(nrow(plot_data) == 0,
-  #        paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
-  #               " that come from communities in the high range for any racial categories."))
-  # ) # EO validate
+  validate(need(
+    nrow(plot_data) > 0,
+    paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
+           " that come from communities in the high range for any racial categories.")
+  )) # EO validate
   
   # parameters
   race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
@@ -69,7 +69,7 @@ race_length_of_stay_plot <- function(admin_unitInput, siteInput,
                                       'Length of Stay by Different Racial Groups'),
                         font = list(size = 15))) %>% 
     add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                    x = -0.05, xref = 'paper', y = 0.9, yref = 'paper', 
+                    x = -0.05, xref = 'paper', y = 1, yref = 'paper', 
                     showarrow = FALSE)
   
 } # EO function
