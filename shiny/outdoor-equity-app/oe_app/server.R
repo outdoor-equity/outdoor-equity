@@ -184,10 +184,10 @@ server <- function(input, output, session) {
   
   # RENDER UI ----
   ## SO data relationship render ui ----
-  output$relationships_tab_layout <- renderUI({
-    
-    
-  })
+  # output$relationships_tab_layout <- renderUI({
+  #   
+  #   
+  # })
   
   # RENDER PLOTS ----
   ## SO DATA SUMMARY PLOTS 1 ----
@@ -853,6 +853,28 @@ server <- function(input, output, session) {
     } # EO race x site type
     
   }) # EO relationships plots
+  
+  ### SO relationships plots ----
+  output$high_relationships_plot <- renderPlotly({
+    
+    #### SO race quartile ----
+    if (input$data_relationships %in% c("Race x Booking window",
+                                        "Race x Daily cost",
+                                        "Race x Daily cost per visitor",
+                                        "Race x Distance traveled",
+                                        "Race x Length of stay",
+                                        "Race x Site type")) {
+      
+      race_top_quartile_res_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        race_top_quartile_df = data_race_quants,
+        ridb_df = data_joined_2018
+      )
+      
+    } # EO race quartile 
+    
+  })
   
   ## SO VISITORSHEDS PLOTS YES REACTIVE ----
   ### yosemite plot ----
