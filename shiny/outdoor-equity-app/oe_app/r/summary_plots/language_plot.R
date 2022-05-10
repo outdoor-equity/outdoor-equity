@@ -53,7 +53,7 @@ language_plot <- function(admin_unitInput, siteInput){
     scale_fill_manual(values = fill_ridb_ca) +
     scale_color_manual(values = color_ridb_ca) +
     scale_x_continuous(labels = percent) +
-    scale_y_continuous(labels = NULL) +
+    scale_y_continuous(labels = NULL, expand = c(0.3, 0)) +
     labs(x = "Percentage of Population that Speaks a Language Other than English at Home",
          y = NULL) +
     theme_minimal() +
@@ -66,7 +66,18 @@ language_plot <- function(admin_unitInput, siteInput){
                                       '<br>',
                                       'Non-English Spoken in the Home of California Residents vs. Visitors'),
                         font = list(size = 15)),
-           showlegend = FALSE) %>%
+           showlegend = FALSE,
+           margin = list(b = 130, t = 100),
+           annotations =  list(x = 0.5, y = -0.75, 
+                               text = paste0("The shape of the curve can give you a sense of the distribution of languages other than English spoken at home.<br>",
+                                             "Taller peaks indicate a concentration of more people at a given percent level, while flatter curves indicate<br>",
+                                             "a more even distribution. Comparing the green curve (all visitors to this site) to the grey curve (all CA residents),<br>",
+                                             "can show who is more or less represented at this site compared to the CA census."), 
+                               showarrow = F, 
+                               xre = 'paper', yref = 'paper', 
+                               xanchor = 'middle', yanchor = 'auto', 
+                               xshift = 0, yshift = 0,
+                               font = list(size = 11, color = "black"))) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian"))
   
