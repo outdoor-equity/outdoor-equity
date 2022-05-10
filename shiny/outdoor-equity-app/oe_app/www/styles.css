@@ -7,6 +7,10 @@
   z-index: 2000; /* z-index are layers */
  }
  
+.shiny-input-checkboxgroup.shiny-input-container-inline label ~ .shiny-options-group {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+ }
 /* #test .box-header .with-border {
    display: none;
  } */
