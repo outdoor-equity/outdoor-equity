@@ -69,7 +69,7 @@ race_daily_cost_plot <- function(admin_unitInput, siteInput,
                                       'Daily Costs per Reservation Paid by Different Racial Groups'),
                         font = list(size = 15))) %>% 
     add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                    x = -0.05, xref = 'paper', y = 0.9, yref = 'paper', 
+                    x = -0.05, xref = 'paper', y = 1, yref = 'paper', 
                     showarrow = FALSE)
 
 } # EO function
