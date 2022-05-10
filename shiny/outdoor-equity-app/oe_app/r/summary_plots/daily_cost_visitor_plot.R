@@ -50,8 +50,7 @@ daily_cost_visitor_plot <- function(admin_unitInput, siteInput){
                    col = hist_colors[[2]], size = 0.05) +
     labs(x = "Daily cost per visitor ($)",
          y = "") +
-    scale_x_continuous(limits = c(0, x_max), labels = dollar) +
-    scale_y_continuous(labels = comma) +
+    scale_x_continuous(limits = c(0, x_max)) +
     geom_vline(xintercept = quant_80,
                linetype = "dashed", alpha = 0.5, color = "#000099") +
     theme_minimal() +
@@ -65,15 +64,15 @@ daily_cost_visitor_plot <- function(admin_unitInput, siteInput){
                                       '<br>',
                                       'Daily Cost per Visitor'),
                         font = list(size = 15)),
-                        margin = list(b = 130, t = 100), 
-           annotations =  list(x = 1, 
-                               y = -0.6, 
+           xaxis = list(tickformat = "$"),
+           yaxis = list(separatethousands = TRUE),
+           margin = list(b = 130, t = 100), 
+           annotations =  list(x = x_max/2, y = -0.6, 
                                text = paste0("80% of reservations paid less than ", '<b>', dollar(quant_80), '</b>',
                                              " per visitor per day <br>(shown on plot with dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
-                               xanchor = 'left', 
-                               yanchor = 'auto', 
+                               xanchor = 'middle', yanchor = 'auto', 
                                xshift = 0, yshift = 0,
                                font = list(size = 12, color = "#000099"))) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 

@@ -89,7 +89,8 @@ education_plot <- function(admin_unitInput, siteInput){
                  text = paste0(tooltip_start, percent(education_percent_average, accuracy = 0.1), 
                                tooltip_middle, education, tooltip_end)),
              position = "dodge") +
-    scale_x_continuous(labels = percent, limits = c(0, x_max)) +
+    scale_x_continuous(limits = c(0, x_max), labels = percent_format(accuracy = 1)) +
+    scale_y_discrete(expand = c(0.4, 0)) +
     scale_fill_manual(values = groups_colors_ridb_ca) + 
     geom_text(aes(x = education_percent_average,
                   y = education,

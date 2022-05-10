@@ -50,7 +50,8 @@ site_type_plot <- function(admin_unitInput, siteInput){
   # plot for shiny app
   site_type_plotly <- ggplot(data = site_type_rdf()) +
     col + # object contains geom_col 
-    scale_x_continuous(labels = percent) +
+    scale_x_continuous(labels = percent_format(accuracy = 1)) +
+    scale_y_discrete(expand = c(0.7, 0)) +
     labs(x = paste0("Percentage of Reservations to ", siteInput),
          y = "") +
     theme_minimal() +

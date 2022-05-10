@@ -61,18 +61,9 @@ booking_window_plot <- function(admin_unitInput, siteInput){
                    col = hist_colors[[2]], size = 0.05) +
     labs(x = "Days in advance before visit (each bar = 1 week)",
          y = "") +
-    scale_x_continuous(limits = c(0, x_max), breaks = seq(0, x_max, 30)) +
-    scale_y_continuous(labels = comma) +
+    scale_x_continuous(limits = c(0, x_max)) +
     geom_vline(xintercept = quant_80,
                linetype = "dashed", alpha = 0.5, color = "#000099") +
-    # geom_vline(xintercept = 180, 
-    #            linetype = "dashed", size = .3, alpha = .5) +
-    # annotate("text", label = "6 months", 
-    #          x = 210, y = 65000) +
-    # geom_vline(xintercept = 360, 
-    #            linetype = "dashed", size = .3, alpha = .5) +
-    # annotate("text", label = "1 year", 
-    #          x = 380, y = 65000) +
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank())
@@ -84,15 +75,15 @@ booking_window_plot <- function(admin_unitInput, siteInput){
                                       '<br>',
                                       'Number of days from reservation to start of visit'),
                         font = list(size = 15)),
+           xaxis = list(separatethousands = TRUE),
+           yaxis = list(separatethousands = TRUE),
            margin = list(b = 130, t = 100), 
-           annotations =  list(x = 1, 
-                               y = -0.6, 
+           annotations =  list(x = x_max/2, y = -0.6, 
                                text = paste0("80% of reservations reserve their visit less than ", '<b>', quant_80, '</b>', 
                                              " days before the start date <br>(shown on plot with dashed line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
-                               xanchor = 'left', 
-                               yanchor = 'auto', 
+                               xanchor = 'middle', yanchor = 'auto', 
                                xshift = 0, yshift = 0,
                                font = list(size = 12, color = "#000099"))) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 

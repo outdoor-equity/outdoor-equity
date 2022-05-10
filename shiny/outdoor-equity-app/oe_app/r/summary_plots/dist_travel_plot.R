@@ -60,7 +60,6 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
                    fill = hist_colors[[1]], 
                    col = hist_colors[[2]], size = 0.05) +
     scale_x_continuous(limits = c(0, x_max)) +
-    scale_y_continuous(labels = comma) +
     geom_vline(xintercept = quant_80,
                linetype = "dashed", alpha = 0.5, color = "#000099") +
     labs(x = "Distance traveled (miles)",
@@ -77,13 +76,13 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
                                       'Distance Traveled from Home to Reservation'),
                         font = list(size = 15)),
                         margin = list(b = 130, t = 100), 
-           annotations =  list(x = 1, 
-                               y = -0.6, 
+           xaxis = list(separatethousands = TRUE),
+           yaxis = list(separatethousands = TRUE),
+           annotations =  list(x = x_max/2, y = -0.6, 
                                text = paste0("80% of reservations to traveled less than ", '<b>', quant_80, '</b>', " miles <br>(shown on plot with dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
-                               xanchor = 'left', 
-                               yanchor = 'auto', 
+                               xanchor = 'middle', yanchor = 'auto', 
                                xshift = 0, yshift = 0,
                                font = list(size = 12, color = "#000099"))) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
