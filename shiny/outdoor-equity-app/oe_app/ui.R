@@ -141,7 +141,7 @@ ui <- fluidPage(
                           
                           # context relationships plot 
                           box(width = 4,
-                              plotlyOutput(outputId = "relationship_plot") %>% 
+                              plotlyOutput(outputId = "high_relationships_plot") %>% 
                                 withSpinner(color = "#0dc5c1")
                               
                               ) # EO context relationship plot box
