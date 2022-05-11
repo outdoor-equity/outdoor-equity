@@ -955,7 +955,7 @@ server <- function(input, output, session) {
     if (input$data_relationships == "Education x Site type"){
     
     tabsetPanel(
-      tabPanel(
+      tabPanel(title = "Education x Equestrian Site type",
         plotlyOutput(outputId = "relationships_site_equestrian_plot") %>%
           withSpinner(color = "#0dc5c1")
       ) # EO tabPanel
