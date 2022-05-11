@@ -182,6 +182,36 @@ server <- function(input, output, session) {
     }
   }) ## EO OE press num_viz
   
+  ## SO OE press site relationships ----
+  observeEvent(input$data_relationships, {
+    if (input$data_relationships %in% c("Race x Site type",
+                                        "Education x Site type",
+                                        "Language x Site type",
+                                        "Median-income x Site type")) {
+      
+      shinyjs::hide(id = "data_relationships_plot") 
+      shinyjs::hide(id = "high_relationships_output")
+      
+      shinydashboardPlus::updateBox(id = "relationships_outputs",
+                                    action = "update",
+                                    options = list(width = 12))
+    }
+    
+    else if (input$data_relationships != c("Race x Site type",
+                                           "Education x Site type",
+                                           "Language x Site type",
+                                           "Median-income x Site type")) {
+      
+      shinyjs::show(id = "data_relationships_plot")
+      shinyjs::show(id = "high_relationships_output")
+      
+      shinydashboardPlus::updateBox(id = "relationships_outputs",
+                                    action = "update",
+                                    options = list(width = 8))
+      
+    }
+  }) ## EO OE press site relationships
+  
   # RENDER PLOTS ----
   ## SO DATA SUMMARY PLOTS 1 ----
   output$data_summary_plot_1 <- renderPlotly({
