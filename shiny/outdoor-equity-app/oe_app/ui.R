@@ -26,24 +26,25 @@ ui <- fluidPage(
     "Visualize RIDB Data",
     
     ## About tab ----
-    navbarMenu("About", icon = icon("info-circle"),
-               
-               tabPanel(title = "Background",
-                        # Note(HD): need . in front of file path for relative path
-                        includeMarkdown("./text/background-about.md")
-               ), # EO Background tabPanel
-               
-               
-               tabPanel(title = "User Guide",
-                        includeMarkdown("./text/userGuide-about.md")
-               ), # EO User Guide tabPanel
-               
-               
-               tabPanel(title = "Metadata",
-                        # Note(HD): need to change this to a rmd file to include DT table
-                        includeMarkdown("./text/metadata-about.md")
-                        
-               )), ## EO About tab ----
+    tabPanel("About", icon = icon("info-circle")
+               # 
+               # tabPanel(title = "Background",
+               #          # Note(HD): need . in front of file path for relative path
+               #          includeMarkdown("./text/background-about.md")
+               # ), # EO Background tabPanel
+               # 
+               # 
+               # tabPanel(title = "User Guide",
+               #          includeMarkdown("./text/userGuide-about.md")
+               # ), # EO User Guide tabPanel
+               # 
+               # 
+               # tabPanel(title = "Metadata",
+               #          # Note(HD): need to change this to a rmd file to include DT table
+               #          includeMarkdown("./text/metadata-about.md")
+               #          
+               # )
+               ), ## EO About tab ----
     
     ## Analysis tab ---- 
     navbarMenu("Analysis", icon = icon("chart-bar"),
@@ -191,6 +192,8 @@ ui <- fluidPage(
 
                ), ## EO Analysis tab ----
     
+    tabPanel("Metadata"), # Note(HD): ADD ICON
+    
     ## Data Download ----
     tabPanel("Data Download", icon = icon("download-alt", lib = "glyphicon"),
              
@@ -212,14 +215,18 @@ ui <- fluidPage(
                                            isMultiple = TRUE),
                  ) # EO split layout
                ), # EO box layout
-               box(id = "cols_data_download",
+               # SO columns subset box
+               box(id = "cols_select",
                    width = 12,
-                   checkboxGroupInput(inputId = "cols_data_download",
-                                      label = "Select columns",
-                                      choices = cols_data_joined_2018,
-                                      selected = cols_data_joined_2018,
-                                      inline = TRUE),
-                   tags$head(tags$style('#cols_data_download .box-header{ display: none}'))),
+                   selectizeInput(inputId = "cols_data_download",
+                                  label = "Select columns",
+                                  choices = cols_data_joined_2018,
+                                  selected = cols_data_joined_2018,
+                                  multiple = TRUE,
+                                  size = 8,
+                                  options = list(plugins = list("remove_button"))),
+                   tags$head(tags$style('#cols_select .box-header{ display: none}'))
+                   ), # EO columns subset box
                # SO box data table
                box(id = "download_box",
                    width = 12,
