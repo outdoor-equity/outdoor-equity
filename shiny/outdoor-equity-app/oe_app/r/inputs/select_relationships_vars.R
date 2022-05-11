@@ -27,9 +27,7 @@ select_data_relationship <- function(){
                                   "Median-income x Daily cost per visitor",
                                   "Median-income x Distance traveled",
                                   "Median-income x Length of stay",
-                                  "Median-income x Site type",
-                                  "Booking window x Site type",
-                                  "Booking window x Distance traveled")),
+                                  "Median-income x Site type")),
                  multiple = FALSE,
                  options = list(
                    placeholder = "Type to search for a data relationship",
