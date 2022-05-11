@@ -4,7 +4,8 @@ select_agency <- function(locationId, isMultiple = FALSE, isSize = NULL){
   
   selectizeInput(inputId = paste("agency", locationId, sep = "_"),
                  label = "Select an agency",
-                 choices = ca_agency,
+                 choices = unique(sort(ca_agency)),
+                 selected = "National Park Service",
                  multiple = isMultiple,
                  size = isSize,
                  options = list(

@@ -167,7 +167,12 @@ cols_data_joined_2018 <- as.vector(names(data_joined_2018))
 
 # CA objects ----
 ## CA agency list ----
-ca_agency <- as.vector(unique(data_joined_2018$agency))
+ca_agency <- as.vector(unique(data_joined_2018$agency)) %>% 
+  str_replace_all(string = .,
+                  c("NPS" = "National Park Service", 
+                    "USFS" = "US Forest Service",
+                    "USACE" = "US Army Corps of Engineers",
+                    "BOR" = "Bureau of Reclamation"))
 
 ## CA admin units ----
 admin_units_vec <- as.vector(unique(data_joined_2018$admin_unit))
