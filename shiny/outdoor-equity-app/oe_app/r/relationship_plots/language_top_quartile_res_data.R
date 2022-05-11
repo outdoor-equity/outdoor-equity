@@ -33,7 +33,7 @@ language_top_quartile_res_data <- function(siteInput, language_group, weighted_q
       filter(language == language_group) %>% 
       drop_na(language_percentage) %>% 
       # filter rows that fall above 3rd quartile value
-      filter(race_percentage >= weighted_quartile) %>% 
+      filter(language_percentage >= weighted_quartile) %>% 
       # summarize to inner quartile range, median, and total reservations
       summarize(count = n()) %>% 
       # updated racial category name strings for plotting

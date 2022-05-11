@@ -34,8 +34,8 @@ education_top_quartile_res_plot <- function(admin_unitInput, siteInput,
   # create plot
   plotly <- ggplot(data = plot_data) +
     geom_col(aes(x = count,
-                 y = education_y_axis,
-                 fill = education_y_axis,
+                 y = education_y_lab,
+                 fill = education_y_lab,
                  text = paste0(comma(count, accuracy = 1), 
                                " reservations were made by people who live in ZIP codes<br>with high rates of people who have ", 
                                education, " as their highest level of education."))) +

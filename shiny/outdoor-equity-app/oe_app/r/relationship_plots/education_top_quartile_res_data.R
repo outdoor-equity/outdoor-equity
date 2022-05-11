@@ -37,7 +37,7 @@ education_top_quartile_res_data <- function(siteInput, education_group, weighted
       # summarize to inner quartile range, median, and total reservations
       summarize(count = n()) %>% 
       # updated educational category name strings for plotting
-      mutate(education = paste0(race_group)) %>% 
+      mutate(education = paste0(education_group)) %>% 
       relocate(education, .before = 1) %>% 
       mutate(education = str_replace_all(string = education,
                                          pattern = "_",

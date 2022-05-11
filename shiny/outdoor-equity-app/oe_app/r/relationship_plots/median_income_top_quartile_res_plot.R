@@ -26,8 +26,8 @@ median_income_top_quartile_res_plot <- function(admin_unitInput, siteInput, ridb
                                median_income_binned, "."))) +
     scale_x_continuous(labels = comma_format(accuracy = 1)) +
     scale_y_discrete(expand = c(0.2, 0)) +
-    scale_fill_manual(values = education_group_colors) +
-    scale_color_manual(values = education_group_colors) +
+    scale_fill_viridis_d(direction = -1) +
+    scale_color_viridis_d(direction = -1) +
     labs(x = paste("Number of Reservations"),
          y = "") + 
     theme_minimal() +

@@ -34,8 +34,8 @@ language_top_quartile_res_plot <- function(admin_unitInput, siteInput,
   # create plot
   plotly <- ggplot(data = plot_data) +
     geom_col(aes(x = count,
-                 y = language_y_axis,
-                 fill = language_y_axis,
+                 y = language_y_lab,
+                 fill = language_y_lab,
                  text = paste0(comma(count, accuracy = 1), 
                                " reservations were made by people who live in ZIP codes<br>with high rates of people who ", 
                                language, "."))) +

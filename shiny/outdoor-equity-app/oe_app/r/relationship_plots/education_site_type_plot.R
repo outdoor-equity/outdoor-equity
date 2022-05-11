@@ -31,9 +31,8 @@ education_site_type_plot <- function(admin_unitInput, siteInput,
   
   validate(
     need(nrow(plot_data) > 0,
-         paste0("There are either no ", site_type_string %>%
-                  str_replace(string = ., pattern = "rv", replacement = "RV"), " sites at ", siteInput, ", ", admin_unitInput,
-                " or there are no reservations at the site that come from communities that fall into the high range for any educational groups."))
+         paste0("There are no ", site_type_string %>%
+                  str_replace(string = ., pattern = "rv", replacement = "RV"), " sites at ", siteInput, ", ", admin_unitInput, "."))
   ) # EO validate
   
   # parameters
@@ -63,7 +62,7 @@ education_site_type_plot <- function(admin_unitInput, siteInput,
     # create plotly
     ggplotly(plotly,
              tooltip = list("text")) %>%
-      config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+      config(modeBarButtonsToRemove = list("zoom", "pan", "select", "lasso2d", "autoScale2d", 
                                            "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
       layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                         '<br>',
@@ -72,7 +71,9 @@ education_site_type_plot <- function(admin_unitInput, siteInput,
                                         " Sites by Visitors with Different Levels of Education"),
                           font = list(size = 15))) %>%  
       add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                      x = -0.065, xref = 'paper', y = 0.98, yref = 'paper', 
+                      x = -0.15, y = 0.9, 
+                      font = list(size = 11),
+                      xref = 'paper', yref = 'paper', 
                       showarrow = FALSE)
   
 } # EO function

@@ -30,11 +30,11 @@ race_site_type_plot <- function(admin_unitInput, siteInput,
                                               pattern = "Rv", 
                                               replacement = "RV"))
   
-  validate(need(
-    nrow(plot_data) > 0,
-    paste0("There are no ", site_type_string %>% str_replace(string = ., pattern = "Rv", replacement = "RV"), 
-           " sites at ", siteInput, ", ", admin_unitInput, ".")
-  )) # EO validate
+  validate(
+    need(nrow(plot_data) > 0,
+         paste0("There are no ", site_type_string %>%
+                  str_replace(string = ., pattern = "rv", replacement = "RV"), " sites at ", siteInput, ", ", admin_unitInput, "."))
+  ) # EO validate
   
   
   # parameters
