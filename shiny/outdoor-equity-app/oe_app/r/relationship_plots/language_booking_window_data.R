@@ -27,6 +27,7 @@ language_booking_window_data <- function(siteInput, language_group, weighted_qua
              english_only, not_english_only,
              booking_window) %>% 
       drop_na(booking_window) %>% 
+      filter(booking_window >= 0) %>% 
       pivot_longer(cols = 3:4,
                    names_to = "language",
                    values_to = "language_percentage") %>% 
