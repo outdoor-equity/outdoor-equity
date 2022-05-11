@@ -61,14 +61,16 @@ race_booking_window_plot <- function(admin_unitInput, siteInput,
   # create plotly
   ggplotly(race_distance_traveled_plotly,
            tooltip = list("text")) %>%
-    config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+    config(modeBarButtonsToRemove = list("zoom", "pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
     layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                       '<br>',
                                       'Number of Days in Advance Site is Reserved by Visitors with Different Racial Groups'),
                         font = list(size = 15))) %>%  
     add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                    x = -0.05, xref = 'paper', y = 0.95, yref = 'paper', 
+                    x = -0.15, y = 0.9, 
+                    font = list(size = 11),
+                    xref = 'paper', yref = 'paper', 
                     showarrow = FALSE)
   
 } # EO function

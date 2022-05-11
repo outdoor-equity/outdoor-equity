@@ -23,7 +23,8 @@ median_income_booking_window_data <- function(siteInput, ridb_df, median_income_
       filter(park %in% siteInput) %>%
       # select to variables of interest
       select(park, customer_zip, median_income, booking_window) %>% 
-      drop_na(median_income) %>% 
+      drop_na(median_income, booking_window) %>% 
+      filter(booking_window >= 0) %>% 
       # split data into median-income decile groups
       mutate(median_income_binned = factor(case_when(median_income <= median_income_binned[[2]] ~ 
                                                        paste(dollar(median_income_binned[[1]]), "-", dollar(median_income_binned[[2]])),

@@ -28,6 +28,7 @@ race_booking_window_data <- function(siteInput, race_group, weighted_quartile, r
              native_american, other, pacific_islander, white,
              booking_window) %>% 
       drop_na(booking_window) %>% 
+      filter(booking_window >= 0) %>% 
       pivot_longer(cols = 3:10,
                    names_to = "race",
                    values_to = "race_percentage") %>% 

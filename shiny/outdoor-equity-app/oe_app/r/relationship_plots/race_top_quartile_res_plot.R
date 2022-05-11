@@ -40,13 +40,12 @@ race_top_quartile_res_plot <- function(admin_unitInput, siteInput,
                  text = paste0(comma(count, accuracy = 1), 
                                " reservations were made by <br>people who live in ZIP codes with high ", 
                                race, " populations."))) +
-    scale_x_continuous(labels = comma) +
-    scale_y_discrete(expand = c(0.3, 0)) +
+    scale_x_continuous(labels = comma_format(accuracy = 1)) +
+    scale_y_discrete(expand = c(0.1, 0)) +
     scale_fill_manual(values = race_group_colors) +
     scale_color_manual(values = race_group_colors) +
     labs(x = paste("Number of Reservations"),
-         y = "",
-         title = paste0("Number of Reservations by <br> People from Communities with High Rates of Different Racial Groups")) + 
+         y = "") + 
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank(),
@@ -57,17 +56,11 @@ race_top_quartile_res_plot <- function(admin_unitInput, siteInput,
   # create plotly
   ggplotly(plotly,
            tooltip = list("text")) %>%
-    config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
-                                         "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
-    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
-                                      '<br>',
-                                      'Distance Traveled by Different Racial Groups'),
+    config(modeBarButtonsToRemove = list("zoom", "pan", "select", "zoomIn", "zoomOut", "lasso2d", "resetScale2d",
+                                         "autoScale2d", "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+    layout(title = list(text = paste0("Number of Reservations to this site coming from<br>ZIP codes with high proportions of:"),
                         font = list(size = 10.5)),
            height = 405,
-           width = 340) %>%
-    add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                    x = -0.55, xref = 'paper', y = 0.95, yref = 'paper', 
-                    showarrow = FALSE,
-                    font = list(size = 10.5))
+           width = 340)
   
 } # EO function
