@@ -7,20 +7,17 @@
   z-index: 2000; /* z-index are layers */
  }
  
+ /* make check boxes on data download page even columns and dynamic*/
 .shiny-input-checkboxgroup.shiny-input-container-inline label ~ .shiny-options-group {
    display: grid;
    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
  }
+ 
+ .selectize-input {
+   max-height: 200px;
+   overflow-y: scroll;
+   
+ }
 /* #test .box-header .with-border {
    display: none;
  } */
- 
-/*.checkbox-inline {
-  margin-left: 0px; 
-  margin-right: 10px;
-}
-.checkbox-inline+.checkbox-inline {
-  margin-left: 0px;
-  margin-right: 10px;
-  
-} */
