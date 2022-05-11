@@ -38,8 +38,8 @@ language_site_type_plot <- function(admin_unitInput, siteInput,
 
   
   # parameters
-  language_group_colors <- c("People Who Speak Only<br>English At Home" = "#66c2a5",
-                             "People Who Speak<br>Language(s) Other Than<br>English At Home" = "#8da0cb")
+  language_group_colors <- c("Only English<br>At Home" = "#66c2a5", 
+                             "Language(s)<br>Other Than<br>English At Home" = "#8da0cb")
   
   # create plot
   plotly <- ggplot(data = plot_data) +
@@ -51,7 +51,7 @@ language_site_type_plot <- function(admin_unitInput, siteInput,
                                " overnight reservable sites, ", comma(count, accuracy = 1), 
                                " reservations were made by <br>people who live in ZIP codes with high rates of people who ",
                                language, "."))) +
-    scale_y_discrete(expand = c(0.9, 0)) +
+    scale_y_discrete(expand = c(0.7, 0)) +
     scale_fill_manual(values = language_group_colors) +
     scale_color_manual(values = language_group_colors) +
     labs(x = paste("Number of Reservations"),
@@ -59,12 +59,13 @@ language_site_type_plot <- function(admin_unitInput, siteInput,
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank(),
-          legend.position = "none")
+          legend.position = "none",
+          plot.margin = margin(5, 5, 0, 0, unit = "pt"))
   
   # create plotly
   ggplotly(plotly,
            tooltip = list("text")) %>%
-    config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+    config(modeBarButtonsToRemove = list("zoom", "pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
     layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                       '<br>',
@@ -72,8 +73,10 @@ language_site_type_plot <- function(admin_unitInput, siteInput,
                                         str_replace(string = ., pattern = "Rv", replacement = "RV"), 
                                       " Sites by Visitors with Different Home Lanugages"),
                         font = list(size = 15))) %>%  
-    add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                    x = -0.099, xref = 'paper', y = 1, yref = 'paper', 
+    add_annotations(text = "Reservations from ZIP codes with high<br>proportionof people who speak:", 
+                    x = -0.2, y = 0.9, 
+                    font = list(size = 11),
+                    xref = 'paper', yref = 'paper', 
                     showarrow = FALSE)
   
 } # EO function

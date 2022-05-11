@@ -52,12 +52,10 @@ language_daily_cost_data <- function(siteInput, language_group, weighted_quartil
              language = str_replace(string = language,
                                     pattern = "^not english only$",
                                     replacement = "speak language(s) other than English at home"),
-             language = str_to_lower(language),
-             language = str_replace(string = language,
-                                    pattern = "english",
-                                    replacement = "English"),
-             language_y_lab = case_when(language == "speak only English at home" ~ "People Who Speak Only<br>English At Home",
-                                        language == "speak language(s) other than English at home" ~ "People Who Speak<br>Language(s) Other Than<br>English At Home"))
+             language_y_lab = case_when(language == "speak only English at home" ~ 
+                                          "Only English<br>At Home",
+                                        language == "speak language(s) other than English at home" ~ 
+                                          "Language(s)<br>Other Than<br>English At Home"))
     
   }) #EO reactive df
   

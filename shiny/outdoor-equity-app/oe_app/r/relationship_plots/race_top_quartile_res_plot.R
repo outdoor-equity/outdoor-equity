@@ -38,7 +38,7 @@ race_top_quartile_res_plot <- function(admin_unitInput, siteInput,
                  y = reorder(race, count),
                  fill = race,
                  text = paste0(comma(count, accuracy = 1), 
-                               " reservations were made by <br>people who live in ZIP codes with high ", 
+                               " reservations were made<br>by people who live in<br>ZIP codes with high<br>", 
                                race, " populations."))) +
     scale_x_continuous(labels = comma_format(accuracy = 1)) +
     scale_y_discrete(expand = c(0.1, 0)) +
