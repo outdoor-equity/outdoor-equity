@@ -32,9 +32,8 @@ language_site_type_plot <- function(admin_unitInput, siteInput,
   
   validate(
     need(nrow(plot_data) > 0,
-         paste0("There are either no ", site_type_string %>%
-                  str_replace(string = ., pattern = "Rv", replacement = "RV"), " sites at ", siteInput, ", ", admin_unitInput,
-                " or there are no reservations at the site that come from communities that fall into the high range for any language groups."))
+         paste0("There are no ", site_type_string %>%
+                  str_replace(string = ., pattern = "rv", replacement = "RV"), " sites at ", siteInput, ", ", admin_unitInput, "."))
   ) # EO validate
 
   

@@ -6,11 +6,11 @@
 #' @param weighted_quartile Value of 3rd quartile for language category
 #' @param ridb_df RIDB dataframe object name
 #'
-#' @return Reactive dataframe of all reservations that fall above 3rd quartile value for given racial category at user picked site
+#' @return Reactive dataframe of all reservations that fall above 3rd quartile value for given language category at user picked site
 #'
 #' @examples
 
-language_top_quartile_res_data <- function(siteInput, race_group, weighted_quartile, ridb_df){
+language_top_quartile_res_data <- function(siteInput, language_group, weighted_quartile, ridb_df){
   
   # reactive data frame 
   rdf <- reactive ({
@@ -30,15 +30,15 @@ language_top_quartile_res_data <- function(siteInput, race_group, weighted_quart
                    names_to = "language",
                    values_to = "language_percentage") %>% 
       # filter for specific language category
-      filter(race == race_group) %>% 
-      drop_na(race_percentage) %>% 
+      filter(language == language_group) %>% 
+      drop_na(language_percentage) %>% 
       # filter rows that fall above 3rd quartile value
-      filter(race_percentage >= weighted_quartile) %>% 
+      filter(language_percentage >= weighted_quartile) %>% 
       # summarize to inner quartile range, median, and total reservations
       summarize(count = n()) %>% 
       # updated racial category name strings for plotting
-      mutate(race = paste0(race_group)) %>% 
-      relocate(race, .before = 1) %>% 
+      mutate(language = paste0(language_group)) %>% 
+      relocate(language, .before = 1) %>% 
       mutate(language = str_replace_all(string = language,
                                         pattern = "_",
                                         replacement = " "),
