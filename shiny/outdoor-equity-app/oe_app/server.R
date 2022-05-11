@@ -182,13 +182,6 @@ server <- function(input, output, session) {
     }
   }) ## EO OE press num_viz
   
-  # RENDER UI ----
-  ## SO data relationship render ui ----
-  # output$relationships_tab_layout <- renderUI({
-  #   
-  #   
-  # })
-  
   # RENDER PLOTS ----
   ## SO DATA SUMMARY PLOTS 1 ----
   output$data_summary_plot_1 <- renderPlotly({
@@ -501,15 +494,15 @@ server <- function(input, output, session) {
     } # EO education x length of stay
 
     #### SO education x site type function ----
-    else if (input$data_relationships == "Education x Site type") {
-      
-      education_site_type_plot(
-        admin_unitInput = input$admin_unit_relationships,
-        siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018,
-        site_type_string = "equestrian"
-      )
+    # else if (input$data_relationships == "Education x Site type") {
+    #   
+    #   education_site_type_plot(
+    #     admin_unitInput = input$admin_unit_relationships,
+    #     siteInput = input$site_relationships,
+    #     education_top_quartile_df = data_education_quants,
+    #     ridb_df = data_joined_2018,
+    #     site_type_string = "equestrian"
+    #   )
       # education_site_type_plot(admin_unitInput = input$admin_unit_relationships,
       #                          siteInput = input$site_relationships,
       #                          education_top_quartile_df = data_education_quants,
@@ -541,7 +534,7 @@ server <- function(input, output, session) {
       #                          ridb_df = data_joined_2018,
       #                          site_type_string = "water")
 
-    } # EO education x site type
+    #} # EO education x site type
 
     #### SO language x booking window plot function ----
     else if (input$data_relationships == "Language x Booking window") {
@@ -854,7 +847,7 @@ server <- function(input, output, session) {
     
   }) # EO relationships plots
   
-  ### SO relationships plots ----
+  ### SO relationships high plots ----
   output$high_relationships_plot <- renderPlotly({
     
     #### SO race quartile ----
@@ -874,7 +867,44 @@ server <- function(input, output, session) {
       
     } # EO race quartile 
     
-  })
+  }) # EO relationships high plots 
+  
+  ### SO RENDER UI relationships ----
+  # SO data relationships render ui
+  output$relationships_tab_layout <- renderUI({
+    
+    if (input$data_relationships == "Education x Site type"){
+    
+    tabsetPanel(
+      tabPanel(
+        plotlyOutput(outputId = "relationships_site_equestrian_plot") %>%
+          withSpinner(color = "#0dc5c1")
+      ) # EO tabPanel
+    ) # EO tabsetPanel
+      
+    } # EO if statement
+    
+  }) # EO data relationships render ui
+  
+  
+  
+  ### SO SITE relationships plots ----
+  output$relationships_site_equestrian_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Education x Site type") {
+      
+      education_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        education_top_quartile_df = data_education_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "equestrian"
+      )
+    } 
+    
+  }) # EO SITE relationships plots
+  
+  
   
   ## SO VISITORSHEDS PLOTS YES REACTIVE ----
   ### yosemite plot ----
