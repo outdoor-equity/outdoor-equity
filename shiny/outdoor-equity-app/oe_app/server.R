@@ -920,8 +920,8 @@ server <- function(input, output, session) {
   # create RDF
   data_download_dt <- reactive({
     data_joined_2018 %>%
-      filter(park %in% input$site_data_download)
-    
+      filter(park %in% input$site_data_download) %>% 
+      select(input$cols_data_download)
   })
   # DT table
   output$data_download_table <- renderDT({
@@ -931,20 +931,22 @@ server <- function(input, output, session) {
                                         htmltools::em("Preview of selected dataset")),
       class = "cell-border stripe",
       rownames = FALSE,
-      #extensions = 'Buttons',
+      extensions = "FixedColumns", #"Buttons"
       options = list(
         server = FALSE,
         paging = TRUE,
         pageLength = 5,
         autoWidth = TRUE,
-        #buttons = c('csv', 'excel'),
-        dom = 'Brtip',
+        scrollX = TRUE,
+        fixedColumns = list(leftColumns = 3),
+        #buttons = 'colvis',
+        dom = "Brtip",
         columnDefs = list(list(
           targets = "_all",
           className = "dt-center"
-        ))
-      )
-    )
+        )) # EO columnDefs
+      ) # EO options
+    ) # EO datatable()
     
   }) # EO render data table
   
