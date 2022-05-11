@@ -62,14 +62,16 @@ race_daily_cost_plot <- function(admin_unitInput, siteInput,
   # create plotly
   ggplotly(plotly,
            tooltip = list("text")) %>%
-    config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+    config(modeBarButtonsToRemove = list("zoom", "pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
     layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                       '<br>',
                                       'Daily Costs per Reservation Paid by Different Racial Groups'),
                         font = list(size = 15))) %>% 
     add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                    x = -0.05, xref = 'paper', y = 1, yref = 'paper', 
+                    x = -0.15, y = 0.9, 
+                    font = list(size = 11),
+                    xref = 'paper', yref = 'paper', 
                     showarrow = FALSE)
 
 } # EO function

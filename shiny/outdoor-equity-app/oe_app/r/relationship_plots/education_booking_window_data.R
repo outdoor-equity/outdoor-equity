@@ -27,6 +27,7 @@ education_booking_window_data <- function(siteInput, education_group, weighted_q
              hs_GED_or_below, some_college, college, master_or_above, 
              booking_window) %>% 
       drop_na(booking_window) %>% 
+      filter(booking_window >= 0) %>% 
       pivot_longer(cols = 3:6,
                    names_to = "education",
                    values_to = "education_percentage") %>% 

@@ -49,7 +49,7 @@ race_length_of_stay_plot <- function(admin_unitInput, siteInput,
                size = 3.5, 
                shape = 21, stroke = 2) +
     scale_x_continuous(labels = comma) +
-    scale_y_discrete(expand = c(0.3, 0)) +
+    scale_y_discrete(expand = c(0.45, 0)) +
     scale_fill_manual(values = race_group_colors) +
     scale_color_manual(values = race_group_colors) +
     labs(x = paste("Estimated Length of Stay (days)"),
@@ -62,14 +62,16 @@ race_length_of_stay_plot <- function(admin_unitInput, siteInput,
   # create plotly  
   ggplotly(plotly,
            tooltip = list("text")) %>%
-    config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+    config(modeBarButtonsToRemove = list("zoom", "pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
     layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                       '<br>',
                                       'Length of Stay by Different Racial Groups'),
                         font = list(size = 15))) %>% 
     add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                    x = -0.05, xref = 'paper', y = 1, yref = 'paper', 
+                    x = -0.15, y = 0.9, 
+                    font = list(size = 11),
+                    xref = 'paper', yref = 'paper', 
                     showarrow = FALSE)
   
 } # EO function
