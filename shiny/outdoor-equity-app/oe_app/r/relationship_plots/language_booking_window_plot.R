@@ -52,7 +52,7 @@ language_booking_window_plot <- function(admin_unitInput, siteInput,
     scale_fill_manual(values = language_group_colors) +
     scale_color_manual(values = language_group_colors) +
     labs(x = "Estimated Number of Days in Advance Site is Reserved",
-         y = "") + 
+         y = NULL) + 
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank(),
