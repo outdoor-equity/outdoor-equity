@@ -495,7 +495,7 @@ server <- function(input, output, session) {
 
     #### SO education x site type function ----
     # else if (input$data_relationships == "Education x Site type") {
-    #   
+    # 
     #   education_site_type_plot(
     #     admin_unitInput = input$admin_unit_relationships,
     #     siteInput = input$site_relationships,
@@ -866,6 +866,55 @@ server <- function(input, output, session) {
       )
       
     } # EO race quartile 
+    
+    #### SO education quartile ----
+    else if (input$data_relationships %in% c("Education x Booking window",
+                                             "Education x Daily cost",
+                                             "Education x Daily cost per visitor",
+                                             "Education x Distance traveled",
+                                             "Education x Length of stay",
+                                             "Education x Site type")) {
+      
+      education_top_quartile_res_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        education_top_quartile_df = data_education_quants,
+        ridb_df = data_joined_2018
+      )
+      
+    } # EO language quartile
+    
+    else if (input$data_relationships %in% c("Language x Booking window",
+                                             "Language x Daily cost",
+                                             "Language x Daily cost per visitor",
+                                             "Language x Distance traveled",
+                                             "Language x Length of stay",
+                                             "Language x Site type")) {
+      
+      language_top_quartile_res_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        language_top_quartile_df = data_language_quants,
+        ridb_df = data_joined_2018
+      )
+      
+    } # EO median-income quartile
+    
+    else if (input$data_relationships %in% c("Median-income x Booking window",
+                                             "Median-income x Daily cost",
+                                             "Median-income x Daily cost per visitor",
+                                             "Median-income x Distance traveled",
+                                             "Median-income x Length of stay",
+                                             "Median-income x Site type")) {
+      
+      median_income_top_quartile_res_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        median_income_binned = median_income_decile_list,
+        ridb_df = data_joined_2018
+      )
+      
+    } # EO median-income quartile
     
   }) # EO relationships high plots 
   
