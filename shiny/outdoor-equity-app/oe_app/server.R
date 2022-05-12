@@ -704,15 +704,15 @@ server <- function(input, output, session) {
     } # EO race x length of stay
 
     ### SO race x site type function ----
-    else if (input$data_relationships == "Race x Site type") {
-      
-      race_site_type_plot(
-        admin_unitInput = input$admin_unit_relationships,
-        siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018,
-        site_type_string = "equestrian"
-      )
+    # else if (input$data_relationships == "Race x Site type") {
+    #   
+    #   race_site_type_plot(
+    #     admin_unitInput = input$admin_unit_relationships,
+    #     siteInput = input$site_relationships,
+    #     race_top_quartile_df = data_race_quants,
+    #     ridb_df = data_joined_2018,
+    #     site_type_string = "equestrian"
+    #   )
       # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
       #                          siteInput = input$site_relationships,
       #                          race_top_quartile_df = data_race_quants,
@@ -744,7 +744,7 @@ server <- function(input, output, session) {
       #                          ridb_df = data_joined_2018,
       #                          site_type_string = "water")
 
-    } # EO race x site type
+   # } # EO race x site type
     
   }) # EO relationships plots
   
@@ -1028,7 +1028,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE edu x remote relationships plots
+  }) # EO SITE edu x remote relationships plot
   
   # SO edu x rv only relationships plot
   output$edu_site_rvOnly_plot <- renderPlotly({
@@ -1044,7 +1044,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE edu x rv only relationships plots
+  }) # EO SITE edu x rv only relationships plot
   
   # SO edu x rv or tent relationships plot
   output$edu_site_rvTent_plot <- renderPlotly({
@@ -1060,7 +1060,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE edu x rv or tent relationships plots
+  }) # EO SITE edu x rv or tent relationships plot
   
   # SO edu x shelter relationships plot
   output$edu_site_shelter_plot <- renderPlotly({
@@ -1076,7 +1076,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE edu x shelter relationships plots
+  }) # EO SITE edu x shelter relationships plot
   
   # SO edu x tent only relationships plot
   output$edu_site_tentOnly_plot <- renderPlotly({
@@ -1092,7 +1092,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE edu x tent only relationships plots
+  }) # EO SITE edu x tent only relationships plot
   
   # SO edu x water relationships plot
   output$edu_site_water_plot <- renderPlotly({
@@ -1108,7 +1108,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE edu x water relationships plots
+  }) # EO SITE edu x water relationships plot
   
   #### SO language x site ----
   # SO language x equestrian relationships plot
@@ -1141,7 +1141,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE language x remote relationships plots
+  }) # EO SITE language x remote relationships plot
   
   # SO language x rv only relationships plot
   output$lang_site_rvOnly_plot <- renderPlotly({
@@ -1157,7 +1157,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE language x rv only relationships plots
+  }) # EO SITE language x rv only relationships plot
   
   # SO language x rv or tent relationships plot
   output$lang_site_rvTent_plot <- renderPlotly({
@@ -1173,7 +1173,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE language x rv or tent relationships plots
+  }) # EO SITE language x rv or tent relationships plot
   
   # SO language x shelter relationships plot
   output$lang_site_shelter_plot <- renderPlotly({
@@ -1189,7 +1189,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE language x shelter relationships plots
+  }) # EO SITE language x shelter relationships plot
   
   # SO language x tent only relationships plot
   output$lang_site_tentOnly_plot <- renderPlotly({
@@ -1205,7 +1205,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE language x tent only relationships plots
+  }) # EO SITE language x tent only relationships plot
   
   # SO language x water relationships plot
   output$lang_site_water_plot <- renderPlotly({
@@ -1221,7 +1221,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE language x water relationships plots
+  }) # EO SITE language x water relationships plot
   
   #### SO median-income x site ----
   # SO median-income x equestrian relationships plot
@@ -1254,7 +1254,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE median-income x remote relationships plots
+  }) # EO SITE median-income x remote relationships plot
   
   # SO median-income x rv only relationships plot
   output$medInc_site_rvOnly_plot <- renderPlotly({
@@ -1270,7 +1270,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE median-income x rv only relationships plots
+  }) # EO SITE median-income x rv only relationships plot
   
   # SO median-income x rv or tent relationships plot
   output$medInc_site_rvTent_plot <- renderPlotly({
@@ -1286,7 +1286,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE median-income x rv or tent relationships plots
+  }) # EO SITE median-income x rv or tent relationships plot
   
   # SO median-income x shelter relationships plot
   output$medInc_site_shelter_plot <- renderPlotly({
@@ -1302,7 +1302,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE median-income x shelter relationships plots
+  }) # EO SITE median-income x shelter relationships plot
   
   # SO median-income x tent only relationships plot
   output$medInc_site_tentOnly_plot <- renderPlotly({
@@ -1318,7 +1318,7 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE median-income x tent only relationships plots
+  }) # EO SITE median-income x tent only relationships plot
   
   # SO median-income x water relationships plot
   output$medInc_site_water_plot <- renderPlotly({
@@ -1334,8 +1334,120 @@ server <- function(input, output, session) {
       )
     }
     
-  }) # EO SITE median-income x water relationships plots
+  }) # EO SITE median-income x water relationships plot
   
+  #### SO race x site ----
+  # SO race x equestrian relationships plot
+  output$race_site_equestrian_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Race x Site type") {
+      
+      race_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        race_top_quartile_df = data_race_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "equestrian"
+      )
+    }
+    
+  }) # EO SITE race x equestrian relationships plot
+  
+  # SO race x remote relationships plot
+  output$race_site_remote_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Race x Site type") {
+      
+      race_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        race_top_quartile_df = data_race_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "remote"
+      )
+    }
+    
+  }) # EO SITE race x remote relationships plot
+  
+  # SO race x rv only relationships plot
+  output$race_site_rvOnly_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Race x Site type") {
+      
+      race_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        race_top_quartile_df = data_race_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "rv only"
+      )
+    }
+    
+  }) # EO SITE race x rv only relationships plot
+  
+  # SO race x rv or tent relationships plot
+  output$race_site_rvTent_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Race x Site type") {
+      
+      race_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        race_top_quartile_df = data_race_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "rv or tent"
+      )
+    }
+    
+  }) # EO SITE race x rv or tent relationships plot
+  
+  # SO race x shelter relationships plot
+  output$race_site_shelter_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Race x Site type") {
+      
+      race_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        race_top_quartile_df = data_race_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "shelter"
+      )
+    }
+    
+  }) # EO SITE race x shelter relationships plot
+  
+  # SO race x tent only relationships plot
+  output$race_site_tentOnly_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Race x Site type") {
+      
+      race_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        race_top_quartile_df = data_race_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "tent only"
+      )
+    }
+    
+  }) # EO SITE race x tent only relationships plot
+  
+  # SO race x water relationships plot
+  output$race_site_water_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Race x Site type") {
+      
+      race_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        race_top_quartile_df = data_race_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "water"
+      )
+    }
+    
+  }) # EO SITE race x water relationships plot
   
   
   
