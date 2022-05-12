@@ -26,7 +26,9 @@ ui <- fluidPage(
     "Visualize RIDB Data",
     
     ## About tab ----
-    tabPanel("About", icon = icon("info-circle")
+    tabPanel("About", 
+             includeMarkdown("./text/about.md"),
+             icon = icon("info-circle")
                # 
                # tabPanel(title = "Background",
                #          # Note(HD): need . in front of file path for relative path
