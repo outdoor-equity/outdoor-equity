@@ -29,23 +29,6 @@ ui <- fluidPage(
     tabPanel("About", 
              includeMarkdown("./text/about.md"),
              icon = icon("info-circle")
-               # 
-               # tabPanel(title = "Background",
-               #          # Note(HD): need . in front of file path for relative path
-               #          includeMarkdown("./text/background-about.md")
-               # ), # EO Background tabPanel
-               # 
-               # 
-               # tabPanel(title = "User Guide",
-               #          includeMarkdown("./text/userGuide-about.md")
-               # ), # EO User Guide tabPanel
-               # 
-               # 
-               # tabPanel(title = "Metadata",
-               #          # Note(HD): need to change this to a rmd file to include DT table
-               #          includeMarkdown("./text/metadata-about.md")
-               #          
-               # )
                ), ## EO About tab ----
     
     ## Analysis tab ---- 
