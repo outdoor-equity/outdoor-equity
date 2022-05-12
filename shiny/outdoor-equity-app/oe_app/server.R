@@ -955,10 +955,12 @@ server <- function(input, output, session) {
     if (input$data_relationships == "Education x Site type"){
     
     tabsetPanel(
-      tabPanel(title = "Education x Equestrian Site type",
+      tabPanel(title = "Equestrian",
         plotlyOutput(outputId = "relationships_site_equestrian_plot") %>%
           withSpinner(color = "#0dc5c1")
-      ) # EO tabPanel
+      ), # EO tabPanel edu x equestrian
+      
+      #tabPanel(title = "Education x ")
     ) # EO tabsetPanel
       
     } # EO if statement
@@ -979,9 +981,11 @@ server <- function(input, output, session) {
         ridb_df = data_joined_2018,
         site_type_string = "equestrian"
       )
-    } 
+    }
     
-  }) # EO SITE relationships plots
+  }) # EO SITE edu x equestrian relationships plots
+  
+  output$relation
   
   
   
