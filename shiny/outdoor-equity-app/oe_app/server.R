@@ -645,14 +645,14 @@ server <- function(input, output, session) {
 
     ### SO median-income x site type function ----
     # else if (input$data_relationships == "Median-income x Site type") {
-    #   
-    #   median_income_site_type_plot(
-    #     admin_unitInput = input$admin_unit_relationships,
-    #     siteInput = input$site_relationships,
-    #     ridb_df = data_joined_2018,
-    #     median_income_binned = median_income_decile_list,
-    #     site_type_string = "equestrian"
-    #   )
+
+      # median_income_site_type_plot(
+      #   admin_unitInput = input$admin_unit_relationships,
+      #   siteInput = input$site_relationships,
+      #   ridb_df = data_joined_2018,
+      #   median_income_binned = median_income_decile_list,
+      #   site_type_string = "equestrian"
+      # )
     #   # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
     #   #                          siteInput = input$site_relationships,
     #   #                          ridb_df = data_joined_2018,
@@ -1117,10 +1117,10 @@ server <- function(input, output, session) {
     
     if (input$data_relationships == "Language x Site type") {
       
-      education_site_type_plot(
+      language_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
+        language_top_quartile_df = data_language_quants,
         ridb_df = data_joined_2018,
         site_type_string = "equestrian"
       )
@@ -1133,10 +1133,10 @@ server <- function(input, output, session) {
     
     if (input$data_relationships == "Language x Site type") {
       
-      education_site_type_plot(
+      language_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
+        language_top_quartile_df = data_language_quants,
         ridb_df = data_joined_2018,
         site_type_string = "remote"
       )
@@ -1149,10 +1149,10 @@ server <- function(input, output, session) {
     
     if (input$data_relationships == "Language x Site type") {
       
-      education_site_type_plot(
+      language_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
+        language_top_quartile_df = data_language_quants,
         ridb_df = data_joined_2018,
         site_type_string = "rv only"
       )
@@ -1165,10 +1165,10 @@ server <- function(input, output, session) {
     
     if (input$data_relationships == "Language x Site type") {
       
-      education_site_type_plot(
+      language_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
+        language_top_quartile_df = data_language_quants,
         ridb_df = data_joined_2018,
         site_type_string = "rv or tent"
       )
@@ -1181,10 +1181,10 @@ server <- function(input, output, session) {
     
     if (input$data_relationships == "Language x Site type") {
       
-      education_site_type_plot(
+      language_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
+        language_top_quartile_df = data_language_quants,
         ridb_df = data_joined_2018,
         site_type_string = "shelter"
       )
@@ -1197,10 +1197,10 @@ server <- function(input, output, session) {
     
     if (input$data_relationships == "Language x Site type") {
       
-      education_site_type_plot(
+      language_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
+        language_top_quartile_df = data_language_quants,
         ridb_df = data_joined_2018,
         site_type_string = "tent only"
       )
@@ -1213,16 +1213,129 @@ server <- function(input, output, session) {
     
     if (input$data_relationships == "Language x Site type") {
       
-      education_site_type_plot(
+      language_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
+        language_top_quartile_df = data_language_quants,
         ridb_df = data_joined_2018,
         site_type_string = "water"
       )
     }
     
   }) # EO SITE language x water relationships plots
+  
+  #### SO median-income x site ----
+  # SO median-income x equestrian relationships plot
+  output$medInc_site_equestrian_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Median-income x Site type") {
+      
+      median_income_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        ridb_df = data_joined_2018,
+        median_income_binned = median_income_decile_list,
+        site_type_string = "equestrian"
+      )
+    }
+    
+  }) # EO SITE median-income x equestrian relationships plot
+  
+  # SO median-income x remote relationships plot
+  output$medInc_site_remote_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Median-income x Site type") {
+      
+      median_income_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        ridb_df = data_joined_2018,
+        median_income_binned = median_income_decile_list,
+        site_type_string = "remote"
+      )
+    }
+    
+  }) # EO SITE median-income x remote relationships plots
+  
+  # SO median-income x rv only relationships plot
+  output$medInc_site_rvOnly_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Median-income x Site type") {
+      
+      median_income_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        ridb_df = data_joined_2018,
+        median_income_binned = median_income_decile_list,
+        site_type_string = "rv only"
+      )
+    }
+    
+  }) # EO SITE median-income x rv only relationships plots
+  
+  # SO median-income x rv or tent relationships plot
+  output$medInc_site_rvTent_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Median-income x Site type") {
+      
+      median_income_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        ridb_df = data_joined_2018,
+        median_income_binned = median_income_decile_list,
+        site_type_string = "rv or tent"
+      )
+    }
+    
+  }) # EO SITE median-income x rv or tent relationships plots
+  
+  # SO median-income x shelter relationships plot
+  output$medInc_site_shelter_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Median-income x Site type") {
+      
+      median_income_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        ridb_df = data_joined_2018,
+        median_income_binned = median_income_decile_list,
+        site_type_string = "shelter"
+      )
+    }
+    
+  }) # EO SITE median-income x shelter relationships plots
+  
+  # SO median-income x tent only relationships plot
+  output$medInc_site_tentOnly_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Median-income x Site type") {
+      
+      median_income_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        ridb_df = data_joined_2018,
+        median_income_binned = median_income_decile_list,
+        site_type_string = "tent only"
+      )
+    }
+    
+  }) # EO SITE median-income x tent only relationships plots
+  
+  # SO median-income x water relationships plot
+  output$medInc_site_water_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Median-income x Site type") {
+      
+      median_income_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        ridb_df = data_joined_2018,
+        median_income_binned = median_income_decile_list,
+        site_type_string = "water"
+      )
+    }
+    
+  }) # EO SITE median-income x water relationships plots
   
   
   
