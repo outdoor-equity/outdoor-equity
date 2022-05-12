@@ -42,6 +42,9 @@ data_geometries_us <- readRDS("data/2018_data_map_us_yosemite_upper_pines_geomet
 data_geometries_us_simple <- data_geometries_us %>% rmapshaper::ms_simplify(keep = 0.006)
 
 # SOURCE FUNCTIONS ----
+## source about page plotly functions ----
+source("text/r/not_reactive_booking_window_plot.R")
+
 ## source input functions ----
 source("r/inputs/select_agency.R")
 source("r/inputs/select_admin_unit.R")

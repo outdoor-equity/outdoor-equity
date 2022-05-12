@@ -26,10 +26,34 @@ ui <- fluidPage(
     "Visualize RIDB Data",
     
     ## About tab ----
-    tabPanel("About", 
-             includeMarkdown("./text/about.md"),
-             icon = icon("info-circle")
-               ), ## EO About tab ----
+    tabPanel("About",
+             # includeMarkdown("./text/about.Rmd"),
+             # icon = icon("info-circle")
+             # EO About FR layout
+             fluidRow(
+               # SO About background
+               box(width = 12,
+                   title = "What is outdoor recreation and why does it matter?",
+                   includeMarkdown("text/about_background.md")
+               ), # EO About background
+               # SO about app
+               box(width = 12,
+                   title = "What is the Outdoor Equity App?",
+                   includeMarkdown("text/about_app.md")
+               )
+             ), # EO about app
+             # SO about examples
+             box(id = "relationships_outputs",
+                 width = 12,
+                 plotlyOutput(outputId = "examples_plot") %>%
+                   withSpinner(color = "#64863C"),
+                 uiOutput(outputId = "relationships_tab_layout")
+                 
+                 # plotlyOutput("about_booking_window") %>%
+                 #   withSpinner(color = "#64863C"
+             )
+             ) # EO About FR layout
+    ), ## EO About tab ----
     
     ## Analysis tab ---- 
     navbarMenu("Analysis", icon = icon("chart-bar"),

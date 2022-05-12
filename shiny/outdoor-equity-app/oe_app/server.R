@@ -1,5 +1,6 @@
 # server instructions ----
 server <- function(input, output, session) {
+  
   # OBSERVE EVENTS ----
   ## SO OE press agency ----
   ### summary box 1 ----
@@ -213,6 +214,16 @@ server <- function(input, output, session) {
   }) ## EO OE press site relationships
   
   # RENDER PLOTS ----
+  
+  
+  ## SO ABOUT PAGE PLOTS ----
+  output$about_booking_window <- renderPlotly({
+    ### SO booking window ----
+    not_reactive_booking_window_plot(admin_unit = "Yosemite National Park", 
+                                     site = "Upper Pines", 
+                                     ridb_df = data_joined_2018)
+  }) # OE About page plots
+  
   ## SO DATA SUMMARY PLOTS 1 ----
   output$data_summary_plot_1 <- renderPlotly({
     ### SO distance traveled ----
