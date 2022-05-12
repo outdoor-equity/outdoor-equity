@@ -583,49 +583,6 @@ server <- function(input, output, session) {
 
     } # EO language x length of stay
 
-    #### SO language x site type function ----
-    # else if (input$data_relationships == "Language x Site type") {
-    #   
-    #   language_site_type_plot(
-    #     admin_unitInput = input$admin_unit_relationships,
-    #     siteInput = input$site_relationships,
-    #     language_top_quartile_df = data_language_quants,
-    #     ridb_df = data_joined_2018,
-    #     site_type_string = "equestrian"
-    #   )
-      # language_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          language_top_quartile_df = data_language_quants,
-      #                          ridb_df = data_joined_2018,
-      #                          site_type_string = "remote")
-      # language_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          language_top_quartile_df = data_language_quants,
-      #                          ridb_df = data_joined_2018,
-      #                          site_type_string = "rv only")
-      # language_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          language_top_quartile_df = data_language_quants,
-      #                          ridb_df = data_joined_2018,
-      #                          site_type_string = "rv or tent")
-      # language_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          language_top_quartile_df = data_language_quants,
-      #                          ridb_df = data_joined_2018,
-      #                          site_type_string = "shelter")
-      # language_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          language_top_quartile_df = data_language_quants,
-      #                          ridb_df = data_joined_2018,
-      #                          site_type_string = "tent only")
-      # language_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          language_top_quartile_df = data_language_quants,
-      #                          ridb_df = data_joined_2018,
-      #                          site_type_string = "water")
-
-    #} # EO language x site type
-
     ### SO median-income x booking window plot function ----
     else if (input$data_relationships == "Median-income x Booking window") {
       
@@ -687,47 +644,47 @@ server <- function(input, output, session) {
     } # EO median-income x length of stay
 
     ### SO median-income x site type function ----
-    else if (input$data_relationships == "Median-income x Site type") {
-      
-      median_income_site_type_plot(
-        admin_unitInput = input$admin_unit_relationships,
-        siteInput = input$site_relationships,
-        ridb_df = data_joined_2018,
-        median_income_binned = median_income_decile_list,
-        site_type_string = "equestrian"
-      )
-      # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          ridb_df = data_joined_2018,
-      #                          median_income_binned = median_income_decile_list,
-      #                          site_type_string = "remote")
-      # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          ridb_df = data_joined_2018,
-      #                          median_income_binned = median_income_decile_list,
-      #                          site_type_string = "rv only")
-      # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          ridb_df = data_joined_2018,
-      #                          median_income_binned = median_income_decile_list,
-      #                          site_type_string = "rv or tent")
-      # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          ridb_df = data_joined_2018,
-      #                          median_income_binned = median_income_decile_list,
-      #                          site_type_string = "shelter")
-      # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          ridb_df = data_joined_2018,
-      #                          median_income_binned = median_income_decile_list,
-      #                          site_type_string = "tent only")
-      # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          ridb_df = data_joined_2018,
-      #                          median_income_binned = median_income_decile_list,
-      #                          site_type_string = "water")
-
-    } # EO median-income x site type
+    # else if (input$data_relationships == "Median-income x Site type") {
+    #   
+    #   median_income_site_type_plot(
+    #     admin_unitInput = input$admin_unit_relationships,
+    #     siteInput = input$site_relationships,
+    #     ridb_df = data_joined_2018,
+    #     median_income_binned = median_income_decile_list,
+    #     site_type_string = "equestrian"
+    #   )
+    #   # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+    #   #                          siteInput = input$site_relationships,
+    #   #                          ridb_df = data_joined_2018,
+    #   #                          median_income_binned = median_income_decile_list,
+    #   #                          site_type_string = "remote")
+    #   # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+    #   #                          siteInput = input$site_relationships,
+    #   #                          ridb_df = data_joined_2018,
+    #   #                          median_income_binned = median_income_decile_list,
+    #   #                          site_type_string = "rv only")
+    #   # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+    #   #                          siteInput = input$site_relationships,
+    #   #                          ridb_df = data_joined_2018,
+    #   #                          median_income_binned = median_income_decile_list,
+    #   #                          site_type_string = "rv or tent")
+    #   # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+    #   #                          siteInput = input$site_relationships,
+    #   #                          ridb_df = data_joined_2018,
+    #   #                          median_income_binned = median_income_decile_list,
+    #   #                          site_type_string = "shelter")
+    #   # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+    #   #                          siteInput = input$site_relationships,
+    #   #                          ridb_df = data_joined_2018,
+    #   #                          median_income_binned = median_income_decile_list,
+    #   #                          site_type_string = "tent only")
+    #   # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
+    #   #                          siteInput = input$site_relationships,
+    #   #                          ridb_df = data_joined_2018,
+    #   #                          median_income_binned = median_income_decile_list,
+    #   #                          site_type_string = "water")
+    # 
+    # } # EO median-income x site type
 
     ### SO race x booking window plot function ----
     else if (input$data_relationships == "Race x Booking window") {
@@ -854,7 +811,7 @@ server <- function(input, output, session) {
       
     } # EO race quartile 
     
-    #### SO education quartile ----
+    ### SO education quartile ----
     else if (input$data_relationships %in% c("Education x Booking window",
                                              "Education x Daily cost",
                                              "Education x Daily cost per visitor",
@@ -869,8 +826,9 @@ server <- function(input, output, session) {
         ridb_df = data_joined_2018
       )
       
-    } # EO language quartile
+    } # EO education quartile
     
+    ### SO language quartile ----
     else if (input$data_relationships %in% c("Language x Booking window",
                                              "Language x Daily cost",
                                              "Language x Daily cost per visitor",
@@ -885,8 +843,9 @@ server <- function(input, output, session) {
         ridb_df = data_joined_2018
       )
       
-    } # EO median-income quartile
+    } # EO language quartile
     
+    ### SO median-income quartile ----
     else if (input$data_relationships %in% c("Median-income x Booking window",
                                              "Median-income x Daily cost",
                                              "Median-income x Daily cost per visitor",
@@ -909,7 +868,7 @@ server <- function(input, output, session) {
   #SO education site type relationships render ui
   output$relationships_tab_layout <- renderUI({
     
-    #### SO education ----
+    #### SO education x site ----
     if (input$data_relationships == "Education x Site type"){
     
     tabsetPanel(
@@ -949,49 +908,91 @@ server <- function(input, output, session) {
       ), # EO tabPanel edu x tent only
       
     ) # EO edu tabsetPanel
-    } # EO if statement
+    } # EO if edu statement
     
-    #### SO language ----
-    else if (input$data_relationships == "Education x Site type"){
+    ### SO language x site ----
+    else if (input$data_relationships == "Language x Site type"){
       
       tabsetPanel(
         tabPanel(title = "Equestrian",
-                 plotlyOutput(outputId = "edu_site_equestrian_plot") %>%
+                 plotlyOutput(outputId = "lang_site_equestrian_plot") %>%
                    withSpinner(color = "#0dc5c1")
-        ), # EO tabPanel edu x equestrian
+        ), # EO tabPanel language x equestrian
         
         tabPanel(title = "Remote",
-                 plotlyOutput(outputId = "edu_site_remote_plot") %>%
+                 plotlyOutput(outputId = "lang_site_remote_plot") %>%
                    withSpinner(color = "#0dc5c1")
-        ), # EO tabPanel edu x remote
+        ), # EO tabPanel language x remote
         
         tabPanel(title = "RV only",
-                 plotlyOutput(outputId = "edu_site_rvOnly_plot") %>%
+                 plotlyOutput(outputId = "lang_site_rvOnly_plot") %>%
                    withSpinner(color = "#0dc5c1")
-        ), # EO tabPanel edu x rv only
+        ), # EO tabPanel language x rv only
         
         tabPanel(title = "RV or Tent",
-                 plotlyOutput(outputId = "edu_site_rvTent_plot") %>%
+                 plotlyOutput(outputId = "lang_site_rvTent_plot") %>%
                    withSpinner(color = "#0dc5c1")
-        ), # EO tabPanel edu x rv or tent
+        ), # EO tabPanel language x rv or tent
         
         tabPanel(title = "Shelter",
-                 plotlyOutput(outputId = "edu_site_shelter_plot") %>%
+                 plotlyOutput(outputId = "lang_site_shelter_plot") %>%
                    withSpinner(color = "#0dc5c1")
-        ), # EO tabPanel edu x shelter
+        ), # EO tabPanel language x shelter
         
         tabPanel(title = "Tent only",
-                 plotlyOutput(outputId = "edu_site_tentOnly_plot") %>%
+                 plotlyOutput(outputId = "lang_site_tentOnly_plot") %>%
                    withSpinner(color = "#0dc5c1")
-        ), # EO tabPanel edu x tent only
+        ), # EO tabPanel language x tent only
         
         tabPanel(title = "Water",
-                 plotlyOutput(outputId = "edu_site_water_plot") %>%
+                 plotlyOutput(outputId = "lang_site_water_plot") %>%
                    withSpinner(color = "#0dc5c1")
-        ), # EO tabPanel edu x tent only
+        ), # EO tabPanel language x tent only
         
-      ) # EO edu tabsetPanel
-    } # EO else if statement
+      ) # EO language tabsetPanel
+    } # EO else if language statement
+    
+    ### SO median-income x site ----
+    else if (input$data_relationships == "Median-income x Site type"){
+      
+      tabsetPanel(
+        tabPanel(title = "Equestrian",
+                 plotlyOutput(outputId = "medInc_site_equestrian_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel median-income x equestrian
+        
+        tabPanel(title = "Remote",
+                 plotlyOutput(outputId = "medInc_site_remote_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel median-income x remote
+        
+        tabPanel(title = "RV only",
+                 plotlyOutput(outputId = "medInc_site_rvOnly_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel median-income x rv only
+        
+        tabPanel(title = "RV or Tent",
+                 plotlyOutput(outputId = "medInc_site_rvTent_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel median-income x rv or tent
+        
+        tabPanel(title = "Shelter",
+                 plotlyOutput(outputId = "medInc_site_shelter_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel median-income x shelter
+        
+        tabPanel(title = "Tent only",
+                 plotlyOutput(outputId = "medInc_site_tentOnly_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel median-income x tent only
+        
+        tabPanel(title = "Water",
+                 plotlyOutput(outputId = "medInc_site_water_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel median-income x tent only
+        
+      ) # EO median-income tabsetPanel
+    } # EO else if median-income statement
     
   }) # EO data relationships render ui
   
@@ -1109,6 +1110,119 @@ server <- function(input, output, session) {
     }
     
   }) # EO SITE edu x water relationships plots
+  
+  #### SO language x site ----
+  # SO language x equestrian relationships plot
+  output$lang_site_equestrian_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Language x Site type") {
+      
+      education_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        education_top_quartile_df = data_education_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "equestrian"
+      )
+    }
+    
+  }) # EO SITE language x equestrian relationships plot
+  
+  # SO language x remote relationships plot
+  output$lang_site_remote_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Language x Site type") {
+      
+      education_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        education_top_quartile_df = data_education_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "remote"
+      )
+    }
+    
+  }) # EO SITE language x remote relationships plots
+  
+  # SO language x rv only relationships plot
+  output$lang_site_rvOnly_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Language x Site type") {
+      
+      education_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        education_top_quartile_df = data_education_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "rv only"
+      )
+    }
+    
+  }) # EO SITE language x rv only relationships plots
+  
+  # SO language x rv or tent relationships plot
+  output$lang_site_rvTent_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Language x Site type") {
+      
+      education_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        education_top_quartile_df = data_education_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "rv or tent"
+      )
+    }
+    
+  }) # EO SITE language x rv or tent relationships plots
+  
+  # SO language x shelter relationships plot
+  output$lang_site_shelter_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Language x Site type") {
+      
+      education_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        education_top_quartile_df = data_education_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "shelter"
+      )
+    }
+    
+  }) # EO SITE language x shelter relationships plots
+  
+  # SO language x tent only relationships plot
+  output$lang_site_tentOnly_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Language x Site type") {
+      
+      education_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        education_top_quartile_df = data_education_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "tent only"
+      )
+    }
+    
+  }) # EO SITE language x tent only relationships plots
+  
+  # SO language x water relationships plot
+  output$lang_site_water_plot <- renderPlotly({
+    
+    if (input$data_relationships == "Language x Site type") {
+      
+      education_site_type_plot(
+        admin_unitInput = input$admin_unit_relationships,
+        siteInput = input$site_relationships,
+        education_top_quartile_df = data_education_quants,
+        ridb_df = data_joined_2018,
+        site_type_string = "water"
+      )
+    }
+    
+  }) # EO SITE language x water relationships plots
   
   
   
