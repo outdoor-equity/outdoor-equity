@@ -49,9 +49,9 @@ language_top_quartile_res_data <- function(siteInput, language_group, weighted_q
                                     pattern = "^not english only$",
                                     replacement = "speak language(s) other than English at home"),
              language_y_lab = case_when(language == "speak only English at home" ~ 
-                                          "People Who Speak Only<br>English At Home",
+                                          "Only English At Home",
                                         language == "speak language(s) other than English at home" ~ 
-                                          "People Who Speak<br>Language(s) Other Than<br>English At Home"))
+                                          "Language(s) Other Than English At Home"))
   })
   
   return(rdf())

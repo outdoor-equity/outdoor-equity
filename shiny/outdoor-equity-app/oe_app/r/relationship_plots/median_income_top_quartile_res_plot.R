@@ -22,7 +22,7 @@ median_income_top_quartile_res_plot <- function(admin_unitInput, siteInput, ridb
                  y = median_income_binned,
                  fill = median_income_binned,
                  text = paste0(comma(count, accuracy = 1), 
-                               " reservations were made by people who live in ZIP codes<br>with median-incomes between ", 
+                               " reservations were made<br>by people who live in ZIP codes<br>with median-incomes between<br>", 
                                median_income_binned, "."))) +
     scale_x_continuous(labels = comma_format(accuracy = 1)) +
     scale_y_discrete(expand = c(0.2, 0)) +
@@ -40,8 +40,8 @@ median_income_top_quartile_res_plot <- function(admin_unitInput, siteInput, ridb
   # create plotly
   ggplotly(plotly,
            tooltip = list("text")) %>%
-    config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
-                                         "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
+    config(modeBarButtonsToRemove = list("zoom", "pan", "select", "zoomIn", "zoomOut", "lasso2d", "resetScale2d",
+                                         "autoScale2d", "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
     layout(title = list(text = paste0("Reservations to this site from<br>ZIP codes with median-incomes of:"),
                         font = list(size = 10.5)),
            height = 405,
