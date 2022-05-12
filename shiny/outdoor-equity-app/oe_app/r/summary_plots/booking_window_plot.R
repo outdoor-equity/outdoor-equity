@@ -86,8 +86,8 @@ booking_window_plot <- function(admin_unitInput, siteInput){
                      col = hist_colors[[2]], size = 0.05) +
       geom_vline(xintercept = 180, 
                  linetype = "dashed", size = .3, alpha = .5) +
-      annotate("text", label = "6 months", 
-               x = 210, y = 10) +
+      annotate("text", label = "6 months",  size = 3,
+               x = 180, y = 10) +
       labs(x = "Days in advance before visit (each bar = 1 week)",
            y = "") +
       scale_x_continuous(limits = c(0, x_max)) +
@@ -114,12 +114,12 @@ booking_window_plot <- function(admin_unitInput, siteInput){
                      col = hist_colors[[2]], size = 0.05) +
       geom_vline(xintercept = 180, 
                  linetype = "dashed", size = .3, alpha = .5) +
-      annotate("text", label = "6 months", 
-               x = 210, y = 10) +
+      annotate("text", label = "6 months", size = 3,
+               x = 180, y = 10) +
       geom_vline(xintercept = 360,
                  linetype = "dashed", size = .3, alpha = .5) +
-      annotate("text", label = "1 year",
-               x = 380, y = 10) +
+      annotate("text", label = "1 year", size = 3,
+               x = 360, y = 10) +
       labs(x = "Days in advance before visit (each bar = 1 week)",
            y = "") +
       scale_x_continuous(limits = c(0, x_max)) +
