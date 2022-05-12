@@ -702,50 +702,6 @@ server <- function(input, output, session) {
       )
 
     } # EO race x length of stay
-
-    ### SO race x site type function ----
-    # else if (input$data_relationships == "Race x Site type") {
-    #   
-    #   race_site_type_plot(
-    #     admin_unitInput = input$admin_unit_relationships,
-    #     siteInput = input$site_relationships,
-    #     race_top_quartile_df = data_race_quants,
-    #     ridb_df = data_joined_2018,
-    #     site_type_string = "equestrian"
-    #   )
-      # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          race_top_quartile_df = data_race_quants,
-      #                          ridb_df = data_joined_2018,
-      #                          site_type_string = "remote")
-      # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          race_top_quartile_df = data_race_quants,
-      #                          ridb_df = data_joined_2018,
-      #                          site_type_string = "rv only")
-      # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          race_top_quartile_df = data_race_quants,
-      #                          ridb_df = data_joined_2018,
-      #                          site_type_string = "rv or tent")
-      # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          race_top_quartile_df = data_race_quants,
-      #                          ridb_df = data_joined_2018,
-      #                          site_type_string = "shelter")
-      # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          race_top_quartile_df = data_race_quants,
-      #                          ridb_df = data_joined_2018,
-      #                          site_type_string = "tent only")
-      # race_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-      #                          siteInput = input$site_relationships,
-      #                          race_top_quartile_df = data_race_quants,
-      #                          ridb_df = data_joined_2018,
-      #                          site_type_string = "water")
-
-   # } # EO race x site type
-    
   }) # EO relationships plots
   
   ### SO relationships high plots ----
