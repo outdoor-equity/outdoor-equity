@@ -46,14 +46,18 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
   
   
   # parameters
-  hist_colors <- c("#009900FF", "#00c000")
+  hist_colors <- c("#64863C", "#466C04")
+  quant_80_color <- c("#97D4EA")
+  caption_color <- c("#345D96")
   
   # plot for shiny app
   dist_travel_plotly <- ggplot(data = dist_travel_rdf()) +
     geom_histogram(aes(x = distance_traveled_mi,
                        text = paste0(percent(..count.. / nrow(dist_travel_rdf()), accuracy = 0.1), 
                                      " of all reservations traveled between ", comma(xmin, accuracy = 1), " and ", 
-                                     comma(xmax, accuracy = 1), " miles", "<br>(All reservations to site: ",
+                                     comma(xmax, accuracy = 1), " miles", 
+                                     "<br>",
+                                     "(Total reservations to site: ",
                                      comma(nrow(dist_travel_rdf()), accuracy = 1), ")")),
                    binwidth = center_bin * 2,
                    center = center_bin,
@@ -61,7 +65,7 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
                    col = hist_colors[[2]], size = 0.05) +
     scale_x_continuous(limits = c(0, x_max)) +
     geom_vline(xintercept = quant_80,
-               linetype = "dashed", alpha = 0.5, color = "#000099") +
+               linetype = "dashed", alpha = 0.5, color = quant_80_color) +
     labs(x = "Distance traveled (miles)",
          y = "") +
     theme_minimal() +
@@ -79,12 +83,14 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
            xaxis = list(separatethousands = TRUE),
            yaxis = list(separatethousands = TRUE),
            annotations =  list(x = x_max/2, y = -0.6, 
-                               text = paste0("80% of reservations to traveled less than ", '<b>', quant_80, '</b>', " miles <br>(shown on plot with dotted line)."), 
+                               text = paste0("80% of reservations to traveled less than ", '<b>', quant_80, '</b>', " miles", 
+                                             "<br>", 
+                                             "(shown on plot with blue dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'middle', yanchor = 'auto', 
                                xshift = 0, yshift = 0,
-                               font = list(size = 12, color = "#000099"))) %>%
+                               font = list(size = 12, color = caption_color))) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian"))
   

@@ -32,7 +32,7 @@ site_type_plot <- function(admin_unitInput, siteInput){
   })
   
   # parameters
-  hist_colors <- c("#009900FF")
+  hist_colors <- c("#64863C")
   
   # if statement for an empty df
   col <- geom_col()
@@ -41,14 +41,16 @@ site_type_plot <- function(admin_unitInput, siteInput){
     col <- geom_col(aes(x = n/sum(n), 
                         y = reorder(aggregated_site_type, n), 
                         text = paste0(percent(n/sum(n), accuracy = 1), " of reservations were made to ", 
-                                      aggregated_site_type, " sites", "<br>(All reservations to site: ",
+                                      aggregated_site_type, " sites", 
+                                      "<br>",
+                                      "(Total reservations to site: ",
                                       comma(sum(n), accuracy = 1), ")")),
                     fill = hist_colors)
     
   } # EO if statement for geom_col
   
   # plot for shiny app
-  site_type_plotly <- ggplot(data = site_type_rdf()) +
+  plotly <- ggplot(data = site_type_rdf()) +
     col + # object contains geom_col 
     scale_x_continuous(labels = percent_format(accuracy = 1)) +
     scale_y_discrete(expand = c(0.7, 0)) +
@@ -58,7 +60,7 @@ site_type_plot <- function(admin_unitInput, siteInput){
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank())
   
-  ggplotly(site_type_plotly,
+  ggplotly(plotly,
            tooltip = list("text")) %>%
     layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                       '<br>',

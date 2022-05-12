@@ -32,19 +32,19 @@ length_of_stay_plot <- function(admin_unitInput, siteInput){
   quant_80 <- quantile(x = length_of_stay_rdf()$length_of_stay,
                        probs = seq(0, 1, 0.1))[[9]] %>% round(0)
   
-  print(paste("the class of quant_80 bin is", class(quant_80)))
-  
-  print(quant_80)
-  
   # parameters
-  hist_colors <- c("#009900FF", "#00c000")
+  hist_colors <- c("#64863C", "#466C04")
+  quant_80_color <- c("#97D4EA")
+  caption_color <- c("#345D96")
   
   # plot for shiny app
   length_of_stay_plotly <- ggplot(data = length_of_stay_rdf()) +
     geom_histogram(aes(x = length_of_stay,
                        text = paste0(percent(..count.. / nrow(length_of_stay_rdf()), accuracy = 0.1), 
                                      " of all reservations stay between ", comma(xmin, accuracy = 1), " and ", 
-                                     comma(xmax, accuracy = 1), " days",  "<br>(All reservations to site: ",
+                                     comma(xmax, accuracy = 1), " days",  
+                                     "<br>",
+                                     "(Total reservations to site: ",
                                      comma(nrow(length_of_stay_rdf()), accuracy = 1), ")")),
                    binwidth = 1,
                    center = 0.5,
@@ -53,7 +53,7 @@ length_of_stay_plot <- function(admin_unitInput, siteInput){
     scale_x_continuous(limits = c(0, x_max)) +
     scale_y_continuous(labels = comma_format()) +
     geom_vline(xintercept = quant_80,
-               linetype = "dashed", alpha = 0.5, color = "#000099") +
+               linetype = "dashed", alpha = 0.5, color = quant_80_color) +
     labs(x = "Length of visit (days)",
          y = "") +
     theme_minimal() +
@@ -71,12 +71,14 @@ length_of_stay_plot <- function(admin_unitInput, siteInput){
            yaxis = list(separatethousands = TRUE),
            margin = list(b = 130, t = 100), 
            annotations =  list(x = x_max/2, y = -0.6, 
-                               text = paste0("80% of reservations stay less than ", '<b>', quant_80, '</b>', " days <br>(shown on plot with dashed line)."), 
+                               text = paste0("80% of reservations stay less than ", '<b>', quant_80, '</b>', " days", 
+                                             "<br>", 
+                                             "(shown on plot with blue dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'middle', yanchor = 'auto', 
                                xshift = 0, yshift = 0,
-                               font = list(size = 12, color = "#000099"))) %>%
+                               font = list(size = 12, color = caption_color))) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian"))
 } # EO function
