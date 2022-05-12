@@ -643,49 +643,6 @@ server <- function(input, output, session) {
 
     } # EO median-income x length of stay
 
-    ### SO median-income x site type function ----
-    # else if (input$data_relationships == "Median-income x Site type") {
-
-      # median_income_site_type_plot(
-      #   admin_unitInput = input$admin_unit_relationships,
-      #   siteInput = input$site_relationships,
-      #   ridb_df = data_joined_2018,
-      #   median_income_binned = median_income_decile_list,
-      #   site_type_string = "equestrian"
-      # )
-    #   # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-    #   #                          siteInput = input$site_relationships,
-    #   #                          ridb_df = data_joined_2018,
-    #   #                          median_income_binned = median_income_decile_list,
-    #   #                          site_type_string = "remote")
-    #   # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-    #   #                          siteInput = input$site_relationships,
-    #   #                          ridb_df = data_joined_2018,
-    #   #                          median_income_binned = median_income_decile_list,
-    #   #                          site_type_string = "rv only")
-    #   # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-    #   #                          siteInput = input$site_relationships,
-    #   #                          ridb_df = data_joined_2018,
-    #   #                          median_income_binned = median_income_decile_list,
-    #   #                          site_type_string = "rv or tent")
-    #   # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-    #   #                          siteInput = input$site_relationships,
-    #   #                          ridb_df = data_joined_2018,
-    #   #                          median_income_binned = median_income_decile_list,
-    #   #                          site_type_string = "shelter")
-    #   # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-    #   #                          siteInput = input$site_relationships,
-    #   #                          ridb_df = data_joined_2018,
-    #   #                          median_income_binned = median_income_decile_list,
-    #   #                          site_type_string = "tent only")
-    #   # median_income_site_type_plot(admin_unitInput = input$admin_unit_relationships,
-    #   #                          siteInput = input$site_relationships,
-    #   #                          ridb_df = data_joined_2018,
-    #   #                          median_income_binned = median_income_decile_list,
-    #   #                          site_type_string = "water")
-    # 
-    # } # EO median-income x site type
-
     ### SO race x booking window plot function ----
     else if (input$data_relationships == "Race x Booking window") {
 
@@ -993,6 +950,48 @@ server <- function(input, output, session) {
         
       ) # EO median-income tabsetPanel
     } # EO else if median-income statement
+    
+    ### SO race x site ----
+    else if (input$data_relationships == "Race x Site type"){
+      
+      tabsetPanel(
+        tabPanel(title = "Equestrian",
+                 plotlyOutput(outputId = "race_site_equestrian_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel race x equestrian
+        
+        tabPanel(title = "Remote",
+                 plotlyOutput(outputId = "race_site_remote_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel race x remote
+        
+        tabPanel(title = "RV only",
+                 plotlyOutput(outputId = "race_site_rvOnly_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel race x rv only
+        
+        tabPanel(title = "RV or Tent",
+                 plotlyOutput(outputId = "race_site_rvTent_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel race x rv or tent
+        
+        tabPanel(title = "Shelter",
+                 plotlyOutput(outputId = "race_site_shelter_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel race x shelter
+        
+        tabPanel(title = "Tent only",
+                 plotlyOutput(outputId = "race_site_tentOnly_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel race x tent only
+        
+        tabPanel(title = "Water",
+                 plotlyOutput(outputId = "race_site_water_plot") %>%
+                   withSpinner(color = "#0dc5c1")
+        ), # EO tabPanel race x tent only
+        
+      ) # EO race tabsetPanel
+    } # EO else if race statement
     
   }) # EO data relationships render ui
   
