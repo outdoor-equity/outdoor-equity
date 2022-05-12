@@ -968,6 +968,8 @@ server <- function(input, output, session) {
       )
     }
     
+    # Note (HD): Maybe need to add an else if here? To make it empty?
+    
   }) # EO SITE edu x equestrian relationships plot
   
   # SO edu x remote relationships plot
