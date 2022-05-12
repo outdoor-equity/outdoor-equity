@@ -33,7 +33,7 @@ booking_window_plot <- function(admin_unit, site){
   }
   
   # parameters
-  hist_colors <- c("#009900FF", "#00c000")
+  hist_colors <- c("#64863C", "#466C04")
   
   # plot for shiny app
   ggplot(data = data) +
@@ -49,11 +49,15 @@ booking_window_plot <- function(admin_unit, site){
          caption = paste0("80% of reservations reserve their visit less than ", 
                           quant_80, 
                           " days before the start date", 
-                          "\n(shown on plot with dashed line).")) +
+                          "\n(shown on plot with blue dashed line).")) +
     scale_x_continuous(limits = c(0, x_max), labels = comma) +
     scale_y_continuous(labels = comma) +
     geom_vline(xintercept = quant_80,
-               linetype = "dashed", alpha = 0.5, color = "#000099") +
+               linetype = "dashed", alpha = 0.5, color = "#97D4EA") +
+    geom_vline(xintercept = 180, 
+               linetype = "dashed", size = .3, alpha = .5) +
+    annotate("text", label = "6 months", size = 3,
+             x = 180, y = 1000) +
     annotate("label",
              x = 68, y = 7000,
              label = paste0("29% of all visits are reserved between", 
@@ -67,35 +71,7 @@ booking_window_plot <- function(admin_unit, site){
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank(),
           plot.title = element_text(face = "bold"),
-          plot.caption = element_text(color = "#000099", size = 11))
-  
-    
-    # paste0(percent(..count.. / nrow(data), accuracy = 0.1), 
-    #        " of all visits are reserved between ", xmin, " and ", xmax, 
-    #        " days before the start of the visit", 
-    #        "<br>(All reservations to site: ",
-    #        comma(nrow(data), accuracy = 1), ")")
-    
-  # ggplotly(plotly,
-  #          tooltip = list("text"),
-  #          dynamicTicks = TRUE) %>% 
-  #   layout(title = list(text = paste0('<b>', site, '<br>', admin_unit, '</b>',
-  #                                     '<br>',
-  #                                     'Number of days from reservation to start of visit'),
-  #                       font = list(size = 15)),
-  #          xaxis = list(separatethousands = TRUE),
-  #          yaxis = list(separatethousands = TRUE),
-  #          margin = list(b = 130, t = 100), 
-  #          annotations =  list(x = x_max/2, y = -0.4, 
-  #                              text = paste0("80% of reservations reserve their visit less than ", '<b>', quant_80, '</b>', 
-  #                                            " days before the start date <br>(shown on plot with dashed line)."), 
-  #                              showarrow = F, 
-  #                              xre = 'paper', yref = 'paper', 
-  #                              xanchor = 'middle', yanchor = 'auto', 
-  #                              xshift = 0, yshift = 0,
-  #                              font = list(size = 12, color = "#000099"))) %>%
-  #   config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
-  #                                        "hoverClosestCartesian", "hoverCompareCartesian"))
+          plot.caption = element_text(size = 9))
   
   
 } # EO function
