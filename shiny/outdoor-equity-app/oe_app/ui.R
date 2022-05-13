@@ -27,9 +27,6 @@ ui <- fluidPage(
     
     ## About tab ----
     tabPanel("About",
-             # includeMarkdown("./text/about.Rmd"),
-             # icon = icon("info-circle")
-             # EO About FR layout
              fluidRow(
                # SO About background
                box(width = 12,
@@ -40,18 +37,12 @@ ui <- fluidPage(
                box(width = 12,
                    title = "What is the Outdoor Equity App?",
                    includeMarkdown("text/about_app.md")
-               )
-             ), # EO about app
-             # SO about examples
-             box(id = "relationships_outputs",
-                 width = 12,
-                 plotlyOutput(outputId = "examples_plot") %>%
-                   withSpinner(color = "#64863C"),
-                 uiOutput(outputId = "relationships_tab_layout")
-                 
-                 # plotlyOutput("about_booking_window") %>%
-                 #   withSpinner(color = "#64863C"
-             )
+               ), # EO about app
+               # SO about examples
+               box(width = 12,
+                   title = "Example Questions to Explore",
+                   uiOutput(outputId = "examples_tab_layout")
+               ) # EO about examples
              ) # EO About FR layout
     ), ## EO About tab ----
     
@@ -96,7 +87,7 @@ ui <- fluidPage(
                                 select_site(locationId = "summary_1")
                               ),
                               plotlyOutput(outputId = "data_summary_plot_1") %>%
-                                withSpinner(color = "#0dc5c1")
+                                withSpinner(color = spinner_color)
                           ), # EO data summary plot 1 output box
                           
                           # SO data summary plot 2 output box
@@ -111,7 +102,7 @@ ui <- fluidPage(
                                 select_site(locationId = "summary_2")
                               ),
                               plotlyOutput(outputId = "data_summary_plot_2") %>%
-                                withSpinner(color = "#0dc5c1")
+                                withSpinner(color = spinner_color)
                               ) # EO data summary plot 2 output box
                         ) # EO data summary FR layout
                         ), #### EO data summary
@@ -146,7 +137,7 @@ ui <- fluidPage(
                           box(id = "relationships_outputs",
                               width = 8,
                               plotlyOutput(outputId = "data_relationships_plot") %>%
-                                withSpinner(color = "#0dc5c1"),
+                                withSpinner(color = spinner_color),
                               uiOutput(outputId = "relationships_tab_layout")
                               ), # EO relationships plot output box
                           
@@ -154,7 +145,7 @@ ui <- fluidPage(
                           box(id = "high_relationships_output",
                               width = 4,
                               plotlyOutput(outputId = "high_relationships_plot") %>% 
-                                withSpinner(color = "#0dc5c1")
+                                withSpinner(color = spinner_color)
                               
                               ) # EO context relationship plot box
                         ) # EO FR data relationships
@@ -184,14 +175,14 @@ ui <- fluidPage(
                           box(width = 6,
                               title = "US Visitorshed",
                               tmapOutput(outputId = "usVisitorshed_plot") %>% 
-                                withSpinner(color="#0dc5c1")
+                                withSpinner(color = spinner_color)
                           ), # EO US visitorshed map box
                           
                           # SO CA visitorshed map box
                           box(width = 6,
                               title = "CA Visitorshed",
                               tmapOutput(outputId = "caVisitorshed_plot") %>% 
-                                withSpinner(color="#0dc5c1")
+                                withSpinner(color = spinner_color)
                           ), # EO CA visitorshed map box
                           
                           # SO visitorshed info box
