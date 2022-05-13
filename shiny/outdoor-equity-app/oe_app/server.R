@@ -217,12 +217,33 @@ server <- function(input, output, session) {
   
   
   ## SO ABOUT PAGE PLOTS ----
-  output$about_booking_window <- renderPlotly({
-    ### SO booking window ----
+  
+  ### SO when to book ----
+  output$about_example_1_plot <- renderPlotly({
     not_reactive_booking_window_plot(admin_unit = "Yosemite National Park", 
                                      site = "Upper Pines", 
                                      ridb_df = data_joined_2018)
-  }) # OE About page plots
+  }) # OE when to book
+  
+  ### SO distance traveled by race ----
+  output$about_example_2_plot <- renderPlotly({
+    not_reactive_race_dist_travel_plot(admin_unit = "Yosemite National Park", 
+                                       site = "Upper Pines", 
+                                       ridb_df = data_joined_2018,
+                                       race_top_quartile_df = data_race_quants)
+  }) # EO distance traveled by race
+  
+  ### SO distance traveled by income ----
+  output$about_example_3_plot <- renderPlotly({
+    not_reactive_median_income_dist_travel_plot(admin_unit = "Yosemite National Park", 
+                                                site = "Upper Pines", 
+                                                ridb_df = data_joined_2018,
+                                                median_income_binned = median_income_decile_list)
+  }) # OE distance traveled by income
+  
+
+  
+
   
   ## SO DATA SUMMARY PLOTS 1 ----
   output$data_summary_plot_1 <- renderPlotly({
@@ -484,7 +505,6 @@ server <- function(input, output, session) {
       )
       
     } # EO education x booking window
-    
     
     ### SO education x daily cost plot function ----
     else if (input$data_relationships == "Education x Daily cost") {
@@ -789,6 +809,35 @@ server <- function(input, output, session) {
   }) # EO relationships high plots 
   
   ### SO RENDER UI relationships ----
+  # SO about examples render UI
+  output$examples_tab_layout <- renderUI({
+    tabsetPanel(
+      tabPanel(title = "How far in advance to reserve site?",
+               includeMarkdown("text/about_example1.md"),
+               plotlyOutput("about_example_1_plot") %>%
+                 withSpinner(color = spinner_color)
+      ), # EO tabPanel example 1
+      
+      tabPanel(title = "How far are people of different races traveling?",
+               includeMarkdown("text/about_example2.md"),
+               plotlyOutput(outputId = "about_example_2_plot") %>%
+                 withSpinner(color = spinner_color)
+      ), # EO tabPanel example 2
+      
+      tabPanel(title = "How far are people with different incomes traveling?",
+               includeMarkdown("text/about_example3.md"),
+               plotlyOutput(outputId = "about_example_3_plot") %>%
+                 withSpinner(color = spinner_color)
+      ), # EO tabPanel example 3
+      
+      tabPanel(title = "Visitorshed",
+               # plotlyOutput(outputId = "edu_site_rvTent_plot") %>%
+               #   withSpinner(color = spinner_color)
+      ) # EO tabPanel example 4
+      
+    ) # EO edu tabsetPanel
+  }) # EO about examples render UI
+  
   #SO education site type relationships render ui
   output$relationships_tab_layout <- renderUI({
     
@@ -798,37 +847,37 @@ server <- function(input, output, session) {
     tabsetPanel(
       tabPanel(title = "Equestrian",
                plotlyOutput(outputId = "edu_site_equestrian_plot") %>%
-                 withSpinner(color = "#0dc5c1")
+                 withSpinner(color = spinner_color)
       ), # EO tabPanel edu x equestrian
       
       tabPanel(title = "Remote",
                plotlyOutput(outputId = "edu_site_remote_plot") %>%
-                 withSpinner(color = "#0dc5c1")
+                 withSpinner(color = spinner_color)
                ), # EO tabPanel edu x remote
       
       tabPanel(title = "RV only",
                plotlyOutput(outputId = "edu_site_rvOnly_plot") %>%
-                 withSpinner(color = "#0dc5c1")
+                 withSpinner(color = spinner_color)
       ), # EO tabPanel edu x rv only
       
       tabPanel(title = "RV or Tent",
                plotlyOutput(outputId = "edu_site_rvTent_plot") %>%
-                 withSpinner(color = "#0dc5c1")
+                 withSpinner(color = spinner_color)
       ), # EO tabPanel edu x rv or tent
       
       tabPanel(title = "Shelter",
                plotlyOutput(outputId = "edu_site_shelter_plot") %>%
-                 withSpinner(color = "#0dc5c1")
+                 withSpinner(color = spinner_color)
       ), # EO tabPanel edu x shelter
       
       tabPanel(title = "Tent only",
                plotlyOutput(outputId = "edu_site_tentOnly_plot") %>%
-                 withSpinner(color = "#0dc5c1")
+                 withSpinner(color = spinner_color)
       ), # EO tabPanel edu x tent only
       
       tabPanel(title = "Water",
                plotlyOutput(outputId = "edu_site_water_plot") %>%
-                 withSpinner(color = "#0dc5c1")
+                 withSpinner(color = spinner_color)
       ), # EO tabPanel edu x tent only
       
     ) # EO edu tabsetPanel
@@ -840,37 +889,37 @@ server <- function(input, output, session) {
       tabsetPanel(
         tabPanel(title = "Equestrian",
                  plotlyOutput(outputId = "lang_site_equestrian_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel language x equestrian
         
         tabPanel(title = "Remote",
                  plotlyOutput(outputId = "lang_site_remote_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel language x remote
         
         tabPanel(title = "RV only",
                  plotlyOutput(outputId = "lang_site_rvOnly_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel language x rv only
         
         tabPanel(title = "RV or Tent",
                  plotlyOutput(outputId = "lang_site_rvTent_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel language x rv or tent
         
         tabPanel(title = "Shelter",
                  plotlyOutput(outputId = "lang_site_shelter_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel language x shelter
         
         tabPanel(title = "Tent only",
                  plotlyOutput(outputId = "lang_site_tentOnly_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel language x tent only
         
         tabPanel(title = "Water",
                  plotlyOutput(outputId = "lang_site_water_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel language x tent only
         
       ) # EO language tabsetPanel
@@ -882,37 +931,37 @@ server <- function(input, output, session) {
       tabsetPanel(
         tabPanel(title = "Equestrian",
                  plotlyOutput(outputId = "medInc_site_equestrian_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel median-income x equestrian
         
         tabPanel(title = "Remote",
                  plotlyOutput(outputId = "medInc_site_remote_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel median-income x remote
         
         tabPanel(title = "RV only",
                  plotlyOutput(outputId = "medInc_site_rvOnly_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel median-income x rv only
         
         tabPanel(title = "RV or Tent",
                  plotlyOutput(outputId = "medInc_site_rvTent_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel median-income x rv or tent
         
         tabPanel(title = "Shelter",
                  plotlyOutput(outputId = "medInc_site_shelter_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel median-income x shelter
         
         tabPanel(title = "Tent only",
                  plotlyOutput(outputId = "medInc_site_tentOnly_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel median-income x tent only
         
         tabPanel(title = "Water",
                  plotlyOutput(outputId = "medInc_site_water_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel median-income x tent only
         
       ) # EO median-income tabsetPanel
@@ -924,37 +973,37 @@ server <- function(input, output, session) {
       tabsetPanel(
         tabPanel(title = "Equestrian",
                  plotlyOutput(outputId = "race_site_equestrian_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel race x equestrian
         
         tabPanel(title = "Remote",
                  plotlyOutput(outputId = "race_site_remote_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel race x remote
         
         tabPanel(title = "RV only",
                  plotlyOutput(outputId = "race_site_rvOnly_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel race x rv only
         
         tabPanel(title = "RV or Tent",
                  plotlyOutput(outputId = "race_site_rvTent_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel race x rv or tent
         
         tabPanel(title = "Shelter",
                  plotlyOutput(outputId = "race_site_shelter_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel race x shelter
         
         tabPanel(title = "Tent only",
                  plotlyOutput(outputId = "race_site_tentOnly_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel race x tent only
         
         tabPanel(title = "Water",
                  plotlyOutput(outputId = "race_site_water_plot") %>%
-                   withSpinner(color = "#0dc5c1")
+                   withSpinner(color = spinner_color)
         ), # EO tabPanel race x tent only
         
       ) # EO race tabsetPanel
