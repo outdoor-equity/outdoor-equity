@@ -66,9 +66,9 @@ education_plot <- function(admin_unitInput, siteInput){
              education = factor(education, levels = c("HS, GED, or Below", "Some College or Trade School", 
                                                       "Associates or Bachelors Degree", "Masters Degree or Above")),
              data_source = factor(data_source, levels = c("RIDB", "CA")),
-             tooltip_start = case_when(data_source == "RIDB" ~ "Visitors to this site live in communities with an estimated ",
+             tooltip_start = case_when(data_source == "RIDB" ~ "Visitors to this site live in communities where an estimated ",
                                        data_source == "CA" ~ ""),
-             tooltip_middle = case_when(data_source == "RIDB" ~ " of the population <br>with ",
+             tooltip_middle = case_when(data_source == "RIDB" ~ " of the population <br>have ",
                                         data_source == "CA" ~ " of Californians have "),
              tooltip_end = case_when(data_source == "RIDB" ~ " as their highest level of education.",
                                      data_source == "CA" ~ " as their highest level of education."))

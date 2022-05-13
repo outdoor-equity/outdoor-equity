@@ -74,7 +74,7 @@ daily_cost_visitor_plot <- function(admin_unitInput, siteInput){
                                text = paste0("80% of reservations paid less than ", '<b>', dollar(quant_80), '</b>',
                                              " per visitor per day",
                                              "<br>", 
-                                             "(shown on plot with blue dotted line)."), 
+                                             "(shown on plot with yellow dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'middle', yanchor = 'auto', 

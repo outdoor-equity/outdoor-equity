@@ -112,7 +112,7 @@ booking_window_plot <- function(admin_unitInput, siteInput){
                                text = paste0("80% of reservations reserve their visit less than ", '<b>', quant_80, '</b>', 
                                              " days before the start date", 
                                              "<br>",
-                                             "(shown on plot with blue dashed line)."), 
+                                             "(shown on plot with yellow dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'middle', yanchor = 'auto', 

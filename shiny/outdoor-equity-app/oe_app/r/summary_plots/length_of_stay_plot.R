@@ -73,7 +73,7 @@ length_of_stay_plot <- function(admin_unitInput, siteInput){
            annotations =  list(x = x_max/2, y = -0.6, 
                                text = paste0("80% of reservations stay less than ", '<b>', quant_80, '</b>', " days", 
                                              "<br>", 
-                                             "(shown on plot with blue dotted line)."), 
+                                             "(shown on plot with yellow dotted line)."), 
                                showarrow = F, 
                                xre = 'paper', yref = 'paper', 
                                xanchor = 'middle', yanchor = 'auto', 
