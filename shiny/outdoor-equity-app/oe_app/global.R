@@ -44,6 +44,10 @@ data_geometries_us_simple <- data_geometries_us %>% rmapshaper::ms_simplify(keep
 # SOURCE FUNCTIONS ----
 ## source about page plotly functions ----
 source("text/r/not_reactive_booking_window_plot.R")
+source("text/r/not_reactive_median_income_dist_travel_data.R")
+source("text/r/not_reactive_median_income_dist_travel_plot.R")
+source("text/r/not_reactive_race_dist_travel_data.R")
+source("text/r/not_reactive_race_dist_travel_plot.R")
 
 ## source input functions ----
 source("r/inputs/select_agency.R")
@@ -160,6 +164,9 @@ source("r/inputs/observe_event_admin_unit_to_site_dict.R")
 # need to move these sourced functions to a new section
 source("r/other_plots/tot_site_agency_plot.R")
 source("r/other_plots/tot_res_agency_plot.R")
+
+# STYLING AND FORMATTING ----
+spinner_color <- "#64863C"
 
 # PLOT OBJECTS ----
 
