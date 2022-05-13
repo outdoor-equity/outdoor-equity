@@ -85,8 +85,8 @@ race_plot <- function(admin_unitInput, siteInput){
   x_max <- max(race_rdf()$race_percent_average) + 0.1 # max x rounded to nearest 5
   
   # parameters
-  groups_colors_ridb_ca <- c("RIDB" = "#009900FF", "CA" = "#666666")
-  text_colors_ridb_ca <- c("RIDB" = "#006600", "CA" = "#282828")
+  groups_colors_ridb_ca <- c("RIDB" = "#64863C", "CA" = "#a3a3a3")
+  text_colors_ridb_ca <- c("RIDB" = "#466C04", "CA" = "#848484")
   
   # plot for shiny app
   race_plotly <- ggplot(data = race_data_plot) +

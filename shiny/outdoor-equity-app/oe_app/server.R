@@ -435,6 +435,62 @@ server <- function(input, output, session) {
     
   }) ## EO DATA SUMMARY PLOTS 2
   
+  
+  ## DATA SUMMARY CAPTIONS ----
+  output$data_summary_captions <- renderText({
+    ### SO distance traveled ----
+    if (input$data_summary == "distance_traveled_mi") {
+      includeMarkdown("text/data_summary_no_caption.md")
+    } ## EO if distance traveled
+    
+    ## SO booking window ----
+    else if (input$data_summary == "booking_window") {
+      includeMarkdown("text/data_summary_no_caption.md")
+    } ## EO else if booking window
+    
+    ## SO daily cost ----
+    else if (input$data_summary == "daily_cost") {
+      includeMarkdown("text/data_summary_no_caption.md")
+    } ## EO else if daily cost
+    
+    ## SO daily cost per visitor ----
+    else if (input$data_summary == "daily_cost_per_visitor") {
+      includeMarkdown("text/data_summary_no_caption.md")
+    } ## EO else if daily cost per visitor
+    
+    ## SO education ----
+    else if (input$data_summary == "education") {
+      includeMarkdown("text/data_summary_no_caption.md")
+    } ## EO education
+    
+    ## SO length of stay ----
+    else if (input$data_summary == "length_of_stay") {
+      includeMarkdown("text/data_summary_no_caption.md")
+    } # EO length of stay
+    
+    ## SO site type ----
+    else if (input$data_summary == "aggregated_site_type") {
+      includeMarkdown("text/data_summary_no_caption.md")
+    } ## EO else if site type
+    
+    ## SO race ----
+    else if (input$data_summary == "race") {
+      includeMarkdown("text/data_summary_no_caption.md")
+    } ## EO else if race
+    
+    ## SO median income ----
+    else if (input$data_summary == "median_income") {
+      includeMarkdown("text/data_summary_median_income_caption.md")
+    } ## EO else if median income
+    
+    ## SO language ----
+    else if (input$data_summary == "not_english_only") {
+      includeMarkdown("text/data_summary_language_caption.md")
+    } ## EO language
+    
+  }) ## EO DATA SUMMARY CAPTIONS
+  
+  
   ## SO RELATIONSHIPS PLOTS ----
   
   ### SO race wrangling ----

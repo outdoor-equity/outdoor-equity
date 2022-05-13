@@ -78,8 +78,8 @@ education_plot <- function(admin_unitInput, siteInput){
   x_max <- max(education_rdf()$education_percent_average) + 0.1 # max x rounded to nearest 5
   
   # parameters
-  groups_colors_ridb_ca <- c("RIDB" = "#64863C", "CA" = "#666666")
-  text_colors_ridb_ca <- c("RIDB" = "#466C04", "CA" = "#282828")
+  groups_colors_ridb_ca <- c("RIDB" = "#64863C", "CA" = "#a3a3a3")
+  text_colors_ridb_ca <- c("RIDB" = "#466C04", "CA" = "#848484")
   
   # plot for shiny app
   education_plotly <- ggplot(data = education_rdf()) +
