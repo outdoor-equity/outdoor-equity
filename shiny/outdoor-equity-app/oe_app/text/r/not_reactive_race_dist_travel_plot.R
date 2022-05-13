@@ -1,9 +1,9 @@
 
-#' Race x Distance Traveled Plotly
+#' About Example: Race x Distance Traveled Plotly
 #'
-#' @param admin_unitInput User pick for admin unit
-#' @param siteInput User pick for site
-#' @param education_top_quartile_df Name of dataframe of values to iterate through for all 
+#' @param admin_unit User pick for admin unit
+#' @param site User pick for site
+#' @param race_top_quartile_df Name of dataframe of values to iterate through for all 
 #'     racial categories and 3rd quartile values associated with each
 #' @param ridb_df RIDB dataframe object name
 #'
@@ -11,21 +11,15 @@
 #'
 #' @examples
 
-race_dist_travel_plot <- function(admin_unitInput, siteInput,
+not_reactive_race_dist_travel_plot <- function(admin_unit, site,
                                   race_top_quartile_df, ridb_df){
   
   # iterate through dataframe of all racial categories and 3rd quartile values
   # return combined dataframe of reservations in "high" range for all categories
-  data_race_dist_travel <- 
-    race_top_quartile_df %>% pmap_dfr(race_dist_travel_data, 
+  plot_data <- 
+    race_top_quartile_df %>% pmap_dfr(not_reactive_race_dist_travel_data, 
                                       ridb_df = ridb_df, 
-                                      siteInput = siteInput)
-  
-  validate(need(
-    nrow(data_race_dist_travel) > 0,
-    paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
-           " that come from communities in the high range for any racial categories.")
-  )) # EO validate
+                                      site = site)
   
   # parameters
   race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",
@@ -33,9 +27,9 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
                          "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
   
   # create plot
-  plotly <- ggplot(data = data_race_dist_travel, 
-                                          aes(x = median_distance_traveled_mi,
-                                              y = reorder(race, median_distance_traveled_mi))) +
+  plotly <- ggplot(data = plot_data, 
+                   aes(x = median_distance_traveled_mi,
+                       y = reorder(race, median_distance_traveled_mi))) +
     geom_segment(aes(xend = 0, yend = race)) +
     geom_point(aes(color = race, fill = race,
                    text = paste0(comma(count, accuracy = 1), 
@@ -63,7 +57,7 @@ race_dist_travel_plot <- function(admin_unitInput, siteInput,
            tooltip = list("text")) %>%
     config(modeBarButtonsToRemove = list("zoom", "pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
-    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+    layout(title = list(text = paste0('<b>', site, '<br>', admin_unit, '</b>',
                                       '<br>',
                                       'Distance Traveled by Different Racial Groups'),
                         font = list(size = 15))) %>%

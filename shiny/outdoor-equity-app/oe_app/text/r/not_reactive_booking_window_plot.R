@@ -1,8 +1,9 @@
 
-#' Data Summary Booking Window Non-reactive
+#' About Example: Data Summary Booking Window
 #'
 #' @param admin_unit String indicating admin unit of site
 #' @param site String indicating which site to filter data to for plotting
+#' @param ridb_df RIDB dataframe object name
 #'
 #' @return Plotly plot of booking window for indicated site
 #'
@@ -35,48 +36,7 @@ not_reactive_booking_window_plot <- function(admin_unit, site, ridb_df){
   # parameters
   hist_colors <- c("#64863C", "#466C04")
   quant_80_color <- c("#FACE00")
-  tooltip_color <- c("#466C04")
   caption_color <- c("#ac8d00")
-  
-  # # plot for shiny app
-  # ggplot(data = data) +
-  #   geom_histogram(aes(x = booking_window),
-  #                  binwidth = 7,
-  #                  center = 7 / 2,
-  #                  fill = hist_colors[[1]], 
-  #                  col = hist_colors[[2]], size = 0.05) +
-  #   labs(x = "Days in advance before visit (each bar = 1 week)",
-  #        y = NULL,
-  #        title = paste0(site, ", ", admin_unit),
-  #        subtitle = "Number of days from reservation to start of visit",
-  #        caption = paste0("80% of reservations reserve their visit less than ", 
-  #                         quant_80, 
-  #                         " days before the start date", 
-  #                         "\n(shown on plot with yellow dashed line).")) +
-  #   scale_x_continuous(limits = c(0, x_max), labels = comma) +
-  #   scale_y_continuous(labels = comma) +
-  #   geom_vline(xintercept = quant_80,
-  #              linetype = "dashed", alpha = 0.5, color = quant_80_colors) +
-  #   geom_vline(xintercept = 180, 
-  #              linetype = "dashed", size = .3, alpha = .5, color = "#263B4C") +
-  #   annotate("text", label = "6 months", size = 3, color = "#263B4C",
-  #            x = 180, y = 1000) +
-  #   annotate("label",
-  #            x = 68, y = 7000, color = tooltip_color,
-  #            label = paste0("29% of all visits are reserved between", 
-  #                           "\n", 
-  #                           "1 and 7 days before the start of the trip.")) +
-  #   annotate("label", 
-  #            x = 240, y = 7000,
-  #            label = paste0(comma(nrow(data), accuracy = 1), " total reservations were", 
-  #                           "\n", 
-  #                           "made to this site.")) +
-  #   theme_minimal() +
-  #   theme(plot.background = element_rect("#fafafa"),
-  #         panel.grid = element_line(color = "#e7e7e7"),
-  #         panel.grid.major.y = element_blank(),
-  #         plot.title = element_text(face = "bold"),
-  #         plot.caption = element_text(size = 9, color = caption_color))
   
   plotly <- ggplot(
     data = data) +

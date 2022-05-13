@@ -1,7 +1,7 @@
 
-#' Race x Distance Traveled Data
+#' About Example: Race x Distance Traveled Data
 #'
-#' @param siteInput User pick for site
+#' @param site User pick for site
 #' @param education_group String indicating racial category of interest
 #' @param weighted_quartile Value of 3rd quartile for racial category
 #' @param ridb_df RIDB dataframe object name
@@ -10,18 +10,11 @@
 #'
 #' @examples
 
-race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb_df){
-  # reactive data frame 
-  race_dist_travel_rdf <- reactive ({
-    
-    validate(
-      need(siteInput != "",
-           "Please select a reservable site to visualize.")
-    ) # EO validate
-    
-    ridb_df %>%
+not_reactive_race_dist_travel_data <- function(site, race_group, weighted_quartile, ridb_df){
+  # non-reactive data frame 
+    data <- ridb_df %>%
       # filter to user site of choice
-      filter(park %in% siteInput) %>%
+      filter(park == site) %>%
       # select to variables of interest
       select(park, customer_zip, 
              asian, black, hispanic_latinx, multiracial, 
@@ -53,9 +46,7 @@ race_dist_travel_data <- function(siteInput, race_group, weighted_quartile, ridb
              race = str_replace(string = race,
                                 pattern = "Other",
                                 replacement = "Other Race(s)"))
-    
-  })
   
-  return(race_dist_travel_rdf())
+  return(data)
   
 } # EO function

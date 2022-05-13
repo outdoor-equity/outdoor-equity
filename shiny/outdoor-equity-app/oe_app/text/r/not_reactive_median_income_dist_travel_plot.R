@@ -1,8 +1,8 @@
 
-#' Median-income x Distance Traveled Plotly
+#' About Example: Median-income x Distance Traveled Plotly
 #'
-#' @param admin_unitInput User pick for admin unit
-#' @param siteInput User pick for site
+#' @param admin_unit User pick for admin unit
+#' @param site User pick for site
 #' @param ridb_df RIDB dataframe object name
 #' @param median_income_binned List of decile values
 #'
@@ -10,10 +10,10 @@
 #'
 #' @examples
 
-median_income_dist_travel_plot <- function(admin_unitInput, siteInput, ridb_df, median_income_binned){
+not_reactive_median_income_dist_travel_plot <- function(admin_unit, site, ridb_df, median_income_binned){
   
   # categorize and summarize data to median-income decile groups
-  plot_data <- median_income_dist_travel_data(ridb_df = ridb_df, siteInput = siteInput,
+  plot_data <- not_reactive_median_income_dist_travel_data(ridb_df = ridb_df, site = site,
                                               median_income_binned = median_income_binned)
   
   # create plot
@@ -48,7 +48,7 @@ median_income_dist_travel_plot <- function(admin_unitInput, siteInput, ridb_df, 
            tooltip = list("text")) %>%
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
-    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+    layout(title = list(text = paste0('<b>', site, '<br>', admin_unit, '</b>',
                                       '<br>',
                                       'Distance Traveled by Visitors with Different Median Household Incomes'),
                         font = list(size = 15)))
