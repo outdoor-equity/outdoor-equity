@@ -34,8 +34,8 @@ length_of_stay_plot <- function(admin_unitInput, siteInput){
   
   # parameters
   hist_colors <- c("#64863C", "#466C04")
-  quant_80_color <- c("#97D4EA")
-  caption_color <- c("#345D96")
+  quant_80_color <- c("#FACE00")
+  caption_color <- c("#ac8d00")
   
   # plot for shiny app
   length_of_stay_plotly <- ggplot(data = length_of_stay_rdf()) +

@@ -45,8 +45,8 @@ daily_cost_plot <- function(admin_unitInput, siteInput){
   
   # parameters
   hist_colors <- c("#64863C", "#466C04")
-  quant_80_color <- c("#97D4EA")
-  caption_color <- c("#345D96")
+  quant_80_color <- c("#FACE00")
+  caption_color <- c("#ac8d00")
   
   # plot for shiny app
   daily_cost_plotly <- ggplot(data = daily_cost_rdf()) +
