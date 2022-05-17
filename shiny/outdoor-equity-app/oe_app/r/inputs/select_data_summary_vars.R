@@ -9,6 +9,6 @@ select_data_summary_vars <- function(){
                  options = list(
                    placeholder = "Type to search for a variable",
                    # Note(HD) need to make setValue part of the function
-                   onInitialize = I('function() { this.setValue(""); }')
+                   onInitialize = I('function() { this.setValue("race"); }')
                  ))
 } # EO SEL select summary vars
