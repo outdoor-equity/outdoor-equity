@@ -76,6 +76,13 @@ ui <- fluidPage(
                               includeMarkdown("text/data_summary_explanatory.md")
                           ), # EO explanatory data summary text
                           
+                          # SO explanatory text for language and median income plots
+                          box(id = "text_lang_medInc",
+                              width = 12,
+                              textOutput(outputId = "data_summary_captions")
+                              ), # EO explanatory text for language and median income plots
+                          tags$head(tags$style('#text_lang_medInc .box-header{ display: none}')), # remove title from box
+                          
                           # SO data summary plot 1 output box
                           box(id = "num_viz_1",
                               width = 12,
@@ -88,8 +95,7 @@ ui <- fluidPage(
                                 select_site(locationId = "summary_1")
                               ),
                               plotlyOutput(outputId = "data_summary_plot_1") %>%
-                                withSpinner(color = spinner_color),
-                              textOutput(outputId = "data_summary_captions")
+                                withSpinner(color = spinner_color)
                           ), # EO data summary plot 1 output box
                           tags$head(tags$style('#num_viz_1 .box-header{ display: none}')), # remove title from box
                           
