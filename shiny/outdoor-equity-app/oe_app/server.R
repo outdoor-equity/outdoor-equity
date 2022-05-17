@@ -202,7 +202,7 @@ server <- function(input, output, session) {
       
       shinyjs::show(id = "text_lang_medInc")
     }
-  }) ## EO OE hide / show text_lang_medInc ----
+  }) ## EO OE hide / show text_lang_medInc
   
   ## SO OE press site relationships ----
   observeEvent(input$data_relationships, {
@@ -456,7 +456,7 @@ server <- function(input, output, session) {
   }) ## EO DATA SUMMARY PLOTS 2
   
   
-  ## DATA SUMMARY CAPTIONS ----
+  # DATA SUMMARY CAPTIONS ----
   output$data_summary_captions <- renderText({
     ## SO median income ----
     if (input$data_summary == "median_income") {
