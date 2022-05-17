@@ -127,35 +127,35 @@ acs_ca_all <- acs_ca_all %>%
 
 # Create dataframes for visitorshed maps
 
-```{r}
-test <- tigris::states(year = 2018) %>% 
-  select(GEOID, STUSPS, NAME, geometry)
-test <- rmapshaper::ms_simplify(input = test$geometry)
-```
-
-
 
 ```{r}
-# ZIP code geometries for CA
-zip_geometries_ca <- get_acs(geography = "zcta", year = 2018, geometry = TRUE, 
+# ZIP code geometries for CA (get using `tidycensus`)
+zip_geometries_ca <- get_acs(geography = "zcta", year = 2018, geometry = TRUE,
                              state = "California",
                              summary_var = "B01001_001",
-                             variables = c(male = "B01001_002")) %>% 
-  select(NAME, geometry) %>% 
-  mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>% 
-  select(zip_code, geometry) 
+                             variables = c(male = "B01001_002")) %>%
+  select(NAME, geometry) %>%
+  mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>%
+  select(zip_code, geometry)
 
 # simplify ZIP geometries for mapping
-zip_geometries_ca <- rmapshaper::ms_simplify(input = zip_geometries_ca$geometry)
-## BREAKING
+simple_zip_geometries_ca <- rmapshaper::ms_simplify(input = zip_geometries_ca$geometry)
+## BREAKING ##
 
 
 # state geometries for full US
-state_geometries_us <- get_acs(geography = "state", year = 2018, geometry = TRUE, 
-                             summary_var = "B01001_001",
-                             variables = c(male = "B01001_002")) %>% 
-  select(GEOID, NAME, geometry) %>% 
-  rename(fips = GEOID, state = NAME)
+# state_geometries_us <- get_acs(geography = "state", year = 2018, geometry = TRUE, 
+#                              summary_var = "B01001_001",
+#                              variables = c(male = "B01001_002")) %>% 
+#   select(GEOID, NAME, geometry) %>% 
+#   rename(fips = GEOID, state = NAME)
+
+# state geometries for full US
+state_geometries_us <- tigris::states(year = 2018) %>%
+  select(GEOID, STUSPS, NAME, geometry) %>% 
+  rename(fips = GEOID,
+         state_abbrev = STUSPS,
+         state = NAME)
 ```
 
 
@@ -207,8 +207,71 @@ df_states_fips_zip_codes <- df_states_zip_codes %>%
             by = "state") %>% 
   rename(state_abbrev = state) %>% 
   relocate(fips, .before = 2)
+```
+
+```{r}
+## -- data wrangle to create map -- ##
+data_map_us <- data_ridb_acs_2018 %>% 
+  #filter(park == "Upper Pines") %>% 
+  left_join(y = df_states_fips_zip_codes,
+            by = c("customer_zip" = "zipcode")) %>% 
+  group_by(zip_state_abbr, zip_fips) %>% 
+  summarize(number_reservations = n()) %>% 
+  filter(!is.na(zip_state_abbr))
+
+data_map_us_geometries <- 
+  state_geometries_us %>% 
+  left_join(y = data_map_us_yosemite_upper_pines,
+            by = c("fips" = "zip_fips"))
 
 
+## -- create map -- ##
+tm_shape(data_map_us_geometries) +
+  tm_borders(col = "grey", alpha = 0.5) +
+  tm_fill(col = "number_reservations",
+          title = "Number of Visits",
+          palette = "YlGn",
+          n = 10, 
+          style = "jenks",
+          id = "zip_state_abbr", 
+          popup.vars = c("Total Visits" = "number_reservations")) +
+  tm_view(set.view = c(-101.834335, 40.022356, 3))
+```
+
+```{r}
+## -- data wrangle to create map -- ##
+data_map_ca <- data_ridb_acs_2018 %>% 
+  #filter(park == "Upper Pines") %>% 
+  group_by(customer_zip) %>% 
+  summarize(number_reservations = n()) %>% 
+  mutate(customer_zip = as.character(customer_zip))
+
+data_map_ca_geometries <- zip_geometries_ca %>% 
+  left_join(data_map_ca_yosemite_upper_pines, by = c("zip_code" = "customer_zip")) %>% 
+  mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
+
+data_map_ca_park_geom <- data_ridb_acs_2018 %>% 
+  filter(park == "Upper Pines") %>% 
+  group_by(agency, admin_unit, park) %>% 
+  summarise(facility_latitude = median(facility_latitude),
+            facility_longitude = median(facility_longitude)) %>% 
+  st_as_sf(coords = c("facility_latitude", "facility_longitude"),
+           crs = 4326) %>% 
+  st_transform(crs = 4269) # using NAD83 because measured in meters
+
+
+## -- create map -- ##
+tm_shape(data_map_ca_geometries) +
+  tm_fill(col = "number_reservations",
+          title = "Number of Visits",
+          palette = "PuRd",
+          style = "jenks",
+          n = 10, 
+          popup.vars = c("Total Visits" = "number_reservations")) +
+  tm_shape(data_map_ca_park_geom) +
+  tm_dots(col = "#009900FF", size = 0.1, alpha = 0.9,
+          id = "park") +
+  tm_view(set.view = c(-119.559917, 37.061753, 6))
 ```
 
 
