@@ -104,11 +104,14 @@ ui <- fluidPage(
                               width = 6,
                               splitLayout(
                                 # agency input
-                                select_agency(locationId = "summary_2"),
+                                select_agency(locationId = "summary_2",
+                                              defaultValue = "US Forest Service"),
                                 # admin input
-                                select_admin_unit(locationId = "summary_2"),
+                                select_admin_unit(locationId = "summary_2",
+                                                  defaultValue = "Sierra National Forest"),
                                 # site input
-                                select_site(locationId = "summary_2")
+                                select_site(locationId = "summary_2",
+                                            defaultValue = "Dinkey Creek")
                               ), # EO split layout data summary plot 2 output box
                               plotlyOutput(outputId = "data_summary_plot_2") %>%
                                 withSpinner(color = spinner_color)
