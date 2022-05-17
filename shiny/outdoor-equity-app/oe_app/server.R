@@ -180,6 +180,7 @@ server <- function(input, output, session) {
                                     action = "update",
                                     options = list(width = 6))
       
+      
     }
   }) ## EO OE press num_viz
   
