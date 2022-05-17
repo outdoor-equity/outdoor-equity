@@ -139,7 +139,8 @@ zip_geometries_ca <- get_acs(geography = "zcta", year = 2018, geometry = TRUE,
   select(zip_code, geometry)
 
 # simplify ZIP geometries for mapping
-simple_zip_geometries_ca <- rmapshaper::ms_simplify(input = zip_geometries_ca$geometry)
+simple_zip_geometries_ca_test <- zip_geometries_ca %>% rmapshaper::ms_simplify()
+#simple_zip_geometries_ca <- rmapshaper::ms_simplify(input = zip_geometries_ca$geometry)
 ## BREAKING ##
 
 
