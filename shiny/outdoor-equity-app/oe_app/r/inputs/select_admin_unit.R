@@ -10,6 +10,6 @@ select_admin_unit <- function(locationId, isMultiple = FALSE, isSize = NULL){
                  options = list(
                    placeholder = "Type to search for a National Park, Forest, or Public Land",
                    # Note(HD) when created set a value for the input to an empty string
-                   onInitialize = I('function() { this.setValue(""); }')
+                   onInitialize = I('function() { this.setValue("Yosemite National Park"); }')
                  )) 
 } # EO SEL admin unit
