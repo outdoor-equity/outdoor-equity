@@ -10,6 +10,6 @@ select_site <- function(locationId, isMultiple = FALSE, isSize = NULL){
                  options = list(
                    placeholder = "Type to search for a reservable site",
                    # Note(HD) when created set a value for the input to an empty string
-                   onInitialize = I('function() { this.setValue(""); }')
+                   onInitialize = I('function() { this.setValue("Upper Pines"); }')
                  ))
 } # EO SEL site
