@@ -1527,42 +1527,19 @@ server <- function(input, output, session) {
   
   
   ## SO VISITORSHEDS PLOTS YES REACTIVE ----
-  ### yosemite plot ----
+  ### CA ZIP codes plot ----
   output$caVisitorshed_plot <- renderTmap({
-    tm_shape(data_zip_geometries_ca_simple) +
-      tm_fill(
-        col = "number_reservations",
-        title = "Number of Visits",
-        palette = "PuRd",
-        style = "jenks",
-        n = 10,
-        popup.vars = c("Total Visits" = "number_reservations")
-      ) +
-      tm_shape(data_yosemite_upper_pines_geom) +
-      tm_dots(
-        col = "#009900FF",
-        size = 0.1,
-        alpha = 0.9,
-        id = "park"
-      ) +
-      tm_view(set.view = c(-119.559917, 37.061753, 6))
+    ca_zip_code_visitorshed_map(siteInput = input$site_relationships, 
+                                ridb_df = data_joined_2018, 
+                                zip_geometries_df = data_ca_zip_code_geometries)
     
   })
   
-  
+  ### state codes plot ----
   output$usVisitorshed_plot <- renderTmap({
-    tm_shape(data_geometries_us_simple) +
-      tm_borders(col = "grey", alpha = 0.5) +
-      tm_fill(
-        col = "number_reservations",
-        title = "Number of Visits",
-        palette = "YlGn",
-        n = 10,
-        style = "jenks",
-        id = "zip_state_abbr",
-        popup.vars = c("Total Visits" = "number_reservations")
-      ) +
-      tm_view(set.view = c(-101.834335, 40.022356, 3))
+    state_visitorshed_map(siteInput = input$site_relationships, 
+                          ridb_df = data_joined_2018, 
+                          state_geometries_df = data_state_geometries)
     
   }) # EO visitorsheds plots
   

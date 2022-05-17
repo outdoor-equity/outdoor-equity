@@ -32,6 +32,10 @@ reactlog_enable()
 data_joined_2018 <- readRDS("data/2018_joined_data.rds")
 ## CA ACS all ----
 data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds")
+## visitorsheds ----
+data_state_geometries <- readRDS("data/states_geometries.rds")
+data_ca_zip_code_geometries <- readRDS("data/ca_zip_codes_geometries.rds")
+
 ## yosemite visitorsheds ----
 data_yosemite_upper_pines_geom <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_geom.rds")
 data_zip_geometries_ca <- readRDS("data/2018_data_map_ca_yosemite_upper_pines_zip_geometries_ca.rds")
@@ -156,6 +160,10 @@ source("r/relationship_plots/race_length_of_stay_plot.R")
 # race x site type
 source("r/relationship_plots/race_site_type_data.R")
 source("r/relationship_plots/race_site_type_plot.R")
+
+## source visitorshed map functions ----
+source("r/visitorshed_maps/visitorshed_state_map.R")
+source("r/visitorshed_maps/visitorshed_ca_zip_code_map.R")
 
 ## source observe event functions ----
 source("r/inputs/observe_event_agency_to_admin_dict.R")
