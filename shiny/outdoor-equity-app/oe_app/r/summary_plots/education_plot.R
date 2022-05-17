@@ -82,7 +82,7 @@ education_plot <- function(admin_unitInput, siteInput){
   text_colors_ridb_ca <- c("RIDB" = "#466C04", "CA" = "#848484")
   
   # plot for shiny app
-  education_plotly <- ggplot(data = education_rdf()) +
+  education_plot <- ggplot(data = education_rdf()) +
     geom_col(aes(x = education_percent_average,
                  y = education,
                  fill = data_source,
@@ -106,7 +106,7 @@ education_plot <- function(admin_unitInput, siteInput){
           panel.grid.major.y = element_blank(),
           axis.text.y = element_text(size = 9))
   
-  ggplotly(education_plotly,
+  education_plotly <- ggplotly(education_plot,
            tooltip = list("text")) %>%
     style(hoverinfo = "none", traces = c(3, 4),
           textposition = "right") %>% 
@@ -118,4 +118,6 @@ education_plot <- function(admin_unitInput, siteInput){
     config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian"))
   
+  print(paste("The education plot for your selection of", siteInput, "has been created"))
+  return(education_plotly)
 } # EO function
