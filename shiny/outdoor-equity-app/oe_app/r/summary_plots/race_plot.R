@@ -1,8 +1,14 @@
-## race plot and parameters ##
-# used in DATA SUMMARY PLOTS in server
-# using input id's for summary page in ui
 
-race_plot <- function(admin_unitInput, siteInput){
+#' Race Data Summary Plotly
+#'
+#' @param admin_unitInput User pick for admin unit
+#' @param siteInput User pick for site
+#' @param ridb_df RIDB dataframe object name
+#'
+#' @return Plotly of race
+#'
+#' @examples
+race_plot <- function(admin_unitInput, siteInput, ridb_df){
   
   # reactive df
   # reservations in CA
@@ -13,7 +19,7 @@ race_plot <- function(admin_unitInput, siteInput){
            "Please select a reservable site to visualize.")
     ) # EO validate
     
-    data_joined_2018 %>%
+    ridb_df %>%
       filter(park %in% siteInput) %>%
       summarize(white = mean(white, na.rm = TRUE),
                 black = mean(black, na.rm = TRUE),

@@ -272,7 +272,8 @@ server <- function(input, output, session) {
     if (input$data_summary == "distance_traveled_mi") {
       dist_travel_plot(
         admin_unitInput = input$admin_unit_summary_1,
-        siteInput = input$site_summary_1
+        siteInput = input$site_summary_1,
+        ridb_df = data_joined_2018
       )
       
     } ## EO if distance traveled
@@ -281,7 +282,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "booking_window") {
       booking_window_plot(
         admin_unitInput = input$admin_unit_summary_1,
-        siteInput = input$site_summary_1
+        siteInput = input$site_summary_1,
+        ridb_df = data_joined_2018
       )
       
     } ## EO else if booking window
@@ -290,7 +292,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "daily_cost") {
       daily_cost_plot(
         admin_unitInput = input$admin_unit_summary_1,
-        siteInput = input$site_summary_1
+        siteInput = input$site_summary_1,
+        ridb_df = data_joined_2018
       )
       
     } ## EO else if daily cost
@@ -299,7 +302,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "daily_cost_per_visitor") {
       daily_cost_visitor_plot(
         admin_unitInput = input$admin_unit_summary_1,
-        siteInput = input$site_summary_1
+        siteInput = input$site_summary_1,
+        ridb_df = data_joined_2018
       )
       
     } ## EO else if daily cost per visitor
@@ -308,7 +312,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "education") {
       education_plot(
         admin_unitInput = input$admin_unit_summary_1,
-        siteInput = input$site_summary_1
+        siteInput = input$site_summary_1,
+        ridb_df = data_joined_2018
       )
       
     } ## EO education
@@ -317,7 +322,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "length_of_stay") {
       length_of_stay_plot(
         admin_unitInput = input$admin_unit_summary_1,
-        siteInput = input$site_summary_1
+        siteInput = input$site_summary_1,
+        ridb_df = data_joined_2018
       )
       
     } ## EO else if length of stay
@@ -326,7 +332,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "aggregated_site_type") {
       site_type_plot(
         admin_unitInput = input$admin_unit_summary_1,
-        siteInput = input$site_summary_1
+        siteInput = input$site_summary_1,
+        ridb_df = data_joined_2018
       )
       
     } ## EO else if site type
@@ -335,7 +342,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "race") {
       race_plot(
         admin_unitInput = input$admin_unit_summary_1,
-        siteInput = input$site_summary_1
+        siteInput = input$site_summary_1,
+        ridb_df = data_joined_2018
       )
       
     } ## EO else if race
@@ -345,7 +353,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "median_income") {
       median_income_plot(
         admin_unitInput = input$admin_unit_summary_1,
-        siteInput = input$site_summary_1
+        siteInput = input$site_summary_1,
+        ridb_df = data_joined_2018
       )
       
     } ## EO else if median income
@@ -354,7 +363,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "not_english_only") {
       language_plot(
         admin_unitInput = input$admin_unit_summary_1,
-        siteInput = input$site_summary_1
+        siteInput = input$site_summary_1,
+        ridb_df = data_joined_2018
       )
       
     } ## EO language
@@ -368,7 +378,8 @@ server <- function(input, output, session) {
     if (input$data_summary == "distance_traveled_mi") {
       dist_travel_plot(
         admin_unitInput = input$admin_unit_summary_2,
-        siteInput = input$site_summary_2
+        siteInput = input$site_summary_2,
+        ridb_df = data_joined_2018
       )
       
     } ## EO if distance traveled
@@ -377,7 +388,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "booking_window") {
       booking_window_plot(
         admin_unitInput = input$admin_unit_summary_2,
-        siteInput = input$site_summary_2
+        siteInput = input$site_summary_2,
+        ridb_df = data_joined_2018
       )
       
     } ## EO else if booking window
@@ -386,7 +398,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "daily_cost") {
       daily_cost_plot(
         admin_unitInput = input$admin_unit_summary_2,
-        siteInput = input$site_summary_2
+        siteInput = input$site_summary_2,
+        ridb_df = data_joined_2018
       )
       
     } ## EO else if daily cost
@@ -395,7 +408,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "daily_cost_per_visitor") {
       daily_cost_visitor_plot(
         admin_unitInput = input$admin_unit_summary_2,
-        siteInput = input$site_summary_2
+        siteInput = input$site_summary_2,
+        ridb_df = data_joined_2018
       )
       
     } ## EO else if daily cost per visitor
@@ -404,7 +418,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "education") {
       education_plot(
         admin_unitInput = input$admin_unit_summary_2,
-        siteInput = input$site_summary_2
+        siteInput = input$site_summary_2,
+        ridb_df = data_joined_2018
       )
       
     } ## EO education
@@ -413,7 +428,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "length_of_stay") {
       length_of_stay_plot(
         admin_unitInput = input$admin_unit_summary_2,
-        siteInput = input$site_summary_2
+        siteInput = input$site_summary_2,
+        ridb_df = data_joined_2018
       )
       
     } # EO length of stay
@@ -422,7 +438,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "aggregated_site_type") {
       site_type_plot(
         admin_unitInput = input$admin_unit_summary_2,
-        siteInput = input$site_summary_2
+        siteInput = input$site_summary_2,
+        ridb_df = data_joined_2018
       )
       
     } ## EO else if site type
@@ -431,7 +448,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "race") {
       race_plot(
         admin_unitInput = input$admin_unit_summary_2,
-        siteInput = input$site_summary_2
+        siteInput = input$site_summary_2,
+        ridb_df = data_joined_2018
       )
       
     } ## EO else if race
@@ -440,7 +458,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "median_income") {
       median_income_plot(
         admin_unitInput = input$admin_unit_summary_2,
-        siteInput = input$site_summary_2
+        siteInput = input$site_summary_2,
+        ridb_df = data_joined_2018
       )
       
     } ## EO else if median income
@@ -449,7 +468,8 @@ server <- function(input, output, session) {
     else if (input$data_summary == "not_english_only") {
       language_plot(
         admin_unitInput = input$admin_unit_summary_2,
-        siteInput = input$site_summary_2
+        siteInput = input$site_summary_2,
+        ridb_df = data_joined_2018
       )
     } ## EO language
     

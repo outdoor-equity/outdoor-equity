@@ -1,8 +1,15 @@
-## median income plot and parameters ##
-# used in DATA SUMMARY PLOTS in server
-# using input id's for summary page in ui
 
-median_income_plot <- function(admin_unitInput, siteInput){
+#' Median-income Data Summary Plotly
+#'
+#' @param admin_unitInput User pick for admin unit
+#' @param siteInput User pick for site
+#' @param ridb_df RIDB dataframe object name
+#'
+#' @return Plotly of median-income
+#'
+#' @examples
+
+median_income_plot <- function(admin_unitInput, siteInput, ridb_df){
   
   # reactive data frame 
   median_income_rdf <- reactive ({
@@ -13,7 +20,7 @@ median_income_plot <- function(admin_unitInput, siteInput){
     ) # EO validate
     
     # reservations in CA
-    data_joined_2018 %>%
+    ridb_df %>%
       filter(park %in% siteInput) %>%
       select(park, median_income) %>% 
       rename(location_indicator = park) %>% 

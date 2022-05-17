@@ -1,17 +1,14 @@
-## distance traveled plot and parameters ##
-# used in DATA SUMMARY PLOTS in server
-# using input id's for summary page in ui
-# agencyInput, admin_unitInput,
 
-#' Title
+#' Distance Traveled Data Summary Plotly
 #'
-#' @param admin_unitInput 
-#' @param siteInput 
+#' @param admin_unitInput User pick for admin unit
+#' @param siteInput User pick for site
+#' @param ridb_df RIDB dataframe object name
 #'
-#' @return
+#' @return Plotly of distance traveled
 #'
 #' @examples
-dist_travel_plot <- function(admin_unitInput, siteInput){
+dist_travel_plot <- function(admin_unitInput, siteInput, ridb_df){
   
   # reactive data frame 
   dist_travel_rdf <- reactive ({
@@ -21,7 +18,7 @@ dist_travel_plot <- function(admin_unitInput, siteInput){
            "Please select a reservable site to visualize.")
     ) # EO validate
     
-    data_joined_2018 %>%
+    ridb_df %>%
       filter(park %in% siteInput) %>%
       mutate(distance_traveled_mi = distance_traveled_m * 0.000621371) %>%
       select(park, distance_traveled_mi) %>% 

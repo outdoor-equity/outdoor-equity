@@ -1,8 +1,14 @@
-## education plot and parameters ##
-# used in DATA SUMMARY PLOTS in server
-# using input id's for summary page in ui
 
-education_plot <- function(admin_unitInput, siteInput){
+#' Education Data Summary Plotly
+#'
+#' @param admin_unitInput User pick for admin unit
+#' @param siteInput User pick for site
+#' @param ridb_df RIDB dataframe object name
+#'
+#' @return Plotly of education
+#'
+#' @examples
+education_plot <- function(admin_unitInput, siteInput, ridb_df){
   
   # reactive data frame 
   education_rdf <- reactive ({
@@ -12,7 +18,7 @@ education_plot <- function(admin_unitInput, siteInput){
            "Please select a reservable site to visualize.")
     ) # EO validate
     
-    data_plot_education_ridb <- data_joined_2018 %>%
+    data_plot_education_ridb <- ridb_df %>%
       filter(park %in% siteInput) %>%
       summarize(hs_GED_or_below = mean(hs_GED_or_below, na.rm = TRUE),
                 some_college = mean(some_college, na.rm = TRUE),

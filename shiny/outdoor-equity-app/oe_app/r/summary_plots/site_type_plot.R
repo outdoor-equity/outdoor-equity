@@ -1,16 +1,14 @@
-## site type plot and parameters ##
-# used in DATA SUMMARY PLOTS in server
-# using input id's for summary page in ui
 
-#' Title
+#' Site Type Data Summary Plotly
 #'
-#' @param admin_unitInput 
-#' @param siteInput 
+#' @param admin_unitInput User pick for admin unit
+#' @param siteInput User pick for site
+#' @param ridb_df RIDB dataframe object name
 #'
-#' @return
+#' @return Plotly of race
 #'
 #' @examples
-site_type_plot <- function(admin_unitInput, siteInput){
+site_type_plot <- function(admin_unitInput, siteInput, ridb_df){
   
   # reactive data frame 
   site_type_rdf <- reactive ({
@@ -20,7 +18,7 @@ site_type_plot <- function(admin_unitInput, siteInput){
            "Please select a reservable site to visualize.")
     ) # EO validate
     
-    data_joined_2018 %>%
+    ridb_df %>%
       filter(park %in% siteInput) %>%
       select(park, aggregated_site_type) %>% 
       mutate(aggregated_site_type = str_to_title(string = aggregated_site_type),

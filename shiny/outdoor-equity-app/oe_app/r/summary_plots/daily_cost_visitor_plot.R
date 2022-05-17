@@ -1,16 +1,14 @@
-## daily cost per visitor plot and parameters ##
-# used in DATA SUMMARY PLOTS in server
-# using input id's for summary page in ui
 
-#' Title
+#' Daily Cost per Visitor Data Summary Plotly
 #'
-#' @param admin_unitInput 
-#' @param siteInput 
+#' @param admin_unitInput User pick for admin unit
+#' @param siteInput User pick for site
+#' @param ridb_df RIDB dataframe object name
 #'
-#' @return
+#' @return Plotly of daily cost per visitor
 #'
 #' @examples
-daily_cost_visitor_plot <- function(admin_unitInput, siteInput){
+daily_cost_visitor_plot <- function(admin_unitInput, siteInput, ridb_df){
   
   # reactive data frame 
   daily_cost_visitor_rdf <- reactive ({
@@ -20,7 +18,7 @@ daily_cost_visitor_plot <- function(admin_unitInput, siteInput){
            "Please select a reservable site to visualize.")
     ) # EO validate
     
-    data_joined_2018 %>%
+    ridb_df %>%
       filter(park %in% siteInput) %>%
       filter(daily_cost_per_visitor != "Inf") %>% 
       select(park, daily_cost_per_visitor)

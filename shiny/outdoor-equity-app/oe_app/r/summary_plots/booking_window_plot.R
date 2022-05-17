@@ -1,17 +1,14 @@
-## booking window plot and parameters ##
-# used in DATA SUMMARY PLOTS in server
-# using input id's for summary page in ui
 
-#' Title
+#' Booking Window Data Summary Plotly
 #'
-#' @param admin_unitInput 
-#' @param siteInput 
+#' @param admin_unitInput User pick for admin unit
+#' @param siteInput User pick for site
+#' @param ridb_df RIDB dataframe object name
 #'
-#' @return
-#' @export
+#' @return Plotly of booking window
 #'
 #' @examples
-booking_window_plot <- function(admin_unitInput, siteInput){
+booking_window_plot <- function(admin_unitInput, siteInput, ridb_df){
   
   # reactive data frame
   booking_window_rdf <- reactive({
@@ -21,7 +18,7 @@ booking_window_plot <- function(admin_unitInput, siteInput){
            "Please select a reservable site to visualize.")
     ) # EO validate
     
-    data_joined_2018 %>%
+    ridb_df %>%
       filter(park %in% siteInput,
              booking_window > 0,
              booking_window != "Inf") %>% 

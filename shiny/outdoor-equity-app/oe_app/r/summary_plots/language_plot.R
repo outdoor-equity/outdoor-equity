@@ -1,8 +1,14 @@
-## language plot and parameters ##
-# used in DATA SUMMARY PLOTS in server
-# using input id's for summary page in ui
 
-language_plot <- function(admin_unitInput, siteInput){
+#' Language Data Summary Plotly
+#'
+#' @param admin_unitInput User pick for admin unit
+#' @param siteInput User pick for site
+#' @param ridb_df RIDB dataframe object name
+#'
+#' @return Plotly of language
+#'
+#' @examples
+language_plot <- function(admin_unitInput, siteInput, ridb_df){
   
   # reactive data frame 
   language_rdf <- reactive ({
@@ -13,7 +19,7 @@ language_plot <- function(admin_unitInput, siteInput){
     ) # EO validate
     
     # reservations in CA
-    data_joined_2018 %>%
+    ridb_df %>%
       filter(park %in% siteInput) %>%
       select(park, not_english_only, english_only) %>% 
       drop_na(not_english_only, english_only) %>% 
