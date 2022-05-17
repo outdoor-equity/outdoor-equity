@@ -54,7 +54,20 @@ RIDB_calculate_pre2018 <-
              "length_of_stay", "booking_window", "daily_cost", "daily_cost_per_visitor") %>% 
       # update values
       mutate(
-        # update park values (generic)
+        # agency abbreviations to names
+        agency = str_replace(string = agency,
+                             pattern = "NPS",
+                             replacement = "National Park Service"),
+        agency = str_replace(string = agency,
+                             pattern = "USFS", 
+                             replacement = "US Forest Service"),
+        agency = str_replace(string = agency,
+                             pattern = "USACE",
+                             replacement = "US Army Corps of Engineers"),
+        agency = str_replace(string = agency,
+                             pattern = "BOR",
+                             replacement = "Bureau of Reclamation"),
+        # update admin_unit values (generic)
         admin_unit = str_replace(string = admin_unit,
                                  pattern = paste(c("NF - FS", "NF -FS", "NF- FS", 
                                                    "NF-FS", "-FS", " - FS"), 
@@ -64,6 +77,7 @@ RIDB_calculate_pre2018 <-
         admin_unit = str_replace(string = admin_unit,
                                  pattern = "And",
                                  replacement = "&"),
+        # update park values (generic)
         park = str_remove(string = park,
                           pattern = paste(c("\\(.*", " \\(.*",
                                             "---.*", " ---.*",
@@ -72,6 +86,9 @@ RIDB_calculate_pre2018 <-
         park = str_replace(string = park,
                            pattern = "Cg",
                            replacement = "Campground"),
+        park = str_replace(string = park,
+                           pattern = "Nhp",
+                           replacement = "National Historic Park"),
         park = str_replace(string = park,
                            pattern = "@",
                            replacement = "At"),
@@ -86,7 +103,10 @@ RIDB_calculate_pre2018 <-
         # update park values (CA specific)
         park = str_remove(string = park,
                           pattern = paste(c(" - Angeles Nf", " -Hwy"), 
-                                          collapse = "|"))
+                                          collapse = "|")),
+        park = str_replace(string = park,
+                           pattern = "Tunnel Mills Il",
+                           replacement = "Tunnel Mills")
       ) # close mutate for update values
     
     ## calculate distance traveled
@@ -95,6 +115,7 @@ RIDB_calculate_pre2018 <-
       st_as_sf(coords = c("facility_longitude", "facility_latitude"),
                crs = 4326) %>% 
       st_transform(crs = 4269) # using NAD83 because measured in meters
+    
     # get centroid of geometries for all US ZIP codes 
     df_zip_centroids_us <- get_acs(geography = "zcta", year = 2018, geometry = TRUE, 
                                    summary_var = "B01001_001",
@@ -104,6 +125,8 @@ RIDB_calculate_pre2018 <-
       mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>% 
       select(zip_code, geometry) %>% 
       st_centroid()
+    
+    ## create final dataframes
     # join data and calculate `distance_traveled` variable
     df_joined_geometries <- 
       left_join(x = df_geometries %>% as.data.frame(),
@@ -114,6 +137,7 @@ RIDB_calculate_pre2018 <-
                                                y = geometry.y,
                                                by_element = TRUE),
              distance_traveled_m = as.numeric(distance_traveled_m)) 
+    
     # convert back to data.frame (from sf data.frame), remove geometries
     df_joined <- df_joined_geometries %>% 
       as.data.frame() %>% 

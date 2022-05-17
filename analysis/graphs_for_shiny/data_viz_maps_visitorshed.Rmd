@@ -44,7 +44,11 @@ zip_geometries_ca <- get_acs(geography = "zcta", year = 2018, geometry = TRUE,
   mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>% 
   select(zip_code, geometry) 
   
-zip_geometries_ca <- rmapshaper::ms_simplify(input = zip_geometries_ca$geometry)
+simple_geometries_ca <- rmapshaper::ms_simplify(input = zip_geometries_ca$geometry, 
+                                                drop_null_geometries = FALSE) %>% 
+  as.data.frame()
+
+zip_geometries_ca$geometry <- simple_geometries_ca
 
 # state geometries
 state_geometries_us <- get_acs(geography = "state", year = 2018, geometry = TRUE, 
