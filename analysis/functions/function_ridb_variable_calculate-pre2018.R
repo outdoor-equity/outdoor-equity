@@ -107,7 +107,10 @@ RIDB_calculate_pre2018 <-
                                           collapse = "|")),
         park = str_replace(string = park,
                            pattern = "Tunnel Mills Il",
-                           replacement = "Tunnel Mills")
+                           replacement = "Tunnel Mills"),
+        admin_unit = str_replace(string = admin_unit,
+                                 pattern = "Sequoia & Kings Canyon National Park", 
+                                 replacement = "Sequoia & Kings Canyon National Parks")
       ) # close mutate for update values
     
     
