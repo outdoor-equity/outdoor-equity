@@ -184,6 +184,26 @@ server <- function(input, output, session) {
     }
   }) ## EO OE press num_viz
   
+  ## SO OE hide / show text_lang_medInc ----
+  observeEvent(input$data_summary, {
+    if (input$data_summary %in% c("distance_traveled_mi",
+                                  "booking_window",
+                                  "daily_cost",
+                                  "daily_cost_per_visitor",
+                                  "length_of_stay",
+                                  "aggregated_site_type",
+                                  "race",
+                                  "education")) {
+      
+      shinyjs::hide(id = "text_lang_medInc")
+    }
+    else if (input$data_summary %in% c("median_income",
+                                       "not_english_only")) {
+      
+      shinyjs::show(id = "text_lang_medInc")
+    }
+  }) ## EO OE hide / show text_lang_medInc ----
+  
   ## SO OE press site relationships ----
   observeEvent(input$data_relationships, {
     if (input$data_relationships %in% c("Race x Site type",
@@ -431,7 +451,6 @@ server <- function(input, output, session) {
         admin_unitInput = input$admin_unit_summary_2,
         siteInput = input$site_summary_2
       )
-      
     } ## EO language
     
   }) ## EO DATA SUMMARY PLOTS 2
@@ -439,48 +458,8 @@ server <- function(input, output, session) {
   
   ## DATA SUMMARY CAPTIONS ----
   output$data_summary_captions <- renderText({
-    ### SO distance traveled ----
-    if (input$data_summary == "distance_traveled_mi") {
-      includeMarkdown("text/data_summary_no_caption.md")
-    } ## EO if distance traveled
-    
-    ## SO booking window ----
-    else if (input$data_summary == "booking_window") {
-      includeMarkdown("text/data_summary_no_caption.md")
-    } ## EO else if booking window
-    
-    ## SO daily cost ----
-    else if (input$data_summary == "daily_cost") {
-      includeMarkdown("text/data_summary_no_caption.md")
-    } ## EO else if daily cost
-    
-    ## SO daily cost per visitor ----
-    else if (input$data_summary == "daily_cost_per_visitor") {
-      includeMarkdown("text/data_summary_no_caption.md")
-    } ## EO else if daily cost per visitor
-    
-    ## SO education ----
-    else if (input$data_summary == "education") {
-      includeMarkdown("text/data_summary_no_caption.md")
-    } ## EO education
-    
-    ## SO length of stay ----
-    else if (input$data_summary == "length_of_stay") {
-      includeMarkdown("text/data_summary_no_caption.md")
-    } # EO length of stay
-    
-    ## SO site type ----
-    else if (input$data_summary == "aggregated_site_type") {
-      includeMarkdown("text/data_summary_no_caption.md")
-    } ## EO else if site type
-    
-    ## SO race ----
-    else if (input$data_summary == "race") {
-      includeMarkdown("text/data_summary_no_caption.md")
-    } ## EO else if race
-    
     ## SO median income ----
-    else if (input$data_summary == "median_income") {
+    if (input$data_summary == "median_income") {
       includeMarkdown("text/data_summary_median_income_caption.md")
     } ## EO else if median income
     
