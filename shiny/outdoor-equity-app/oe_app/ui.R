@@ -53,27 +53,28 @@ ui <- fluidPage(
                tabPanel(title = "Data Summary",
                         fluid = TRUE, # (HD) not sure what this argument does
                         
-                        titlePanel("Visualize a data summary"),
+                        #titlePanel("Visualize a data summary"),
                         # SO data summary FR layout
                         fluidRow(
                           # SO pick a var input box
-                          box(width = 12,
+                          box(width = 4,
                               title = "Select a variable and how many sites to compare",
-                              splitLayout(
                               # choose a var
                               select_data_summary_vars(),
-                              #### SO select number of visuals ----
-                              selectizeInput(inputId = "num_viz",
-                                             label = "Select 1 to see single site, or 2 if you want to compare two different sites",
-                                             choices = c(1, 2),
-                                             multiple = FALSE,
-                                             options = list(
-                                               placeholder = "Select number of visuals",
-                                               # Note(HD) when created set a value for the input to an empty string
-                                               onInitialize = I('function() { this.setValue("1"); }')
-                                             )) # EO num viz input
-                              ) # EO split layout var input & num visual
+                              #### SO select number of visuals
+                              radioButtons(inputId = "num_viz",
+                                           label = "Select 1 to see a single site, or 2 to compare two different sites",
+                                           choices = c(1, 2),
+                                           selected = 2,
+                                           inline = TRUE # makes choices horizontal
+                                           ) # EO radioButton
                           ), # EO pick a var & num visual input box
+                          
+                          # SO explanatory data summary text
+                          box(width = 8,
+                              title = "Data Summary Plots",
+                              includeMarkdown("text/data_summary_explanatory.md")
+                          ), # EO explanatory data summary text
                           
                           # SO data summary plot 1 output box
                           box(id = "num_viz_1",
@@ -90,6 +91,7 @@ ui <- fluidPage(
                                 withSpinner(color = spinner_color),
                               textOutput(outputId = "data_summary_captions")
                           ), # EO data summary plot 1 output box
+                          tags$head(tags$style('#num_viz_1 .box-header{ display: none}')), # remove title from box
                           
                           # SO data summary plot 2 output box
                           box(id = "num_viz_2",
@@ -101,10 +103,11 @@ ui <- fluidPage(
                                 select_admin_unit(locationId = "summary_2"),
                                 # site input
                                 select_site(locationId = "summary_2")
-                              ),
+                              ), # EO split layout data summary plot 2 output box
                               plotlyOutput(outputId = "data_summary_plot_2") %>%
                                 withSpinner(color = spinner_color)
-                              ) # EO data summary plot 2 output box
+                              ), # EO data summary plot 2 output box
+                          tags$head(tags$style('#num_viz_2 .box-header{ display: none}')), # remove title from box
                         ) # EO data summary FR layout
                         ), #### EO data summary
                
