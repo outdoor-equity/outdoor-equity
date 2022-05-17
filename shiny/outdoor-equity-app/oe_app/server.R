@@ -460,12 +460,23 @@ server <- function(input, output, session) {
   output$data_summary_captions <- renderText({
     ## SO median income ----
     if (input$data_summary == "median_income") {
-      includeMarkdown("text/data_summary_median_income_caption.md")
+      "The shape of the curve can provide insight on the distribution of 
+      median-incomes. Taller peaks indicate a concentration of more people at a 
+      given median-income level, while flatter curves indicate a more even 
+      distribution. Comparing the green curve (all visitors to this site) to the 
+      grey curve (all California residents), can show who is more or less 
+      represented at this site compared to the California census."
     } ## EO else if median income
     
     ## SO language ----
     else if (input$data_summary == "not_english_only") {
-      includeMarkdown("text/data_summary_language_caption.md")
+      "The shape of the curve can provide insight on the distribution of the 
+      percentage of people in a community who speak languages other than English 
+      at home. Taller peaks indicate a concentration of more people living in 
+      communities at a given percent level, while flatter curves indicate a more 
+      even distribution. Comparing the green curve (all visitors to this site) 
+      to the grey curve (all California residents), can show who is more or less 
+      represented at this site compared to the CA census."
     } ## EO language
     
   }) ## EO DATA SUMMARY CAPTIONS
