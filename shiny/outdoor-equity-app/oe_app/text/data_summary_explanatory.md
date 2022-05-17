@@ -1,0 +1,1 @@
+These visuals are summaries of a single variable. You can either view a data summary for a single site when selecting 1 or you can compare two sites when selecting 2.
