@@ -18,12 +18,12 @@ ui <- fluidPage(
   tags$h1("UCSB MEDS Capstone Outdoor Equity App"),
   
   # app subtitle ----
-  p(strong("Visualize and explore a joined dataset of RIDB and ACS Census data")),
+  p(strong("Visualize and explore a joined dataset of recration and US Census data")),
   
   # navbarPage structure ----
   navbarPage(
     # TO nav bar and TO tab in web browser 
-    "Visualize RIDB Data",
+    "Visualize Recreation Data",
     
     ## About tab ----
     tabPanel("About",
