@@ -61,9 +61,6 @@ zip_state_dataframe <- function(year = 2018){
            state_abbrev = STUSPS,
            state = NAME) %>% 
     rmapshaper::ms_simplify(keep = 0.005, keep_shapes = TRUE) %>% 
-    left_join(y = df_states_fips_zip_codes,
-              by = "fips") %>% 
-    relocate(zip_code, .before = 1)
   
   return(df_state_geometries_us)
 }

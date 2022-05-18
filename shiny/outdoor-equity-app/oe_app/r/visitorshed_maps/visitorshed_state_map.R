@@ -34,6 +34,8 @@ state_visitorshed_map <- function(siteInput, ridb_df, state_geometries_df){
   
   
   ## -- create map -- ##
+  tmap_mode("view")
+  
   tm_shape(map_data) +
     tm_borders(col = "grey", alpha = 0.5) +
     tm_fill(col = "number_reservations",
