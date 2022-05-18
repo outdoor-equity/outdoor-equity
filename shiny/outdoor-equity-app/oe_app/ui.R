@@ -23,7 +23,7 @@ ui <- fluidPage(
   # navbarPage structure ----
   navbarPage(
     # TO nav bar and TO tab in web browser 
-    "Visualize Recreation Data",
+    title = "Visualize Recreation Data",
     
     ## About tab ----
     tabPanel("About",
