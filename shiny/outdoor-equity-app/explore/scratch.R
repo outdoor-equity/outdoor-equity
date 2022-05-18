@@ -2,6 +2,11 @@ library(tidyverse)
 library(here)
 library(collections)
 
+ggplot(data = test_bab, aes(x = distance_traveled_m, y = aggregated_site_type)) +
+  geom_point()
+
+ggplot(data = data_joined_2018, aes(x = distance_traveled_m)) +
+  geom_histogram()
 
 map_data <- test_bab %>% 
   group_by(customer_zip) %>%

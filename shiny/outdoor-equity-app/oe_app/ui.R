@@ -23,7 +23,7 @@ ui <- fluidPage(
   # navbarPage structure ----
   navbarPage(
     # TO nav bar and TO tab in web browser 
-    "Visualize Recreation Data",
+    title = "Visualize Recreation Data",
     
     ## About tab ----
     tabPanel("About",
@@ -56,6 +56,12 @@ ui <- fluidPage(
                         #titlePanel("Visualize a data summary"),
                         # SO data summary FR layout
                         fluidRow(
+                          # SO explanatory data summary text
+                          box(width = 8,
+                              title = "Data Summary Plots",
+                              includeMarkdown("text/data_summary_explanatory.md")
+                          ), # EO explanatory data summary text
+                          
                           # SO pick a var input box
                           box(width = 4,
                               title = "Select a variable and how many sites to compare",
@@ -63,18 +69,13 @@ ui <- fluidPage(
                               select_data_summary_vars(),
                               #### SO select number of visuals
                               radioButtons(inputId = "num_viz",
-                                           label = "Select 1 to see a single site, or 2 to compare two different sites",
+                                           label = "2. Select 1 to see a single site, or 2 to compare two different sites",
                                            choices = c(1, 2),
                                            selected = 2,
                                            inline = TRUE # makes choices horizontal
                                            ) # EO radioButton
                           ), # EO pick a var & num visual input box
-                          
-                          # SO explanatory data summary text
-                          box(width = 8,
-                              title = "Data Summary Plots",
-                              includeMarkdown("text/data_summary_explanatory.md")
-                          ), # EO explanatory data summary text
+          
                           
                           # SO explanatory text for language and median income plots
                           box(id = "text_lang_medInc",
