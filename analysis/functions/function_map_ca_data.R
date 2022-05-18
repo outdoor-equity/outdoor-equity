@@ -64,7 +64,7 @@ zip_ca_dataframe <- function(state = "California", year = 2018){
     select(NAME, geometry) %>%
     mutate(zip_code = str_sub(NAME, start = -5, end = -1)) %>%
     select(zip_code, geometry) %>% 
-    rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE) %>% 
+    rmapshaper::ms_simplify(keep = 0.005, keep_shapes = TRUE) %>% 
     left_join(y = df_states_fips_zip_codes,
               by = "zip_code") %>% 
     relocate(zip_code, .before = 1)
