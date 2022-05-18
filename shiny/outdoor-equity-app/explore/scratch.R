@@ -2,6 +2,18 @@ library(tidyverse)
 library(here)
 library(collections)
 
+
+map_data <- test_bab %>% 
+  group_by(customer_zip) %>%
+  summarize(number_reservations = n()) %>%
+  mutate(customer_zip = as.character(customer_zip))
+
+map_data_geometries <-
+  data_ca_zip_code_geometries %>% # read in saved RDS file
+  left_join(map_data,
+            by = c("zip_code" = "customer_zip")) %>%
+  mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
+
 test_bab <- data_joined_2018 %>% filter(park == "Upper Pines")
 
 test_dt <- data_joined_2018 %>% filter(park %in% "Wawona") %>% str_to_title()
