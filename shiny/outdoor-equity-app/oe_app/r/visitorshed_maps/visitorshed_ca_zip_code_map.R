@@ -20,6 +20,7 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
     ) # EO validate
     
     ridb_df %>% 
+      select(agency, admin_unit, park, customer_zip, facility_latitude, facility_longitude) %>% 
       filter(park %in% siteInput)
   })
   
@@ -31,7 +32,7 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
   # add geometries
   map_data_geometries <-
     zip_geometries_df %>% # read in saved RDS file
-    left_join(rdf(),
+    left_join(map_data,
               by = c("zip_code" = "customer_zip")) %>%
     mutate(number_reservations = ifelse(is.na(number_reservations), 0, number_reservations))
   
