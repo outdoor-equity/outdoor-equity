@@ -179,10 +179,10 @@ ui <- fluidPage(
                         ), #### EO data relationships
 
                ### SO visitorsheds ----
-               tabPanel(title = "Visitorsheds",
+               tabPanel(title = "Visitorshed Maps",
                         fluid = TRUE,
                         
-                        titlePanel("Visualize a visitorshed"),
+                        titlePanel("Visualize a site's visitorshed"),
                         # SO FR visitorsheds
                         fluidRow(
                           # SO subset visitorshed data box
@@ -200,14 +200,14 @@ ui <- fluidPage(
                           
                           # SO US visitorshed map box
                           box(width = 6,
-                              title = "US Visitorshed",
+                              title = "US Visitorshed Map",
                               tmapOutput(outputId = "usVisitorshed_plot") %>% 
                                 withSpinner(color = spinner_color)
                           ), # EO US visitorshed map box
                           
                           # SO CA visitorshed map box
                           box(width = 6,
-                              title = "CA Visitorshed",
+                              title = "CA Visitorshed Map",
                               tmapOutput(outputId = "caVisitorshed_plot") %>% 
                                 withSpinner(color = spinner_color)
                           ), # EO CA visitorshed map box
