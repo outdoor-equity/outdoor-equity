@@ -44,8 +44,7 @@ state_visitorshed_map <- function(siteInput, ridb_df, state_geometries_df){
             n = 10,
             style = "jenks",
             id = "customer_zip_state_full",
-            popup.vars = c("State" = "customer_zip_state_full",
-                           "Total Visits" = "number_reservations")) +
-    tm_view(set.view = c(-101.834335, 40.022356, 3)) # update zoom
+            popup.vars = c("Total Visits" = "number_reservations")) +
+    tm_view(set.view = c(-101.834335, 40.022356, 2)) # update zoom
   
 }
