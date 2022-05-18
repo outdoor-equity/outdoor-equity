@@ -13,14 +13,14 @@ ui <- fluidPage(
   
   # set theme ----
   theme = bs_theme(bootswatch = "sandstone",
-                   bg = "#ffff",
-                   fg = "#1F303E",
-                   primary = "#005ea2",
-                   secondary = "#659dc7",
-                   success = "#397B1E",
-                   info = "#97D4EA",
-                   warning = "#C3512C",
-                   danger = "#FACE00",
+                   bg = "#ffff", # blank
+                   fg = "#1F303E", # ridb dark blue from bottom of page
+                   primary = "#005ea2", # ridb dark blue font
+                   secondary = "#659dc7", # ridb light blue font
+                   success = "#397B1E", # ridb light green
+                   info = "#97D4EA", # ridb light blue from bar
+                   warning = "#C3512C",# ridb orange red
+                   danger = "#FACE00", # ridb yellow
                    base_font = font_google("Open Sans"),
                    heading_font = font_google("Source Sans Pro")), # Note(HD): don't know if this really made a difference, tried to make the headers bold
   
