@@ -12,13 +12,26 @@ ui <- fluidPage(
   ), # EO tag$head
   
   # set theme ----
-  theme = bs_theme(bootswatch = "minty"),
+  theme = bs_theme(bootswatch = "sandstone",
+                   bg = "#ffff",
+                   fg = "#1F303E",
+                   primary = "#005ea2",
+                   secondary = "#659dc7",
+                   success = "#397B1E",
+                   info = "#97D4EA",
+                   warning = "#C3512C",
+                   danger = "#FACE00",
+                   base_font = font_google("Open Sans"),
+                   heading_font = font_google("Source Sans Pro")), # Note(HD): don't know if this really made a difference, tried to make the headers bold
   
   # app title ----
-  tags$h1("UCSB MEDS Capstone Outdoor Equity App"),
+  titlePanel(title = span(img(src = "logos/bren_meds_hex.png", height = 50),
+                          img(src = "logos/RecLogo.png", height = 70))),
+  #title = tags$head(HTML("<a href='https://www.recreation.gov/'> <img src='www/logos/RecLogo.png/'>")),
+  #tags$h1("UCSB MEDS Capstone Outdoor Equity App"),
   
   # app subtitle ----
-  p(strong("Visualize and explore a joined dataset of recration and US Census data")),
+  #p(strong("Visualize and explore a joined dataset of recration and US Census data")),
   
   # navbarPage structure ----
   navbarPage(
