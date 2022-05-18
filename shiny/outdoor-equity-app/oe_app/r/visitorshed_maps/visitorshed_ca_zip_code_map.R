@@ -48,6 +48,9 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
   ## -- create map -- ##
   tmap_mode("view")
   
+  map_icon_site <- tmap_icons("r/visitorshed_maps/camping_location_icon.png",
+                              height = 1)
+  
   tm_shape(map_data_geometries) +
     tm_fill(col = "number_reservations",
             title = "Number of Visits",
@@ -56,9 +59,11 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
             n = 10,
             popup.vars = c("Total Visits" = "number_reservations")) +
     tm_shape(park_location_geom) +
+    # tm_symbols(shape = map_icon_site,
+    #            id = "park") + 
     tm_markers(shape = marker_icon(),
                col = "#64863C",
-               id = "park") + 
+               id = "park") +
     tm_view(set.view = c(-119.559917, 37.061753, 6))
   
 }
