@@ -21,7 +21,7 @@ state_visitorshed_map <- function(siteInput, ridb_df, state_geometries_df){
     
     ridb_df %>% 
       filter(park %in% siteInput) %>%
-      group_by(customer_zip_state_full) %>%
+      group_by(customer_zip_state_full, customer_zip_state) %>%
       summarize(number_reservations = n()) %>%
       filter(!is.na(customer_zip_state_full))
   })
@@ -30,7 +30,7 @@ state_visitorshed_map <- function(siteInput, ridb_df, state_geometries_df){
   map_data <-
     state_geometries_df %>%
     left_join(y = rdf(),
-              by = c("fips" = "zip_fips"))
+              by = c("state_abbrev" = "customer_zip_state"))
   
   
   ## -- create map -- ##
