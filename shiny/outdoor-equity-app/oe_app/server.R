@@ -262,7 +262,12 @@ server <- function(input, output, session) {
                                                 median_income_binned = median_income_decile_list)
   }) # OE distance traveled by income
   
-
+  ### SO distance traveled by income ----
+  output$about_example_4_plot <- renderTmap({
+    not_reactive_state_visitorshed_map(site = "Upper Pines", 
+                                       ridb_df = data_joined_2018,
+                                       state_geometries_df = data_state_geometries)
+  }) # OE distance traveled by income
   
 
   
@@ -875,36 +880,8 @@ server <- function(input, output, session) {
     
   }) # EO relationships high plots 
   
-  ### SO RENDER UI relationships ----
-  # SO about examples render UI
-  output$examples_tab_layout <- renderUI({
-    tabsetPanel(
-      tabPanel(title = "How far in advance to reserve site?",
-               includeMarkdown("text/about_example1.md"),
-               plotlyOutput("about_example_1_plot") %>%
-                 withSpinner(color = spinner_color)
-      ), # EO tabPanel example 1
-      
-      tabPanel(title = "How far are people of different races traveling?",
-               includeMarkdown("text/about_example2.md"),
-               plotlyOutput(outputId = "about_example_2_plot") %>%
-                 withSpinner(color = spinner_color)
-      ), # EO tabPanel example 2
-      
-      tabPanel(title = "How far are people with different incomes traveling?",
-               includeMarkdown("text/about_example3.md"),
-               plotlyOutput(outputId = "about_example_3_plot") %>%
-                 withSpinner(color = spinner_color)
-      ), # EO tabPanel example 3
-      
-      tabPanel(title = "Visitorshed",
-               # plotlyOutput(outputId = "edu_site_rvTent_plot") %>%
-               #   withSpinner(color = spinner_color)
-      ) # EO tabPanel example 4
-      
-    ) # EO edu tabsetPanel
-  }) # EO about examples render UI
   
+  ### SO RENDER UI relationships ----
   #SO education site type relationships render ui
   output$relationships_tab_layout <- renderUI({
     
