@@ -283,7 +283,15 @@ ui <- fluidPage(
              fluid = TRUE,
              tags$img(src = "images/desolation_canyon.jpg", 
                       height = 175,
-                      width = 1190)
+                      width = 1190),
+             fluidRow(
+               # SO explanatory metadata text
+               box(width = 8,
+                   status = "primary",
+                   title = "Metadata",
+                   includeMarkdown("text/metadata_explanatory.md")
+                   ) # EO explanatory text
+               ) # EO FR metadata
              ), # Note(HD): ADD ICON
     
     ## Data Download ----
@@ -299,6 +307,7 @@ ui <- fluidPage(
                # SO box inputs
                box(id = "download_box",
                    width = 12,
+                   status = "primary",
                    title = NULL,
                    splitLayout(cellWidths = c("33.3%", "33.3%", "33.3%"),
                                # select agency
@@ -316,6 +325,7 @@ ui <- fluidPage(
                # SO columns subset box
                box(id = "cols_select",
                    width = 12,
+                   status = "success",
                    selectizeInput(inputId = "cols_data_download",
                                   label = "Select columns",
                                   choices = cols_data_joined_2018,
