@@ -292,7 +292,8 @@ ui <- fluidPage(
              # SO data download FR layout
              fluidRow(
                # SO box inputs
-               box(width = 12,
+               box(id = "download_box",
+                   width = 12,
                    title = NULL,
                    splitLayout(cellWidths = c("33.3%", "33.3%", "33.3%"),
                                # select agency
@@ -306,6 +307,7 @@ ui <- fluidPage(
                                            isMultiple = TRUE),
                  ) # EO split layout
                ), # EO box layout
+               tags$head(tags$style('#download_box .box-header{ display: none}')), # remove title from box
                # SO columns subset box
                box(id = "cols_select",
                    width = 12,
