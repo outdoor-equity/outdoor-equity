@@ -37,10 +37,15 @@ ui <- fluidPage(
     # TO nav bar and TO tab in web browser 
     title = "Visualize Recreation Data",
     
+    footer = span(#h6("test"),
+                  img(src = "logos/bren_meds_hex.png", height = 30),
+                  img(src = "logos/uomontana-horizontal-maroon.png", height = 25),
+                  img(src = "logos/RecLogo.png", height = 40)),
+    
     ## About tab ----
     tabPanel("About",
              tags$img(src = "images/white_mountains_national_forest_large.jpg", 
-                      height = 250, 
+                      height = 175, 
                       width = 1190),
              fluidRow(
                # SO About tabs
@@ -91,18 +96,14 @@ ui <- fluidPage(
                ### SO data summary ----
                tabPanel(title = "Data Summary",
                         fluid = TRUE, # (HD) not sure what this argument does
-                        
-                        #titlePanel("Visualize a data summary"),
+                        tags$img(src = "images/kings_canyon.png", 
+                                 height = 175,
+                                 width = 1190),
                         # SO data summary FR layout
                         fluidRow(
-                          # SO data summary header image
-                          box(width = 12,
-                              img(src = "images/kings_canyon.png", height = 250)
-                          ), # EO header image
-                          
                           # SO explanatory data summary text
                           box(width = 8,
-                              status = "success",
+                              status = "primary",
                               title = "Data Summary Plots",
                               includeMarkdown("text/data_summary_explanatory.md")
                           ), # EO explanatory data summary text
@@ -110,21 +111,17 @@ ui <- fluidPage(
                           # SO pick a var input box
                           box(width = 4,
                               title = "Select a variable and how many sites to compare",
-                              status = "warning",
+                              status = "primary",
                               # choose a var
                               select_data_summary_vars(),
                               #### SO select number of visuals
                               radioButtons(inputId = "num_viz",
-                                           label = "Select 1 to see a single site, or 2 to compare two different sites",
+                                           label = "2. Select 1 to see a single site, or 2 to compare two different sites",
                                            choices = c(1, 2),
                                            selected = 2,
                                            inline = TRUE # makes choices horizontal
                                            ) # EO radioButton
                           ), # EO pick a var & num visual input box
-          
-                          box(width = 12,
-                              status = "warning",
-                              title = "2. Subset the data"),
                           
                           # SO explanatory text for language and median income plots
                           box(id = "text_lang_medInc",
@@ -136,7 +133,7 @@ ui <- fluidPage(
                           # SO data summary plot 1 output box
                           box(id = "num_viz_1",
                               width = 12,
-                              #status = "warning",
+                              status = "success",
                               splitLayout(
                                 # agency input
                                 select_agency(locationId = "summary_1"),
@@ -153,7 +150,7 @@ ui <- fluidPage(
                           # SO data summary plot 2 output box
                           box(id = "num_viz_2",
                               width = 6,
-                              #status = "warning",
+                              status = "success",
                               splitLayout(
                                 # agency input
                                 select_agency(locationId = "summary_2",
@@ -175,27 +172,25 @@ ui <- fluidPage(
                ### SO data relationships ----
                tabPanel(title = "Data Relationships",
                         fluid = TRUE,
-                        
-                        titlePanel("Visualize relationships"),
                         # SO data relationships FR layout
                         fluidRow(
                           # SO explanation data relationship text
-                          box(width = 8,
-                              status = "success",
+                          box(width = 12,
+                              status = "primary",
                               title = "Data Relationship Plots",
                               includeMarkdown("text/data_relationship_explanatory.md")
                               ), # EO explanatory data relationship text
                           
                           # SO pick relationship input box
                           box(width = 4,
-                              status = "warning",
+                              status = "success",
                               title = "1. Pick a relationship to visualize",
                               select_data_relationship()
                           ), # EO pick relationship input box
                           
                           # SO subset relationship data box
-                          box(width = 12,
-                              status = "warning",
+                          box(width = 8,
+                              status = "success",
                               title = "2. Subset the data",
                               splitLayout(
                                 # agency input
@@ -231,30 +226,26 @@ ui <- fluidPage(
                ### SO visitorsheds ----
                tabPanel(title = "Visitorshed Maps",
                         fluid = TRUE,
-                        
-                        titlePanel("Visualize a site's visitorshed"),
                         # SO FR visitorsheds
                         fluidRow(
                           # SO explanatory visitorshed text
                           box(
                             width = 8,
-                            status = "success",
+                            status = "primary",
                             title = "Visitorshed Maps",
                             includeMarkdown("text/visitorshed_explanatory.md")
                           ), # EO explanatory visitorshed text
                           
                           # SO subset visitorshed data box
-                          box(width = 12,
-                              status = "warning",
+                          box(width = 4,
+                              status = "primary",
                               title = "Subset the data",
-                              splitLayout(
-                                # agency input
-                                select_agency(locationId = "visitorsheds"),
-                                # admin input
-                                select_admin_unit(locationId = "visitorsheds"),
-                                # site input
-                                select_site(locationId = "visitorsheds")
-                              ) # EO splitLayout visitorshed
+                              # agency input
+                              select_agency(locationId = "visitorsheds"),
+                              # admin input
+                              select_admin_unit(locationId = "visitorsheds"),
+                              # site input
+                              select_site(locationId = "visitorsheds")
                           ), # EO subset visitorshed data box
                           
                           # SO US visitorshed map box
