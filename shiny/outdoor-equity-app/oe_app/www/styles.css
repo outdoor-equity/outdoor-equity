@@ -16,7 +16,15 @@
  .selectize-input {
    max-height: 200px;
    overflow-y: scroll;
-   
+ }
+ 
+ /* color change when tabPanel is selected in navbarMenu */
+ .nav-link.active {
+    background-color: #64863C;
+ }
+ 
+ .nav-item:hover {
+    background-color: #64863C; 
  }
  
 /* #test .box-header .with-border {
