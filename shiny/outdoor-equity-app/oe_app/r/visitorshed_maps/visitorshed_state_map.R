@@ -9,6 +9,7 @@
 #'
 #' @examples
 state_visitorshed_map <- function(siteInput, ridb_df, state_geometries_df){
+  print(paste0("You have chosen park: ", siteInput, " on the US visitorshed map and the class is: ", class(siteInput)))
   
   ## -- data wrangle -- ##
   # reactive dataframe of number of reservations per state
