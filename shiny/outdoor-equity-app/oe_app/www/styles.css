@@ -23,9 +23,9 @@
     background-color: #64863C;
  }
  
- .nav-item:hover {
-    background-color: #64863C; 
- }
+ .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover {
+    background-color: #64863C;
+}
  
 /* #test .box-header .with-border {
    display: none;
