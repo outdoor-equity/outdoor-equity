@@ -2,6 +2,18 @@
 # use function deployApp()
 # deployApp("/capstone/outdoorequity/halina/outdoor-equity/shiny/outdoor-equity-app/oe_app")
 
+# check if packages are installed and install if they are not
+# list of packages required
+list.of.packages <- c("rsconnect", "bslib", "tidycensus", "shiny", "shinydashboard", "shinydashboardPlus", 
+                      "shinyWidgets", "shinycssloaders", "shinyjs", "reactlog", "tidyverse", "tmap", 
+                      "janitor", "lubridate", "sf", "scales", "DT", "collections", "plotly", "rmapshaper")
+
+# checking missing packages from list
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+
+# install missing ones
+if(length(new.packages)) install.packages(new.packages, dependencies = TRUE)
+
 # attached packages ----
 library(rsconnect)
 library(bslib)
