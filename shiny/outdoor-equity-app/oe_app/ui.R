@@ -39,50 +39,49 @@ ui <- fluidPage(
     
     ## About tab ----
     tabPanel("About",
+             tags$img(src = "images/white_mountains_national_forest_large.jpg", 
+                      height = 250, 
+                      width = 1190),
              fluidRow(
-               # SO about header image
-               box(width = 12,
-                   img(src = "images/white_mountains_national_forest_large.jpg", height = 250)
-               ), # EO header image
                # SO About tabs
                box(width = 12,
-                   status = "info",
+                   status = "primary",
                    title = "About this App",
-                   includeMarkdown("text/about_intro.md")
+                   #includeMarkdown("text/about_intro.md")
+                   tabBox(width = 12,
+                          tabPanel(title = "What is the Outdoor Equity App?",
+                                   includeMarkdown("text/about_app.md")),
+                          tabPanel(title = "What is outdoor recreation and why does it matter?",
+                                   includeMarkdown("text/about_background.md"))
+                          ) # EO tabBox
                    ), # EO About tabs intro
-               tabBox(width = 12, side = "right",
-                      tabPanel(title = "What is the Outdoor Equity App?",
-                               includeMarkdown("text/about_app.md")),
-                      tabPanel(title = "What is outdoor recreation and why does it matter?",
-                               includeMarkdown("text/about_background.md"))
-                      ), # EO About tabs
                # SO About examples
                box(width = 12,
-                   status = "info",
+                   status = "primary",
                    title = "Example Questions to Explore",
-                   includeMarkdown("text/about_examples.md")
-                   ), # EO About examples intro
-               tabBox(width = 12,
-                      tabPanel(title = "How far in advance to reserve site?",
-                               includeMarkdown("text/about_example1.md"),
-                               plotlyOutput("about_example_1_plot") %>%
-                                 withSpinner(color = spinner_color)
-                      ), # EO tabPanel example 1
-                      tabPanel(title = "How far are people of different races traveling?",
-                               includeMarkdown("text/about_example2.md"),
-                               plotlyOutput(outputId = "about_example_2_plot") %>%
-                                 withSpinner(color = spinner_color)
-                      ), # EO tabPanel example 2
-                      tabPanel(title = "How far are people with different incomes traveling?",
-                               includeMarkdown("text/about_example3.md"),
-                               plotlyOutput(outputId = "about_example_3_plot") %>%
-                                 withSpinner(color = spinner_color)
-                      ), # EO tabPanel example 3
-                      tabPanel(title = "Visitorshed Map",
-                               tmapOutput(outputId = "about_example_4_plot") %>%
-                                 withSpinner(color = spinner_color)
-                      ) # EO tabPanel example 4
-               ) # EO about examples
+                   #includeMarkdown("text/about_examples.md")
+                   tabBox(width = 12,
+                          tabPanel(title = "How far in advance to reserve site?",
+                                   includeMarkdown("text/about_example1.md"),
+                                   plotlyOutput("about_example_1_plot") %>%
+                                     withSpinner(color = spinner_color)
+                          ), # EO tabPanel example 1
+                          tabPanel(title = "How far are people of different races traveling?",
+                                   includeMarkdown("text/about_example2.md"),
+                                   plotlyOutput(outputId = "about_example_2_plot") %>%
+                                     withSpinner(color = spinner_color)
+                          ), # EO tabPanel example 2
+                          tabPanel(title = "How far are people with different incomes traveling?",
+                                   includeMarkdown("text/about_example3.md"),
+                                   plotlyOutput(outputId = "about_example_3_plot") %>%
+                                     withSpinner(color = spinner_color)
+                          ), # EO tabPanel example 3
+                          tabPanel(title = "Visitorshed Map",
+                                   tmapOutput(outputId = "about_example_4_plot") %>%
+                                     withSpinner(color = spinner_color)
+                          ) # EO tabPanel example 4
+                   ) # EO tabBox
+                   ) # EO About examples intro
              ) # EO About FR layout
     ), ## EO About tab ----
     
