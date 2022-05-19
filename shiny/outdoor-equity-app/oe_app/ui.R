@@ -96,7 +96,7 @@ ui <- fluidPage(
                ### SO data summary ----
                tabPanel(title = "Data Summary",
                         fluid = TRUE, # (HD) not sure what this argument does
-                        tags$img(src = "images/kings_canyon.png", 
+                        tags$img(src = "images/king_range_nat_conserv.jpg", 
                                  height = 175,
                                  width = 1190),
                         # SO data summary FR layout
@@ -172,6 +172,9 @@ ui <- fluidPage(
                ### SO data relationships ----
                tabPanel(title = "Data Relationships",
                         fluid = TRUE,
+                        tags$img(src = "images/milky_way.jpg", # need to use a better photo
+                                 height = 175,
+                                 width = 1190),
                         # SO data relationships FR layout
                         fluidRow(
                           # SO explanation data relationship text
@@ -226,6 +229,9 @@ ui <- fluidPage(
                ### SO visitorsheds ----
                tabPanel(title = "Visitorshed Maps",
                         fluid = TRUE,
+                        tags$img(src = "images/autum_trees.jpg", # need to use a better photo
+                                 height = 175,
+                                 width = 1190),
                         # SO FR visitorsheds
                         fluidRow(
                           # SO explanatory visitorshed text
@@ -273,11 +279,20 @@ ui <- fluidPage(
 
                ), ## EO Analysis tab ----
     
-    tabPanel("Metadata"), # Note(HD): ADD ICON
+    tabPanel(title = "Metadata",
+             fluid = TRUE,
+             tags$img(src = "images/desolation_canyon.jpg", 
+                      height = 175,
+                      width = 1190)
+             ), # Note(HD): ADD ICON
     
     ## Data Download ----
-    tabPanel("Data Download", icon = icon("download-alt", lib = "glyphicon"),
-             
+    tabPanel(title = "Data Download", 
+             icon = icon("download-alt", lib = "glyphicon"),
+             fluid = TRUE,
+             tags$img(src = "images/snowy_mountains.jpg", 
+                      height = 175,
+                      width = 1190),
              #titlePanel("Create a subsetted dataset to download"),
              # SO data download FR layout
              fluidRow(
