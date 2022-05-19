@@ -1,0 +1,1 @@
+These maps show the number of visits from different states and California ZIP codes for a site.

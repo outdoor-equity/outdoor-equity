@@ -1,0 +1,1 @@
+These visuals compare a census variable to a recreation variable.
