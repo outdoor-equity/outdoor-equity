@@ -1,1 +1,1 @@
-Explore the examples below to get a sense of how to use this website and the types of visualizations you can create!
+How was this app made and why is it important?
