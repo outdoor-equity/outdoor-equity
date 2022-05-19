@@ -36,11 +36,13 @@ ui <- fluidPage(
   navbarPage(
     # TO nav bar and TO tab in web browser 
     title = "Visualize Recreation Data",
-    
+    # SO footer
     footer = span(#h6("test"),
                   img(src = "logos/bren_meds_hex.png", height = 30),
                   img(src = "logos/uomontana-horizontal-maroon.png", height = 25),
-                  img(src = "logos/RecLogo.png", height = 40)),
+                  img(src = "logos/RecLogo.png", height = 40),
+                  img(src = "logos/NCEAS-square-logo.png", height = 30)
+                  ), # EO footer
     
     ## About tab ----
     tabPanel("About",
