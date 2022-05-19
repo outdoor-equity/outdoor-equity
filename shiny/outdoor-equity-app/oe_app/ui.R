@@ -48,7 +48,7 @@ ui <- fluidPage(
     tabPanel("About",
              tags$img(src = "images/white_mountains_national_forest_large.jpg", 
                       height = 175, 
-                      width = 1190),
+                      width = 1390),
              fluidRow(
                # SO About tabs
                box(width = 12,
@@ -100,7 +100,7 @@ ui <- fluidPage(
                         fluid = TRUE, # (HD) not sure what this argument does
                         tags$img(src = "images/king_range_nat_conserv.jpg", 
                                  height = 175,
-                                 width = 1190),
+                                 width = 1390),
                         # SO data summary FR layout
                         fluidRow(
                           # SO explanatory data summary text
@@ -176,7 +176,7 @@ ui <- fluidPage(
                         fluid = TRUE,
                         tags$img(src = "images/milky_way.jpg", # need to use a better photo
                                  height = 175,
-                                 width = 1190),
+                                 width = 1390),
                         # SO data relationships FR layout
                         fluidRow(
                           # SO explanation data relationship text
@@ -233,7 +233,7 @@ ui <- fluidPage(
                         fluid = TRUE,
                         tags$img(src = "images/autum_trees.jpg", # need to use a better photo
                                  height = 175,
-                                 width = 1190),
+                                 width = 1390),
                         # SO FR visitorsheds
                         fluidRow(
                           # SO explanatory visitorshed text
@@ -285,7 +285,7 @@ ui <- fluidPage(
              fluid = TRUE,
              tags$img(src = "images/desolation_canyon.jpg", 
                       height = 175,
-                      width = 1190),
+                      width = 1390),
              fluidRow(
                # SO explanatory metadata text
                box(width = 8,
@@ -302,7 +302,7 @@ ui <- fluidPage(
              fluid = TRUE,
              tags$img(src = "images/snowy_mountains.jpg", 
                       height = 175,
-                      width = 1190),
+                      width = 1390),
              #titlePanel("Create a subsetted dataset to download"),
              # SO data download FR layout
              fluidRow(
