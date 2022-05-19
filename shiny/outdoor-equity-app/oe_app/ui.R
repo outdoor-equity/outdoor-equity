@@ -40,6 +40,10 @@ ui <- fluidPage(
     ## About tab ----
     tabPanel("About",
              fluidRow(
+               # SO about header image
+               box(width = 12,
+                   img(src = "images/white_mountains_national_forest_large.jpg", height = 250)
+               ), # EO header image
                # SO About tabs
                box(width = 12,
                    status = "info",
@@ -92,6 +96,11 @@ ui <- fluidPage(
                         #titlePanel("Visualize a data summary"),
                         # SO data summary FR layout
                         fluidRow(
+                          # SO data summary header image
+                          box(width = 12,
+                              img(src = "images/kings_canyon.png", height = 250)
+                          ), # EO header image
+                          
                           # SO explanatory data summary text
                           box(width = 8,
                               status = "success",
