@@ -25,6 +25,7 @@ ui <- fluidPage(
                    heading_font = font_google("Source Sans Pro")), # Note(HD): don't know if this really made a difference, tried to make the headers bold
   
   # app title ----
+  tags$head(HTML("<title>Visualize RIDB Data</title>")),
   titlePanel(title = span(img(src = "logos/bren_meds_hex.png", height = 50),
                           img(src = "logos/RecLogo.png", height = 70))),
   #title = tags$head(HTML("<a href='https://www.recreation.gov/'> <img src='www/logos/RecLogo.png/'>")),
