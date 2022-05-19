@@ -25,11 +25,9 @@ ui <- fluidPage(
                    heading_font = font_google("Source Sans Pro")), # Note(HD): don't know if this really made a difference, tried to make the headers bold
   
   # app title ----
-  tags$head(HTML("<title>Visualize RIDB Data</title>")),
+  tags$head(HTML("<title>Visualize RIDB Data</title>")), # Note(HD): this needs to be before titlePanel so that the title comes up in the tab online
   titlePanel(title = span(img(src = "logos/bren_meds_hex.png", height = 50),
                           img(src = "logos/RecLogo.png", height = 70))),
-  #title = tags$head(HTML("<a href='https://www.recreation.gov/'> <img src='www/logos/RecLogo.png/'>")),
-  #tags$h1("UCSB MEDS Capstone Outdoor Equity App"),
   
   # app subtitle ----
   #p(strong("Visualize and explore a joined dataset of recration and US Census data")),
@@ -168,14 +166,15 @@ ui <- fluidPage(
                                 withSpinner(color = spinner_color),
                               uiOutput(outputId = "relationships_tab_layout")
                               ), # EO relationships plot output box
+                          tags$head(tags$style('#relationships_outputs .box-header{ display: none}')), # remove title from box
                           
                           # context relationships plot 
                           box(id = "high_relationships_output",
                               width = 4,
                               plotlyOutput(outputId = "high_relationships_plot") %>% 
                                 withSpinner(color = spinner_color)
-                              
-                              ) # EO context relationship plot box
+                              ), # EO context relationship plot box
+                          tags$head(tags$style('#high_relationships_output .box-header{ display: none}')) # remove title from box
                         ) # EO FR data relationships
                         ), #### EO data relationships
 
