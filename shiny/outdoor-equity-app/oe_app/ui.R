@@ -226,7 +226,7 @@ ui <- fluidPage(
                         ) # EO FR data relationships
                         ), #### EO data relationships
 
-               ### SO visitorsheds ----
+                ### SO visitorsheds ----
                tabPanel(title = "Visitorshed Maps",
                         fluid = TRUE,
                         tags$img(src = "images/autum_trees.jpg", # need to use a better photo
