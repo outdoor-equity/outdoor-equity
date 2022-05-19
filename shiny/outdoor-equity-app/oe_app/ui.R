@@ -19,8 +19,8 @@ ui <- fluidPage(
                    secondary = "#659dc7", # ridb light blue font
                    success = "#397B1E", # ridb light green
                    info = "#97D4EA", # ridb light blue from bar
-                   warning = "#C3512C",# ridb orange red
-                   danger = "#FACE00", # ridb yellow
+                   warning = "#C3512C",# ridb yellow
+                   danger = "#FACE00", # ridb orange red
                    base_font = font_google("Open Sans"),
                    heading_font = font_google("Source Sans Pro")), # Note(HD): don't know if this really made a difference, tried to make the headers bold
   
@@ -40,20 +40,48 @@ ui <- fluidPage(
     ## About tab ----
     tabPanel("About",
              fluidRow(
-               # SO About background
+               # SO about header image
                box(width = 12,
-                   title = "What is outdoor recreation and why does it matter?",
-                   includeMarkdown("text/about_background.md")
-               ), # EO About background
-               # SO about app
+                   img(src = "images/white_mountains_national_forest_large.jpg", height = 250)
+               ), # EO header image
+               # SO About tabs
                box(width = 12,
-                   title = "What is the Outdoor Equity App?",
-                   includeMarkdown("text/about_app.md")
-               ), # EO about app
-               # SO about examples
+                   status = "info",
+                   title = "About this App",
+                   includeMarkdown("text/about_intro.md")
+                   ), # EO About tabs intro
+               tabBox(width = 12, side = "right",
+                      tabPanel(title = "What is the Outdoor Equity App?",
+                               includeMarkdown("text/about_app.md")),
+                      tabPanel(title = "What is outdoor recreation and why does it matter?",
+                               includeMarkdown("text/about_background.md"))
+                      ), # EO About tabs
+               # SO About examples
                box(width = 12,
+                   status = "info",
                    title = "Example Questions to Explore",
-                   uiOutput(outputId = "examples_tab_layout")
+                   includeMarkdown("text/about_examples.md")
+                   ), # EO About examples intro
+               tabBox(width = 12,
+                      tabPanel(title = "How far in advance to reserve site?",
+                               includeMarkdown("text/about_example1.md"),
+                               plotlyOutput("about_example_1_plot") %>%
+                                 withSpinner(color = spinner_color)
+                      ), # EO tabPanel example 1
+                      tabPanel(title = "How far are people of different races traveling?",
+                               includeMarkdown("text/about_example2.md"),
+                               plotlyOutput(outputId = "about_example_2_plot") %>%
+                                 withSpinner(color = spinner_color)
+                      ), # EO tabPanel example 2
+                      tabPanel(title = "How far are people with different incomes traveling?",
+                               includeMarkdown("text/about_example3.md"),
+                               plotlyOutput(outputId = "about_example_3_plot") %>%
+                                 withSpinner(color = spinner_color)
+                      ), # EO tabPanel example 3
+                      tabPanel(title = "Visitorshed Map",
+                               tmapOutput(outputId = "about_example_4_plot") %>%
+                                 withSpinner(color = spinner_color)
+                      ) # EO tabPanel example 4
                ) # EO about examples
              ) # EO About FR layout
     ), ## EO About tab ----
@@ -68,8 +96,14 @@ ui <- fluidPage(
                         #titlePanel("Visualize a data summary"),
                         # SO data summary FR layout
                         fluidRow(
+                          # SO data summary header image
+                          box(width = 12,
+                              img(src = "images/kings_canyon.png", height = 250)
+                          ), # EO header image
+                          
                           # SO explanatory data summary text
                           box(width = 8,
+                              status = "success",
                               title = "Data Summary Plots",
                               includeMarkdown("text/data_summary_explanatory.md")
                           ), # EO explanatory data summary text
@@ -77,17 +111,21 @@ ui <- fluidPage(
                           # SO pick a var input box
                           box(width = 4,
                               title = "Select a variable and how many sites to compare",
+                              status = "warning",
                               # choose a var
                               select_data_summary_vars(),
                               #### SO select number of visuals
                               radioButtons(inputId = "num_viz",
-                                           label = "2. Select 1 to see a single site, or 2 to compare two different sites",
+                                           label = "Select 1 to see a single site, or 2 to compare two different sites",
                                            choices = c(1, 2),
                                            selected = 2,
                                            inline = TRUE # makes choices horizontal
                                            ) # EO radioButton
                           ), # EO pick a var & num visual input box
           
+                          box(width = 12,
+                              status = "warning",
+                              title = "2. Subset the data"),
                           
                           # SO explanatory text for language and median income plots
                           box(id = "text_lang_medInc",
@@ -99,6 +137,7 @@ ui <- fluidPage(
                           # SO data summary plot 1 output box
                           box(id = "num_viz_1",
                               width = 12,
+                              #status = "warning",
                               splitLayout(
                                 # agency input
                                 select_agency(locationId = "summary_1"),
@@ -115,6 +154,7 @@ ui <- fluidPage(
                           # SO data summary plot 2 output box
                           box(id = "num_viz_2",
                               width = 6,
+                              #status = "warning",
                               splitLayout(
                                 # agency input
                                 select_agency(locationId = "summary_2",
@@ -137,17 +177,26 @@ ui <- fluidPage(
                tabPanel(title = "Data Relationships",
                         fluid = TRUE,
                         
-                        titlePanel("Visualize a relationship"),
+                        titlePanel("Visualize relationships"),
                         # SO data relationships FR layout
                         fluidRow(
+                          # SO explanation data relationship text
+                          box(width = 8,
+                              status = "success",
+                              title = "Data Relationship Plots",
+                              includeMarkdown("text/data_relationship_explanatory.md")
+                              ), # EO explanatory data relationship text
+                          
                           # SO pick relationship input box
                           box(width = 4,
+                              status = "warning",
                               title = "1. Pick a relationship to visualize",
                               select_data_relationship()
                           ), # EO pick relationship input box
                           
                           # SO subset relationship data box
-                          box(width = 8,
+                          box(width = 12,
+                              status = "warning",
                               title = "2. Subset the data",
                               splitLayout(
                                 # agency input
@@ -162,6 +211,7 @@ ui <- fluidPage(
                           # dynamic relationships plot output box
                           box(id = "relationships_outputs",
                               width = 8,
+                              status = "success",
                               plotlyOutput(outputId = "data_relationships_plot") %>%
                                 withSpinner(color = spinner_color),
                               uiOutput(outputId = "relationships_tab_layout")
@@ -171,6 +221,7 @@ ui <- fluidPage(
                           # context relationships plot 
                           box(id = "high_relationships_output",
                               width = 4,
+                              status = "success",
                               plotlyOutput(outputId = "high_relationships_plot") %>% 
                                 withSpinner(color = spinner_color)
                               ), # EO context relationship plot box
@@ -185,8 +236,17 @@ ui <- fluidPage(
                         titlePanel("Visualize a site's visitorshed"),
                         # SO FR visitorsheds
                         fluidRow(
+                          # SO explanatory visitorshed text
+                          box(
+                            width = 8,
+                            status = "success",
+                            title = "Visitorshed Maps",
+                            includeMarkdown("text/visitorshed_explanatory.md")
+                          ), # EO explanatory visitorshed text
+                          
                           # SO subset visitorshed data box
                           box(width = 12,
+                              status = "warning",
                               title = "Subset the data",
                               splitLayout(
                                 # agency input
@@ -200,6 +260,7 @@ ui <- fluidPage(
                           
                           # SO US visitorshed map box
                           box(width = 6,
+                              status = "success",
                               title = "US Visitorshed Map",
                               tmapOutput(outputId = "usVisitorshed_plot") %>% 
                                 withSpinner(color = spinner_color)
@@ -207,6 +268,7 @@ ui <- fluidPage(
                           
                           # SO CA visitorshed map box
                           box(width = 6,
+                              status = "success",
                               title = "CA Visitorshed Map",
                               tmapOutput(outputId = "caVisitorshed_plot") %>% 
                                 withSpinner(color = spinner_color)
