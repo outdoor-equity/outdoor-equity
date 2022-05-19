@@ -45,6 +45,7 @@ source("text/r/not_reactive_median_income_dist_travel_data.R")
 source("text/r/not_reactive_median_income_dist_travel_plot.R")
 source("text/r/not_reactive_race_dist_travel_data.R")
 source("text/r/not_reactive_race_dist_travel_plot.R")
+source("text/r/not_reactive_visitorshed_state_map.R")
 
 ## source input functions ----
 source("r/inputs/select_agency.R")
