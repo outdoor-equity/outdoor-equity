@@ -1513,10 +1513,10 @@ server <- function(input, output, session) {
   
   
   
-  ## SO VISITORSHEDS PLOTS YES REACTIVE ----
+  ## SO VISITORSHEDS maps ----
   ### CA ZIP codes plot ----
   output$caVisitorshed_plot <- renderTmap({
-    ca_zip_code_visitorshed_map(siteInput = input$site_relationships,
+    ca_zip_code_visitorshed_map(siteInput = input$site_visitorsheds,
                                 ridb_df = data_joined_2018,
                                 zip_geometries_df = data_ca_zip_code_geometries)
 
@@ -1524,7 +1524,7 @@ server <- function(input, output, session) {
   
   ### state codes plot ----
   output$usVisitorshed_plot <- renderTmap({
-    state_visitorshed_map(siteInput = input$site_relationships,
+    state_visitorshed_map(siteInput = input$site_visitorsheds,
                           ridb_df = data_joined_2018,
                           state_geometries_df = data_state_geometries)
 
