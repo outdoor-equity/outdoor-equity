@@ -30,7 +30,7 @@ ui <- fluidPage(
                           img(src = "logos/RecLogo.png", height = 70))),
   
   # app subtitle ----
-  #p(strong("Visualize and explore a joined dataset of recration and US Census data")),
+  #p(strong("Visualize and explore a joined dataset of recreation and US Census data")),
   
   # navbarPage structure ----
   navbarPage(
