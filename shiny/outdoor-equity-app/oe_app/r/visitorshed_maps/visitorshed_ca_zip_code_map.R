@@ -10,6 +10,7 @@
 #' @examples
 ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
   
+  print(paste0("You have chosen park: ", siteInput, " on the CA visitorshed map and the class is: ", class(siteInput)))
   ## -- data wrangle -- ##
   # reactive data frame for siteInput
   rdf <- reactive ({
