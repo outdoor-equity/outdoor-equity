@@ -40,9 +40,10 @@ ui <- fluidPage(
     # SO footer
     footer = span(#h6("test"),
                   img(src = "logos/bren_meds_hex.png"),
+                  img(src = "logos/bren_full.png"),
+                  img(src = "logos/NCEAS-square-logo.png"),
                   img(src = "logos/uomontana-horizontal-maroon.png"),
-                  img(src = "logos/RecLogo.png"),
-                  img(src = "logos/NCEAS-square-logo.png")
+                  img(src = "logos/RecLogo.png")
                   ), # EO footer
     
     ## About tab ----
@@ -291,9 +292,7 @@ ui <- fluidPage(
     tabPanel(title = "Data Download", 
              icon = icon("download-alt", lib = "glyphicon"),
              fluid = TRUE,
-             tags$img(src = "images/snowy_mountains.jpg", 
-                      height = 175,
-                      width = 1390),
+             tags$img(src = "images/snowy_mountains.jpg"),
              #titlePanel("Create a subsetted dataset to download"),
              # SO data download FR layout
              fluidRow(
