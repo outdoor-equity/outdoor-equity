@@ -27,9 +27,21 @@
     background-color: #64863C;
 }
  
-/* resize images dynamically */  
+/* resize header images dynamically */  
 img {
     max-width: 100%;
     height: auto;
     width: auto\9; /* ie8 */
+}
+
+/* resize logos in footer */
+span > img {
+  max-width: 39%;
+  height: 30%;
+}
+
+/* resize logos in header*/
+h2 > span > img {
+  max-width: 30%;
+  height: 25%;
 }
