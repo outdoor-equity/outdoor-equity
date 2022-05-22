@@ -46,9 +46,9 @@ ui <- fluidPage(
     
     ## About tab ----
     tabPanel("About",
-             tags$img(src = "images/white_mountains_national_forest_large.jpg", 
-                      height = 175, 
-                      width = 1390),
+             tags$img(src = "images/white_mountains_national_forest_large.jpg"), 
+                      #height = 175, 
+                      #width = 1390),
              fluidRow(
                # SO About tabs
                box(width = 12,
