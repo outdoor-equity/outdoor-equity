@@ -25,14 +25,10 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
       filter(park %in% siteInput)
   })
   
-  # value of total reservations for this park
-  total_reservations <- nrow(rdf())
-  
   # number of reservations per ZIP code
   map_data <- rdf() %>% 
     group_by(customer_zip) %>%
-    summarize(number_reservations = n(),
-              percentage_reservations = percent((number_reservations / total_reservations), accuracy = 0.01))
+    summarize(number_reservations = n())
   
   # join with ZIP geometries
   map_data_geometries <-
@@ -40,10 +36,16 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
     left_join(map_data,
               by = c("zip_code" = "customer_zip")) %>%
     mutate_at(vars(number_reservations), 
-              ~replace(number_reservations, is.na(number_reservations), 0)) %>%
+              ~replace(number_reservations, is.na(number_reservations), 0))  %>% 
+    select(zip_code, number_reservations, geometry)
+  
+  # value of total CA reservations for this park
+  total_reservations <- sum(map_data_geometries$number_reservations)
+  
+  map_data_geometries <- map_data_geometries %>% 
+    mutate(percentage_reservations = percent((number_reservations / total_reservations), accuracy = 0.01)) %>%
     mutate_at(vars(percentage_reservations), 
-              ~replace(percentage_reservations, is.na(percentage_reservations), 0)) %>% 
-    select(zip_code, number_reservations, percentage_reservations, geometry)
+              ~replace(percentage_reservations, is.na(percentage_reservations), 0))
   
   # calculate location of park for point on map
   park_location_geom <- rdf() %>%
@@ -64,7 +66,7 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
             style = "jenks",
             n = 10,
             popup.vars = c("Total Visits" = "number_reservations",
-                           "Percentage of All Visits" = "percentage_reservations")) +
+                           "Percentage of All CA Visits" = "percentage_reservations")) +
     tm_shape(park_location_geom) +
     tm_symbols(shape = map_site_icon,
                id = "park") +
