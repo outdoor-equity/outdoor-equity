@@ -28,13 +28,14 @@ state_visitorshed_map <- function(siteInput, ridb_df, state_geometries_df){
   # value of total reservations for this park
   total_reservations <- nrow(rdf())
   
+  # number of reservations and % per state
   map_data <- rdf() %>% 
     group_by(customer_zip_state_full, customer_zip_state) %>%
     summarize(number_reservations = n(),
               percentage_reservations = percent((number_reservations / total_reservations), accuracy = 0.01)) %>%
     filter(!is.na(customer_zip_state_full))
   
-  # add geometries
+  # add state geometries
   map_data_geometries <-
     state_geometries_df %>%
     left_join(y = map_data,
