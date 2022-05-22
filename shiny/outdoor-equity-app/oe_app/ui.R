@@ -26,8 +26,9 @@ ui <- fluidPage(
   
   # app title ----
   tags$head(HTML("<title>Visualize RIDB Data</title>")), # Note(HD): this needs to be before titlePanel so that the title comes up in the tab online
-  titlePanel(title = span(img(src = "logos/bren_meds_hex.png", height = 50),
-                          img(src = "logos/RecLogo.png", height = 70))),
+  titlePanel(title = span(img(src = "logos/bren_leaf_only.png"),
+                          img(src = "logos/bren_meds_hex.png"),
+                          img(src = "logos/RecLogo.png"))),
   
   # app subtitle ----
   #p(strong("Visualize and explore a joined dataset of recreation and US Census data")),
@@ -38,10 +39,10 @@ ui <- fluidPage(
     title = "Visualize Recreation Data",
     # SO footer
     footer = span(#h6("test"),
-                  img(src = "logos/bren_meds_hex.png", height = 30),
-                  img(src = "logos/uomontana-horizontal-maroon.png", height = 25),
-                  img(src = "logos/RecLogo.png", height = 40),
-                  img(src = "logos/NCEAS-square-logo.png", height = 30)
+                  img(src = "logos/bren_meds_hex.png"),
+                  img(src = "logos/uomontana-horizontal-maroon.png"),
+                  img(src = "logos/RecLogo.png"),
+                  img(src = "logos/NCEAS-square-logo.png")
                   ), # EO footer
     
     ## About tab ----
