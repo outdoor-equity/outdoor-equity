@@ -37,7 +37,7 @@ img {
 /* resize logos in footer */
 span > img {
   max-width: 39%;
-  height: 30%;
+  height: 20%;
 }
 
 /* resize logos in header*/
