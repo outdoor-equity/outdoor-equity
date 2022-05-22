@@ -45,7 +45,6 @@ data_joined_2018 <- readRDS("data/2018_joined_data.rds")
 ## CA ACS all ----
 data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds")
 ## visitorsheds ----
-data_joined_2018_geometries <- readRDS("data/2018_joined_data_geometries.rds")
 data_state_geometries <- readRDS("data/states_geometries.rds")
 data_ca_zip_code_geometries <- readRDS("data/ca_zip_codes_geometries.rds")
 

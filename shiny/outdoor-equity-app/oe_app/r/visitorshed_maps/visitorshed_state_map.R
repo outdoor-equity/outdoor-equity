@@ -22,22 +22,34 @@ state_visitorshed_map <- function(siteInput, ridb_df, state_geometries_df){
     
     ridb_df %>% 
       filter(park %in% siteInput) %>%
-      group_by(customer_zip_state_full, customer_zip_state) %>%
-      summarize(number_reservations = n()) %>%
-      filter(!is.na(customer_zip_state_full))
+      select(agency, admin_unit, park, customer_zip_state_full, customer_zip_state)
   })
   
+  # value of total reservations for this park
+  total_reservations <- nrow(rdf())
+  
+  map_data <- rdf() %>% 
+    group_by(customer_zip_state_full, customer_zip_state) %>%
+    summarize(number_reservations = n(),
+              percentage_reservations = percent((number_reservations / total_reservations), accuracy = 0.01)) %>%
+    filter(!is.na(customer_zip_state_full))
+  
   # add geometries
-  map_data <-
+  map_data_geometries <-
     state_geometries_df %>%
-    left_join(y = rdf(),
-              by = c("state_abbrev" = "customer_zip_state"))
+    left_join(y = map_data,
+              by = c("state_abbrev" = "customer_zip_state")) %>%
+    mutate_at(vars(number_reservations), 
+              ~replace(number_reservations, is.na(number_reservations), 0)) %>%
+    mutate_at(vars(percentage_reservations), 
+              ~replace(percentage_reservations, is.na(percentage_reservations), 0)) %>% 
+    select(customer_zip_state_full, number_reservations, percentage_reservations, geometry)
   
   
   ## -- create map -- ##
-  tmap_mode("plot")
+  tmap_mode("view")
   
-  tm_shape(map_data) +
+  tm_shape(map_data_geometries) +
     tm_borders(col = "grey", alpha = 0.5) +
     tm_fill(col = "number_reservations",
             title = "Number of Visits",
@@ -45,7 +57,8 @@ state_visitorshed_map <- function(siteInput, ridb_df, state_geometries_df){
             n = 10,
             style = "jenks",
             id = "customer_zip_state_full",
-            popup.vars = c("Total Visits" = "number_reservations")) +
+            popup.vars = c("Total Visits" = "number_reservations",
+                           "Percentage of All Visits" = "percentage_reservations")) +
     tm_view(set.view = c(-101.834335, 40.022356, 2)) # update zoom
   
 }
