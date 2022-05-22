@@ -27,6 +27,9 @@
     background-color: #64863C;
 }
  
-/* #test .box-header .with-border {
-   display: none;
- } */
+/* resize images dynamically */  
+img {
+    max-width: 100%;
+    height: auto;
+    width: auto\9; /* ie8 */
+}

@@ -46,9 +46,7 @@ ui <- fluidPage(
     
     ## About tab ----
     tabPanel("About",
-             tags$img(src = "images/white_mountains_national_forest_large.jpg", 
-                      height = 175, 
-                      width = 1390),
+             tags$img(src = "images/white_mountains_national_forest_large.jpg"),
              fluidRow(
                # SO About tabs
                box(width = 12,
@@ -98,9 +96,7 @@ ui <- fluidPage(
                ### SO data summary ----
                tabPanel(title = "Data Summary",
                         fluid = TRUE, # (HD) not sure what this argument does
-                        tags$img(src = "images/king_range_nat_conserv.jpg", 
-                                 height = 175,
-                                 width = 1390),
+                        tags$img(src = "images/king_range_nat_conserv.jpg"),
                         # SO data summary FR layout
                         fluidRow(
                           # SO explanatory data summary text
@@ -174,9 +170,7 @@ ui <- fluidPage(
                ### SO data relationships ----
                tabPanel(title = "Data Relationships",
                         fluid = TRUE,
-                        tags$img(src = "images/milky_way.jpg", # need to use a better photo
-                                 height = 175,
-                                 width = 1390),
+                        tags$img(src = "images/milky_way.jpg"), # need to use a better photo
                         # SO data relationships FR layout
                         fluidRow(
                           # SO explanation data relationship text
@@ -231,9 +225,7 @@ ui <- fluidPage(
                 ### SO visitorsheds ----
                tabPanel(title = "Visitorshed Maps",
                         fluid = TRUE,
-                        tags$img(src = "images/autum_trees.jpg", # need to use a better photo
-                                 height = 175,
-                                 width = 1390),
+                        tags$img(src = "images/autum_trees.jpg"), # need to use a better photo
                         # SO FR visitorsheds
                         fluidRow(
                           # SO explanatory visitorshed text
@@ -283,9 +275,7 @@ ui <- fluidPage(
     
     tabPanel(title = "Metadata",
              fluid = TRUE,
-             tags$img(src = "images/desolation_canyon.jpg", 
-                      height = 175,
-                      width = 1390),
+             tags$img(src = "images/desolation_canyon.jpg"),
              fluidRow(
                # SO explanatory metadata text
                box(width = 8,
