@@ -36,12 +36,12 @@ img {
 
 /* resize logos in footer */
 span > img {
-  max-width: 39%;
-  height: 20%;
+  max-width: 45%;
+  height: 10%;
 }
 
 /* resize logos in header*/
 h2 > span > img {
-  max-width: 30%;
-  height: 25%;
+  max-width: 10%;
+  height: 5%;
 }
