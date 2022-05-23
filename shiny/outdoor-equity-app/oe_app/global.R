@@ -6,7 +6,8 @@
 # list of packages required
 list.of.packages <- c("rsconnect", "bslib", "tidycensus", "shiny", "shinydashboard", "shinydashboardPlus", 
                       "shinyWidgets", "shinycssloaders", "shinyjs", "reactlog", "tidyverse", "tmap", 
-                      "janitor", "lubridate", "sf", "scales", "DT", "collections", "plotly", "rmapshaper")
+                      "janitor", "lubridate", "sf", "scales", "DT", "collections", "plotly", "rmapshaper",
+                      "tigris")
 
 # checking missing packages from list
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -35,6 +36,7 @@ library(DT)
 library(collections)
 library(plotly)
 library(rmapshaper) # ms_simplify to reduce maps
+library(tigris)
 #library(tmaptools)
 
 reactlog_enable()
