@@ -150,14 +150,14 @@ ui <- fluidPage(
                         # SO data summary FR layout
                         fluidRow(
                           # SO explanatory data summary text
-                          box(width = 8,
+                          box(width = 9,
                               status = "primary",
-                              title = "Data Summary Plots",
+                              title = "A data summary plot will show the distribution of the data for a single variable, at a single site",
                               includeMarkdown("text/data_summary_explanatory.md")
                           ), # EO explanatory data summary text
                           
                           # SO pick a var input box
-                          box(width = 4,
+                          box(width = 3,
                               title = "Select a variable and how many sites to compare",
                               status = "primary",
                               # choose a var
