@@ -182,6 +182,7 @@ source("r/other_plots/tot_res_agency_plot.R")
 
 # STYLING AND FORMATTING ----
 spinner_color <- "#64863C"
+map_site_icon <- tmap_icons("r/visitorshed_maps/camping_location_icon.png")
 
 # PLOT OBJECTS ----
 
