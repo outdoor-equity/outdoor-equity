@@ -57,6 +57,8 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
              crs = 4326) %>%
     st_transform(crs = 4269) # using NAD83 because measured in meters
   
+  print(paste("The site's location has been calculated and it is:", park_location_geom$geometry))
+  
   # get geometries for major CA cities
   data_ca_city_labels <- urban_areas(cb = TRUE) %>% 
     select(NAME10, geometry) %>% 
@@ -84,14 +86,14 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
             n = 10,
             popup.vars = c("Total Visits" = "number_reservations",
                            "Percentage of All CA Visits" = "percentage_reservations")) +
+    tm_shape(data_ca_city_labels) +
+    tm_text(col = "black",
+            text = "city") +
     tm_shape(park_location_geom) +
     tm_symbols(shape = map_site_icon,
                id = "park") +
     # tm_markers(shape = marker_icon(),
     #            id = "park") +
-    tm_shape(data_ca_city_labels) +
-    tm_text(col = "black",
-            text = "city") +
     tm_view(set.view = c(-119.559917, 37.061753, 6)) +
     tmap_options(basemaps = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}')
   
