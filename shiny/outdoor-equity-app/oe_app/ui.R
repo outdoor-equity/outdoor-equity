@@ -26,8 +26,8 @@ ui <- fluidPage(
   
   # app title ----
   tags$head(HTML("<title>Visualize RIDB Data</title>")), # Note(HD): this needs to be before titlePanel so that the title comes up in the tab online
-  titlePanel(title = span(img(src = "logos/bren_leaf_only_header.png"),
-                          img(src = "logos/bren_meds_hex_header.png"),
+  titlePanel(title = span(img(src = "logos/bren_leaf_only.png"),
+                          img(src = "logos/bren_meds_hex.png"),
                           img(src = "logos/RecLogo.png"))),
   
   # app subtitle ----
@@ -37,18 +37,26 @@ ui <- fluidPage(
   navbarPage(
     # TO nav bar and TO tab in web browser 
     title = "Visualize Recreation Data",
+    
     # SO footer
-    footer = span(#h6("test"),
-                  img(src = "logos/bren_meds_hex.png"),
-                  img(src = "logos/bren_full.png"),
-                  img(src = "logos/NCEAS-square-logo.png"),
-                  img(src = "logos/uomontana-horizontal-maroon.png"),
-                  img(src = "logos/RecLogo.png")
-                  ), # EO footer
+    footer = tags$div(
+      class = "footer",
+      span(
+        tags$a(img(src = "logos/bren_meds_hex.png"), href = "https://ucsb-meds.github.io/", target = "_blank"),
+        img(src = "logos/bren_full.png"),
+        img(src = "logos/NCEAS-square-logo.png"),
+        img(src = "logos/uomontana-horizontal-maroon.png"),
+        img(src = "logos/RecLogo.png")
+      ), # EO span
+      tags$p("test")
+    ), # EO tags$div footer
+      
+
     
     ## About tab ----
     tabPanel("About",
-             tags$img(src = "images/white_mountains_national_forest_large.jpg"),
+             tags$img(class = "banner", 
+                      src = "images/white_mountains_national_forest_large.jpg"),
              fluidRow(
                # SO About tabs
                box(width = 12,
@@ -98,7 +106,8 @@ ui <- fluidPage(
                ### SO data summary ----
                tabPanel(title = "Data Summary",
                         fluid = TRUE, # (HD) not sure what this argument does
-                        tags$img(src = "images/king_range_nat_conserv.jpg"),
+                        tags$img(class = "banner",
+                                 src = "images/king_range_nat_conserv.jpg"),
                         # SO data summary FR layout
                         fluidRow(
                           # SO explanatory data summary text
@@ -172,7 +181,8 @@ ui <- fluidPage(
                ### SO data relationships ----
                tabPanel(title = "Data Relationships",
                         fluid = TRUE,
-                        tags$img(src = "images/milky_way.jpg"), # need to use a better photo
+                        tags$img(class = "banner",
+                                 src = "images/milky_way.jpg"), # need to use a better photo
                         # SO data relationships FR layout
                         fluidRow(
                           # SO explanation data relationship text
@@ -227,7 +237,8 @@ ui <- fluidPage(
                 ### SO visitorsheds ----
                tabPanel(title = "Visitorshed Maps",
                         fluid = TRUE,
-                        tags$img(src = "images/autum_trees.jpg"), # need to use a better photo
+                        tags$img(class = "banner",
+                                 src = "images/autum_trees.jpg"), # need to use a better photo
                         # SO FR visitorsheds
                         fluidRow(
                           # SO explanatory visitorshed text
@@ -277,7 +288,8 @@ ui <- fluidPage(
     
     tabPanel(title = "Metadata",
              fluid = TRUE,
-             tags$img(src = "images/desolation_canyon.jpg"),
+             tags$img(class = "banner",
+                      src = "images/desolation_canyon.jpg"),
              fluidRow(
                # SO explanatory metadata text
                box(width = 8,
@@ -292,7 +304,8 @@ ui <- fluidPage(
     tabPanel(title = "Data Download", 
              icon = icon("download-alt", lib = "glyphicon"),
              fluid = TRUE,
-             tags$img(src = "images/snowy_mountains.jpg"),
+             tags$img(class = "banner",
+                      src = "images/snowy_mountains.jpg"),
              #titlePanel("Create a subsetted dataset to download"),
              # SO data download FR layout
              fluidRow(
