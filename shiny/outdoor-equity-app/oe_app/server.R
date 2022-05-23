@@ -184,10 +184,9 @@ server <- function(input, output, session) {
     }
   }) ## EO OE press num_viz
   
-  ## SO OE hide / show text_lang_medInc ----
+  ## SO OE hide / show summary_captions ----
   observeEvent(input$data_summary, {
     if (input$data_summary %in% c("distance_traveled_mi",
-                                  "booking_window",
                                   "daily_cost",
                                   "daily_cost_per_visitor",
                                   "length_of_stay",
@@ -195,14 +194,15 @@ server <- function(input, output, session) {
                                   "race",
                                   "education")) {
       
-      shinyjs::hide(id = "text_lang_medInc")
+      shinyjs::hide(id = "summary_captions")
     }
-    else if (input$data_summary %in% c("median_income",
+    else if (input$data_summary %in% c("booking_window",
+                                       "median_income",
                                        "not_english_only")) {
       
-      shinyjs::show(id = "text_lang_medInc")
+      shinyjs::show(id = "summary_captions")
     }
-  }) ## EO OE hide / show text_lang_medInc
+  }) ## EO OE hide / show summary_captions
   
   ## SO OE press site relationships ----
   observeEvent(input$data_relationships, {
@@ -503,6 +503,13 @@ server <- function(input, output, session) {
       to the grey curve (all California residents), can show who is more or less 
       represented at this site compared to the CA census."
     } ## EO language
+    
+    ## SO booking window ----
+    else if (input$data_summary == "booking_window") {
+      paste("Booking windows vary by location. To check season dates and when sites 
+      are available to reserve look for the Season and Fees tab within a 
+      site-specific page on [Recreation.gov](https://www.recreation.gov/).", ca_agency[[1]])
+    } ## EO booking window
     
   }) ## EO DATA SUMMARY CAPTIONS
   

@@ -171,12 +171,13 @@ ui <- fluidPage(
                                            ) # EO radioButton
                           ), # EO pick a var & num visual input box
                           
-                          # SO explanatory text for language and median income plots
-                          box(id = "text_lang_medInc",
+                          ### SO summary captions ----
+                          box(id = "summary_captions",
                               width = 12,
+                              status = "success",
                               textOutput(outputId = "data_summary_captions")
                               ), # EO explanatory text for language and median income plots
-                          tags$head(tags$style('#text_lang_medInc .box-header{ display: none}')), # remove title from box
+                          tags$head(tags$style('#summary_captions .box-header{ display: none}')), # remove title from box
                           
                           # SO data summary plot 1 output box
                           box(id = "num_viz_1",
