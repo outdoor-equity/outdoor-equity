@@ -136,6 +136,32 @@ ca_zip_geometries <- zip_ca_dataframe(state = "California", year = 2018)
 state_geometries <- zip_state_dataframe(year = 2018)
 ```
 
+# Create dataframe for CA citie labels on visitorshed map
+
+```{r}
+ca_city_labels <- 
+  # get geometries for CA cities
+  urban_areas(cb = TRUE) %>% 
+  select(NAME10, geometry) %>% 
+  rename(city = NAME10) %>% 
+  # separate city and state strings
+  separate(col= city, into = c("city", "state"), sep = ", ") %>% 
+  # filter to only CA cities
+  filter(state == "CA") %>% 
+  mutate(city = str_replace(string = city,
+                            pattern = "-.*$",
+                            replacement = "")) %>% 
+  # calculate center point of each polygon geometry
+  st_centroid() %>% 
+  select(city, geometry) %>% 
+  # filter to only major CA cities
+  filter(city %in% c("Bakersfield", "Fresno", "Los Angeles", "Mount Shasta", 
+                     "Redding", "Sacramento", "San Diego", "Santa Barbara", 
+                     "San Francisco", "San Jose")) %>%
+  st_transform(crs = 4269) # using NAD83 because measured in meters
+```
+
+
 
 # Saving dataframes
 
@@ -185,6 +211,10 @@ saveRDS(object = ca_zip_geometries,
 # state geometries
 saveRDS(object = state_geometries,
         file = "../shiny/outdoor-equity-app/oe_app/data/states_geometries.rds")
+
+# CA city label geometries
+saveRDS(object = ca_city_labels,
+        file = "../shiny/outdoor-equity-app/oe_app/data/ca_cities_geometries.rds")
 ```
 
 
