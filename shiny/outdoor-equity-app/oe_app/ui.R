@@ -28,20 +28,37 @@ ui <- fluidPage(
   tags$head(HTML("<title>Visualize RIDB Data</title>")), # Note(HD): this needs to be before titlePanel so that the title comes up in the tab online
   titlePanel(title = 
                span(
-                 tags$a(img(src = "logos/bren_leaf_only.png"),
-                        href = "https://bren.ucsb.edu/", 
-                        target = "_blank"), # _blank opens link in a new tab
+                 # tags$a(img(src = "logos/bren_leaf_only.png"),
+                 #        href = "https://bren.ucsb.edu/",
+                 #        target = "_blank"),
                  tags$a(img(src = "logos/bren_meds_hex.png"),
                         href = "https://ucsb-meds.github.io/", 
-                        target = "_blank"),
-                 tags$a(img(src = "logos/RecLogo.png"),
-                        href = "https://www.recreation.gov/", 
-                        target = "_blank")
+                        target = "_blank"), # _blank opens link in a new tab
+                 tags$p("The Outdoor Equity App: A MEDS Capstone Project")
+                 # tags$a(img(src = "logos/RecLogo.png"),
+                 #        href = "https://www.recreation.gov/",
+                 #        target = "_blank")
                           ) # EO span
              ), # EO titlePanel
   
   # app subtitle ----
-  #p(strong("Visualize and explore a joined dataset of recreation and US Census data")),
+  tags$div(
+    class = "subtitle",
+    span(
+      tags$p("A collaboration between "),
+      tags$a(img(src = "logos/bren_leaf_only.png",
+            width = "15px"),
+        href = "https://bren.ucsb.edu/",
+        target = "_blank"),
+      tags$p(" and "),
+      tags$a(img(src = "logos/RecLogo.png",
+            width = "100px"),
+        href = "https://www.recreation.gov/",
+        target = "_blank"
+      )
+  ) # EO span subtitle
+  ), # EO subtitle
+  #p(strong("A collaboration between Visualize and explore a joined dataset of recreation and US Census data")),
   
   # navbarPage structure ----
   navbarPage(
@@ -68,7 +85,9 @@ ui <- fluidPage(
                href = "https://www.recreation.gov/", 
                target = "_blank")
       ), # EO span
-      tags$p("Add Disclaimer Here")
+      tags$p("The Outdoor Equity App is not paid for by Recreation One Stop. 
+             Any plots or visuals created here are not intended for publication 
+             and require further analysis before making any determinations.")
     ), # EO tags$div footer
       
 
