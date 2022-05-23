@@ -4,11 +4,12 @@
 #' @param siteInput User pick for site
 #' @param ridb_df RIDB dataframe object name
 #' @param zip_geometries_df State geometries dataframe object name
+#' @param ca_cities_df Major CA cities geometries dataframe object name
 #'
 #' @return Interactive map of visitorshed by state
 #'
 #' @examples
-ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
+ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df, ca_cities_df){
   
   print(paste0("You have chosen park: ", siteInput, " on the CA visitorshed map and the class is: ", class(siteInput)))
   ## -- data wrangle -- ##
@@ -59,22 +60,6 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
   
   print(paste("The site's location has been calculated and it is:", park_location_geom$geometry))
   
-  # get geometries for major CA cities
-  data_ca_city_labels <- urban_areas(cb = TRUE) %>% 
-    select(NAME10, geometry) %>% 
-    rename(city = NAME10) %>% 
-    separate(col= city, into = c("city", "state"), sep = ", ") %>% 
-    filter(state == "CA") %>% 
-    mutate(city = str_replace(string = city,
-                              pattern = "-.*$",
-                              replacement = "")) %>% 
-    st_centroid() %>% 
-    select(city, geometry) %>% 
-    filter(city %in% c("Bakersfield", "Fresno", "Los Angeles", "Mount Shasta", 
-                       "Redding", "Sacramento", "San Diego", "Santa Barbara", 
-                       "San Francisco", "San Jose")) %>%
-    st_transform(crs = 4269) # using NAD83 because measured in meters
-  
   ## -- create map -- ##
   tmap_mode("view")
   
@@ -91,10 +76,7 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
     tm_shape(park_location_geom) +
     tm_symbols(shape = map_site_icon,
                id = "park") +
-    tm_shape(park_location_geom) +
-    tm_markers(shape = marker_icon(),
-               id = "park") +
-    tm_shape(data_ca_city_labels) +
+    tm_shape(ca_cities_df) +
     tm_text(col = "black",
             text = "city") +
     tm_view(set.view = c(-119.559917, 37.061753, 6)) +

@@ -49,6 +49,7 @@ data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds")
 ## visitorsheds ----
 data_state_geometries <- readRDS("data/states_geometries.rds")
 data_ca_zip_code_geometries <- readRDS("data/ca_zip_codes_geometries.rds")
+data_ca_cities_geometries <- readRDS("data/ca_cities_geometries.rds")
 
 
 # SOURCE FUNCTIONS ----

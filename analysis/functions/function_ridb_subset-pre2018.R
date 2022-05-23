@@ -25,16 +25,17 @@ RIDB_subset_pre2018 <- function(full_file_path, state_abbrev, year) {
              "region_description",
              "park",
              "site_type",
-             "facility_state", 
-             "facility_longitude", 
+             "facility_id",
+             "facility_state",
+             "facility_longitude",
              "facility_latitude",
-             "customer_zip", 
+             "customer_zip",
              "total_paid",
              "start_date",
-             "end_date", 
+             "end_date",
              "order_date",
-             "number_of_people")) %>% 
-    mutate(site_type = tolower(site_type)) %>% 
+             "number_of_people")) %>%
+    mutate(site_type = tolower(site_type)) %>%
     filter(!site_type %in% c("historic tour",
                              "hiking zone",
                              "group picnic area",
@@ -44,11 +45,11 @@ RIDB_subset_pre2018 <- function(full_file_path, state_abbrev, year) {
                              "entry point",
                              "trailhead")) %>%
     # filter out invalid ZIP codes
-    filter(str_detect(string = customer_zip, 
-                      pattern = "^[:digit:]{5}(?!.)") | 
-             str_detect(string = customer_zip, 
-                        pattern = "^[:digit:]{5}(?=-)")) %>% 
-    filter(!customer_zip %in% c("00000", "99999")) %>% 
+    filter(str_detect(string = customer_zip,
+                      pattern = "^[:digit:]{5}(?!.)") |
+             str_detect(string = customer_zip,
+                        pattern = "^[:digit:]{5}(?=-)")) %>%
+    filter(!customer_zip %in% c("00000", "99999")) %>%
     mutate(customer_zip = str_extract(string = customer_zip,
                                       pattern = "[:digit:]{5}"))
   
