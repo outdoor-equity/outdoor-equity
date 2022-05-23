@@ -29,19 +29,21 @@
  
 /* resize header images dynamically */  
 img {
-    max-width: 100%;
-    height: auto;
-    width: auto\9; /* ie8 */
+  display:block;
+  max-width: 100%;
+  height: auto;
+  width: auto\9; /* ie8 */
 }
 
 /* resize logos in footer */
 span > img {
-  max-width: 45%;
-  height: 10%;
+  display: inline-block;
+  max-width: 35%;
+  height: 6%;
 }
 
 /* resize logos in header*/
 h2 > span > img {
-  max-width: 10%;
-  height: 5%;
+  display: inline;
+  max-width: 39%;
 }
