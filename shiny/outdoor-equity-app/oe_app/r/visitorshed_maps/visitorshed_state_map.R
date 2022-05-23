@@ -60,6 +60,7 @@ state_visitorshed_map <- function(siteInput, ridb_df, state_geometries_df){
             id = "customer_zip_state_full",
             popup.vars = c("Total Visits" = "number_reservations",
                            "Percentage of All Visits" = "percentage_reservations")) +
-    tm_view(set.view = c(-101.834335, 40.022356, 2)) # update zoom
+    tm_view(set.view = c(-101.834335, 40.022356, 2)) +
+    tmap_options(basemaps = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}')
   
 }
