@@ -56,6 +56,21 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
              crs = 4326) %>%
     st_transform(crs = 4269) # using NAD83 because measured in meters
   
+  # get geometries for major CA cities
+  data_ca_city_labels <- urban_areas(cb = TRUE) %>% 
+    select(NAME10, geometry) %>% 
+    rename(city = NAME10) %>% 
+    separate(col= city, into = c("city", "state"), sep = ", ") %>% 
+    filter(state == "CA") %>% 
+    mutate(city = str_replace(string = city,
+                              pattern = "-.*$",
+                              replacement = "")) %>% 
+    st_centroid() %>% 
+    select(city, geometry) %>% 
+    filter(city %in% c("Bakersfield", "Fresno", "Los Angeles", "Mount Shasta", 
+                       "Redding", "Sacramento", "San Diego", "Santa Barbara", 
+                       "San Francisco", "San Jose"))
+  
   ## -- create map -- ##
   tmap_mode("view")
   
@@ -67,12 +82,16 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
             n = 10,
             popup.vars = c("Total Visits" = "number_reservations",
                            "Percentage of All CA Visits" = "percentage_reservations")) +
+    tm_shape(data_ca_city_labels) +
+    tm_text(col = "black",
+            text = "city") +
     tm_shape(park_location_geom) +
     tm_symbols(shape = map_site_icon,
                id = "park") +
     # tm_markers(shape = marker_icon(),
     #            col = "#64863C",
     #            id = "park") +
-    tm_view(set.view = c(-119.559917, 37.061753, 6))
+    tm_view(set.view = c(-119.559917, 37.061753, 6)) +
+    tmap_options(basemaps = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}')
   
 }
