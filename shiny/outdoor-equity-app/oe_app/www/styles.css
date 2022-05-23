@@ -2,48 +2,76 @@
  .shiny-split-layout > div { /* this targets all div tags that have shiny-split-layout class as the parent */
   overflow: visible;
  }
- 
  .shiny-split-layout .selectize-dropdown {
   z-index: 2000; /* z-index are layers */
  }
+ 
+ 
  
  /* make check boxes on data download page even columns and dynamic*/
 .shiny-input-checkboxgroup.shiny-input-container-inline label ~ .shiny-options-group {
    display: grid;
    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
  }
- 
  .selectize-input {
    max-height: 200px;
    overflow-y: scroll;
  }
  
+ 
+ 
+ /* NAVBARMENU STYLING*/
  /* color change when tabPanel is selected in navbarMenu */
  .nav-link.active {
     background-color: #64863C;
  }
- 
  .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover {
     background-color: #64863C;
 }
  
-/* resize header images dynamically */  
-img {
+ 
+ 
+/* IMAGE STYLING*/ 
+/* resize banner images dynamically */  
+img.banner {
   display:block;
   max-width: 100%;
-  height: auto;
-  width: auto\9; /* ie8 */
+  width: auto; 
 }
 
-/* resize logos in footer */
-span > img {
-  display: inline-block;
-  max-width: 35%;
-  height: 6%;
-}
 
+
+/* HEADER STYLING*/
+h2 > span {
+  display: flex;
+}
 /* resize logos in header*/
 h2 > span > img {
-  display: inline;
-  max-width: 39%;
+  display: block;
+  width: auto;
+  max-height: 50px;
+}
+
+
+
+/* FOOTER STYLING */
+.footer {
+  width: 100%;
+}
+/* resize logos in footer */
+.footer img {
+  display: inline-block;
+  width: auto;
+  max-height: 30px;
+}
+/* logo positioning and spacing */
+.footer span {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+/* paragraph elements in footer */
+.footer p {
+  text-align: center;
 }
