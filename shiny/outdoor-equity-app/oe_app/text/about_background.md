@@ -6,7 +6,9 @@ agencies in the United States offer a wide variety of activities to
 visitors, such as picnicking in parks, hiking trails, tours, campsites,
 and more. However, people from different socioeconomic and identity
 groups access federal public lands unequally due to historical
-discrimination and current inequities. The multi-agency program,
+discrimination and current inequities such as a lack of access to 
+technology, not having the time or ability to plan vacations in advance, 
+lack of knowledge of reservation systems, and cost. The multi-agency program,
 Recreation One Stop (R1S), oversees the operations of Recreation.gov and
 aims to increase access to recreation by providing online resources
 about nationwide recreational opportunities, allowing visitors to make
