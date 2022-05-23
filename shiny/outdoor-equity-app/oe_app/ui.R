@@ -26,9 +26,19 @@ ui <- fluidPage(
   
   # app title ----
   tags$head(HTML("<title>Visualize RIDB Data</title>")), # Note(HD): this needs to be before titlePanel so that the title comes up in the tab online
-  titlePanel(title = span(img(src = "logos/bren_leaf_only.png"),
-                          img(src = "logos/bren_meds_hex.png"),
-                          img(src = "logos/RecLogo.png"))),
+  titlePanel(title = 
+               span(
+                 tags$a(img(src = "logos/bren_leaf_only.png"),
+                        href = "https://bren.ucsb.edu/", 
+                        target = "_blank"), # _blank opens link in a new tab
+                 tags$a(img(src = "logos/bren_meds_hex.png"),
+                        href = "https://ucsb-meds.github.io/", 
+                        target = "_blank"),
+                 tags$a(img(src = "logos/RecLogo.png"),
+                        href = "https://www.recreation.gov/", 
+                        target = "_blank")
+                          ) # EO span
+             ), # EO titlePanel
   
   # app subtitle ----
   #p(strong("Visualize and explore a joined dataset of recreation and US Census data")),
@@ -42,11 +52,21 @@ ui <- fluidPage(
     footer = tags$div(
       class = "footer",
       span(
-        tags$a(img(src = "logos/bren_meds_hex.png"), href = "https://ucsb-meds.github.io/", target = "_blank"),
-        img(src = "logos/bren_full.png"),
-        img(src = "logos/NCEAS-square-logo.png"),
-        img(src = "logos/uomontana-horizontal-maroon.png"),
-        img(src = "logos/RecLogo.png")
+        tags$a(img(src = "logos/bren_meds_hex.png"), 
+               href = "https://ucsb-meds.github.io/", 
+               target = "_blank"),
+        tags$a(img(src = "logos/bren_full.png"),
+               href = "https://bren.ucsb.edu/", 
+               target = "_blank"),
+        tags$a(img(src = "logos/NCEAS-square-logo.png"),
+               href = "https://www.nceas.ucsb.edu/", 
+               target = "_blank"),
+        tags$a(img(src = "logos/uomontana-horizontal-maroon.png"),
+               href = "https://www.cfc.umt.edu/", 
+               target = "_blank"),
+        tags$a(img(src = "logos/RecLogo.png"),
+               href = "https://www.recreation.gov/", 
+               target = "_blank")
       ), # EO span
       tags$p("Add Disclaimer Here")
     ), # EO tags$div footer
