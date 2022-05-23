@@ -150,14 +150,14 @@ ui <- fluidPage(
                         # SO data summary FR layout
                         fluidRow(
                           # SO explanatory data summary text
-                          box(width = 8,
+                          box(width = 9,
                               status = "primary",
-                              title = "Data Summary Plots",
+                              title = "A data summary plot will show the distribution of the data for a single variable, at a single site",
                               includeMarkdown("text/data_summary_explanatory.md")
                           ), # EO explanatory data summary text
                           
                           # SO pick a var input box
-                          box(width = 4,
+                          box(width = 3,
                               title = "Select a variable and how many sites to compare",
                               status = "primary",
                               # choose a var
@@ -171,12 +171,13 @@ ui <- fluidPage(
                                            ) # EO radioButton
                           ), # EO pick a var & num visual input box
                           
-                          # SO explanatory text for language and median income plots
-                          box(id = "text_lang_medInc",
+                          ### SO summary captions ----
+                          box(id = "summary_captions",
                               width = 12,
+                              status = "success",
                               textOutput(outputId = "data_summary_captions")
                               ), # EO explanatory text for language and median income plots
-                          tags$head(tags$style('#text_lang_medInc .box-header{ display: none}')), # remove title from box
+                          tags$head(tags$style('#summary_captions .box-header{ display: none}')), # remove title from box
                           
                           # SO data summary plot 1 output box
                           box(id = "num_viz_1",
