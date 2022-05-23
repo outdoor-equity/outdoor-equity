@@ -41,15 +41,25 @@ img.banner {
 
 
 
-/* HEADER STYLING*/
+/* HEADER STYLING */
 h2 > span {
   display: flex;
+  gap: 0.5rem;
 }
 /* resize logos in header*/
 h2 > span > a > img {
   display: block;
   width: auto;
-  max-height: 50px;
+  max-height: 35px;
+}
+
+
+
+
+/* SUBTITLE STYLING */
+.subtitle span {
+  display: flex;
+  gap: 0.4rem;
 }
 
 
