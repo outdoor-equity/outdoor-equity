@@ -1518,7 +1518,8 @@ server <- function(input, output, session) {
   output$caVisitorshed_plot <- renderTmap({
     ca_zip_code_visitorshed_map(siteInput = input$site_visitorsheds,
                                 ridb_df = data_joined_2018,
-                                zip_geometries_df = data_ca_zip_code_geometries)
+                                zip_geometries_df = data_ca_zip_code_geometries, 
+                                ca_cities_df = data_ca_cities_geometries)
 
   })
   
