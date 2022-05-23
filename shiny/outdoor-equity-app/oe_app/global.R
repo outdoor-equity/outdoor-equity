@@ -27,7 +27,7 @@ library(shinycssloaders) # loading icon
 library(shinyjs) # hide / show boxes in ui
 library(reactlog)
 library(tidyverse)
-library(tmap)
+library(tmap) # using devtools version
 library(janitor)
 library(lubridate)
 library(sf)
@@ -37,7 +37,7 @@ library(collections)
 library(plotly)
 library(rmapshaper) # ms_simplify to reduce maps
 library(tigris)
-#library(tmaptools)
+#library(tmaptools) # download devtools version if using `tmaptools`
 
 reactlog_enable()
 
@@ -182,7 +182,7 @@ source("r/other_plots/tot_res_agency_plot.R")
 
 # STYLING AND FORMATTING ----
 spinner_color <- "#64863C"
-map_site_icon <- tmap_icons("r/visitorshed_maps/camping_location_icon.png")
+map_site_icon <- tmap_icons("r/camping_location_icon.png")
 
 # PLOT OBJECTS ----
 
