@@ -38,7 +38,7 @@ ui <- fluidPage(
     # TO nav bar and TO tab in web browser 
     title = "Visualize Recreation Data",
     
-    # SO footer
+    # SO footer ----
     footer = tags$div(
       class = "footer",
       span(
@@ -48,7 +48,7 @@ ui <- fluidPage(
         img(src = "logos/uomontana-horizontal-maroon.png"),
         img(src = "logos/RecLogo.png")
       ), # EO span
-      tags$p("test")
+      tags$p("Add Disclaimer Here")
     ), # EO tags$div footer
       
 
