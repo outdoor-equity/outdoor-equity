@@ -34,7 +34,7 @@ ui <- fluidPage(
                  tags$a(img(src = "logos/bren_meds_hex.png"),
                         href = "https://ucsb-meds.github.io/", 
                         target = "_blank"), # _blank opens link in a new tab
-                 tags$p("The Outdoor Equity App: A MEDS Capstone Project")
+                 tags$p("The Outdoor Equity App: A Master of Environmental Data Science Capstone")
                  # tags$a(img(src = "logos/RecLogo.png"),
                  #        href = "https://www.recreation.gov/",
                  #        target = "_blank")
