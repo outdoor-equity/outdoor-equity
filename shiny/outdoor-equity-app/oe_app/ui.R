@@ -95,7 +95,7 @@ ui <- fluidPage(
     ## About tab ----
     tabPanel("About",
              tags$img(class = "banner", 
-                      src = "images/white_mountains_national_forest_large.jpg"),
+                      src = "images/carrizo_plain_people.jpg"),
              fluidRow(
                # SO About tabs
                box(width = 12,
@@ -146,7 +146,7 @@ ui <- fluidPage(
                tabPanel(title = "Data Summary",
                         fluid = TRUE, # (HD) not sure what this argument does
                         tags$img(class = "banner",
-                                 src = "images/king_range_nat_conserv.jpg"),
+                                 src = "images/juan_bautista_az.jpg"),
                         # SO data summary FR layout
                         fluidRow(
                           # SO explanatory data summary text
@@ -222,7 +222,7 @@ ui <- fluidPage(
                tabPanel(title = "Data Relationships",
                         fluid = TRUE,
                         tags$img(class = "banner",
-                                 src = "images/milky_way.jpg"), # need to use a better photo
+                                 src = "images/bristlecone_blm_ca.jpg"), # need to use a better photo
                         # SO data relationships FR layout
                         fluidRow(
                           # SO explanation data relationship text
@@ -278,7 +278,7 @@ ui <- fluidPage(
                tabPanel(title = "Visitorshed Maps",
                         fluid = TRUE,
                         tags$img(class = "banner",
-                                 src = "images/autum_trees.jpg"), # need to use a better photo
+                                 src = "images/blm_land.jpg"), # need to use a better photo
                         # SO FR visitorsheds
                         fluidRow(
                           # SO explanatory visitorshed text
