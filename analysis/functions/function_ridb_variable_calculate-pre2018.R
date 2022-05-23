@@ -49,7 +49,7 @@ RIDB_calculate_pre2018 <-
                                           "tent only electric") ~ "tent only")
       ) %>% # close mutate for creating new variables
       select(!c("parent_location", "region_description", "site_type")) %>% 
-      select("agency", "admin_unit", "park", "aggregated_site_type", "facility_state", 
+      select("agency", "admin_unit", "park", "aggregated_site_type", "facility_id", "facility_state", 
              "facility_longitude", "facility_latitude", "customer_zip", "total_paid", 
              "start_date", "end_date", "order_date", "number_of_people", 
              "length_of_stay", "booking_window", "daily_cost", "daily_cost_per_visitor") %>% 
