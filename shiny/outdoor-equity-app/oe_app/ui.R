@@ -26,8 +26,8 @@ ui <- fluidPage(
   
   # app title ----
   tags$head(HTML("<title>Visualize RIDB Data</title>")), # Note(HD): this needs to be before titlePanel so that the title comes up in the tab online
-  titlePanel(title = span(img(src = "logos/bren_leaf_only.png"),
-                          img(src = "logos/bren_meds_hex.png"),
+  titlePanel(title = span(img(src = "logos/bren_leaf_only_header.png"),
+                          img(src = "logos/bren_meds_hex_header.png"),
                           img(src = "logos/RecLogo.png"))),
   
   # app subtitle ----
