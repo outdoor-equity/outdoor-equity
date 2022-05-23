@@ -228,7 +228,7 @@ ui <- fluidPage(
                           # SO explanation data relationship text
                           box(width = 12,
                               status = "primary",
-                              title = "Data Relationship Plots",
+                              title = "A data relationships plot compares a US census variable to a recreation variable",
                               includeMarkdown("text/data_relationship_explanatory.md")
                               ), # EO explanatory data relationship text
                           
@@ -285,7 +285,7 @@ ui <- fluidPage(
                           box(
                             width = 8,
                             status = "primary",
-                            title = "Visitorshed Maps",
+                            title = "A visitorshed maps show the number of visits coming from different states and California ZIP codes for a site.",
                             includeMarkdown("text/visitorshed_explanatory.md")
                           ), # EO explanatory visitorshed text
                           
