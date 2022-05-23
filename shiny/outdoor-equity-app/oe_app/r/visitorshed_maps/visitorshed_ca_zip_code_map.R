@@ -87,6 +87,7 @@ ca_zip_code_visitorshed_map <- function(siteInput, ridb_df, zip_geometries_df){
             popup.vars = c("Total Visits" = "number_reservations",
                            "Percentage of All CA Visits" = "percentage_reservations")) +
     tm_shape(park_location_geom) +
+    tm_dots(col = "darkgreen") +
     tm_symbols(shape = map_site_icon,
                id = "park") +
     # tm_markers(shape = marker_icon(),
