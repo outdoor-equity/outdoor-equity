@@ -46,6 +46,10 @@ reactlog_enable()
 data_joined_2018 <- readRDS("data/2018_joined_data.rds")
 ## CA ACS all ----
 data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds") ## CB: remove once "high" cutoff is outside shiny
+data_education_relationship_plots <- readRDS("data/education_relationship_plots.rds")
+data_language_relationship_plots <- readRDS("data/language_relationship_plots.rds")
+data_median_income_relationship_plots <- readRDS("data/median_income_relationship_plots.rds")
+data_race_relationship_plots <- readRDS("data/race_relationship_plots.rds")
 ## visitorsheds ----
 data_state_geometries <- readRDS("data/states_geometries.rds")
 data_ca_zip_code_geometries <- readRDS("data/ca_zip_codes_geometries.rds")
@@ -85,34 +89,26 @@ source("r/summary_plots/language_plot.R")
 # quartile plots
 source("r/relationship_plots/race_top_quartile_res_data.R")
 source("r/relationship_plots/race_top_quartile_res_plot.R")
-source("r/relationship_plots/education_top_quartile_res_data.R")
 source("r/relationship_plots/education_top_quartile_res_plot.R")
 source("r/relationship_plots/language_top_quartile_res_data.R")
 source("r/relationship_plots/language_top_quartile_res_plot.R")
 source("r/relationship_plots/median_income_top_quartile_res_data.R")
 source("r/relationship_plots/median_income_top_quartile_res_plot.R")
 # calculating bins (quartiles, deciles) 
-source("r/relationship_plots/education_top_quartile.R")
 source("r/relationship_plots/race_top_quartile.R")
 source("r/relationship_plots/language_top_quartile.R")
 source("r/relationship_plots/median_income_deciles.R")
 # edu x booking window
-source("r/relationship_plots/education_booking_window_data.R")
 source("r/relationship_plots/education_booking_window_plot.R")
 # edu x daily cost
-source("r/relationship_plots/education_daily_cost_data.R")
 source("r/relationship_plots/education_daily_cost_plot.R")
 # edu x daily cost per visitor
-source("r/relationship_plots/education_daily_cost_per_visitor_data.R")
 source("r/relationship_plots/education_daily_cost_per_visitor_plot.R")
 # edu x dist travel 
-source("r/relationship_plots/education_dist_travel_data.R")
 source("r/relationship_plots/education_dist_travel_plot.R")
 # edu x length of stay
-source("r/relationship_plots/education_length_of_stay_data.R")
 source("r/relationship_plots/education_length_of_stay_plot.R")
 # edu x site type
-source("r/relationship_plots/education_site_type_data.R")
 source("r/relationship_plots/education_site_type_plot.R")
 # lang x booking window
 source("r/relationship_plots/language_booking_window_data.R")
