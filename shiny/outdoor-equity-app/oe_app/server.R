@@ -275,16 +275,14 @@ server <- function(input, output, session) {
   output$about_example_2_plot <- renderPlotly({
     not_reactive_race_dist_travel_plot(admin_unit = "Yosemite National Park", 
                                        site = "Upper Pines", 
-                                       ridb_df = data_joined_2018,
-                                       race_top_quartile_df = data_race_quants)
+                                       race_top_quartile_df = data_race_relationship_plots)
   }) # EO distance traveled by race
   
   ### SO distance traveled by income ----
   output$about_example_3_plot <- renderPlotly({
     not_reactive_median_income_dist_travel_plot(admin_unit = "Yosemite National Park", 
                                                 site = "Upper Pines", 
-                                                ridb_df = data_joined_2018,
-                                                median_income_binned = median_income_decile_list)
+                                                median_income_decile_df = data_median_income_relationship_plots)
   }) # OE distance traveled by income
   
   ### SO distance traveled by income ----

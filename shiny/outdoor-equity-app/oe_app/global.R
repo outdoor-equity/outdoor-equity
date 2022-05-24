@@ -58,10 +58,8 @@ data_ca_cities_geometries <- readRDS("data/ca_cities_geometries.rds")
 # SOURCE FUNCTIONS ----
 ## source about page plotly functions ----
 source("text/r/not_reactive_booking_window_plot.R")
-source("text/r/not_reactive_median_income_dist_travel_data.R")
-source("text/r/not_reactive_median_income_dist_travel_plot.R") ## FIX
-source("text/r/not_reactive_race_dist_travel_data.R")
-source("text/r/not_reactive_race_dist_travel_plot.R") ## FIX
+source("text/r/not_reactive_median_income_dist_travel_plot.R") 
+source("text/r/not_reactive_race_dist_travel_plot.R") 
 source("text/r/not_reactive_visitorshed_state_map.R")
 
 ## source input functions ----
@@ -90,8 +88,6 @@ source("r/relationship_plots/race_top_quartile_res_plot.R")
 source("r/relationship_plots/education_top_quartile_res_plot.R")
 source("r/relationship_plots/language_top_quartile_res_plot.R")
 source("r/relationship_plots/median_income_top_quartile_res_plot.R")
-# calculating bins (quartiles, deciles) 
-source("r/relationship_plots/median_income_deciles.R")
 # edu x booking window
 source("r/relationship_plots/education_booking_window_plot.R")
 # edu x daily cost
