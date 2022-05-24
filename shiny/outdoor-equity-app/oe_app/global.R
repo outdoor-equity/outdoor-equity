@@ -90,13 +90,11 @@ source("r/summary_plots/language_plot.R")
 source("r/relationship_plots/race_top_quartile_res_data.R")
 source("r/relationship_plots/race_top_quartile_res_plot.R")
 source("r/relationship_plots/education_top_quartile_res_plot.R")
-source("r/relationship_plots/language_top_quartile_res_data.R")
 source("r/relationship_plots/language_top_quartile_res_plot.R")
 source("r/relationship_plots/median_income_top_quartile_res_data.R")
 source("r/relationship_plots/median_income_top_quartile_res_plot.R")
 # calculating bins (quartiles, deciles) 
 source("r/relationship_plots/race_top_quartile.R")
-source("r/relationship_plots/language_top_quartile.R")
 source("r/relationship_plots/median_income_deciles.R")
 # edu x booking window
 source("r/relationship_plots/education_booking_window_plot.R")
@@ -111,22 +109,16 @@ source("r/relationship_plots/education_length_of_stay_plot.R")
 # edu x site type
 source("r/relationship_plots/education_site_type_plot.R")
 # lang x booking window
-source("r/relationship_plots/language_booking_window_data.R")
 source("r/relationship_plots/language_booking_window_plot.R")
 # lang x daily cost
-source("r/relationship_plots/language_daily_cost_data.R")
 source("r/relationship_plots/language_daily_cost_plot.R")
 # lang x daily cost per visitor
-source("r/relationship_plots/language_daily_cost_per_visitor_data.R")
 source("r/relationship_plots/language_daily_cost_per_visitor_plot.R")
 # lang x dist travel
-source("r/relationship_plots/language_dist_travel_data.R")
 source("r/relationship_plots/language_dist_travel_plot.R")
 # lang x length of stay
-source("r/relationship_plots/language_length_of_stay_data.R")
 source("r/relationship_plots/language_length_of_stay_plot.R")
 # lang x site type
-source("r/relationship_plots/language_site_type_data.R")
 source("r/relationship_plots/language_site_type_plot.R")
 # median income x booking window
 source("r/relationship_plots/median_income_booking_window_data.R")

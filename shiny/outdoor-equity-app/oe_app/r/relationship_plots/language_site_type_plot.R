@@ -3,9 +3,7 @@
 #'
 #' @param admin_unitInput User pick for admin unit
 #' @param siteInput User pick for site
-#' @param language_top_quartile_df Name of dataframe of values to iterate through for all 
-#'     language categories and 3rd quartile values associated with each
-#' @param ridb_df RIDB dataframe object name
+#' @param language_top_quartile_df Object name for dataframe of all reservations above "high" threshold for language
 #' @param site_type_string String indicating what site to create plot of
 #'     Options include: "equestrian", "remote", "rv only", "rv or tent", "shelter", "tent only", "water"
 #'
@@ -13,36 +11,51 @@
 #'
 #' @examples
 
-language_site_type_plot <- function(admin_unitInput, siteInput,
-                                    language_top_quartile_df, ridb_df,
+language_site_type_plot <- function(admin_unitInput, 
+                                    siteInput,
+                                    language_top_quartile_df,
                                     site_type_string){
   
-  # iterate through dataframe of all language categories and 3rd quartile values
-  # return combined dataframe of reservations in "high" range for all categories
-  plot_data <- 
-    language_top_quartile_df %>% pmap_dfr(language_site_type_data, 
-                                          ridb_df = ridb_df, 
-                                          siteInput = siteInput) %>% 
-    # filter to indicated site type and update string for plotting
-    filter(aggregated_site_type == site_type_string) %>% 
-    mutate(aggregated_site_type = str_replace(string = aggregated_site_type,
-                                              pattern = "rv", 
-                                              replacement = "RV"))
+  # create reactive dataframe and further subset
+  rdf <- reactive ({
+    
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
+    language_top_quartile_df %>%
+      # filter to user site of choice
+      filter(park == siteInput) %>%
+      # select to variables of interest
+      select(park, customer_zip, 
+             language, language_percentage, language_y_lab, 
+             aggregated_site_type) %>% 
+      drop_na(aggregated_site_type, language_percentage) %>% 
+      # summarize to total reservations for each site type
+      count(language, language_y_lab, aggregated_site_type) %>% 
+      rename(count = n) %>% 
+      # filter to indicated site type and update string for plotting
+      filter(aggregated_site_type == site_type_string) %>% 
+      mutate(aggregated_site_type = str_replace(string = aggregated_site_type,
+                                                pattern = "rv", 
+                                                replacement = "RV"))
+  }) # EO rdf
   
   
   validate(
-    need(nrow(plot_data) > 0,
+    need(nrow(rdf()) > 0,
          paste0("There are no ", site_type_string %>%
                   str_replace(string = ., pattern = "rv", replacement = "RV"), " sites at ", siteInput, ", ", admin_unitInput, "."))
   ) # EO validate
-
+  
   
   # parameters
   language_group_colors <- c("Only English<br>At Home" = "#66c2a5", 
                              "Language(s)<br>Other Than<br>English At Home" = "#8da0cb")
   
   # create plot
-  plotly <- ggplot(data = plot_data) +
+  plotly <- ggplot(data = rdf()) +
     geom_col(aes(x = count,
                  y = language_y_lab,
                  fill = language_y_lab,

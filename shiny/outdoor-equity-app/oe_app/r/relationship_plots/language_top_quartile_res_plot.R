@@ -3,36 +3,48 @@
 #'
 #' @param admin_unitInput User pick for admin unit
 #' @param siteInput User pick for site
-#' @param education_top_quartile_df Name of dataframe of values to iterate through for all 
-#'     language categories and 3rd quartile values associated with each
-#' @param ridb_df RIDB dataframe object name
+#' @param language_top_quartile_df Object name for dataframe of all reservations above "high" threshold for language
 #'
 #' @return Plotly of language categories compared to distance traveled
 #'
 #' @examples
 
-language_top_quartile_res_plot <- function(admin_unitInput, siteInput,
-                                           language_top_quartile_df, ridb_df){
+language_top_quartile_res_plot <- function(admin_unitInput, 
+                                           siteInput,
+                                           language_top_quartile_df){
   
-  # iterate through dataframe of all language categories and 3rd quartile values
-  # return combined dataframe of reservations in "high" range for all categories
-  plot_data <- 
-    language_top_quartile_df %>% pmap_dfr(language_top_quartile_res_data, 
-                                          ridb_df = ridb_df, 
-                                          siteInput = siteInput)
+  # create reactive dataframe and further subset
+  rdf <- reactive ({
+    
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
+    language_top_quartile_df %>%
+      # filter to user site of choice
+      filter(park == siteInput) %>%
+      # select the variables of interest
+      select(park, customer_zip, 
+             language, language_percentage, language_y_lab) %>% 
+      drop_na(language_percentage) %>% 
+      # summarize to inner quartile range, median, and total reservations
+      group_by(language, language_y_lab) %>% 
+      summarize(count = n())
+  }) # EO rdf
   
   validate(need(
-    nrow(plot_data) > 0,
+    nrow(rdf()) > 0,
     paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
            " that come from communities in the high range for any language categories.")
   )) # EO validate
   
   # parameters
-  language_group_colors <- c("Only English At Home" = "#66c2a5", 
-                             "Language(s) Other Than English At Home" = "#8da0cb")
+  language_group_colors <- c("Only English<br>At Home" = "#66c2a5", 
+                             "Language(s)<br>Other Than<br>English At Home" = "#8da0cb")
   
   # create plot
-  plotly <- ggplot(data = plot_data) +
+  plotly <- ggplot(data = rdf()) +
     geom_col(aes(x = count,
                  y = language_y_lab,
                  fill = language_y_lab,
