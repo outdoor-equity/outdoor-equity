@@ -1085,8 +1085,7 @@ server <- function(input, output, session) {
       education_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018,
+        education_top_quartile_df = data_education_relationship_plots,
         site_type_string = "remote"
       )
     }
@@ -1101,8 +1100,7 @@ server <- function(input, output, session) {
       education_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018,
+        education_top_quartile_df = data_education_relationship_plots,
         site_type_string = "rv only"
       )
     }
@@ -1117,8 +1115,7 @@ server <- function(input, output, session) {
       education_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018,
+        education_top_quartile_df = data_education_relationship_plots,
         site_type_string = "rv or tent"
       )
     }
@@ -1133,8 +1130,7 @@ server <- function(input, output, session) {
       education_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018,
+        education_top_quartile_df = data_education_relationship_plots,
         site_type_string = "shelter"
       )
     }
@@ -1149,8 +1145,7 @@ server <- function(input, output, session) {
       education_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018,
+        education_top_quartile_df = data_education_relationship_plots,
         site_type_string = "tent only"
       )
     }
@@ -1165,8 +1160,7 @@ server <- function(input, output, session) {
       education_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018,
+        education_top_quartile_df = data_education_relationship_plots,
         site_type_string = "water"
       )
     }
