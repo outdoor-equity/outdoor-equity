@@ -365,7 +365,7 @@ ui <- fluidPage(
                    width = 12,
                    status = "success",
                    selectizeInput(inputId = "cols_data_download",
-                                  label = "Select columns",
+                                  label = "All columns listed below are included in the download",
                                   choices = cols_data_joined_2018,
                                   selected = cols_data_joined_2018,
                                   multiple = TRUE,
