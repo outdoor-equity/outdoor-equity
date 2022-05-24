@@ -234,32 +234,38 @@ server <- function(input, output, session) {
     }
   }) ## EO OE press site relationships
   
-  ## SO OE press reset data summary 1 ----
+  ## SO OE press reset ----
+  ### reset data summary 1 ----
   observeEvent(input$reset_input_summary_1, {
     shinyjs::reset("num_viz_1")
     
   }) # EO OE press reset data summary 1
   
-  ## SO OE press reset data summary 2 ----
+  ### reset data summary 2 ----
   observeEvent(input$reset_input_summary_2, {
     shinyjs::reset("num_viz_2")
     
   }) # EO OE press reset data summary 2
   
-  ## SO OE press reset relationships ----
+  ### reset relationships ----
   observeEvent(input$reset_input_relationships, {
     shinyjs::reset("relationships_inputs")
     
   }) # EO OE press reset relationships
   
-  ## SO OE press reset visitorsheds ----
+  ### reset visitorsheds ----
   observeEvent(input$reset_input_visitorsheds, {
     shinyjs::reset("visitorsheds_inputs")
     
   }) # EO OE press reset visitorsheds
   
   
-  
+  ## SO press restore box ----
+  # data summary site plots
+  observeEvent(input$restore_button, {
+    updateBox(id = "rvTent", 
+              action = "restore")
+  })
   
   # RENDER PLOTS ----
   ## SO ABOUT PAGE PLOTS ----
@@ -834,37 +840,80 @@ server <- function(input, output, session) {
   # TEST SO education site type relationships render ui
   output$site_layout_test <- renderUI({
     if (input$data_relationships == "Education x Site type"){
-      
+ 
+      # box layout
       fluidRow(
-      box(width = 12,
+        box(id = "restore_box",
+            width = 12,
+            # restore button
+            actionBttn(
+              inputId = "restore_button",
+              label = "Restore Box",
+              size = "xs",
+              color = "warning",
+              style = "unite"
+            ) # EO restore button 
+        ),
+        tags$head(tags$style('#restore_box .box-header{ display: none}')), # remove title from box
+        
+        box(id = "rvTent",
           title = "RV or Tent",
+          width = 6,
+          collapsible = TRUE,
+          closable = TRUE,
+          status = "info",
+          solidHeader = TRUE,
           plotlyOutput(outputId = "edu_site_rvTent_plot") %>%
             withSpinner(color = spinner_color)
-      ),
-      
-      box(width = 6,
+        ),
+        
+        box(
+          width = 6,
+          collapsible = TRUE,
           title = "Tent Only",
           plotlyOutput(outputId = "edu_site_tentOnly_plot") %>%
             withSpinner(color = spinner_color)
-          ),
-      
-      box(width = 6,
+        ),
+        
+        box(
+          width = 6,
+          collapsible = TRUE,
           title = "RV Only",
           plotlyOutput(outputId = "edu_site_rvOnly_plot") %>%
             withSpinner(color = spinner_color)
-          ),
-      
-      box(width = 6,
+        ),
+        
+        box(
+          width = 6,
+          collapsible = TRUE,
           title = "Remote",
           plotlyOutput(outputId = "edu_site_remote_plot") %>%
             withSpinner(color = spinner_color)
-      ),
-      
-      box(width = 6,
+        ),
+        
+        box(
+          width = 6,
+          collapsible = TRUE,
           title = "Shelter",
           plotlyOutput(outputId = "edu_site_shelter_plot") %>%
             withSpinner(color = spinner_color)
-      ),
+        ),
+        
+        box(
+          width = 6,
+          collapsible = TRUE,
+          title = "Water",
+          plotlyOutput(outputId = "edu_site_water_plot") %>%
+            withSpinner(color = spinner_color)
+        ),
+        
+        box(
+          width = 6,
+          collapsible = TRUE,
+          title = "Equestrian",
+          plotlyOutput(outputId = "edu_site_equestrian_plot") %>%
+            withSpinner(color = spinner_color)
+        ), 
       ) # EO FR
       
     }
@@ -878,10 +927,10 @@ server <- function(input, output, session) {
     # if (input$data_relationships == "Education x Site type"){
     # 
     # tabsetPanel(
-    #   tabPanel(title = "Equestrian",
-    #            plotlyOutput(outputId = "edu_site_equestrian_plot") %>%
-    #              withSpinner(color = spinner_color)
-    #   ), # EO tabPanel edu x equestrian
+      # tabPanel(title = "Equestrian",
+      #          plotlyOutput(outputId = "edu_site_equestrian_plot") %>%
+      #            withSpinner(color = spinner_color)
+      # ), # EO tabPanel edu x equestrian
 
       # tabPanel(title = "Remote",
       #          plotlyOutput(outputId = "edu_site_remote_plot") %>%
@@ -908,10 +957,10 @@ server <- function(input, output, session) {
       #            withSpinner(color = spinner_color)
       # ), # EO tabPanel edu x tent only
     #   
-    #   tabPanel(title = "Water",
-    #            plotlyOutput(outputId = "edu_site_water_plot") %>%
-    #              withSpinner(color = spinner_color)
-    #   ), # EO tabPanel edu x tent only
+      # tabPanel(title = "Water",
+      #          plotlyOutput(outputId = "edu_site_water_plot") %>%
+      #            withSpinner(color = spinner_color)
+      # ), # EO tabPanel edu x tent only
     #   
     # ) # EO edu tabsetPanel
     # } # EO if edu statement
