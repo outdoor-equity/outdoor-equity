@@ -26,7 +26,15 @@ language_plot <- function(admin_unitInput, siteInput, ridb_df){
       mutate(mean_zip_code_population = 1) %>% 
       rename(location_indicator = park) %>% 
       relocate(mean_zip_code_population, .before = not_english_only) %>% 
-      mutate(data_source = "Visitors to California Sites")
+      mutate(data_source = "Visitors to California Sites",
+             tooltip_text = 
+               paste("The green curve represents all visitors to this site.",
+                     "<br>",
+                     "If it is above the grey curve at a specific percent level", 
+                     "<br>",
+                     "that percentae of people who speak a language other than English at home", 
+                     "<br>",
+                     "is proportionally more represented at this site compared to the California census."))
     
   }) # EO RDF
   
@@ -36,7 +44,15 @@ language_plot <- function(admin_unitInput, siteInput, ridb_df){
     select(zip_code, mean_zip_code_population, not_english_only, english_only) %>% 
     drop_na(not_english_only, english_only) %>% 
     rename(location_indicator = zip_code) %>% 
-    mutate(data_source = "California Residents")
+    mutate(data_source = "California Residents",
+           tooltip_text = 
+             paste("The grey curve represents all visitors to this site.",
+                   "<br>",
+                   "If it is above the green curve at a specific percent level", 
+                   "<br>",
+                   "that percentae of people who speak a language other than English at home", 
+                   "<br>",
+                   "is proportionally less represented at this site compared to the California census."))
   
   # join data for plotting
   language_data_plot <- rbind(language_rdf(), language_ca)
@@ -54,7 +70,7 @@ language_plot <- function(admin_unitInput, siteInput, ridb_df){
                      color = data_source,
                      fill = data_source,
                      weight = mean_zip_code_population, 
-                     text = data_source),
+                     text = tooltip_text),
                  alpha = 0.5) +
     scale_fill_manual(values = fill_ridb_ca) +
     scale_color_manual(values = color_ridb_ca) +
