@@ -271,7 +271,8 @@ ui <- fluidPage(
                               status = "success",
                               plotlyOutput(outputId = "data_relationships_plot") %>%
                                 withSpinner(color = spinner_color),
-                              uiOutput(outputId = "relationships_tab_layout")
+                              uiOutput(outputId = "relationships_tab_layout"),
+                              uiOutput(outputId = "site_layout_test")
                               ), # EO relationships plot output box
                           tags$head(tags$style('#relationships_outputs .box-header{ display: none}')), # remove title from box
                           
