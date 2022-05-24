@@ -5,4 +5,4 @@
 - Many relationships include two plots. The **plot on the left** visualizes the selected data relationship and the **plot on the right** visualizes the number of visits to the selected site by different US census groups.
 - A plot can be **saved as a png** using the camera icon which is visible when hovering over a plot. 
 
-**If the plot is not appearing or if it is not updating, please try refreshing the page.**
+**If the plot is not appearing or if it is not updating, please click the reset button or try refreshing the page.**

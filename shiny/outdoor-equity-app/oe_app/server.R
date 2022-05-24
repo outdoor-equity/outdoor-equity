@@ -246,6 +246,20 @@ server <- function(input, output, session) {
     
   }) # EO OE press reset data summary 2
   
+  ## SO OE press reset relationships ----
+  observeEvent(input$reset_input_relationships, {
+    shinyjs::reset("relationships_inputs")
+    
+  }) # EO OE press reset relationships
+  
+  ## SO OE press reset visitorsheds ----
+  observeEvent(input$reset_input_visitorsheds, {
+    shinyjs::reset("visitorsheds_inputs")
+    
+  }) # EO OE press reset visitorsheds
+  
+  
+  
   
   # RENDER PLOTS ----
   ## SO ABOUT PAGE PLOTS ----

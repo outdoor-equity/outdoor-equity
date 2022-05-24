@@ -245,7 +245,8 @@ ui <- fluidPage(
                               ), # EO explanatory data relationship text
                           
                           # SO pick relationship input box
-                          box(width = 4,
+                          box(id = "relationships_inputs",
+                              width = 4,
                               status = "success",
                               title = "Select a relationship and a site",
                               # select relationship vars
@@ -255,7 +256,13 @@ ui <- fluidPage(
                               # admin input
                               select_admin_unit(locationId = "relationships"),
                               # site input
-                              select_site(locationId = "relationships")
+                              select_site(locationId = "relationships"),
+                              # reset button
+                              actionBttn(inputId = "reset_input_relationships",
+                                         label = "RESET",
+                                         size = "xs",
+                                         color = "danger",
+                                         style = "unite")
                           ), # EO pick relationship input box
                           
                           # dynamic relationships plot output box
@@ -295,15 +302,22 @@ ui <- fluidPage(
                           ), # EO explanatory visitorshed text
                           
                           # SO subset visitorshed data box
-                          box(width = 4,
+                          box(id = "visitorsheds_inputs",
+                              width = 4,
                               status = "primary",
-                              title = "Subset the data",
+                              title = "Select a site",
                               # agency input
                               select_agency(locationId = "visitorsheds"),
                               # admin input
                               select_admin_unit(locationId = "visitorsheds"),
                               # site input
-                              select_site(locationId = "visitorsheds")
+                              select_site(locationId = "visitorsheds"),
+                              # reset input
+                              actionBttn(inputId = "reset_input_visitorsheds",
+                                         label = "RESET",
+                                         size = "xs",
+                                         color = "danger",
+                                         style = "unite")
                           ), # EO subset visitorshed data box
                           
                           # SO US visitorshed map box
