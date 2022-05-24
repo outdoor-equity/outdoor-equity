@@ -164,7 +164,7 @@ ui <- fluidPage(
                               select_data_summary_vars(),
                               #### SO select number of visuals
                               radioButtons(inputId = "num_viz",
-                                           label = "2. Select 1 to see a single site, or 2 to compare two different sites",
+                                           label = "Select 1 to see a single site, or 2 to compare two different sites",
                                            choices = c(1, 2),
                                            selected = 2,
                                            inline = TRUE # makes choices horizontal
@@ -226,7 +226,7 @@ ui <- fluidPage(
                         # SO data relationships FR layout
                         fluidRow(
                           # SO explanation data relationship text
-                          box(width = 12,
+                          box(width = 8,
                               status = "primary",
                               title = "A data relationships plot compares a US census variable to a recreation variable",
                               includeMarkdown("text/data_relationship_explanatory.md")
@@ -235,23 +235,16 @@ ui <- fluidPage(
                           # SO pick relationship input box
                           box(width = 4,
                               status = "success",
-                              title = "1. Pick a relationship to visualize",
-                              select_data_relationship()
+                              title = "Select a relationship and a site",
+                              # select relationship vars
+                              select_data_relationship(),
+                              # agency input
+                              select_agency(locationId = "relationships"),
+                              # admin input
+                              select_admin_unit(locationId = "relationships"),
+                              # site input
+                              select_site(locationId = "relationships")
                           ), # EO pick relationship input box
-                          
-                          # SO subset relationship data box
-                          box(width = 8,
-                              status = "success",
-                              title = "2. Subset the data",
-                              splitLayout(
-                                # agency input
-                                select_agency(locationId = "relationships"),
-                                # admin input
-                                select_admin_unit(locationId = "relationships"),
-                                # site input
-                                select_site(locationId = "relationships")
-                              ) # EO split layout relationship subset
-                              ), # EO relationship subset box
                           
                           # dynamic relationships plot output box
                           box(id = "relationships_outputs",
