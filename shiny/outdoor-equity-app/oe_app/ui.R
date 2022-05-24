@@ -183,13 +183,19 @@ ui <- fluidPage(
                           box(id = "num_viz_1",
                               width = 12,
                               status = "success",
-                              splitLayout(
+                              splitLayout(cellWidths = c("29%", "31%", "30%", "10%"),
                                 # agency input
                                 select_agency(locationId = "summary_1"),
                                 # admin input
                                 select_admin_unit(locationId = "summary_1"),
                                 # site input
-                                select_site(locationId = "summary_1")
+                                select_site(locationId = "summary_1"),
+                                # reset input
+                                actionBttn(inputId = "reset_input_summary_1",
+                                           label = "RESET",
+                                           size = "xs",
+                                           color = "danger",
+                                           style = "unite")
                               ),
                               plotlyOutput(outputId = "data_summary_plot_1") %>%
                                 withSpinner(color = spinner_color)
@@ -200,7 +206,7 @@ ui <- fluidPage(
                           box(id = "num_viz_2",
                               width = 6,
                               status = "success",
-                              splitLayout(
+                              splitLayout(cellWidths = c("29%", "31%", "30%", "10%"),
                                 # agency input
                                 select_agency(locationId = "summary_2",
                                               defaultValue = "US Forest Service"),
@@ -209,7 +215,13 @@ ui <- fluidPage(
                                                   defaultValue = "Sierra National Forest"),
                                 # site input
                                 select_site(locationId = "summary_2",
-                                            defaultValue = "Dinkey Creek")
+                                            defaultValue = "Dinkey Creek"),
+                                # reset input
+                                actionBttn(inputId = "reset_input_summary_2",
+                                           label = "RESET",
+                                           size = "xs",
+                                           color = "danger",
+                                           style = "unite")
                               ), # EO split layout data summary plot 2 output box
                               plotlyOutput(outputId = "data_summary_plot_2") %>%
                                 withSpinner(color = spinner_color)

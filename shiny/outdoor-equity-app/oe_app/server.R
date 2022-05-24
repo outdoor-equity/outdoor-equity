@@ -234,9 +234,20 @@ server <- function(input, output, session) {
     }
   }) ## EO OE press site relationships
   
+  ## SO OE press reset data summary 1 ----
+  observeEvent(input$reset_input_summary_1, {
+    shinyjs::reset("num_viz_1")
+    
+  }) # EO OE press reset data summary 1
+  
+  ## SO OE press reset data summary 2 ----
+  observeEvent(input$reset_input_summary_2, {
+    shinyjs::reset("num_viz_2")
+    
+  }) # EO OE press reset data summary 2
+  
+  
   # RENDER PLOTS ----
-  
-  
   ## SO ABOUT PAGE PLOTS ----
   
   ### SO when to book ----
