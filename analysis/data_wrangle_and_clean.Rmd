@@ -41,6 +41,12 @@ source("functions/function_join_ridb_acs.R")
 # state and ZIP code functions
 source("functions/function_map_ca_data.R")
 source("functions/function_map_us_data.R")
+
+# ACS variable top quantile and decile functions
+source("functions/function_acs_deciles_median_income.R")
+source("functions/function_acs_top_quartile_education.R")
+source("functions/function_acs_top_quartile_language.R")
+source("functions/function_acs_top_quartile_race.R")
 ```
 
 # RIDB - read in data, calculate varibales, standardize values
@@ -102,6 +108,8 @@ data_combined_2018 <- join_ridb_acs_data(ridb_df = data_ridb_2018_clean,
 ```
 
 
+
+
 # Create census dataframe for all CA Zip codes
 
 ```{r}
@@ -126,6 +134,60 @@ acs_ca_all <- acs_ca_all %>%
             "zip_code_population.y",
             "zip_code_population"))
 ```
+
+
+# Create dataframes for "high" threshhold values for each ACS variables
+
+```{r}
+# race
+race_group <- c(
+  "other", "pacific_islander",  "multiracial",  "asian",
+  "black",  "white", "native_american", "hispanic_latinx")
+
+data_race_quants <-
+  race_group %>%
+  map_dbl(race_top_quartile, acs_df = acs_ca_all) %>%
+  cbind("race_group" = race_group,
+        "weighted_quartile" = .) %>%
+  as.data.frame()
+
+
+# education
+education_group <-
+  c("hs_GED_or_below", "some_college",  "college", "master_or_above")
+
+data_education_quants <-
+  education_group %>%
+  map_dbl(education_top_quartile, acs_df = acs_ca_all) %>%
+  cbind("education_group" = education_group,
+        "weighted_quartile" = .) %>%
+  as.data.frame()
+
+
+# language
+language_group <- c("english_only", "not_english_only")
+
+data_language_quants <-
+  language_group %>%
+  map_dbl(language_top_quartile, acs_df = acs_ca_all) %>%
+  cbind("language_group" = language_group,
+        "weighted_quartile" = .) %>%
+  as.data.frame()
+
+
+# median-income
+median_income_decile_list <-
+  median_income_deciles(acs_df = acs_ca_all) %>%
+  as.list()
+```
+
+
+# Create dataframe of all reservations that fall into a high category for each ACS variable
+
+```{r}
+
+```
+
 
 
 # Create dataframes for visitorshed maps

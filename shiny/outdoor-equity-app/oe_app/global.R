@@ -45,7 +45,7 @@ reactlog_enable()
 ## CA prototype joined 2018 ----
 data_joined_2018 <- readRDS("data/2018_joined_data.rds")
 ## CA ACS all ----
-data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds")
+data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds") ## CB: remove once "high" cutoff is outside shiny
 ## visitorsheds ----
 data_state_geometries <- readRDS("data/states_geometries.rds")
 data_ca_zip_code_geometries <- readRDS("data/ca_zip_codes_geometries.rds")
