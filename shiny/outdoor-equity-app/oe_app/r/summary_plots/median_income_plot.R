@@ -25,7 +25,15 @@ median_income_plot <- function(admin_unitInput, siteInput, ridb_df){
       select(park, median_income) %>% 
       rename(location_indicator = park) %>% 
       mutate(mean_zip_code_population = 1,
-             data_source = "Visitors to California Sites")
+             data_source = "Visitors to California Sites",
+             tooltip_text = 
+               paste("The green curve represents all visitors to this site.",
+                     "<br>",
+                     "If it is above the grey curve at a specific median-income", 
+                     "<br>",
+                     "that median household income is proportionally more represented",
+                     "<br>",
+                     "at this site compared to the California census."))
     
   }) # EO RDF
   
@@ -34,7 +42,15 @@ median_income_plot <- function(admin_unitInput, siteInput, ridb_df){
   median_income_ca <- data_ca_acs_2018 %>%
     select(zip_code, median_income, mean_zip_code_population) %>% 
     rename(location_indicator = zip_code) %>% 
-    mutate(data_source = "California Residents")
+    mutate(data_source = "California Residents",
+           tooltip_text = 
+             paste("The grey curve represents all California residents.",
+                   "<br>",
+                   "If it is above the green curve at a specific median-income", 
+                   "<br>",
+                   "that median household income is proportionally less represented",
+                   "<br>",
+                   "at this site compared to the California census."))
   
   median_income_data_plot <- rbind(median_income_rdf(), median_income_ca)
   
@@ -51,7 +67,7 @@ median_income_plot <- function(admin_unitInput, siteInput, ridb_df){
                      color = data_source,
                      fill = data_source,
                      weight = mean_zip_code_population,
-                     text = data_source),
+                     text = tooltip_text),
                  alpha = 0.5) +
     scale_fill_manual(values = fill_ridb_ca) +
     scale_color_manual(values = color_ridb_ca) +

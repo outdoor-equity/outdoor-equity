@@ -3,18 +3,29 @@
 #'
 #' @param admin_unit User pick for admin unit
 #' @param site User pick for site
-#' @param ridb_df RIDB dataframe object name
-#' @param median_income_binned List of decile values
+#' @param median_income_decile_df Object name for dataframe of all reservations split into median-income deciles
 #'
 #' @return Plotly of median-income categories compared to distance traveled
 #'
 #' @examples
 
-not_reactive_median_income_dist_travel_plot <- function(admin_unit, site, ridb_df, median_income_binned){
+not_reactive_median_income_dist_travel_plot <- function(admin_unit, 
+                                                        site, 
+                                                        median_income_decile_df){
   
-  # categorize and summarize data to median-income decile groups
-  plot_data <- not_reactive_median_income_dist_travel_data(ridb_df = ridb_df, site = site,
-                                              median_income_binned = median_income_binned)
+  # create dataframe and further subset
+  plot_data <- median_income_decile_df %>%
+    # filter to user site of choice
+    filter(park == site) %>%
+    # select to variables of interest
+    select(park, customer_zip, median_income_binned, distance_traveled_mi) %>% 
+    drop_na(median_income_binned) %>% 
+    # summarize to inner quartile range, median, and total reservations
+    group_by(median_income_binned) %>% 
+    summarize(median_distance_traveled_mi = median(distance_traveled_mi),
+              quartile_lower = quantile(distance_traveled_mi)[[2]],
+              quartile_upper = quantile(distance_traveled_mi)[[4]],
+              count = n())
   
   # create plot
   plotly <- ggplot(data = plot_data, 

@@ -3,21 +3,37 @@
 #'
 #' @param admin_unitInput User pick for admin unit
 #' @param siteInput User pick for site
-#' @param ridb_df RIDB dataframe object name
-#' @param median_income_binned List of decile values
+#' @param median_income_decile_df Object name for dataframe of all reservations split into median-income deciles
 #'
 #' @return Plotly of median-income categories compared to booking window
 #'
 #' @examples
 
-median_income_top_quartile_res_plot <- function(admin_unitInput, siteInput, ridb_df, median_income_binned){
+median_income_top_quartile_res_plot <- function(admin_unitInput, 
+                                                siteInput, 
+                                                median_income_decile_df){
   
-  # categorize and summarize data to median-income decile groups
-  plot_data <- median_income_booking_window_data(ridb_df = ridb_df, siteInput = siteInput,
-                                                 median_income_binned = median_income_binned)
+  # create reactive dataframe and further subset
+  rdf <- reactive ({
+    
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
+    median_income_decile_df %>%
+      # filter to user site of choice
+      filter(park %in% siteInput) %>%
+      # select the variables of interest
+      select(park, customer_zip, median_income_binned) %>% 
+      drop_na(median_income_binned) %>% 
+      # summarize to total reservations
+      group_by(median_income_binned) %>% 
+      summarize(count = n())
+  }) # EO rdf
   
   # create plot
-  plotly <- ggplot(data = plot_data) +
+  plotly <- ggplot(data = rdf()) +
     geom_col(aes(x = count,
                  y = median_income_binned,
                  fill = median_income_binned,

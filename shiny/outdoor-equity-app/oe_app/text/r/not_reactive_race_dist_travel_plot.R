@@ -3,23 +3,31 @@
 #'
 #' @param admin_unit User pick for admin unit
 #' @param site User pick for site
-#' @param race_top_quartile_df Name of dataframe of values to iterate through for all 
-#'     racial categories and 3rd quartile values associated with each
-#' @param ridb_df RIDB dataframe object name
+#' @param race_top_quartile_df Object name for dataframe of all reservations above "high" threshold for race
 #'
 #' @return Plotly of racial categories compared to distance traveled
 #'
 #' @examples
 
-not_reactive_race_dist_travel_plot <- function(admin_unit, site,
-                                  race_top_quartile_df, ridb_df){
+not_reactive_race_dist_travel_plot <- function(admin_unit, 
+                                               site,
+                                               race_top_quartile_df){
   
-  # iterate through dataframe of all racial categories and 3rd quartile values
-  # return combined dataframe of reservations in "high" range for all categories
-  plot_data <- 
-    race_top_quartile_df %>% pmap_dfr(not_reactive_race_dist_travel_data, 
-                                      ridb_df = ridb_df, 
-                                      site = site)
+  # create dataframe and further subset
+  plot_data <- race_top_quartile_df %>%
+    # filter to user site of choice
+    filter(park == site) %>%
+    # select to variables of interest
+    select(park, customer_zip, 
+           race, race_percentage,
+           distance_traveled_mi) %>% 
+    drop_na(distance_traveled_mi, race_percentage) %>% 
+    # summarize to inner quartile range, median, and total reservations
+    group_by(race) %>%
+    summarize(median_distance_traveled_mi = median(distance_traveled_mi),
+              quartile_lower = quantile(distance_traveled_mi)[[2]],
+              quartile_upper = quantile(distance_traveled_mi)[[4]],
+              count = n())
   
   # parameters
   race_group_colors <- c("Other Race(s)" = "#999999", "Pacific Islander" = "#E69F00", "Multiracial" = "#56B4E9",

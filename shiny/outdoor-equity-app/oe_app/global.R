@@ -45,7 +45,8 @@ reactlog_enable()
 ## CA prototype joined 2018 ----
 data_joined_2018 <- readRDS("data/2018_joined_data.rds")
 ## CA ACS all ----
-data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds") ## CB: remove once "high" cutoff is outside shiny
+data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds")
+## data relationship 2018 ----
 data_education_relationship_plots <- readRDS("data/education_relationship_plots.rds")
 data_language_relationship_plots <- readRDS("data/language_relationship_plots.rds")
 data_median_income_relationship_plots <- readRDS("data/median_income_relationship_plots.rds")
@@ -59,10 +60,8 @@ data_ca_cities_geometries <- readRDS("data/ca_cities_geometries.rds")
 # SOURCE FUNCTIONS ----
 ## source about page plotly functions ----
 source("text/r/not_reactive_booking_window_plot.R")
-source("text/r/not_reactive_median_income_dist_travel_data.R")
-source("text/r/not_reactive_median_income_dist_travel_plot.R")
-source("text/r/not_reactive_race_dist_travel_data.R")
-source("text/r/not_reactive_race_dist_travel_plot.R")
+source("text/r/not_reactive_median_income_dist_travel_plot.R") 
+source("text/r/not_reactive_race_dist_travel_plot.R") 
 source("text/r/not_reactive_visitorshed_state_map.R")
 
 ## source input functions ----
@@ -87,17 +86,10 @@ source("r/summary_plots/language_plot.R")
 
 ## source relationships plot functions ----
 # quartile plots
-source("r/relationship_plots/race_top_quartile_res_data.R")
 source("r/relationship_plots/race_top_quartile_res_plot.R")
 source("r/relationship_plots/education_top_quartile_res_plot.R")
-source("r/relationship_plots/language_top_quartile_res_data.R")
 source("r/relationship_plots/language_top_quartile_res_plot.R")
-source("r/relationship_plots/median_income_top_quartile_res_data.R")
 source("r/relationship_plots/median_income_top_quartile_res_plot.R")
-# calculating bins (quartiles, deciles) 
-source("r/relationship_plots/race_top_quartile.R")
-source("r/relationship_plots/language_top_quartile.R")
-source("r/relationship_plots/median_income_deciles.R")
 # edu x booking window
 source("r/relationship_plots/education_booking_window_plot.R")
 # edu x daily cost
@@ -111,58 +103,40 @@ source("r/relationship_plots/education_length_of_stay_plot.R")
 # edu x site type
 source("r/relationship_plots/education_site_type_plot.R")
 # lang x booking window
-source("r/relationship_plots/language_booking_window_data.R")
 source("r/relationship_plots/language_booking_window_plot.R")
 # lang x daily cost
-source("r/relationship_plots/language_daily_cost_data.R")
 source("r/relationship_plots/language_daily_cost_plot.R")
 # lang x daily cost per visitor
-source("r/relationship_plots/language_daily_cost_per_visitor_data.R")
 source("r/relationship_plots/language_daily_cost_per_visitor_plot.R")
 # lang x dist travel
-source("r/relationship_plots/language_dist_travel_data.R")
 source("r/relationship_plots/language_dist_travel_plot.R")
 # lang x length of stay
-source("r/relationship_plots/language_length_of_stay_data.R")
 source("r/relationship_plots/language_length_of_stay_plot.R")
 # lang x site type
-source("r/relationship_plots/language_site_type_data.R")
 source("r/relationship_plots/language_site_type_plot.R")
 # median income x booking window
-source("r/relationship_plots/median_income_booking_window_data.R")
 source("r/relationship_plots/median_income_booking_window_plot.R")
 # median income x daily cost
-source("r/relationship_plots/median_income_daily_cost_data.R")
 source("r/relationship_plots/median_income_daily_cost_plot.R")
 # median income x daily cost per visitor
-source("r/relationship_plots/median_income_daily_cost_per_visitor_data.R")
 source("r/relationship_plots/median_income_daily_cost_per_visitor_plot.R")
 # median income x dist travel
-source("r/relationship_plots/median_income_dist_travel_data.R")
 source("r/relationship_plots/median_income_dist_travel_plot.R")
 # median income x length of stay
-source("r/relationship_plots/median_income_length_of_stay_data.R")
 source("r/relationship_plots/median_income_length_of_stay_plot.R")
 # median income x site type
-source("r/relationship_plots/median_income_site_type_data.R")
 source("r/relationship_plots/median_income_site_type_plot.R")
 # race x booking window
-source("r/relationship_plots/race_booking_window_data.R")
 source("r/relationship_plots/race_booking_window_plot.R")
 # race x daily cost
-source("r/relationship_plots/race_daily_cost_data.R")
 source("r/relationship_plots/race_daily_cost_plot.R")
 # race x daily cost per visitor
-source("r/relationship_plots/race_daily_cost_per_visitor_data.R")
 source("r/relationship_plots/race_daily_cost_per_visitor_plot.R")
 # race X dist travel
-source("r/relationship_plots/race_dist_travel_data.R")
 source("r/relationship_plots/race_dist_travel_plot.R")
 # race x length of stay
-source("r/relationship_plots/race_length_of_stay_data.R")
 source("r/relationship_plots/race_length_of_stay_plot.R")
 # race x site type
-source("r/relationship_plots/race_site_type_data.R")
 source("r/relationship_plots/race_site_type_plot.R")
 
 ## source visitorshed map functions ----

@@ -3,21 +3,40 @@
 #'
 #' @param admin_unitInput User pick for admin unit
 #' @param siteInput User pick for site
-#' @param ridb_df RIDB dataframe object name
-#' @param median_income_binned List of decile values
+#' @param median_income_decile_df Object name for dataframe of all reservations split into median-income deciles
 #'
 #' @return Plotly of median-income categories compared to daily cost per visitor
 #'
 #' @examples
 
-median_income_daily_cost_per_visitor_plot <- function(admin_unitInput, siteInput, ridb_df, median_income_binned){
+median_income_daily_cost_per_visitor_plot <- function(admin_unitInput, 
+                                                      siteInput, 
+                                                      median_income_decile_df){
   
-  # categorize and summarize data to median-income decile groups
-  plot_data <- median_income_daily_cost_per_visitor_data(ridb_df = ridb_df, siteInput = siteInput, 
-                                                    median_income_binned = median_income_binned)
+  # create reactive dataframe and further subset
+  rdf <- reactive ({
+    
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
+    median_income_decile_df %>%
+      # filter to user site of choice
+      filter(park %in% siteInput) %>%
+      # select to variables of interest
+      select(park, customer_zip, median_income_binned, daily_cost_per_visitor) %>% 
+      drop_na(median_income_binned) %>% 
+      # summarize to inner quartile range, median, and total reservations
+      group_by(median_income_binned) %>% 
+      summarize(median_daily_cost_per_visitor = median(daily_cost_per_visitor),
+                quartile_lower = quantile(daily_cost_per_visitor)[[2]],
+                quartile_upper = quantile(daily_cost_per_visitor)[[4]],
+                count = n())
+  }) # EO rdf
   
   # create plot
-  plotly <- ggplot(data = plot_data, 
+  plotly <- ggplot(data = rdf(), 
                    aes(x = median_daily_cost_per_visitor,
                        y = median_income_binned)) +
     geom_segment(aes(xend = 0, yend = median_income_binned)) +

@@ -3,26 +3,42 @@
 #'
 #' @param admin_unitInput User pick for admin unit
 #' @param siteInput User pick for site
-#' @param education_top_quartile_df Name of dataframe of values to iterate through for all 
-#'     racial categories and 3rd quartile values associated with each
-#' @param ridb_df RIDB dataframe object name
+#' @param race_top_quartile_df Object name for dataframe of all reservations above "high" threshold for race
 #'
 #' @return Plotly of racial categories compared to length of stay
 #'
 #' @examples
 
-race_length_of_stay_plot <- function(admin_unitInput, siteInput,
-                                     race_top_quartile_df, ridb_df){
+race_length_of_stay_plot <- function(admin_unitInput, 
+                                     siteInput,
+                                     race_top_quartile_df){
   
-  # iterate through dataframe of all racial categories and 3rd quartile values
-  # return combined dataframe of reservations in "high" range for all categories
-  plot_data <- 
-    race_top_quartile_df %>% pmap_dfr(race_length_of_stay_data, 
-                                      ridb_df = ridb_df, 
-                                      siteInput = siteInput)
+  # create reactive dataframe and further subset
+  rdf <- reactive ({
+    
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
+    race_top_quartile_df %>%
+      # filter to user site of choice
+      filter(park == siteInput) %>%
+      # select to variables of interest
+      select(park, customer_zip, 
+             race, race_percentage,
+             length_of_stay) %>% 
+      drop_na(length_of_stay, race_percentage) %>% 
+      # summarize to inner quartile range, median, and total reservations
+      group_by(race) %>%
+      summarize(median_length_of_stay = median(length_of_stay),
+                quartile_lower = quantile(length_of_stay)[[2]],
+                quartile_upper = quantile(length_of_stay)[[4]],
+                count = n())
+  }) # EO rdf
   
   validate(need(
-    nrow(plot_data) > 0,
+    nrow(rdf()) > 0,
     paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
            " that come from communities in the high range for any racial categories.")
   )) # EO validate
@@ -33,7 +49,7 @@ race_length_of_stay_plot <- function(admin_unitInput, siteInput,
                          "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
   
   # create plot
-  plotly <- ggplot(data = plot_data, 
+  plotly <- ggplot(data = rdf(), 
                    aes(x = median_length_of_stay,
                        y = reorder(race, median_length_of_stay))) +
     geom_segment(aes(xend = 0, yend = race)) +
