@@ -45,7 +45,6 @@ reactlog_enable()
 ## CA prototype joined 2018 ----
 data_joined_2018 <- readRDS("data/2018_joined_data.rds")
 ## CA ACS all ----
-data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds") ## CB: remove once "high" cutoff is outside shiny
 data_education_relationship_plots <- readRDS("data/education_relationship_plots.rds")
 data_language_relationship_plots <- readRDS("data/language_relationship_plots.rds")
 data_median_income_relationship_plots <- readRDS("data/median_income_relationship_plots.rds")
@@ -90,7 +89,6 @@ source("r/summary_plots/language_plot.R")
 source("r/relationship_plots/race_top_quartile_res_plot.R")
 source("r/relationship_plots/education_top_quartile_res_plot.R")
 source("r/relationship_plots/language_top_quartile_res_plot.R")
-source("r/relationship_plots/median_income_top_quartile_res_data.R")
 source("r/relationship_plots/median_income_top_quartile_res_plot.R")
 # calculating bins (quartiles, deciles) 
 source("r/relationship_plots/median_income_deciles.R")
@@ -119,22 +117,16 @@ source("r/relationship_plots/language_length_of_stay_plot.R")
 # lang x site type
 source("r/relationship_plots/language_site_type_plot.R")
 # median income x booking window
-source("r/relationship_plots/median_income_booking_window_data.R")
 source("r/relationship_plots/median_income_booking_window_plot.R")
 # median income x daily cost
-source("r/relationship_plots/median_income_daily_cost_data.R")
 source("r/relationship_plots/median_income_daily_cost_plot.R")
 # median income x daily cost per visitor
-source("r/relationship_plots/median_income_daily_cost_per_visitor_data.R")
 source("r/relationship_plots/median_income_daily_cost_per_visitor_plot.R")
 # median income x dist travel
-source("r/relationship_plots/median_income_dist_travel_data.R")
 source("r/relationship_plots/median_income_dist_travel_plot.R")
 # median income x length of stay
-source("r/relationship_plots/median_income_length_of_stay_data.R")
 source("r/relationship_plots/median_income_length_of_stay_plot.R")
 # median income x site type
-source("r/relationship_plots/median_income_site_type_data.R")
 source("r/relationship_plots/median_income_site_type_plot.R")
 # race x booking window
 source("r/relationship_plots/race_booking_window_plot.R")

@@ -540,19 +540,8 @@ server <- function(input, output, session) {
   
   
   ## SO RELATIONSHIPS PLOTS ----
-  
-  # ### SO race wrangling ----
-
-  ### SO median-income wrangling ----
-  # median-income wrangling used for all median-income relationship plots
-  median_income_decile_list <-
-    median_income_deciles(acs_df = data_ca_acs_2018) %>%
-    as.list()
-  
-  
-  ### SO relationships plots ----
   output$data_relationships_plot <- renderPlotly({
-    #### SO education x booking window plot function ----
+    ### SO education x booking window plot function ----
     if (input$data_relationships == "Education x Booking window") {
       
       education_booking_window_plot(
@@ -668,8 +657,7 @@ server <- function(input, output, session) {
       median_income_booking_window_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        ridb_df = data_joined_2018,
-        median_income_binned = median_income_decile_list
+        median_income_decile_df = data_median_income_relationship_plots
       )
 
     } # EO median-income x booking window
@@ -680,8 +668,7 @@ server <- function(input, output, session) {
       median_income_daily_cost_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        ridb_df = data_joined_2018,
-        median_income_binned = median_income_decile_list
+        median_income_decile_df = data_median_income_relationship_plots
       )
 
     } # EO median-income x daily cost
@@ -692,8 +679,7 @@ server <- function(input, output, session) {
       median_income_daily_cost_per_visitor_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        ridb_df = data_joined_2018,
-        median_income_binned = median_income_decile_list
+        median_income_decile_df = data_median_income_relationship_plots
       )
 
     } # EO median-income x daily cost per visitor
@@ -704,8 +690,7 @@ server <- function(input, output, session) {
       median_income_dist_travel_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        ridb_df = data_joined_2018,
-        median_income_binned = median_income_decile_list
+        median_income_decile_df = data_median_income_relationship_plots
       )
 
     } # EO median-income x dist traveled
@@ -716,8 +701,7 @@ server <- function(input, output, session) {
       median_income_length_of_stay_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        ridb_df = data_joined_2018,
-        median_income_binned = median_income_decile_list
+        median_income_decile_df = data_median_income_relationship_plots
       )
 
     } # EO median-income x length of stay
@@ -840,8 +824,7 @@ server <- function(input, output, session) {
       median_income_top_quartile_res_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        median_income_binned = median_income_decile_list,
-        ridb_df = data_joined_2018
+        median_income_decile_df = data_median_income_relationship_plots
       )
       
     } # EO median-income quartile
@@ -1248,8 +1231,7 @@ server <- function(input, output, session) {
       median_income_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        ridb_df = data_joined_2018,
-        median_income_binned = median_income_decile_list,
+        median_income_decile_df = data_median_income_relationship_plots,
         site_type_string = "equestrian"
       )
     }
@@ -1264,8 +1246,7 @@ server <- function(input, output, session) {
       median_income_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        ridb_df = data_joined_2018,
-        median_income_binned = median_income_decile_list,
+        median_income_decile_df = data_median_income_relationship_plots,
         site_type_string = "remote"
       )
     }
@@ -1280,8 +1261,7 @@ server <- function(input, output, session) {
       median_income_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        ridb_df = data_joined_2018,
-        median_income_binned = median_income_decile_list,
+        median_income_decile_df = data_median_income_relationship_plots,
         site_type_string = "rv only"
       )
     }
@@ -1296,8 +1276,7 @@ server <- function(input, output, session) {
       median_income_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        ridb_df = data_joined_2018,
-        median_income_binned = median_income_decile_list,
+        median_income_decile_df = data_median_income_relationship_plots,
         site_type_string = "rv or tent"
       )
     }
@@ -1312,8 +1291,7 @@ server <- function(input, output, session) {
       median_income_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        ridb_df = data_joined_2018,
-        median_income_binned = median_income_decile_list,
+        median_income_decile_df = data_median_income_relationship_plots,
         site_type_string = "shelter"
       )
     }
@@ -1328,8 +1306,7 @@ server <- function(input, output, session) {
       median_income_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        ridb_df = data_joined_2018,
-        median_income_binned = median_income_decile_list,
+        median_income_decile_df = data_median_income_relationship_plots,
         site_type_string = "tent only"
       )
     }
@@ -1344,8 +1321,7 @@ server <- function(input, output, session) {
       median_income_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        ridb_df = data_joined_2018,
-        median_income_binned = median_income_decile_list,
+        median_income_decile_df = data_median_income_relationship_plots,
         site_type_string = "water"
       )
     }

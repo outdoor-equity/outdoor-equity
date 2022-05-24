@@ -2,29 +2,50 @@
 #'
 #' @param admin_unitInput User pick for admin unit
 #' @param siteInput User pick for site
-#' @param ridb_df RIDB dataframe object name
-#' @param median_income_binned List of decile values
+#' @param median_income_decile_df Object name for dataframe of all reservations split into median-income deciles
+#' @param site_type_string String indicating what site to create plot of
+#'     Options include: "equestrian", "remote", "rv only", "rv or tent", "shelter", "tent only", "water"
 #'
 #' @return Plotly of median-income categories compared to site type
 #'
 #' @examples
 
-median_income_site_type_plot <- function(admin_unitInput, siteInput, 
-                                           ridb_df, median_income_binned, site_type_string){
+median_income_site_type_plot <- function(admin_unitInput, 
+                                         siteInput, 
+                                         median_income_decile_df, 
+                                         site_type_string){
   
-  # categorize and summarize data to median-income decile groups
-  plot_data <- median_income_site_type_data(ridb_df = ridb_df, siteInput = siteInput, 
-                                            median_income_binned = median_income_binned,
-                                            site_type_string = site_type_string)
+  # create reactive dataframe and further subset
+  rdf <- reactive ({
+    
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
+    median_income_decile_df %>%
+      # filter to user site of choice
+      filter(park %in% siteInput) %>%
+      # select to variables of interest
+      select(park, customer_zip, median_income_binned, aggregated_site_type) %>% 
+      drop_na(median_income_binned) %>% 
+      # summarize to total reservations for each site type
+      group_by(aggregated_site_type, median_income_binned) %>% 
+      summarize(count = n()) %>% 
+      filter(aggregated_site_type == site_type_string) %>% 
+      mutate(aggregated_site_type = str_replace(string = aggregated_site_type,
+                                                pattern = "rv", 
+                                                replacement = "RV"))
+  }) #EO rdf
   
   validate(
-    need(nrow(plot_data) > 0,
+    need(nrow(rdf()) > 0,
          paste0("There are no ", site_type_string %>%
                   str_replace(string = ., pattern = "rv", replacement = "RV"), " sites at ", siteInput, ", ", admin_unitInput, "."))
   ) # EO validate
   
   # create plot
-  plotly <- ggplot(data = plot_data) +
+  plotly <- ggplot(data = rdf()) +
     geom_col(aes(x = count,
                  y = median_income_binned,
                  fill = median_income_binned,
@@ -54,5 +75,5 @@ median_income_site_type_plot <- function(admin_unitInput, siteInput,
                                         str_replace(string = ., pattern = "Rv", replacement = "RV"), 
                                       " Sites by Visitors with Different Median Household Incomes"),
                         font = list(size = 15)))
-
+  
 } # EO function
