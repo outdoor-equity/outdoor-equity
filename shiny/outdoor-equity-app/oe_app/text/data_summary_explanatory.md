@@ -6,4 +6,4 @@
 - To visualize a single site, select 1 or select 2 to compare two sites. 
 - A plot can be **saved as a png** using the camera icon which is visible when hovering over a plot. 
 
-**If the plot is not appearing or if it is not updating, please try refreshing the page.**
+**If the plot is not appearing or if it is not updating, please click the reset button or try refreshing the page.**
