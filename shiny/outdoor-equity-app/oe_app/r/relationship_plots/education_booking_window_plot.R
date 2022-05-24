@@ -2,9 +2,7 @@
 #'
 #' @param admin_unitInput User pick for admin unit
 #' @param siteInput User pick for site
-#' @param education_top_quartile_df Name of dataframe of values to iterate through for all
-#'     educational categories and 3rd quartile values associated with each
-#' @param ridb_df RIDB dataframe object name
+#' @param education_top_quartile_df Object name for dataframe of all reservations above "high" threshold for education
 #'
 #' @return Plotly of educational categories compared to booking window
 #'
@@ -13,17 +11,37 @@
 education_booking_window_plot <-
   function(admin_unitInput,
            siteInput,
-           education_top_quartile_df,
-           ridb_df) {
-    # iterate through dataframe of all educational categories and 3rd quartile values
-    # return combined dataframe of reservations in "high" range for all categories
-    plot_data <-
-      education_top_quartile_df %>% pmap_dfr(education_booking_window_data,
-                                             ridb_df = ridb_df,
-                                             siteInput = siteInput)
+           education_top_quartile_df) {
+    
+    # create reactive dataframe and further subset
+    rdf <- reactive ({
+      
+      validate(
+        need(siteInput != "",
+             "Please select a reservable site to visualize.")
+      ) # EO validate
+      
+      education_top_quartile_df %>%
+        # filter to user site of choice
+        filter(park == siteInput) %>%
+        # select to variables of interest
+        select(park, customer_zip, 
+               education, education_percentage, education_y_lab, 
+               booking_window) %>% 
+        drop_na(booking_window, education_percentage) %>% 
+        filter(booking_window >= 0) %>% 
+        # summarize to inner quartile range, median, and total reservations
+        group_by(education, education_y_lab) %>% 
+        summarize(median_booking_window = median(booking_window),
+                  quartile_lower = quantile(booking_window)[[2]],
+                  quartile_upper = quantile(booking_window)[[4]],
+                  count = n())
+      
+    }) #EO reactive df
+    
     
     validate(need(
-      nrow(plot_data) > 0,
+      nrow(rdf()) > 0,
       paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
              " that come from communities in the high range for any educational categories.")
     )) # EO validate
@@ -38,7 +56,7 @@ education_booking_window_plot <-
       )
     
     # create plot
-    plotly <- ggplot(data = plot_data,
+    plotly <- ggplot(data = rdf(),
                      aes(x = median_booking_window,
                          y = education_y_lab)) +
       geom_segment(aes(xend = 0, yend = education_y_lab)) +
@@ -48,15 +66,13 @@ education_booking_window_plot <-
           fill = education_y_lab,
           text = paste0(
             comma(count, accuracy = 1),
-            " unique visits were made by people who live in ZIP codes with high rates of<br>",
-            education,
-            " as the maximum level of education. Typically these visitors reserved their visit between<br>",
-            comma(quartile_lower, accuracy = 1),
-            " and ",
-            comma(quartile_upper, accuracy = 1),
-            " days before the start of their trip, with a median booking window of ",
-            comma(median_booking_window, accuracy = 1),
-            " days."
+            " unique visits were made by people who live in ZIP codes with high rates of",
+            "<br>",
+            education, " as the maximum level of education. Typically these visitors reserved their visit between",
+            "<br>",
+            comma(quartile_lower, accuracy = 1), " and ", comma(quartile_upper, accuracy = 1),
+            " days before the start of their trip, with a median booking window of ", 
+            comma(median_booking_window, accuracy = 1),  " days."
           )
         ),
         size = 3.5,
