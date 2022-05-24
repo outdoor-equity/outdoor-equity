@@ -6,7 +6,7 @@
 #' @return Dataframe of all ZIP codes for indicated state with simplified geometries
 #'
 #' @examples
-zip_state_dataframe <- function(year = 2018){
+state_geometries_dataframe <- function(year = 2018){
   
   ## -- ZIP codes and respective states -- ##
   fips_list <- c("01", "02", "04", "05", "06", "08", "09", "10", "11", "12", 

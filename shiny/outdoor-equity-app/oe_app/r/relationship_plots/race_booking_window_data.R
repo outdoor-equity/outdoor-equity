@@ -2,7 +2,7 @@
 #' Race x Booking Window Data
 #'
 #' @param siteInput User pick for site
-#' @param education_group String indicating racial category of interest
+#' @param race_group String indicating racial category of interest
 #' @param weighted_quartile Value of 3rd quartile for racial category
 #' @param ridb_df RIDB dataframe object name
 #'

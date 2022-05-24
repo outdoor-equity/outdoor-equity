@@ -12,6 +12,7 @@ library(tidyverse)
 library(here)
 library(janitor)
 library(lubridate)
+library(scales)
 library(vroom)
 library(sf)
 library(tidycensus)
@@ -38,7 +39,7 @@ source("functions/function_acs_language.R")
 # join RIDB and ACS function
 source("functions/function_join_ridb_acs.R")
 
-# state and ZIP code functions
+# state and ZIP code geometries functions
 source("functions/function_map_ca_data.R")
 source("functions/function_map_us_data.R")
 
@@ -47,6 +48,12 @@ source("functions/function_acs_deciles_median_income.R")
 source("functions/function_acs_top_quartile_education.R")
 source("functions/function_acs_top_quartile_language.R")
 source("functions/function_acs_top_quartile_race.R")
+
+# RIDB df above ACS "high" threshold functions
+source("functions/function_ridb_top_quartile_education.R")
+source("functions/function_ridb_top_quartile_language.R")
+source("functions/function_ridb_top_quartile_race.R")
+source("functions/function_ridb_deciles_median_income.R")
 ```
 
 # RIDB - read in data, calculate varibales, standardize values
@@ -60,7 +67,7 @@ data_ridb_2018_subset <- RIDB_subset_pre2018(full_file_path = "../../data_raw/re
 data_ridb_2018_clean <- RIDB_calculate_pre2018(input_df_name = data_ridb_2018_subset)
 ```
 
-```{r}
+```{r, eval = FALSE}
 # check all agency, admin_unit, and park strings look correct
 # check there are no duplicate parks at different admin units
 admin_unit_park_check <- data_ridb_2018_clean %>% 
@@ -97,7 +104,7 @@ acs_subset_calculate_language(geography = "zcta", state = NULL)
 ```
 
 
-# Join RIDB and Census
+# Join RIDB and Census dataframes
 
 ```{r}
 data_combined_2018 <- join_ridb_acs_data(ridb_df = data_ridb_2018_clean,
@@ -110,7 +117,7 @@ data_combined_2018 <- join_ridb_acs_data(ridb_df = data_ridb_2018_clean,
 
 
 
-# Create census dataframe for all CA Zip codes
+# Create dataframe for full CA census
 
 ```{r}
 # read in census data for CA
@@ -128,7 +135,7 @@ acs_ca_all <- left_join(x = data_acs_2018_education_percent_California,
   left_join(y = data_acs_2020_language_percent_California,
             by = "zip_code")
 
-acs_ca_all <- acs_ca_all %>% 
+data_acs_ca_all <- acs_ca_all %>% 
   mutate(mean_zip_code_population = rowMeans(acs_ca_all[,c(2,8,17)])) %>% 
   select(-c("zip_code_population.x", 
             "zip_code_population.y",
@@ -136,57 +143,81 @@ acs_ca_all <- acs_ca_all %>%
 ```
 
 
-# Create dataframes for "high" threshhold values for each ACS variables
+# Create dataframes of all reservations above "high" threshhold values for each ACS variables
 
 ```{r}
-# race
-race_group <- c(
-  "other", "pacific_islander",  "multiracial",  "asian",
-  "black",  "white", "native_american", "hispanic_latinx")
-
-data_race_quants <-
-  race_group %>%
-  map_dbl(race_top_quartile, acs_df = acs_ca_all) %>%
-  cbind("race_group" = race_group,
-        "weighted_quartile" = .) %>%
-  as.data.frame()
-
-
-# education
+## -- education -- ##
 education_group <-
   c("hs_GED_or_below", "some_college",  "college", "master_or_above")
 
-data_education_quants <-
+# calculate value of 3rd quartile for each educational group
+education_quants_df <-
   education_group %>%
-  map_dbl(education_top_quartile, acs_df = acs_ca_all) %>%
+  map_dbl(education_top_quartile, acs_df = data_acs_ca_all) %>%
   cbind("education_group" = education_group,
         "weighted_quartile" = .) %>%
   as.data.frame()
 
+# create dataframe of all reservations above threshold
+data_education_above_threshold <-
+  education_quants_df %>% pmap_dfr(education_ridb_top_quartile,
+                                   joined_ridb_acs_df = data_combined_2018)
+```
 
-# language
+
+```{r}
+## -- language -- ##
 language_group <- c("english_only", "not_english_only")
 
-data_language_quants <-
+# calculate value of 3rd quartile for each language group
+language_quants_df <-
   language_group %>%
-  map_dbl(language_top_quartile, acs_df = acs_ca_all) %>%
+  map_dbl(language_top_quartile, acs_df = data_acs_ca_all) %>%
   cbind("language_group" = language_group,
         "weighted_quartile" = .) %>%
   as.data.frame()
 
-
-# median-income
-median_income_decile_list <-
-  median_income_deciles(acs_df = acs_ca_all) %>%
-  as.list()
+# create dataframe of all reservations above threshold
+data_language_above_threshold <-
+  language_quants_df %>% pmap_dfr(language_ridb_top_quartile,
+                                  joined_ridb_acs_df = data_combined_2018)
 ```
 
-
-# Create dataframe of all reservations that fall into a high category for each ACS variable
 
 ```{r}
+## -- median-income -- ##
 
+# calculate decile values
+median_income_decile_list <-
+  median_income_deciles(acs_df = data_acs_ca_all) %>%
+  as.list()
+
+# create dataframe of all reservations split into deciles
+data_median_income_deciles <- median_income_ridb_deciles(median_income_binned = median_income_decile_list,
+                                                         joined_ridb_acs_df = data_combined_2018)
 ```
+
+
+```{r}
+## -- race -- ##
+race_group <- c(
+  "other", "pacific_islander",  "multiracial",  "asian",
+  "black",  "white", "native_american", "hispanic_latinx")
+
+# calculate value of 3rd quartile for each racial group
+race_quants_df <-
+  race_group %>%
+  map_dbl(race_top_quartile, acs_df = data_acs_ca_all) %>%
+  cbind("race_group" = race_group,
+        "weighted_quartile" = .) %>%
+  as.data.frame()
+
+# create dataframe of all reservations above threshold
+data_race_above_threshold <-
+  race_quants_df %>% pmap_dfr(race_ridb_top_quartile,
+                              joined_ridb_acs_df = data_combined_2018)
+```
+
 
 
 
@@ -195,10 +226,10 @@ median_income_decile_list <-
 ```{r}
 ca_zip_geometries <- zip_ca_dataframe(state = "California", year = 2018)
 
-state_geometries <- zip_state_dataframe(year = 2018)
+state_geometries <- state_geometries_dataframe(year = 2018)
 ```
 
-# Create dataframe for CA citie labels on visitorshed map
+# Create dataframe for CA city labels on visitorshed map
 
 ```{r}
 ca_city_labels <- 
@@ -236,7 +267,7 @@ write.csv(x = data_combined_2018,
           row.names = FALSE)
 
 # all acs vars joined
-write.csv(x = acs_ca_all,
+write.csv(x = data_acs_ca_all,
           "../../../data_clean/2018_ca_acs_all.csv",
           row.names = FALSE)
 ```
@@ -252,7 +283,7 @@ data_combined_2018_geometry <-
   st_transform(crs = 4269) # using NAD83 because measured in meters
 
 
-## save RDS files to `data` directory within Shiny App directories
+## -- save RDS files to `data` directory within Shiny App directories -- ##
 
 # full dataset (RIDB and ACS joined) with geometries
 saveRDS(object = data_combined_2018_geometry,
@@ -263,8 +294,24 @@ saveRDS(object = data_combined_2018,
         file = "../shiny/outdoor-equity-app/oe_app/data/2018_joined_data.rds")
 
 # all acs variables joined
-saveRDS(object = acs_ca_all,
+saveRDS(object = data_acs_ca_all,
         file = "../shiny/outdoor-equity-app/oe_app/data/2018_ca_acs_all.rds")
+
+# education data for relationship plots
+saveRDS(object = data_education_above_threshold,
+        file = "../shiny/outdoor-equity-app/oe_app/data/education_relationship_plots.rds")
+
+# language data for relationship plots
+saveRDS(object = data_language_above_threshold,
+        file = "../shiny/outdoor-equity-app/oe_app/data/language_relationship_plots.rds")
+
+# median-income data for relationship plots
+saveRDS(object = data_median_income_deciles,
+        file = "../shiny/outdoor-equity-app/oe_app/data/median_income_relationship_plots.rds")
+
+# race data for relationship plots
+saveRDS(object = data_race_above_threshold,
+        file = "../shiny/outdoor-equity-app/oe_app/data/race_relationship_plots.rds")
 
 # CA zip code geometries
 saveRDS(object = ca_zip_geometries,
