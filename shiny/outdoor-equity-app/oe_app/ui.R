@@ -278,7 +278,7 @@ ui <- fluidPage(
                           box(
                             width = 8,
                             status = "primary",
-                            title = "A visitorshed maps show the number of visits coming from different states and California ZIP codes for a site.",
+                            title = "A visitorshed map shows the number of visits coming from different states and California ZIP codes for a site",
                             includeMarkdown("text/visitorshed_explanatory.md")
                           ), # EO explanatory visitorshed text
                           

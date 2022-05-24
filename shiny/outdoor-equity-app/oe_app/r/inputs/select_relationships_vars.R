@@ -32,7 +32,7 @@ select_data_relationship <- function(){
                  multiple = FALSE,
                  options = list(
                    placeholder = "Type to search for a data relationship",
-                   onInitialize = I('function() { this.setValue(""); }')
+                   onInitialize = I('function() { this.setValue("Education x Booking window"); }')
                  ))
 } # EO SEL relationship vars
 
