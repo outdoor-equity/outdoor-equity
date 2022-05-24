@@ -60,9 +60,9 @@ data_ca_cities_geometries <- readRDS("data/ca_cities_geometries.rds")
 ## source about page plotly functions ----
 source("text/r/not_reactive_booking_window_plot.R")
 source("text/r/not_reactive_median_income_dist_travel_data.R")
-source("text/r/not_reactive_median_income_dist_travel_plot.R")
+source("text/r/not_reactive_median_income_dist_travel_plot.R") ## FIX
 source("text/r/not_reactive_race_dist_travel_data.R")
-source("text/r/not_reactive_race_dist_travel_plot.R")
+source("text/r/not_reactive_race_dist_travel_plot.R") ## FIX
 source("text/r/not_reactive_visitorshed_state_map.R")
 
 ## source input functions ----
@@ -87,14 +87,12 @@ source("r/summary_plots/language_plot.R")
 
 ## source relationships plot functions ----
 # quartile plots
-source("r/relationship_plots/race_top_quartile_res_data.R")
 source("r/relationship_plots/race_top_quartile_res_plot.R")
 source("r/relationship_plots/education_top_quartile_res_plot.R")
 source("r/relationship_plots/language_top_quartile_res_plot.R")
 source("r/relationship_plots/median_income_top_quartile_res_data.R")
 source("r/relationship_plots/median_income_top_quartile_res_plot.R")
 # calculating bins (quartiles, deciles) 
-source("r/relationship_plots/race_top_quartile.R")
 source("r/relationship_plots/median_income_deciles.R")
 # edu x booking window
 source("r/relationship_plots/education_booking_window_plot.R")
@@ -139,22 +137,16 @@ source("r/relationship_plots/median_income_length_of_stay_plot.R")
 source("r/relationship_plots/median_income_site_type_data.R")
 source("r/relationship_plots/median_income_site_type_plot.R")
 # race x booking window
-source("r/relationship_plots/race_booking_window_data.R")
 source("r/relationship_plots/race_booking_window_plot.R")
 # race x daily cost
-source("r/relationship_plots/race_daily_cost_data.R")
 source("r/relationship_plots/race_daily_cost_plot.R")
 # race x daily cost per visitor
-source("r/relationship_plots/race_daily_cost_per_visitor_data.R")
 source("r/relationship_plots/race_daily_cost_per_visitor_plot.R")
 # race X dist travel
-source("r/relationship_plots/race_dist_travel_data.R")
 source("r/relationship_plots/race_dist_travel_plot.R")
 # race x length of stay
-source("r/relationship_plots/race_length_of_stay_data.R")
 source("r/relationship_plots/race_length_of_stay_plot.R")
 # race x site type
-source("r/relationship_plots/race_site_type_data.R")
 source("r/relationship_plots/race_site_type_plot.R")
 
 ## source visitorshed map functions ----

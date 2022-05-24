@@ -3,9 +3,7 @@
 #'
 #' @param admin_unitInput User pick for admin unit
 #' @param siteInput User pick for site
-#' @param language_top_quartile_df Name of dataframe of values to iterate through for all 
-#'     language categories and 3rd quartile values associated with each
-#' @param ridb_df RIDB dataframe object name
+#' @param race_top_quartile_df Object name for dataframe of all reservations above "high" threshold for race
 #' @param site_type_string String indicating what site to create plot of
 #'     Options include: "equestrian", "remote", "rv only", "rv or tent", "shelter", "tent only", "water"
 #'
@@ -13,25 +11,40 @@
 #'
 #' @examples
 
-race_site_type_plot <- function(admin_unitInput, siteInput,
-                                race_top_quartile_df, ridb_df,
+race_site_type_plot <- function(admin_unitInput, 
+                                siteInput,
+                                race_top_quartile_df,
                                 site_type_string){
   
-  # iterate through dataframe of all language categories and 3rd quartile values
-  # return combined dataframe of reservations in "high" range for all categories
-  plot_data <- 
-    race_top_quartile_df %>% pmap_dfr(race_site_type_data, 
-                                      ridb_df = ridb_df, 
-                                      siteInput = siteInput) %>% 
-    # filter to indicated site type and update string for plotting
-    filter(aggregated_site_type == site_type_string) %>% 
-    mutate(aggregated_site_type = str_to_title(aggregated_site_type),
-           aggregated_site_type = str_replace(string = aggregated_site_type,
-                                              pattern = "Rv", 
-                                              replacement = "RV"))
+  # create reactive dataframe and further subset
+  rdf <- reactive ({
+    
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
+    race_top_quartile_df %>%
+      # filter to user site of choice
+      filter(park == siteInput) %>%
+      # select to variables of interest
+      select(park, customer_zip, 
+             race, race_percentage,
+             aggregated_site_type) %>% 
+      drop_na(aggregated_site_type, race_percentage) %>%
+      # summarize to total reservations for each site type
+      count(race, aggregated_site_type) %>% 
+      rename(count = n) %>% 
+      # filter to indicated site type and update string for plotting
+      filter(aggregated_site_type == site_type_string) %>% 
+      mutate(aggregated_site_type = str_to_title(aggregated_site_type),
+             aggregated_site_type = str_replace(string = aggregated_site_type,
+                                                pattern = "Rv", 
+                                                replacement = "RV"))
+  }) # EO rdf
   
   validate(
-    need(nrow(plot_data) > 0,
+    need(nrow(rdf()) > 0,
          paste0("There are no ", site_type_string %>%
                   str_replace(string = ., pattern = "rv", replacement = "RV"), " sites at ", siteInput, ", ", admin_unitInput, "."))
   ) # EO validate
@@ -44,7 +57,7 @@ race_site_type_plot <- function(admin_unitInput, siteInput,
   
   
   # create plot
-  race_site_type_plotly <- ggplot(data = plot_data) +
+  plotly <- ggplot(data = rdf()) +
     geom_col(aes(x = count,
                  y = reorder(race, count),
                  fill = race,
@@ -63,7 +76,7 @@ race_site_type_plot <- function(admin_unitInput, siteInput,
           legend.position = "none")
   
   # create plotly
-  ggplotly(race_site_type_plotly,
+  ggplotly(plotly,
            tooltip = list("text")) %>%
     config(modeBarButtonsToRemove = list("zoom", "pan", "select", "lasso2d", "autoScale2d", 
                                          "hoverClosestCartesian", "hoverCompareCartesian")) %>% 
@@ -78,5 +91,5 @@ race_site_type_plot <- function(admin_unitInput, siteInput,
                     font = list(size = 11),
                     xref = 'paper', yref = 'paper', 
                     showarrow = FALSE)
-
+  
 } # EO function

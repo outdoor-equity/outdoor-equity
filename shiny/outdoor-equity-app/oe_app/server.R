@@ -542,35 +542,6 @@ server <- function(input, output, session) {
   ## SO RELATIONSHIPS PLOTS ----
   
   # ### SO race wrangling ----
-  # race wrangling used for all race relationship plots
-  race_group <- c(
-    "other",
-    "pacific_islander",
-    "multiracial",
-    "asian",
-    "black",
-    "white",
-    "native_american",
-    "hispanic_latinx"
-  )
-  # “high” cutoff value for all race relationship plots
-  data_race_quants <-
-    race_group %>%
-    map_dbl(race_top_quartile, acs_df = data_ca_acs_2018) %>%
-    cbind("race_group" = race_group,
-          "weighted_quartile" = .) %>%
-    as.data.frame()
-
-  # ### SO language wrangling ----
-  # # language wrangling used for all language relationship plots
-  # language_group <- c("english_only", "not_english_only")
-  # # “high” cutoff value for all language relationship plots
-  # data_language_quants <-
-  #   language_group %>%
-  #   map_dbl(language_top_quartile, acs_df = data_ca_acs_2018) %>%
-  #   cbind("language_group" = language_group,
-  #         "weighted_quartile" = .) %>%
-  #   as.data.frame()
 
   ### SO median-income wrangling ----
   # median-income wrangling used for all median-income relationship plots
@@ -757,8 +728,7 @@ server <- function(input, output, session) {
       race_booking_window_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018
+        race_top_quartile_df = data_race_relationship_plots
       )
 
     } # EO race x booking window
@@ -769,8 +739,7 @@ server <- function(input, output, session) {
       race_daily_cost_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018
+        race_top_quartile_df = data_race_relationship_plots
       )
 
     } # EO race x daily cost
@@ -781,8 +750,7 @@ server <- function(input, output, session) {
       race_daily_cost_per_visitor_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018
+        race_top_quartile_df = data_race_relationship_plots
       )
 
     } # EO race x daily cost per visitor
@@ -793,8 +761,7 @@ server <- function(input, output, session) {
       race_dist_travel_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018
+        race_top_quartile_df = data_race_relationship_plots
       )
 
     } # EO race x dist traveled
@@ -805,8 +772,7 @@ server <- function(input, output, session) {
       race_length_of_stay_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018
+        race_top_quartile_df = data_race_relationship_plots
       )
 
     } # EO race x length of stay
@@ -826,8 +792,7 @@ server <- function(input, output, session) {
       race_top_quartile_res_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018
+        race_top_quartile_df = data_race_relationship_plots
       )
       
     } # EO race quartile 
@@ -1396,8 +1361,7 @@ server <- function(input, output, session) {
       race_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018,
+        race_top_quartile_df = data_race_relationship_plots,
         site_type_string = "equestrian"
       )
     }
@@ -1412,8 +1376,7 @@ server <- function(input, output, session) {
       race_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018,
+        race_top_quartile_df = data_race_relationship_plots,
         site_type_string = "remote"
       )
     }
@@ -1428,8 +1391,7 @@ server <- function(input, output, session) {
       race_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018,
+        race_top_quartile_df = data_race_relationship_plots,
         site_type_string = "rv only"
       )
     }
@@ -1444,8 +1406,7 @@ server <- function(input, output, session) {
       race_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018,
+        race_top_quartile_df = data_race_relationship_plots,
         site_type_string = "rv or tent"
       )
     }
@@ -1460,8 +1421,7 @@ server <- function(input, output, session) {
       race_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018,
+        race_top_quartile_df = data_race_relationship_plots,
         site_type_string = "shelter"
       )
     }
@@ -1476,8 +1436,7 @@ server <- function(input, output, session) {
       race_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018,
+        race_top_quartile_df = data_race_relationship_plots,
         site_type_string = "tent only"
       )
     }
@@ -1492,8 +1451,7 @@ server <- function(input, output, session) {
       race_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        race_top_quartile_df = data_race_quants,
-        ridb_df = data_joined_2018,
+        race_top_quartile_df = data_race_relationship_plots,
         site_type_string = "water"
       )
     }

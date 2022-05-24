@@ -3,26 +3,38 @@
 #'
 #' @param admin_unitInput User pick for admin unit
 #' @param siteInput User pick for site
-#' @param education_top_quartile_df Name of dataframe of values to iterate through for all 
-#'     racial categories and 3rd quartile values associated with each
-#' @param ridb_df RIDB dataframe object name
+#' @param race_top_quartile_df Object name for dataframe of all reservations above "high" threshold for race
 #'
 #' @return Plotly of racial categories compared to distance traveled
 #'
 #' @examples
 
-race_top_quartile_res_plot <- function(admin_unitInput, siteInput,
-                                  race_top_quartile_df, ridb_df){
+race_top_quartile_res_plot <- function(admin_unitInput, 
+                                       siteInput,
+                                       race_top_quartile_df){
   
-  # iterate through dataframe of all racial categories and 3rd quartile values
-  # return combined dataframe of reservations in "high" range for all categories
-  data_top_quartile_res_travel <- 
-    race_top_quartile_df %>% pmap_dfr(race_top_quartile_res_data, 
-                                      ridb_df = ridb_df, 
-                                      siteInput = siteInput)
+  # create reactive dataframe and further subset
+  rdf <- reactive ({
+    
+    validate(
+      need(siteInput != "",
+           "Please select a reservable site to visualize.")
+    ) # EO validate
+    
+    race_top_quartile_df %>%
+      # filter to user site of choice
+      filter(park == siteInput) %>%
+      # select to variables of interest
+      select(park, customer_zip, 
+             race, race_percentage) %>% 
+      drop_na(race_percentage) %>% 
+      # summarize to inner quartile range, median, and total reservations
+      group_by(race) %>%
+      summarize(count = n())
+  }) # EO rdf
   
   validate(need(
-    nrow(data_top_quartile_res_travel) > 0,
+    nrow(rdf()) > 0,
     paste0("There are no reservations to ", siteInput, ", ", admin_unitInput, 
            " that come from communities in the high range for any racial categories.")
   )) # EO validate
@@ -33,7 +45,7 @@ race_top_quartile_res_plot <- function(admin_unitInput, siteInput,
                          "Native American" = "#D55E00", "Hispanic Latinx" = "#CC79A7")
   
   # create plot
-  plotly <- ggplot(data = data_top_quartile_res_travel) +
+  plotly <- ggplot(data = rdf()) +
     geom_col(aes(x = count,
                  y = reorder(race, count),
                  fill = race,
