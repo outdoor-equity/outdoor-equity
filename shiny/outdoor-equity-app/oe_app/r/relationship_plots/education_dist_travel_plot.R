@@ -28,7 +28,7 @@ education_dist_travel_plot <-
         # select to variables of interest
         select(park, customer_zip, 
                education, education_percentage, education_y_lab, 
-               distance_traveled_m) %>% 
+               distance_traveled_mi) %>% 
         drop_na(distance_traveled_mi, education_percentage) %>% 
         # summarize to inner quartile range, median, and total reservations
         group_by(education, education_y_lab) %>% 
