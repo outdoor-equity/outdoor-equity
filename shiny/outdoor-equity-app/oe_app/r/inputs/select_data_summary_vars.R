@@ -3,7 +3,7 @@
 select_data_summary_vars <- function(){
   
   selectizeInput(inputId = "data_summary",
-                 label = "1. Select a variable",
+                 label = "Select a variable",
                  choices = sort(summary_vars), 
                  multiple = FALSE,
                  options = list(
