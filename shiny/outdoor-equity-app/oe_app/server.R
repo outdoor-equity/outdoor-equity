@@ -891,53 +891,93 @@ server <- function(input, output, session) {
   
   
   ### SO RENDER UI relationships ----
-  #SO education site type relationships render ui
+  # TEST SO education site type relationships render ui
+  output$site_layout_test <- renderUI({
+    if (input$data_relationships == "Education x Site type"){
+      
+      fluidRow(
+      box(width = 12,
+          title = "RV or Tent",
+          plotlyOutput(outputId = "edu_site_rvTent_plot") %>%
+            withSpinner(color = spinner_color)
+      ),
+      
+      box(width = 6,
+          title = "Tent Only",
+          plotlyOutput(outputId = "edu_site_tentOnly_plot") %>%
+            withSpinner(color = spinner_color)
+          ),
+      
+      box(width = 6,
+          title = "RV Only",
+          plotlyOutput(outputId = "edu_site_rvOnly_plot") %>%
+            withSpinner(color = spinner_color)
+          ),
+      
+      box(width = 6,
+          title = "Remote",
+          plotlyOutput(outputId = "edu_site_remote_plot") %>%
+            withSpinner(color = spinner_color)
+      ),
+      
+      box(width = 6,
+          title = "Shelter",
+          plotlyOutput(outputId = "edu_site_shelter_plot") %>%
+            withSpinner(color = spinner_color)
+      ),
+      ) # EO FR
+      
+    }
+    
+  }) # EO TEST education site type relationships render ui
+  
+  # SO education site type relationships render ui
   output$relationships_tab_layout <- renderUI({
     
     #### SO education x site ----
-    if (input$data_relationships == "Education x Site type"){
-    
-    tabsetPanel(
-      tabPanel(title = "Equestrian",
-               plotlyOutput(outputId = "edu_site_equestrian_plot") %>%
-                 withSpinner(color = spinner_color)
-      ), # EO tabPanel edu x equestrian
-      
-      tabPanel(title = "Remote",
-               plotlyOutput(outputId = "edu_site_remote_plot") %>%
-                 withSpinner(color = spinner_color)
-               ), # EO tabPanel edu x remote
-      
-      tabPanel(title = "RV only",
-               plotlyOutput(outputId = "edu_site_rvOnly_plot") %>%
-                 withSpinner(color = spinner_color)
-      ), # EO tabPanel edu x rv only
-      
-      tabPanel(title = "RV or Tent",
-               plotlyOutput(outputId = "edu_site_rvTent_plot") %>%
-                 withSpinner(color = spinner_color)
-      ), # EO tabPanel edu x rv or tent
-      
-      tabPanel(title = "Shelter",
-               plotlyOutput(outputId = "edu_site_shelter_plot") %>%
-                 withSpinner(color = spinner_color)
-      ), # EO tabPanel edu x shelter
-      
-      tabPanel(title = "Tent only",
-               plotlyOutput(outputId = "edu_site_tentOnly_plot") %>%
-                 withSpinner(color = spinner_color)
-      ), # EO tabPanel edu x tent only
-      
-      tabPanel(title = "Water",
-               plotlyOutput(outputId = "edu_site_water_plot") %>%
-                 withSpinner(color = spinner_color)
-      ), # EO tabPanel edu x tent only
-      
-    ) # EO edu tabsetPanel
-    } # EO if edu statement
+    # if (input$data_relationships == "Education x Site type"){
+    # 
+    # tabsetPanel(
+    #   tabPanel(title = "Equestrian",
+    #            plotlyOutput(outputId = "edu_site_equestrian_plot") %>%
+    #              withSpinner(color = spinner_color)
+    #   ), # EO tabPanel edu x equestrian
+
+      # tabPanel(title = "Remote",
+      #          plotlyOutput(outputId = "edu_site_remote_plot") %>%
+      #            withSpinner(color = spinner_color)
+      #          ), # EO tabPanel edu x remote
+    #   
+      # tabPanel(title = "RV only",
+      #          plotlyOutput(outputId = "edu_site_rvOnly_plot") %>%
+      #            withSpinner(color = spinner_color)
+      # ), # EO tabPanel edu x rv only
+    #   
+    #   tabPanel(title = "RV or Tent",
+    #            plotlyOutput(outputId = "edu_site_rvTent_plot") %>%
+    #              withSpinner(color = spinner_color)
+    #   ), # EO tabPanel edu x rv or tent
+    #   
+      # tabPanel(title = "Shelter",
+      #          plotlyOutput(outputId = "edu_site_shelter_plot") %>%
+      #            withSpinner(color = spinner_color)
+      # ), # EO tabPanel edu x shelter
+    #   
+      # tabPanel(title = "Tent only",
+      #          plotlyOutput(outputId = "edu_site_tentOnly_plot") %>%
+      #            withSpinner(color = spinner_color)
+      # ), # EO tabPanel edu x tent only
+    #   
+    #   tabPanel(title = "Water",
+    #            plotlyOutput(outputId = "edu_site_water_plot") %>%
+    #              withSpinner(color = spinner_color)
+    #   ), # EO tabPanel edu x tent only
+    #   
+    # ) # EO edu tabsetPanel
+    # } # EO if edu statement
     
     ### SO language x site ----
-    else if (input$data_relationships == "Language x Site type"){
+    if (input$data_relationships == "Language x Site type"){
       
       tabsetPanel(
         tabPanel(title = "Equestrian",
