@@ -245,7 +245,8 @@ ui <- fluidPage(
                               ), # EO explanatory data relationship text
                           
                           # SO pick relationship input box
-                          box(width = 4,
+                          box(id = "relationships_inputs",
+                              width = 4,
                               status = "success",
                               title = "Select a relationship and a site",
                               # select relationship vars
@@ -255,7 +256,13 @@ ui <- fluidPage(
                               # admin input
                               select_admin_unit(locationId = "relationships"),
                               # site input
-                              select_site(locationId = "relationships")
+                              select_site(locationId = "relationships"),
+                              # reset button
+                              actionBttn(inputId = "reset_input_relationships",
+                                         label = "RESET",
+                                         size = "xs",
+                                         color = "danger",
+                                         style = "unite")
                           ), # EO pick relationship input box
                           
                           # dynamic relationships plot output box
