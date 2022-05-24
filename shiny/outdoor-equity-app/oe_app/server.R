@@ -516,7 +516,7 @@ server <- function(input, output, session) {
   
   ## SO RELATIONSHIPS PLOTS ----
   
-  ### SO race wrangling ----
+  # ### SO race wrangling ----
   # race wrangling used for all race relationship plots
   race_group <- c(
     "other",
@@ -535,24 +535,7 @@ server <- function(input, output, session) {
     cbind("race_group" = race_group,
           "weighted_quartile" = .) %>%
     as.data.frame()
-  
-  ### SO education wrangling ----
-  # education wrangling used for all education relationship plots
-  education_group <-
-    c("hs_GED_or_below",
-      "some_college",
-      "college",
-      "master_or_above")
-  # “high” cutoff value for all education relationship plots
-  data_education_quants <-
-    education_group %>%
-    map_dbl(education_top_quartile, acs_df = data_ca_acs_2018) %>%
-    cbind("education_group" = education_group,
-          "weighted_quartile" = .) %>%
-    as.data.frame()
-  
-  print(paste("data education quants df:", data_education_quants))
-  
+
   ### SO language wrangling ----
   # language wrangling used for all language relationship plots
   language_group <- c("english_only", "not_english_only")
@@ -563,7 +546,7 @@ server <- function(input, output, session) {
     cbind("language_group" = language_group,
           "weighted_quartile" = .) %>%
     as.data.frame()
-  
+
   ### SO median-income wrangling ----
   # median-income wrangling used for all median-income relationship plots
   median_income_decile_list <-
@@ -579,8 +562,7 @@ server <- function(input, output, session) {
       education_booking_window_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018
+        education_top_quartile_df = data_education_relationship_plots
       )
       
     } # EO education x booking window
@@ -591,8 +573,7 @@ server <- function(input, output, session) {
       education_daily_cost_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018
+        education_top_quartile_df = data_education_relationship_plots
       )
       
     } # EO education x daily cost
@@ -603,8 +584,7 @@ server <- function(input, output, session) {
       education_daily_cost_per_visitor_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018
+        education_top_quartile_df = data_education_relationship_plots
       )
 
     } # EO education x daily cost per visitor
@@ -615,8 +595,7 @@ server <- function(input, output, session) {
       education_dist_travel_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018
+        education_top_quartile_df = data_education_relationship_plots
       )
 
     } # EO education x dist traveled
@@ -627,8 +606,7 @@ server <- function(input, output, session) {
       education_length_of_stay_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018
+        education_top_quartile_df = data_education_relationship_plots
       )
 
     } # EO education x length of stay
@@ -845,8 +823,7 @@ server <- function(input, output, session) {
       education_top_quartile_res_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018
+        education_top_quartile_df = data_education_relationship_plots
       )
       
     } # EO education quartile
@@ -1073,8 +1050,7 @@ server <- function(input, output, session) {
       education_site_type_plot(
         admin_unitInput = input$admin_unit_relationships,
         siteInput = input$site_relationships,
-        education_top_quartile_df = data_education_quants,
-        ridb_df = data_joined_2018,
+        education_top_quartile_df = data_education_relationship_plots,
         site_type_string = "equestrian"
       )
     }
