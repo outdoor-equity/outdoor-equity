@@ -45,6 +45,8 @@ reactlog_enable()
 ## CA prototype joined 2018 ----
 data_joined_2018 <- readRDS("data/2018_joined_data.rds")
 ## CA ACS all ----
+data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds")
+## data relationship 2018 ----
 data_education_relationship_plots <- readRDS("data/education_relationship_plots.rds")
 data_language_relationship_plots <- readRDS("data/language_relationship_plots.rds")
 data_median_income_relationship_plots <- readRDS("data/median_income_relationship_plots.rds")
