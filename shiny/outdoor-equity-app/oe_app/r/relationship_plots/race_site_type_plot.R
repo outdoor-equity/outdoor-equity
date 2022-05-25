@@ -85,7 +85,7 @@ race_site_type_plot <- function(admin_unitInput,
                                       "Number of Reservations to ", str_to_title(site_type_string) %>%
                                         str_replace(string = ., pattern = "rv", replacement = "RV"), 
                                       " Sites by Visitors of Different Racial Groups"),
-                        font = list(size = 15))) %>% 
+                        font = list(size = 14))) %>% 
     add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
                     x = -0.15, y = 0.9, 
                     font = list(size = 11),

@@ -74,6 +74,6 @@ median_income_site_type_plot <- function(admin_unitInput,
                                       str_to_title(site_type_string) %>% 
                                         str_replace(string = ., pattern = "Rv", replacement = "RV"), 
                                       " Sites by Visitors with Different Median Household Incomes"),
-                        font = list(size = 15)))
+                        font = list(size = 11.8)))
   
 } # EO function

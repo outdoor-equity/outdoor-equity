@@ -85,7 +85,7 @@ language_site_type_plot <- function(admin_unitInput,
                                       "Number of Reservations to ", str_to_title(site_type_string) %>%
                                         str_replace(string = ., pattern = "Rv", replacement = "RV"), 
                                       " Sites by Visitors with Different Home Lanugages"),
-                        font = list(size = 15))) %>%  
+                        font = list(size = 13))) %>%  
     add_annotations(text = "Reservations from ZIP codes with high<br>proportionof people who speak:", 
                     x = -0.2, y = 0.9, 
                     font = list(size = 11),
