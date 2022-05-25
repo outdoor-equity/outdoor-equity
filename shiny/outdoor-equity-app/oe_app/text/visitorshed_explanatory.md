@@ -1,5 +1,5 @@
  **What you need to know:**
-- A **visitorshed** is a map that shows where visitors are coming from for the selected site.
+- A **visitorshed** is the area where visitors are coming from for the selected site.
 - The **map on the left** shows all US states plus Puerto Rico, where a darker green color indicates a larger number of visits to the selected site coming from that state or territory.
 - The **map on the right** shows all California ZIP codes, where a darker pink color indicates a larger number of visits to the selected site coming from that ZIP code.
 - Explore these maps further by zooming in and out, and clicking on a state, territory, or ZIP code to get more details about visitation.
