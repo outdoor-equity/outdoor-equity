@@ -61,8 +61,11 @@ data_ca_cities_geometries <- readRDS("data/ca_cities_geometries.rds")
 ## source about page plotly functions ----
 source("text/r/not_reactive_booking_window_plot.R")
 source("text/r/not_reactive_median_income_dist_travel_plot.R") 
+source("text/r/not_reactive_median_income_res_plot.R") 
 source("text/r/not_reactive_race_dist_travel_plot.R") 
+source("text/r/not_reactive_race_res_plot.R")
 source("text/r/not_reactive_visitorshed_state_map.R")
+source("text/r/not_reactive_visitorshed_ca_zip_map.R")
 
 ## source input functions ----
 source("r/inputs/select_agency.R")
