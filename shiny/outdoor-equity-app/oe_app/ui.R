@@ -303,10 +303,10 @@ ui <- fluidPage(
                           box(id = "relationships_outputs",
                               width = 8,
                               status = "success",
-                              plotlyOutput(outputId = "data_relationships_plot") %>%
-                                withSpinner(color = spinner_color),
+                              plotlyOutput(outputId = "data_relationships_plot"), #%>%
+                                #withSpinner(color = spinner_color), Note(HD): needed to comment out otherwise loading bar is indefinite when switching btwn site vars
                               uiOutput(outputId = "site_box_layout")
-                              ), # EO relationships plot output box
+                              ), # EO dynamic relationships plot output box
                           #tags$head(tags$style('#relationships_outputs .box-header{ display: none}')), # remove title from box
                           
                           # context relationships plot 

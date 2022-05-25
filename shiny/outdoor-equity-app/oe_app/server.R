@@ -297,8 +297,124 @@ server <- function(input, output, session) {
     updateBox(id = "edu_equestrian_site_box", 
               action = "restore")
   })
-  
   # EO OE restore edu site
+  
+  
+  ### restore lang site ----
+  # lang x rv or tent
+  observeEvent(input$restore_button, {
+    updateBox(id = "lang_rvTent_site_box", 
+              action = "restore")
+  })
+  # lang x tent only
+  observeEvent(input$restore_button, {
+    updateBox(id = "lang_tent_only_site_box", 
+              action = "restore")
+  })
+  # lang x rv only
+  observeEvent(input$restore_button, {
+    updateBox(id = "lang_rv_only_site_box", 
+              action = "restore")
+  })
+  # lang x remote
+  observeEvent(input$restore_button, {
+    updateBox(id = "lang_remote_site_box", 
+              action = "restore")
+  })
+  # lang x shelter
+  observeEvent(input$restore_button, {
+    updateBox(id = "lang_shelter_site_box", 
+              action = "restore")
+  })
+  # lang x water
+  observeEvent(input$restore_button, {
+    updateBox(id = "lang_water_site_box", 
+              action = "restore")
+  })
+  # lang x equestrian 
+  observeEvent(input$restore_button, {
+    updateBox(id = "lang_equestrian_site_box", 
+              action = "restore")
+  })
+  # EO OE restore lang site
+  
+  ### restore median-income site ----
+  # median-income x rv or tent
+  observeEvent(input$restore_button, {
+    updateBox(id = "medInc_rvTent_site_box", 
+              action = "restore")
+  })
+  # median-income x tent only
+  observeEvent(input$restore_button, {
+    updateBox(id = "medInc_tent_only_site_box", 
+              action = "restore")
+  })
+  # median-income x rv only
+  observeEvent(input$restore_button, {
+    updateBox(id = "medInc_rv_only_site_box", 
+              action = "restore")
+  })
+  # median-income x remote
+  observeEvent(input$restore_button, {
+    updateBox(id = "medInc_remote_site_box", 
+              action = "restore")
+  })
+  # median-income x shelter
+  observeEvent(input$restore_button, {
+    updateBox(id = "medInc_shelter_site_box", 
+              action = "restore")
+  })
+  # median-income x water
+  observeEvent(input$restore_button, {
+    updateBox(id = "medInc_water_site_box", 
+              action = "restore")
+  })
+  # median-income x equestrian 
+  observeEvent(input$restore_button, {
+    updateBox(id = "medInc_equestrian_site_box", 
+              action = "restore")
+  })
+  # EO OE restore median-income site
+  
+  ### restore race site ----
+  # race x rv or tent
+  observeEvent(input$restore_button, {
+    updateBox(id = "race_rvTent_site_box", 
+              action = "restore")
+  })
+  # race x tent only
+  observeEvent(input$restore_button, {
+    updateBox(id = "race_tent_only_site_box", 
+              action = "restore")
+  })
+  # race x rv only
+  observeEvent(input$restore_button, {
+    updateBox(id = "race_rv_only_site_box", 
+              action = "restore")
+  })
+  # race x remote
+  observeEvent(input$restore_button, {
+    updateBox(id = "race_remote_site_box", 
+              action = "restore")
+  })
+  # race x shelter
+  observeEvent(input$restore_button, {
+    updateBox(id = "race_shelter_site_box", 
+              action = "restore")
+  })
+  # race x water
+  observeEvent(input$restore_button, {
+    updateBox(id = "race_water_site_box", 
+              action = "restore")
+  })
+  # race x equestrian 
+  observeEvent(input$restore_button, {
+    updateBox(id = "race_equestrian_site_box", 
+              action = "restore")
+  })
+  # EO OE restore race site
+  
+  
   
   # RENDER PLOTS ----
   ## SO ABOUT PAGE PLOTS ----
@@ -975,7 +1091,7 @@ server <- function(input, output, session) {
                      "Equestrian includes group equestrian and 
                      equestrian nonelectric sites")
           ), # EO equestrian box
-        ),
+        ), # EO first column
         
         column(
           width = 6,
@@ -1023,102 +1139,409 @@ server <- function(input, output, session) {
               tags$p(class = "italic_site",
                      "Water includes boat in and anchorage sites")
           ), # EO water box
-        ),
+        ), # EO second column
       ) # EO FR
-      
-    }
+    } # EO if statement edu x site
     
-  }) # EO TEST education site type relationships render ui
-  
-  # SO education site type relationships render ui
-  output$relationships_tab_layout <- renderUI({
+    #### SO language x site ----
+    else if (input$data_relationships == "Language x Site type"){
+        
+        # box layout
+        fluidRow(
+          box(id = "restore_box",
+              width = 12,
+              # restore button
+              actionBttn(
+                inputId = "restore_button",
+                label = "Restore Box",
+                size = "sm",
+                color = "warning",
+                style = "unite"
+              ) # EO restore button 
+          ),
+          tags$head(tags$style('#restore_box .box-header{ display: none}')), # remove title from box
+          
+          column(
+            width = 6,
+            # SO rv or tent box
+            box(id = "lang_rvTent_site_box",
+                title = "RV or Tent",
+                width = 12,
+                collapsible = TRUE,
+                closable = TRUE,
+                status = "primary",
+                solidHeader = TRUE,
+                plotlyOutput(outputId = "lang_site_rvTent_plot") %>%
+                  withSpinner(color = spinner_color),
+                tags$p(class = "italic_site",
+                       "RV or Tent includes group standard electric and nonelectric,
+                     and standard electric and nonelectric sites")
+            ), # EO rv or tent box
+            
+            # SO rv only box
+            box(id = "lang_rv_only_site_box",
+                width = 12,
+                collapsible = TRUE,
+                closable = TRUE,
+                status = "primary",
+                solidHeader = TRUE,
+                title = "RV Only",
+                plotlyOutput(outputId = "lang_site_rvOnly_plot") %>%
+                  withSpinner(color = spinner_color),
+                tags$p(class = "italic_site",
+                       "RV only includes rv electric and nonelectric, and 
+                     group rv area nonelectric sites")
+            ), # EO rv only box
+            
+            # SO shelter box
+            box(id = "lang_shelter_site_box",
+                width = 12,
+                collapsible = TRUE,
+                closable = TRUE,
+                status = "primary",
+                solidHeader = TRUE,
+                title = "Shelter",
+                plotlyOutput(outputId = "lang_site_shelter_plot") %>%
+                  withSpinner(color = spinner_color),
+                tags$p(class = "italic_site",
+                       "Shelter includes cabin electric and nonelectric, yurt, 
+                     and shelter nonelectric sites")
+            ), # EO shelter box
+            
+            # SO equestrian box
+            box(id = "lang_equestrian_site_box",
+                width = 12,
+                collapsible = TRUE,
+                closable = TRUE,
+                status = "primary",
+                solidHeader = TRUE,
+                title = "Equestrian",
+                plotlyOutput(outputId = "lang_site_equestrian_plot") %>%
+                  withSpinner(color = spinner_color),
+                tags$p(class = "italic_site",
+                       "Equestrian includes group equestrian and 
+                     equestrian nonelectric sites")
+            ), # EO equestrian box
+          ), # EO column 1
+          
+          column(
+            width = 6,
+            
+            # SO tent only box
+            box(id = "lang_tent_only_site_box",
+                title = "Tent Only",
+                width = 12,
+                collapsible = TRUE,
+                closable = TRUE,
+                status = "primary",
+                solidHeader = TRUE,
+                plotlyOutput(outputId = "lang_site_tentOnly_plot") %>%
+                  withSpinner(color = spinner_color),
+                tags$p(class = "italic_site",
+                       "Tent only includes tent only electric and nonelectric, and
+                     group tent only area nonelectric sites")
+            ), # EO tent only box
+            
+            # SO remote box
+            box(id = "lang_remote_site_box",
+                width = 12,
+                collapsible = TRUE,
+                closable = TRUE,
+                status = "primary",
+                solidHeader = TRUE,
+                title = "Remote",
+                plotlyOutput(outputId = "lang_site_remote_plot") %>%
+                  withSpinner(color = spinner_color),
+                tags$p(class = "italic_site",
+                       "Remote includes walk to, hike to, group hike to, and 
+                     group walk to sites")
+            ), # EO remote box
+            
+            # SO water box
+            box(id = "lang_water_site_box",
+                width = 12,
+                collapsible = TRUE,
+                closable = TRUE,
+                status = "primary",
+                solidHeader = TRUE,
+                title = "Water",
+                plotlyOutput(outputId = "lang_site_water_plot") %>%
+                  withSpinner(color = spinner_color),
+                tags$p(class = "italic_site",
+                       "Water includes boat in and anchorage sites")
+            ), # EO water box
+          ), # column 2
+        ) # EO FR
+      } # EO else if statement lang x site
     
-    ### SO language x site ----
-    if (input$data_relationships == "Language x Site type"){
-      
-      tabsetPanel(
-        tabPanel(title = "Equestrian",
-                 plotlyOutput(outputId = "lang_site_equestrian_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel language x equestrian
-        
-        tabPanel(title = "Remote",
-                 plotlyOutput(outputId = "lang_site_remote_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel language x remote
-        
-        tabPanel(title = "RV only",
-                 plotlyOutput(outputId = "lang_site_rvOnly_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel language x rv only
-        
-        tabPanel(title = "RV or Tent",
-                 plotlyOutput(outputId = "lang_site_rvTent_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel language x rv or tent
-        
-        tabPanel(title = "Shelter",
-                 plotlyOutput(outputId = "lang_site_shelter_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel language x shelter
-        
-        tabPanel(title = "Tent only",
-                 plotlyOutput(outputId = "lang_site_tentOnly_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel language x tent only
-        
-        tabPanel(title = "Water",
-                 plotlyOutput(outputId = "lang_site_water_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel language x tent only
-        
-      ) # EO language tabsetPanel
-    } # EO else if language statement
-    
-    ### SO median-income x site ----
+    #### SO median-income x site ----
     else if (input$data_relationships == "Median-income x Site type"){
       
-      tabsetPanel(
-        tabPanel(title = "Equestrian",
-                 plotlyOutput(outputId = "medInc_site_equestrian_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel median-income x equestrian
+      # box layout
+      fluidRow(
+        box(id = "restore_box",
+            width = 12,
+            # restore button
+            actionBttn(
+              inputId = "restore_button",
+              label = "Restore Box",
+              size = "sm",
+              color = "warning",
+              style = "unite"
+            ) # EO restore button 
+        ),
+        tags$head(tags$style('#restore_box .box-header{ display: none}')), # remove title from box
         
-        tabPanel(title = "Remote",
-                 plotlyOutput(outputId = "medInc_site_remote_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel median-income x remote
+        column(
+          width = 6,
+          # SO rv or tent box
+          box(id = "medInc_rvTent_site_box",
+              title = "RV or Tent",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              plotlyOutput(outputId = "medInc_site_rvTent_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "RV or Tent includes group standard electric and nonelectric,
+                     and standard electric and nonelectric sites")
+          ), # EO rv or tent box
+          
+          # SO rv only box
+          box(id = "medInc_rv_only_site_box",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              title = "RV Only",
+              plotlyOutput(outputId = "medInc_site_rvOnly_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "RV only includes rv electric and nonelectric, and 
+                     group rv area nonelectric sites")
+          ), # EO rv only box
+          
+          # SO shelter box
+          box(id = "medInc_shelter_site_box",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              title = "Shelter",
+              plotlyOutput(outputId = "medInc_site_shelter_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Shelter includes cabin electric and nonelectric, yurt, 
+                     and shelter nonelectric sites")
+          ), # EO shelter box
+          
+          # SO equestrian box
+          box(id = "medInc_equestrian_site_box",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              title = "Equestrian",
+              plotlyOutput(outputId = "medInc_site_equestrian_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Equestrian includes group equestrian and 
+                     equestrian nonelectric sites")
+          ), # EO equestrian box
+        ), # EO column 1
         
-        tabPanel(title = "RV only",
-                 plotlyOutput(outputId = "medInc_site_rvOnly_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel median-income x rv only
-        
-        tabPanel(title = "RV or Tent",
-                 plotlyOutput(outputId = "medInc_site_rvTent_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel median-income x rv or tent
-        
-        tabPanel(title = "Shelter",
-                 plotlyOutput(outputId = "medInc_site_shelter_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel median-income x shelter
-        
-        tabPanel(title = "Tent only",
-                 plotlyOutput(outputId = "medInc_site_tentOnly_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel median-income x tent only
-        
-        tabPanel(title = "Water",
-                 plotlyOutput(outputId = "medInc_site_water_plot") %>%
-                   withSpinner(color = spinner_color)
-        ), # EO tabPanel median-income x tent only
-        
-      ) # EO median-income tabsetPanel
-    } # EO else if median-income statement
+        column(
+          width = 6,
+          
+          # SO tent only box
+          box(id = "medInc_tent_only_site_box",
+              title = "Tent Only",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              plotlyOutput(outputId = "medInc_site_tentOnly_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Tent only includes tent only electric and nonelectric, and
+                     group tent only area nonelectric sites")
+          ), # EO tent only box
+          
+          # SO remote box
+          box(id = "medInc_remote_site_box",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              title = "Remote",
+              plotlyOutput(outputId = "medInc_site_remote_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Remote includes walk to, hike to, group hike to, and 
+                     group walk to sites")
+          ), # EO remote box
+          
+          # SO water box
+          box(id = "medInc_water_site_box",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              title = "Water",
+              plotlyOutput(outputId = "medInc_site_water_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Water includes boat in and anchorage sites")
+          ), # EO water box
+        ), # column 2
+      ) # EO FR
+    } # EO else if statement median-income x site
     
-    ### SO race x site ----
+    #### SO race x site ----
     else if (input$data_relationships == "Race x Site type"){
+      
+      # box layout
+      fluidRow(
+        box(id = "restore_box",
+            width = 12,
+            # restore button
+            actionBttn(
+              inputId = "restore_button",
+              label = "Restore Box",
+              size = "sm",
+              color = "warning",
+              style = "unite"
+            ) # EO restore button 
+        ),
+        tags$head(tags$style('#restore_box .box-header{ display: none}')), # remove title from box
+        
+        column(
+          width = 6,
+          # SO rv or tent box
+          box(id = "race_rvTent_site_box",
+              title = "RV or Tent",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              plotlyOutput(outputId = "race_site_rvTent_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "RV or Tent includes group standard electric and nonelectric,
+                     and standard electric and nonelectric sites")
+          ), # EO rv or tent box
+          
+          # SO rv only box
+          box(id = "race_rv_only_site_box",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              title = "RV Only",
+              plotlyOutput(outputId = "race_site_rvOnly_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "RV only includes rv electric and nonelectric, and 
+                     group rv area nonelectric sites")
+          ), # EO rv only box
+          
+          # SO shelter box
+          box(id = "race_shelter_site_box",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              title = "Shelter",
+              plotlyOutput(outputId = "race_site_shelter_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Shelter includes cabin electric and nonelectric, yurt, 
+                     and shelter nonelectric sites")
+          ), # EO shelter box
+          
+          # SO equestrian box
+          box(id = "race_equestrian_site_box",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              title = "Equestrian",
+              plotlyOutput(outputId = "race_site_equestrian_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Equestrian includes group equestrian and 
+                     equestrian nonelectric sites")
+          ), # EO equestrian box
+        ), # EO column 1
+        
+        column(
+          width = 6,
+          
+          # SO tent only box
+          box(id = "race_tent_only_site_box",
+              title = "Tent Only",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              plotlyOutput(outputId = "race_site_tentOnly_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Tent only includes tent only electric and nonelectric, and
+                     group tent only area nonelectric sites")
+          ), # EO tent only box
+          
+          # SO remote box
+          box(id = "race_remote_site_box",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              title = "Remote",
+              plotlyOutput(outputId = "race_site_remote_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Remote includes walk to, hike to, group hike to, and 
+                     group walk to sites")
+          ), # EO remote box
+          
+          # SO water box
+          box(id = "race_water_site_box",
+              width = 12,
+              collapsible = TRUE,
+              closable = TRUE,
+              status = "primary",
+              solidHeader = TRUE,
+              title = "Water",
+              plotlyOutput(outputId = "race_site_water_plot") %>%
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Water includes boat in and anchorage sites")
+          ), # EO water box
+        ), # column 2
+      ) # EO FR
+    } # EO else if statement race x site
+    
+  }) # EO site type relationships render ui
+  
+  
+  output$relationships_tab_layout <- renderUI({
+    ### SO race x site ----
+    if (input$data_relationships == "Race x Site type"){
       
       tabsetPanel(
         tabPanel(title = "Equestrian",
