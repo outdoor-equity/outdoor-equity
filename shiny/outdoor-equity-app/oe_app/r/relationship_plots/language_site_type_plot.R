@@ -64,15 +64,24 @@ language_site_type_plot <- function(admin_unitInput,
                                " overnight reservable sites, ", comma(count, accuracy = 1), 
                                " reservations were made by <br>people who live in ZIP codes with high rates of people who ",
                                language, "."))) +
-    scale_y_discrete(expand = c(0.7, 0)) +
+    geom_text(aes(x = max(count) / 4,
+                  y = language_y_lab,
+                  label = language_y_lab), 
+              size = 3,
+              nudge_x = 0) +
+    scale_x_continuous(labels = comma_format(accuracy = 1)) +
+    scale_y_discrete(expand = c(0.99, 0)) +
     scale_fill_manual(values = language_group_colors) +
     scale_color_manual(values = language_group_colors) +
-    labs(x = paste("Number of Reservations"),
-         y = "") + 
+    labs(x = "Number of Reservations",
+         y = NULL) + 
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank(),
           legend.position = "none",
+          axis.title.x = element_text(size = 8),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
           plot.margin = margin(5, 5, 0, 0, unit = "pt"))
   
   # create plotly
@@ -87,7 +96,7 @@ language_site_type_plot <- function(admin_unitInput,
                                       " Sites by Visitors with Different Home Lanugages"),
                         font = list(size = 13))) %>%  
     add_annotations(text = "Reservations from ZIP codes with high<br>proportionof people who speak:", 
-                    x = -0.2, y = 0.9, 
+                    x = 0, y = 0.93, 
                     font = list(size = 11),
                     xref = 'paper', yref = 'paper', 
                     showarrow = FALSE)

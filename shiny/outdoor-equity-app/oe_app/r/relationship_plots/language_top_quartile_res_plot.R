@@ -62,7 +62,7 @@ language_top_quartile_res_plot <- function(admin_unitInput,
     scale_fill_manual(values = language_group_colors) +
     scale_color_manual(values = language_group_colors) +
     labs(x = paste("Number of Reservations"),
-         y = "") + 
+         y = NULL) + 
     theme_minimal() +
     theme(plot.background = element_rect("white"),
           panel.grid.major.y = element_blank(),
