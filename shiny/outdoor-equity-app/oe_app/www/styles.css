@@ -85,3 +85,14 @@ h2 > span > a > img {
 .footer p {
   text-align: center;
 }
+
+
+/* RELATIONSHIPS SITE BOXES */
+/*.shiny-spinner-output-container {
+  margin-bottom: 1rem;
+} */
+
+.italic_site {
+  font-style: italic;
+  text-align: center;
+}

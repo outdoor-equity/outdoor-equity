@@ -18,7 +18,7 @@ ui <- fluidPage(
                    primary = "#005ea2", # ridb dark blue font
                    secondary = "#659dc7", # ridb light blue font
                    success = "#397B1E", # ridb light green
-                   info = "#64863C", # ridb light blue from bar 
+                   info = "#4c5965", # ridb light blue from bar 
                    # NOTE(HD): may need to add an info color again
                    warning = "#C3512C",# ridb yellow
                    danger = "#FACE00", # ridb orange red
@@ -29,17 +29,11 @@ ui <- fluidPage(
   tags$head(HTML("<title>Visualize RIDB Data</title>")), # Note(HD): this needs to be before titlePanel so that the title comes up in the tab online
   titlePanel(title = 
                span(
-                 # tags$a(img(src = "logos/bren_leaf_only.png"),
-                 #        href = "https://bren.ucsb.edu/",
-                 #        target = "_blank"),
                  tags$a(img(src = "logos/bren_meds_hex.png"),
                         href = "https://ucsb-meds.github.io/", 
                         target = "_blank"), # _blank opens link in a new tab
                  tags$p("The Outdoor Equity App: A Master of Environmental Data Science Capstone")
-                 # tags$a(img(src = "logos/RecLogo.png"),
-                 #        href = "https://www.recreation.gov/",
-                 #        target = "_blank")
-                          ) # EO span
+                 ) # EO span
              ), # EO titlePanel
   
   # app subtitle ----
@@ -318,8 +312,7 @@ ui <- fluidPage(
                               status = "success",
                               plotlyOutput(outputId = "data_relationships_plot") %>%
                                 withSpinner(color = spinner_color),
-                              uiOutput(outputId = "relationships_tab_layout"),
-                              uiOutput(outputId = "site_layout_test")
+                              uiOutput(outputId = "site_box_layout")
                               ), # EO relationships plot output box
                           #tags$head(tags$style('#relationships_outputs .box-header{ display: none}')), # remove title from box
                           
