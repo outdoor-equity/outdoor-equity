@@ -99,7 +99,11 @@ ui <- fluidPage(
                    #includeMarkdown("text/about_intro.md")
                    tabBox(width = 12,
                           tabPanel(title = "What is the Outdoor Equity App?",
-                                   includeMarkdown("text/about_app.md")),
+                                   includeMarkdown("text/about_app.md"),
+                                   tags$iframe(width = "900",
+                                               height = "500",
+                                               src = "https://www.youtube.com/embed/Eo-6dwT5OK8",
+                                               allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture")), 
                           tabPanel(title = "What is outdoor recreation and why does it matter?",
                                    includeMarkdown("text/about_background.md")),
                           tabPanel(title = "Who created this app?",
@@ -109,16 +113,16 @@ ui <- fluidPage(
                           ) # EO tabBox
                    ), # EO About tabs intro
                
-               # SO walk-through video
-               fluidRow(
-                 box(width = 12,
-                     status = "primary",
-                     title = "Walk through the app with this short video",
-                       tags$iframe(width = "900",
-                                   height = "500",
-                                   src = "https://www.youtube.com/embed/Eo-6dwT5OK8",
-                                   allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"))
-               ), # EO walk-through video FR
+               # # SO walk-through video
+               # fluidRow(
+               #   box(width = 12,
+               #       status = "primary",
+               #       title = "Walk through the app with this short video",
+               #         tags$iframe(width = "900",
+               #                     height = "500",
+               #                     src = "https://www.youtube.com/embed/Eo-6dwT5OK8",
+               #                     allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"))
+               # ), # EO walk-through video FR
                
                # SO About examples
                box(width = 12,
