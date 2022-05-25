@@ -113,17 +113,6 @@ ui <- fluidPage(
                           ) # EO tabBox
                    ), # EO About tabs intro
                
-               # # SO walk-through video
-               # fluidRow(
-               #   box(width = 12,
-               #       status = "primary",
-               #       title = "Walk through the app with this short video",
-               #         tags$iframe(width = "900",
-               #                     height = "500",
-               #                     src = "https://www.youtube.com/embed/Eo-6dwT5OK8",
-               #                     allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"))
-               # ), # EO walk-through video FR
-               
                # SO About examples
                box(width = 12,
                    status = "primary",
