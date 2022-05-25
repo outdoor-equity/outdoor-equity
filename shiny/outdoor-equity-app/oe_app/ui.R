@@ -159,7 +159,7 @@ ui <- fluidPage(
                               select_data_summary_vars(),
                               #### SO select number of visuals
                               radioButtons(inputId = "num_viz",
-                                           label = "Select 1 to see a single site, or 2 to compare two different sites",
+                                           label = "To visualize a single site, select 1; to compare two different sites, select 2",
                                            choices = c(1, 2),
                                            selected = 2,
                                            inline = TRUE # makes choices horizontal

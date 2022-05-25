@@ -32,9 +32,9 @@ language_plot <- function(admin_unitInput, siteInput, ridb_df){
                      "<br>",
                      "If it is above the grey curve at a specific percent level", 
                      "<br>",
-                     "that percentae of people who speak a language other than English at home", 
+                     "that percentage of people who speak a language other than English at home", 
                      "<br>",
-                     "is proportionally more represented at this site compared to the California census."))
+                     "is over-represented at this site compared to the California census."))
     
   }) # EO RDF
   
@@ -50,9 +50,9 @@ language_plot <- function(admin_unitInput, siteInput, ridb_df){
                    "<br>",
                    "If it is above the green curve at a specific percent level", 
                    "<br>",
-                   "that percentae of people who speak a language other than English at home", 
+                   "that percentage of people who speak a language other than English at home", 
                    "<br>",
-                   "is proportionally less represented at this site compared to the California census."))
+                   "is under-represented at this site compared to the California census."))
   
   # join data for plotting
   language_data_plot <- rbind(language_rdf(), language_ca)

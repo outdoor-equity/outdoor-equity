@@ -31,7 +31,7 @@ median_income_plot <- function(admin_unitInput, siteInput, ridb_df){
                      "<br>",
                      "If it is above the grey curve at a specific median-income", 
                      "<br>",
-                     "that median household income is proportionally more represented",
+                     "that median household income is over-represented",
                      "<br>",
                      "at this site compared to the California census."))
     
@@ -48,7 +48,7 @@ median_income_plot <- function(admin_unitInput, siteInput, ridb_df){
                    "<br>",
                    "If it is above the green curve at a specific median-income", 
                    "<br>",
-                   "that median household income is proportionally less represented",
+                   "that median household income is under-represented",
                    "<br>",
                    "at this site compared to the California census."))
   
