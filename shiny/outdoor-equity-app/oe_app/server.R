@@ -903,7 +903,7 @@ server <- function(input, output, session) {
                 withSpinner(color = spinner_color),
               tags$p(class = "italic_site",
                      "RV or Tent includes group standard electric and nonelectric,
-                     and standard electric and nonelectric")
+                     and standard electric and nonelectric sites")
           ), # EO rv or tent box
           
           # SO rv only box
@@ -915,7 +915,10 @@ server <- function(input, output, session) {
               solidHeader = TRUE,
               title = "RV Only",
               plotlyOutput(outputId = "edu_site_rvOnly_plot") %>%
-                withSpinner(color = spinner_color)
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "RV only includes rv electric and nonelectric, and 
+                     group rv area nonelectric sites")
           ), # EO rv only box
           
           # SO shelter box
@@ -927,7 +930,10 @@ server <- function(input, output, session) {
               solidHeader = TRUE,
               title = "Shelter",
               plotlyOutput(outputId = "edu_site_shelter_plot") %>%
-                withSpinner(color = spinner_color)
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Shelter includes cabin electric and nonelectric, yurt, 
+                     and shelter nonelectric sites")
           ), # EO shelter box
           
           # SO equestrian box
@@ -939,7 +945,10 @@ server <- function(input, output, session) {
               solidHeader = TRUE,
               title = "Equestrian",
               plotlyOutput(outputId = "edu_site_equestrian_plot") %>%
-                withSpinner(color = spinner_color)
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Equestrian includes group equestrian and 
+                     equestrian nonelectric sites")
           ), # EO equestrian box
         ),
         
@@ -955,7 +964,10 @@ server <- function(input, output, session) {
               status = "primary",
               solidHeader = TRUE,
               plotlyOutput(outputId = "edu_site_tentOnly_plot") %>%
-                withSpinner(color = spinner_color)
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Tent only includes tent only electric and nonelectric, and
+                     group tent only area nonelectric sites")
           ), # EO tent only box
           
           # SO remote box
@@ -967,7 +979,10 @@ server <- function(input, output, session) {
               solidHeader = TRUE,
               title = "Remote",
               plotlyOutput(outputId = "edu_site_remote_plot") %>%
-                withSpinner(color = spinner_color)
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Remote includes walk to, hike to, group hike to, and 
+                     group walk to sites")
           ), # EO remote box
           
           # SO water box
@@ -979,7 +994,9 @@ server <- function(input, output, session) {
               solidHeader = TRUE,
               title = "Water",
               plotlyOutput(outputId = "edu_site_water_plot") %>%
-                withSpinner(color = spinner_color)
+                withSpinner(color = spinner_color),
+              tags$p(class = "italic_site",
+                     "Water includes boat in and anchorage sites")
           ), # EO water box
         ),
       ) # EO FR
