@@ -1,4 +1,19 @@
 
-Is there a difference in how far people who live in communities with high percentages of different races travel to campsites? 
+Is there a difference in how far people who live in communities with high 
+percentages of different races travel to campsites? 
 
-For this example, we're interested in how far people from communities high rates of different racial identities are traveling to get to Upper Pines in Yosemite National Forest (the campsite with the most annual visits in California). To answer this question, click on the “Data Relationships” tab in the navigation bar. Under the drop-down labeled "1. Pick a relationship to visualize" choose "Race x distance traveled". Then under the drop-down options labeled "2. Subset the data", choose "NPS" from the agency drop-down, "Yosemite National Park" from the administrative unit drop-down, and "Upper Pines" from the reservable site drop-down. The plot below will appear:
+For this example, we're interested in Upper Pines in Yosemite National Forest 
+(the campsite with the most annual visits in California). To answer this 
+question, click on “Data Relationships” under the "Analysis" tab in the 
+navigation bar. Then select the variables you want to compare, in this case 
+"Race x Distance traveled", and the site you're interested in. Then scroll 
+down to see two plots. 
+
+Both plots have the eight US Census racial groups on the y-axis. The lollipop 
+plot on the left shows the median distance traveled by people who live in 
+communities with high proportions of people from each racial group. The bar plot 
+on the right shows the total number of reservations to the selected site by 
+people who live in communities with high proportions of each racial group.
+
+Hover over the circles and bars on these plots to see more information about 
+each group.
