@@ -8,3 +8,7 @@ and the
 The analyses in this app allows you to explore relationships among attributes 
 of recreation opportunities, reservation practices, and socioeconomic data 
 from the regions of visitor origin.
+
+**Disclaimer:** The Outdoor Equity App is not paid for by Recreation One Stop. 
+Any plots or visuals created here are not intended for publication and require 
+further analysis before making any determinations.
