@@ -70,7 +70,7 @@ not_reactive_race_dist_travel_plot <- function(admin_unit,
                                       'Distance Traveled by Different Racial Groups'),
                         font = list(size = 15))) %>%
     add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                    x = -0.15, y = 0.9, 
+                    x = -0.5, y = 0.9, 
                     font = list(size = 11),
                     xref = 'paper', yref = 'paper', 
                     showarrow = FALSE)
