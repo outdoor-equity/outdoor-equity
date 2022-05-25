@@ -84,9 +84,9 @@ education_site_type_plot <- function(admin_unitInput,
                                       "Number of Reservations to ", str_to_title(site_type_string) %>%
                                         str_replace(string = ., pattern = "Rv", replacement = "RV"), 
                                       " Sites by Visitors with Different Levels of Education"),
-                        font = list(size = 15))) %>%  
+                        font = list(size = 13))) %>%  
     add_annotations(text = "Reservations from ZIP codes<br>with high proportions of:", 
-                    x = -0.15, y = 0.9, 
+                    x = -0.15, y = 0.93, 
                     font = list(size = 11),
                     xref = 'paper', yref = 'paper', 
                     showarrow = FALSE)
