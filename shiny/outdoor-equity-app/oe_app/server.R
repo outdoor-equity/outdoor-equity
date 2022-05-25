@@ -271,32 +271,57 @@ server <- function(input, output, session) {
   ## SO ABOUT PAGE PLOTS ----
   
   ### SO when to book ----
-  output$about_example_1_plot <- renderPlotly({
+  output$about_example_1.1_plot <- renderPlotly({
     not_reactive_booking_window_plot(admin_unit = "Yosemite National Park", 
                                      site = "Upper Pines", 
                                      ridb_df = data_joined_2018)
-  }) # OE when to book
+  }) # OE when to book 1.1
+  
+  output$about_example_1.2_plot <- renderPlotly({
+    not_reactive_booking_window_plot(admin_unit = "Yosemite National Park", 
+                                     site = "Dinkey Creek", 
+                                     ridb_df = data_joined_2018)
+  }) # OE when to book 1.2
   
   ### SO distance traveled by race ----
-  output$about_example_2_plot <- renderPlotly({
+  output$about_example_2.1_plot <- renderPlotly({
     not_reactive_race_dist_travel_plot(admin_unit = "Yosemite National Park", 
                                        site = "Upper Pines", 
                                        race_top_quartile_df = data_race_relationship_plots)
-  }) # EO distance traveled by race
+  }) # EO distance traveled by race 1.1
+  
+  output$about_example_2.2_plot <- renderPlotly({
+    not_reactive_race_top_quartile_res_plot(admin_unit = "Yosemite National Park", 
+                                       site = "Upper Pines", 
+                                       race_top_quartile_df = data_race_relationship_plots)
+  }) # EO distance traveled by race 1.2
   
   ### SO distance traveled by income ----
-  output$about_example_3_plot <- renderPlotly({
+  output$about_example_3.1_plot <- renderPlotly({
     not_reactive_median_income_dist_travel_plot(admin_unit = "Yosemite National Park", 
                                                 site = "Upper Pines", 
                                                 median_income_decile_df = data_median_income_relationship_plots)
-  }) # OE distance traveled by income
+  }) # OE distance traveled by income 1.1
   
-  ### SO distance traveled by income ----
-  output$about_example_4_plot <- renderTmap({
+  output$about_example_3.2_plot <- renderPlotly({
+    not_reactive_median_income_top_quartile_res_plot(admin_unit = "Yosemite National Park", 
+                                                site = "Upper Pines", 
+                                                median_income_decile_df = data_median_income_relationship_plots)
+  }) # OE distance traveled by income 1.2
+  
+  ### SO visitorshed ----
+  output$about_example_4.1_plot <- renderTmap({
     not_reactive_state_visitorshed_map(site = "Upper Pines", 
                                        ridb_df = data_joined_2018,
                                        state_geometries_df = data_state_geometries)
-  }) # OE distance traveled by income
+  }) # OE visitorshed 1.1
+  
+  output$about_example_4.2_plot <- renderTmap({
+    not_reactive_ca_zip_code_visitorshed_map(site = "Upper Pines", 
+                                       ridb_df = data_joined_2018,
+                                       zip_geometries_df = data_ca_zip_code_geometries,
+                                       ca_cities_df = data_ca_cities_geometries)
+  }) # OE visitorshed 1.2
   
 
   
@@ -535,9 +560,9 @@ server <- function(input, output, session) {
     
     ## SO booking window ----
     else if (input$data_summary == "booking_window") {
-      paste("Booking windows vary by location. To check season dates and when sites 
-      are available to reserve look for the Season and Fees tab within a 
-      site-specific page on [Recreation.gov](https://www.recreation.gov/).", ca_agency[[1]])
+      paste("Booking windows vary by site. To check season dates and when sites 
+      are available to reserve look for the Season and Fees tab on the 
+      site-specific page of the Recreation.gov website.")
     } ## EO booking window
     
   }) ## EO DATA SUMMARY CAPTIONS
