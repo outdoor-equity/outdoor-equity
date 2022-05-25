@@ -18,7 +18,8 @@ ui <- fluidPage(
                    primary = "#005ea2", # ridb dark blue font
                    secondary = "#659dc7", # ridb light blue font
                    success = "#397B1E", # ridb light green
-                   info = "#97D4EA", # ridb light blue from bar
+                   info = "#64863C", # ridb light blue from bar 
+                   # NOTE(HD): may need to add an info color again
                    warning = "#C3512C",# ridb yellow
                    danger = "#FACE00", # ridb orange red
                    base_font = font_google("Open Sans"),
@@ -271,9 +272,10 @@ ui <- fluidPage(
                               status = "success",
                               plotlyOutput(outputId = "data_relationships_plot") %>%
                                 withSpinner(color = spinner_color),
-                              uiOutput(outputId = "relationships_tab_layout")
+                              uiOutput(outputId = "relationships_tab_layout"),
+                              uiOutput(outputId = "site_layout_test")
                               ), # EO relationships plot output box
-                          tags$head(tags$style('#relationships_outputs .box-header{ display: none}')), # remove title from box
+                          #tags$head(tags$style('#relationships_outputs .box-header{ display: none}')), # remove title from box
                           
                           # context relationships plot 
                           box(id = "high_relationships_output",
