@@ -107,9 +107,25 @@ ui <- fluidPage(
                           tabPanel(title = "What is the Outdoor Equity App?",
                                    includeMarkdown("text/about_app.md")),
                           tabPanel(title = "What is outdoor recreation and why does it matter?",
-                                   includeMarkdown("text/about_background.md"))
+                                   includeMarkdown("text/about_background.md")),
+                          tabPanel(title = "Who created this app?",
+                                   includeMarkdown("text/about_creators.md")),
+                          tabPanel(title = "What data is in this app?",
+                                   includeMarkdown("text/about_data.md"))
                           ) # EO tabBox
                    ), # EO About tabs intro
+               
+               # SO walk-through video
+               fluidRow(
+                 box(width = 12,
+                     status = "primary",
+                     title = "Walk through the app with this short video",
+                       tags$iframe(width = "900",
+                                   height = "500",
+                                   src = "https://www.youtube.com/embed/Eo-6dwT5OK8",
+                                   allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"))
+               ), # EO walk-through video FR
+               
                # SO About examples
                box(width = 12,
                    status = "primary",
@@ -118,24 +134,54 @@ ui <- fluidPage(
                    tabBox(width = 12,
                           tabPanel(title = "How far in advance to reserve site?",
                                    includeMarkdown("text/about_example1.md"),
-                                   plotlyOutput("about_example_1_plot") %>%
-                                     withSpinner(color = spinner_color)
+                                   fluidRow(
+                                     box(width = 6,
+                                         plotlyOutput("about_example_1.1_plot") %>%
+                                           withSpinner(color = spinner_color)),
+                                     box(width = 6,
+                                         plotlyOutput("about_example_1.2_plot") %>%
+                                           withSpinner(color = spinner_color))
+                                   ) # EO FR
                           ), # EO tabPanel example 1
+                          
                           tabPanel(title = "How far are people of different races traveling?",
                                    includeMarkdown("text/about_example2.md"),
-                                   plotlyOutput(outputId = "about_example_2_plot") %>%
-                                     withSpinner(color = spinner_color)
+                                   fluidRow(
+                                     box(width = 8,
+                                         plotlyOutput(outputId = "about_example_2.1_plot") %>%
+                                           withSpinner(color = spinner_color)),
+                                     box(width = 4,
+                                         plotlyOutput(outputId = "about_example_2.2_plot") %>%
+                                           withSpinner(color = spinner_color))
+                                   ) # EO FR
                           ), # EO tabPanel example 2
+                          
                           tabPanel(title = "How far are people with different incomes traveling?",
                                    includeMarkdown("text/about_example3.md"),
-                                   plotlyOutput(outputId = "about_example_3_plot") %>%
-                                     withSpinner(color = spinner_color)
+                                   fluidRow(
+                                     box(width = 8,
+                                         plotlyOutput(outputId = "about_example_3.1_plot") %>%
+                                           withSpinner(color = spinner_color)),
+                                     box(width = 4,
+                                         plotlyOutput(outputId = "about_example_3.2_plot") %>%
+                                           withSpinner(color = spinner_color))
+                                   ), # EO FR
                           ), # EO tabPanel example 3
+                          
                           tabPanel(title = "Visitorshed Map",
-                                   tmapOutput(outputId = "about_example_4_plot") %>%
-                                     withSpinner(color = spinner_color)
+                                   includeMarkdown("text/about_example4.md"),
+                                   fluidRow(
+                                     box(width = 6,
+                                         title = "US Visitorshed",
+                                         tmapOutput(outputId = "about_example_4.1_plot") %>%
+                                           withSpinner(color = spinner_color)),
+                                     box(width = 6,
+                                         title = "CA Visitorshed",
+                                         tmapOutput(outputId = "about_example_4.2_plot") %>%
+                                           withSpinner(color = spinner_color))
+                                   ) # EO FR
                           ) # EO tabPanel example 4
-                   ) # EO tabBox
+                   ) # EO tabBox for all examples
                    ) # EO About examples intro
              ) # EO About FR layout
     ), ## EO About tab ----
