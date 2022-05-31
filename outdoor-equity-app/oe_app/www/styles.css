@@ -41,6 +41,16 @@ img.banner {
 
 
 
+/* VIDEO STYLING*/ 
+/* resize video on about page dynamically */  
+iframe.video {
+  position: relative;
+  width: 100%;
+  top: 0;
+}
+
+
+
 /* HEADER STYLING */
 h2 > span {
   display: flex;
@@ -85,6 +95,7 @@ h2 > span > a > img {
 .footer p {
   text-align: center;
 }
+
 
 
 /* RELATIONSHIPS SITE BOXES */
