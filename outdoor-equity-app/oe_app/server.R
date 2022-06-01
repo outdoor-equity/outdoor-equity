@@ -710,8 +710,8 @@ server <- function(input, output, session) {
     ## SO booking window ----
     else if (input$data_summary == "booking_window") {
       paste("Booking windows vary by site. To check season dates and when sites 
-      are available to reserve look for the Season and Fees tab on the 
-      site-specific page of the Recreation.gov website.")
+      are available to reserve, look for the Season and Fees tab on the 
+      site-specific page of the Recreation.gov website at https://www.recreation.gov/")
     } ## EO booking window
     
   }) ## EO DATA SUMMARY CAPTIONS
