@@ -2040,7 +2040,16 @@ server <- function(input, output, session) {
     ) %>% 
     as.datatable(
       caption = htmltools::tags$caption(style = "caption-side: top; text-align: left",
-                                        htmltools::em("Metadata of joined RIDB ACS data")),
+                                        htmltools::em("Metadata of joined RIDB-ACS dataset")),
+      colnames = c("Variable Name", 
+                   "Data Source", 
+                   "Definition", 
+                   "Unit", 
+                   "Class", 
+                   "Data Type", 
+                   "Provenance", 
+                   "Missing Value Code", 
+                   "Total Unique Values"),
       class = "cell-border stripe",
       rownames = FALSE,
       options = list(
@@ -2049,7 +2058,7 @@ server <- function(input, output, session) {
         pageLength = 39,
         autoWidth = TRUE,
         scrollX = TRUE,
-        dom = "Brtip",
+        dom = "Brti",
         columnDefs = list(list(
           targets = "_all",
           className = "dt-left"
