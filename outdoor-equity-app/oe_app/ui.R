@@ -89,6 +89,7 @@ ui <- fluidPage(
     
     ## About tab ----
     tabPanel("About",
+             icon = icon("info-sign", lib = "glyphicon"),
              tags$img(class = "banner", 
                       src = "images/carrizo_plain_people.jpg"),
              fluidRow(
@@ -380,7 +381,9 @@ ui <- fluidPage(
 
                ), ## EO Analysis tab ----
     
+    ## Metadata tab ----
     tabPanel(title = "Metadata",
+             icon = icon("th-list", lib = "glyphicon"),
              fluid = TRUE,
              tags$img(class = "banner",
                       src = "images/desolation_canyon.jpg"),
@@ -390,9 +393,15 @@ ui <- fluidPage(
                    status = "primary",
                    title = "Metadata",
                    includeMarkdown("text/metadata_explanatory.md")
-                   ) # EO explanatory text
+                   ), # EO explanatory text
+               box(id = "metadata_box",
+                   width = 12,
+                   downloadButton(outputId = "metadata_download",
+                                  label = "Download metdata as CSV"),
+                   DT::DTOutput(outputId = "metadata_download_table")),
+               tags$head(tags$style('#metadata_box .box-header{ display: none}')) # remove title from box
                ) # EO FR metadata
-             ), # Note(HD): ADD ICON
+             ), ## EO Metadata tab ----
     
     ## Data Download ----
     tabPanel(title = "Data Download", 

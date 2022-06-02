@@ -44,6 +44,8 @@ reactlog_enable()
 # IMPORT DATA ---- 
 ## CA prototype joined 2018 ----
 data_joined_2018 <- readRDS("data/2018_joined_data.rds")
+## CA prototype joined 2018 metadata ----
+data_joined_2018_metadata <- read_csv("data/data_joined_2018_metadata.csv")
 ## CA ACS all ----
 data_ca_acs_2018 <- readRDS("data/2018_ca_acs_all.rds")
 ## data relationship 2018 ----
@@ -55,7 +57,6 @@ data_race_relationship_plots <- readRDS("data/race_relationship_plots.rds")
 data_state_geometries <- readRDS("data/states_geometries.rds")
 data_ca_zip_code_geometries <- readRDS("data/ca_zip_codes_geometries.rds")
 data_ca_cities_geometries <- readRDS("data/ca_cities_geometries.rds")
-
 
 # SOURCE FUNCTIONS ----
 ## source about page plotly functions ----

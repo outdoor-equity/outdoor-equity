@@ -2032,6 +2032,44 @@ server <- function(input, output, session) {
 
   }) # EO visitorsheds plots
   
+  ## SO METADATA DOWNLOAD ----
+  # DT table
+  output$metadata_download_table <- renderDT({
+    DT::datatable(
+      data_joined_2018_metadata,
+      caption = htmltools::tags$caption(style = "caption-side: top; text-align: left",
+                                        htmltools::em("Metadata of joined RIDB ACS data")),
+      class = "cell-border stripe",
+      rownames = FALSE,
+      #extensions = "FixedColumns",
+      options = list(
+        server = FALSE,
+        paging = TRUE,
+        pageLength = 5,
+        autoWidth = TRUE,
+        scrollX = TRUE,
+        #fixedColumns = list(leftColumns = 3),
+        #buttons = 'colvis',
+        dom = "Brtip",
+        columnDefs = list(list(
+          targets = "_all",
+          className = "dt-center"
+        )) # EO columnDefs
+      ) # EO options
+    ) # EO datatable()
+    
+  }) # EO render metadata table  
+  
+  # metadata download handler
+  output$metadata_download <- downloadHandler(
+    filename = "metadata_ridb_acs.csv",
+    content = function(file) {
+      write.csv(data_joined_2018_metadata, file)
+    }
+  ) # EO metadata download handler
+  
+  
+  
   ## SO DATA DOWNLOAD ----
   # create RDF
   data_download_dt <- reactive({
