@@ -37,6 +37,7 @@ library(collections)
 library(plotly)
 library(rmapshaper) # ms_simplify to reduce maps
 library(tigris)
+library(formattable) # metdata table allow NAs to show up
 #library(tmaptools) # download devtools version if using `tmaptools`
 
 reactlog_enable()
