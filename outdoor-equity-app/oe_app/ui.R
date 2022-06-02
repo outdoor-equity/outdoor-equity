@@ -389,7 +389,7 @@ ui <- fluidPage(
                       src = "images/desolation_canyon.jpg"),
              fluidRow(
                # SO explanatory metadata text
-               box(width = 8,
+               box(width = 12,
                    status = "primary",
                    title = "Metadata",
                    includeMarkdown("text/metadata_explanatory.md")
