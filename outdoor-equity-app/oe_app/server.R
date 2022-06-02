@@ -2035,25 +2035,24 @@ server <- function(input, output, session) {
   ## SO METADATA DOWNLOAD ----
   # DT table
   output$metadata_download_table <- renderDT({
-    DT::datatable(
-      data_joined_2018_metadata,
+    formattable::formattable(
+      data_joined_2018_metadata
+    ) %>% 
+    as.datatable(
       caption = htmltools::tags$caption(style = "caption-side: top; text-align: left",
                                         htmltools::em("Metadata of joined RIDB ACS data")),
       class = "cell-border stripe",
       rownames = FALSE,
-      #extensions = "FixedColumns",
       options = list(
         server = FALSE,
         paging = TRUE,
-        pageLength = 5,
+        pageLength = 39,
         autoWidth = TRUE,
         scrollX = TRUE,
-        #fixedColumns = list(leftColumns = 3),
-        #buttons = 'colvis',
         dom = "Brtip",
         columnDefs = list(list(
           targets = "_all",
-          className = "dt-center"
+          className = "dt-left"
         )) # EO columnDefs
       ) # EO options
     ) # EO datatable()
