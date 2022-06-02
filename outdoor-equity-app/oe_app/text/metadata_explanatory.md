@@ -1,1 +1,3 @@
-This section coming soon.
+The metadata for the joined RIDB-ACS dataset defines all variables. There are a total of 39 variables in the joined dataset. There is also an option to download the metatdata. 
+
+The term "provenance" refers to the record trail that accounts for the origin of a variable. In this case, provenance refers to the scripts used to create the variable. These scripts can be found in the [Outdoor Equity Repo on GitHub](https://github.com/outdoor-equity/outdoor-equity).
