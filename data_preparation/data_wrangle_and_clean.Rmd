@@ -20,6 +20,7 @@ library(zipcodeR)
 library(tmap)
 library(tigris)
 library(rmapshaper)
+library(googlesheets4) # read in metadata sheets
 
 options(scipen = 999)
 
@@ -255,6 +256,15 @@ ca_city_labels <-
 ```
 
 
+# Create metadata dataframe
+
+```{r}
+# get metadata csv and create csv in r
+data_joined_2018_metadata <- 
+  googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/19ZQiaTlSoo1-KlPibeIoVbo0IT0ZU2soFa0XGAEHF88/edit?usp=sharing")
+```
+
+
 
 # Saving dataframes
 
@@ -270,6 +280,10 @@ write.csv(x = data_combined_2018,
 write.csv(x = data_acs_ca_all,
           "../../../data_clean/2018_ca_acs_all.csv",
           row.names = FALSE)
+
+# metadata
+write_csv(data_joined_2018_metadata,
+          file = here("outdoor-equity-app/oe_app/data/data_joined_2018_metadata.csv"))
 ```
 
 ## Save to RDS
