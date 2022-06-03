@@ -373,9 +373,9 @@ ui <- fluidPage(
                           ), # EO CA visitorshed map box
                           
                           # SO visitorshed info box
-                          box(width = 12,
-                              title = "Summary Stats of Site"
-                          ) # EO visitorshed info box
+                          # box(width = 12,
+                          #     title = "Summary Stats of Site"
+                          # ) # EO visitorshed info box
                         ) # EO FR visitorsheds
                         ) # EO tabpanel visitorsheds
 
