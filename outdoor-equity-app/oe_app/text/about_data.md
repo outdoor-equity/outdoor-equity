@@ -7,3 +7,6 @@ with census data from the
 The data is joined based on the home ZIP code of the person making the 
 reservation. Currently the app includes data for all campsites in California 
 and all reservations made in 2018. 
+
+View our [technical documentation](https://outdoor-equity.github.io/outdoor-equity-tech-doc/) 
+to learn more about how the app was built.
