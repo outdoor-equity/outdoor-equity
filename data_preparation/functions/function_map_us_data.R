@@ -60,7 +60,7 @@ state_geometries_dataframe <- function(year = 2018){
     rename(fips = GEOID,
            state_abbrev = STUSPS,
            state = NAME) %>% 
-    rmapshaper::ms_simplify(keep = 0.005, keep_shapes = TRUE) %>% 
+    rmapshaper::ms_simplify(keep = 0.005, keep_shapes = TRUE)
   
   return(df_state_geometries_us)
 }
