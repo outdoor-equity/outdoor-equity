@@ -1,6 +1,6 @@
 # Ensuring Equitable Access to Outdoor Recreation: Evaluating Spatiotemporal Patterns and Trends in Campground Use on Federal Public Lands
 
-Federal lands in the United States provide important recreation opportunities to the public, but there is a **growing need to understand and mitigate inequities in access to outdoor recreation.** This project addressed this need by creating the [Outdoor Equity App](https://shinyapps.bren.ucsb.edu/oe_app/), an **interactive platform** for summarizing and visualizing site-specific patterns and trends in visitation volume, demand, and visitors’ location of origin. The platform will integrate nationwide [Recreation.gov](https://www.recreation.gov/) reservation data with [US census data](https://www.census.gov/data.html) to:
+Federal lands in the United States provide important recreation opportunities to the public, but there is a **growing need to understand and mitigate inequities in access to outdoor recreation.** This project addressed this need by creating the [Outdoor Equity App](https://shinyapps.bren.ucsb.edu/oe_app/), an **interactive platform** for summarizing and visualizing site-specific patterns and trends in visitation volume, demand, and visitors’ location of origin. The platform integrates nationwide [Recreation.gov](https://www.recreation.gov/) reservation data with [US census data](https://www.census.gov/data.html) to:
 
 - Gain insights into **demand for reservations** across different types of recreation areas.
 - Analyze access to federal public lands among **historically underserved groups** in
