@@ -92,7 +92,7 @@ education_plot <- function(admin_unitInput, siteInput, ridb_df){
     geom_col(aes(x = education_percent_average,
                  y = education,
                  fill = data_source,
-                 text = paste0(tooltip_start, percent(education_percent_average, accuracy = 0.1), 
+                 text = paste0(tooltip_start, scales::percent(education_percent_average, accuracy = 0.1), 
                                tooltip_middle, education, tooltip_end)),
              position = "dodge") +
     scale_x_continuous(limits = c(0, x_max), labels = percent_format(accuracy = 1)) +
@@ -100,7 +100,8 @@ education_plot <- function(admin_unitInput, siteInput, ridb_df){
     scale_fill_manual(values = groups_colors_ridb_ca) + 
     geom_text(aes(x = education_percent_average,
                   y = education,
-                  label = percent(education_percent_average, accuracy = 0.1),
+                  label = percent(education_percent_average#, accuracy = 0.1
+                                  ),
                   col = data_source), 
               position = position_dodge(width = 1), 
               size = 4) +

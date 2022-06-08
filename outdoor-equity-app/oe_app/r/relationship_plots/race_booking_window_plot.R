@@ -53,13 +53,13 @@ race_booking_window_plot <- function(admin_unitInput, siteInput,
                                               y = reorder(race, median_booking_window))) +
     geom_segment(aes(xend = 0, yend = race)) +
     geom_point(aes(color = race, fill = race,
-                   text = paste0(comma(count, accuracy = 1), 
+                   text = paste0(scales::comma(count, accuracy = 1), 
                                  " unique visits were made by people who live in ZIP codes<br>with high ",
                                  race, " populations. Typically these visitors reserved their visit between<br>",
-                                 comma(quartile_lower, accuracy = 1), 
-                                 " and ", comma(quartile_upper, accuracy = 1), 
+                                 scales::comma(quartile_lower, accuracy = 1), 
+                                 " and ", scales::comma(quartile_upper, accuracy = 1), 
                                  " days before the start of their trip, with a median booking window of ", 
-                                 comma(median_booking_window, accuracy = 1), 
+                                 scales::comma(median_booking_window, accuracy = 1), 
                                  " days.")),
                size = 3.5, 
                shape = 21, stroke = 2) +

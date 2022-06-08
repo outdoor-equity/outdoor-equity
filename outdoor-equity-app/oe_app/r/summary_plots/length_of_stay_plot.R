@@ -39,12 +39,14 @@ length_of_stay_plot <- function(admin_unitInput, siteInput, ridb_df){
   # plot for shiny app
   length_of_stay_plotly <- ggplot(data = length_of_stay_rdf()) +
     geom_histogram(aes(x = length_of_stay,
-                       text = paste0(percent(..count.. / nrow(length_of_stay_rdf()), accuracy = 0.1), 
-                                     " of all reservations stay between ", comma(xmin, accuracy = 1), " and ", 
-                                     comma(xmax, accuracy = 1), " days",  
+                       text = paste0(scales::percent(..count.. / nrow(length_of_stay_rdf()), accuracy = 0.1), 
+                                     " of all reservations stay between ", 
+                                     scales::comma(xmin, accuracy = 1), " and ", 
+                                     scales::comma(xmax, accuracy = 1), " days",  
                                      "<br>",
                                      "(Total reservations to site: ",
-                                     comma(nrow(length_of_stay_rdf()), accuracy = 1), ")")),
+                                     scales::comma(nrow(length_of_stay_rdf()), accuracy = 1),
+                                     ")")),
                    binwidth = 1,
                    center = 0.5,
                    fill = hist_colors[[1]], 

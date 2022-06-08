@@ -56,16 +56,16 @@ education_dist_travel_plot <-
                          y = education_y_lab)) +
       geom_segment(aes(xend = 0, yend = education_y_lab)) +
       geom_point(aes(color = education_y_lab, fill = education_y_lab,
-                     text = paste0(comma(count, accuracy = 1), 
+                     text = paste0(scales::comma(count, accuracy = 1), 
                                    " unique visits were made by people who live in ZIP codes with high rates of",
                                    "<br>",
                                    education, " as the highest level of education. Typically these visitors",
                                    "<br>",
                                    "traveled between ", 
-                                   comma(quartile_lower, accuracy = 1), 
-                                   " and ", comma(quartile_upper, accuracy = 1), 
+                                   scales::comma(quartile_lower, accuracy = 1), 
+                                   " and ", scales::comma(quartile_upper, accuracy = 1), 
                                    " miles, with a median distance of ", 
-                                   comma(median_distance_traveled_mi, accuracy = 1),
+                                   scales::comma(median_distance_traveled_mi, accuracy = 1),
                                    " miles.")),
                  size = 3.5, 
                  shape = 21, stroke = 2) +

@@ -53,14 +53,14 @@ language_dist_travel_plot <- function(admin_unitInput,
                        y = language_y_lab)) +
     geom_segment(aes(xend = 0, yend = language_y_lab)) +
     geom_point(aes(color = language_y_lab, fill = language_y_lab,
-                   text = paste0(comma(count, accuracy = 1), 
+                   text = paste0(scales::comma(count, accuracy = 1), 
                                  " unique visits were made by people who live in ZIP codes with high rates of<br>people who ",
                                  language, 
                                  ". Typically these visitors<br>traveled between ",
-                                 comma(quartile_lower, accuracy = 1), 
-                                 " and ", comma(quartile_upper, accuracy = 1), 
+                                 scales::comma(quartile_lower, accuracy = 1), 
+                                 " and ", scales::comma(quartile_upper, accuracy = 1), 
                                  " miles, with a median distance of ", 
-                                 comma(median_distance_traveled_mi, accuracy = 1), 
+                                 scales::comma(median_distance_traveled_mi, accuracy = 1), 
                                  " miles.")),
                size = 3.5, 
                shape = 21, stroke = 2) +

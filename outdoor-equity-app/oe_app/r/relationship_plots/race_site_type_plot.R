@@ -62,7 +62,7 @@ race_site_type_plot <- function(admin_unitInput,
                  y = reorder(race, count),
                  fill = race,
                  text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
-                               comma(count, accuracy = 1), 
+                               scales::comma(count, accuracy = 1), 
                                " reservations were made by <br>people who live in ZIP codes with high ", 
                                race, " populations."))) +
     scale_y_discrete(expand = c(0.45, 0)) +

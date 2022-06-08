@@ -54,13 +54,13 @@ race_daily_cost_plot <- function(admin_unitInput,
                        y = reorder(race, median_daily_cost))) +
     geom_segment(aes(xend = 0, yend = race)) +
     geom_point(aes(color = race, fill = race,
-                   text = paste0(comma(count, accuracy = 1), 
+                   text = paste0(scales::comma(count, accuracy = 1), 
                                  " unique visits were made by people who live in ZIP codes<br>with high ",
                                  race, " populations. Typically these visitors paid between<br>",
-                                 dollar(quartile_lower), 
-                                 " and ", dollar(quartile_upper), 
+                                 scales::dollar(quartile_lower), 
+                                 " and ", scales::dollar(quartile_upper), 
                                  " per day, with a median of ", 
-                                 dollar(median_daily_cost), 
+                                 scales::dollar(median_daily_cost), 
                                  ".")),
                size = 3.5, 
                shape = 21, stroke = 2) +

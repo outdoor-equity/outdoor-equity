@@ -38,11 +38,12 @@ site_type_plot <- function(admin_unitInput, siteInput, ridb_df){
 
     col <- geom_col(aes(x = n/sum(n), 
                         y = reorder(aggregated_site_type, n), 
-                        text = paste0(percent(n/sum(n), accuracy = 1), " of reservations were made to ", 
+                        text = paste0(scales::percent(n/sum(n), accuracy = 1), 
+                                      " of reservations were made to ", 
                                       aggregated_site_type, " sites", 
                                       "<br>",
                                       "(Total reservations to site: ",
-                                      comma(sum(n), accuracy = 1), ")")),
+                                      scales::comma(sum(n), accuracy = 1), ")")),
                     fill = hist_colors)
     
   } # EO if statement for geom_col

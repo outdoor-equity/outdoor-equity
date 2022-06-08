@@ -57,13 +57,15 @@ education_daily_cost_per_visitor_plot <-
                          y = education_y_lab)) +
       geom_segment(aes(xend = 0, yend = education_y_lab)) +
       geom_point(aes(color = education_y_lab, fill = education_y_lab,
-                     text = paste0(comma(count, accuracy = 1), 
+                     text = paste0(scales::comma(count, accuracy = 1), 
                                    " unique visits were made by people who live in ZIP codes with high rates of",
                                    "<br>",
                                    education, " as the highest level of education. Typically these visitors", 
                                    "<br>",
-                                   "paid between ", dollar(quartile_lower), " and ", dollar(quartile_upper), 
-                                   " per day per person, with a median of ",dollar(median_daily_cost_per_visitor), 
+                                   "paid between ", scales::dollar(quartile_lower), 
+                                   " and ", scales::dollar(quartile_upper), 
+                                   " per day per person, with a median of ", 
+                                   scales::dollar(median_daily_cost_per_visitor), 
                                    ".")),
                  size = 3.5, 
                  shape = 21, stroke = 2) +

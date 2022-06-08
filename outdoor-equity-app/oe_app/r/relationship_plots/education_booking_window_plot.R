@@ -65,14 +65,15 @@ education_booking_window_plot <-
           color = education_y_lab,
           fill = education_y_lab,
           text = paste0(
-            comma(count, accuracy = 1),
+            scales::comma(count, accuracy = 1),
             " unique visits were made by people who live in ZIP codes with high rates of",
             "<br>",
             education, " as the maximum level of education. Typically these visitors reserved their visit between",
             "<br>",
-            comma(quartile_lower, accuracy = 1), " and ", comma(quartile_upper, accuracy = 1),
+            scales::comma(quartile_lower, accuracy = 1), " and ", 
+            scales::comma(quartile_upper, accuracy = 1),
             " days before the start of their trip, with a median booking window of ", 
-            comma(median_booking_window, accuracy = 1),  " days."
+            scales::comma(median_booking_window, accuracy = 1),  " days."
           )
         ),
         size = 3.5,

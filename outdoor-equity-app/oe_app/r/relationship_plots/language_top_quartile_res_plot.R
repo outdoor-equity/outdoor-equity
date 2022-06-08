@@ -48,7 +48,7 @@ language_top_quartile_res_plot <- function(admin_unitInput,
     geom_col(aes(x = count,
                  y = language_y_lab,
                  fill = language_y_lab,
-                 text = paste0(comma(count, accuracy = 1), 
+                 text = paste0(scales::comma(count, accuracy = 1), 
                                " reservations were made<br>by people who live in ZIP codes<br>with high rates of people who<br>", 
                                language, ".")),
              width = 0.5) +

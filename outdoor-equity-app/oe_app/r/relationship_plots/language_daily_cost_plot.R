@@ -53,13 +53,14 @@ language_daily_cost_plot <- function(admin_unitInput,
                        y = language_y_lab)) +
     geom_segment(aes(xend = 0, yend = language_y_lab)) +
     geom_point(aes(color = language_y_lab, fill = language_y_lab,
-                   text = paste0(comma(count, accuracy = 1), 
+                   text = paste0(scales::comma(count, accuracy = 1), 
                                  " unique visits were made by people who live in ZIP codes with high rates of<br>people who ",
                                  language, 
                                  ". Typically these visitors<br>paid between ",
-                                 dollar(quartile_lower), " and ", dollar(quartile_upper), 
+                                 scales::dollar(quartile_lower), " and ", 
+                                 scales::dollar(quartile_upper), 
                                  " per day, with a median of ", 
-                                 dollar(median_daily_cost), 
+                                 scales::dollar(median_daily_cost), 
                                  ".")),
                size = 3.5, 
                shape = 21, stroke = 2) +

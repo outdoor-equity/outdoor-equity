@@ -41,14 +41,14 @@ median_income_daily_cost_plot <- function(admin_unitInput,
                        y = median_income_binned)) +
     geom_segment(aes(xend = 0, yend = median_income_binned)) +
     geom_point(aes(color = median_income_binned, fill = median_income_binned,
-                   text = paste0(comma(count, accuracy = 1), 
+                   text = paste0(scales::comma(count, accuracy = 1), 
                                  " unique visits were made by people who live in ZIP codes with a<br>median household income between ",
                                  median_income_binned, 
                                  ". Typically these visitors<br>pay between ",
-                                 dollar(quartile_lower), 
-                                 " and ", dollar(quartile_upper), 
+                                 scales::dollar(quartile_lower), 
+                                 " and ", scales::dollar(quartile_upper), 
                                  " per day, with a median of ", 
-                                 dollar(median_daily_cost), 
+                                 scales::dollar(median_daily_cost), 
                                  ".")),
                size = 3.5, 
                shape = 21, stroke = 2) +

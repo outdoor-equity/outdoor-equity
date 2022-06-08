@@ -35,7 +35,7 @@ not_reactive_race_top_quartile_res_plot <- function(admin_unit,
     geom_col(aes(x = count,
                  y = reorder(race, count),
                  fill = race,
-                 text = paste0(comma(count, accuracy = 1), 
+                 text = paste0(scales::comma(count, accuracy = 1), 
                                " reservations were made<br>by people who live in<br>ZIP codes with high<br>", 
                                race, " populations."))) +
     scale_x_continuous(labels = comma_format(accuracy = 1)) +

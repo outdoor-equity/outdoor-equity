@@ -50,7 +50,7 @@ median_income_site_type_plot <- function(admin_unitInput,
                  y = median_income_binned,
                  fill = median_income_binned,
                  text = paste0("Of visits to ", aggregated_site_type, " overnight reservable sites, ", 
-                               comma(count, accuracy = 1), 
+                               scales::comma(count, accuracy = 1), 
                                " reservations were made by <br>people who live in ZIP codes with median household incomes between ",
                                median_income_binned, "."))) +
     scale_y_discrete(expand = c(0.2, 0)) +

@@ -40,13 +40,14 @@ not_reactive_race_dist_travel_plot <- function(admin_unit,
                        y = reorder(race, median_distance_traveled_mi))) +
     geom_segment(aes(xend = 0, yend = race)) +
     geom_point(aes(color = race, fill = race,
-                   text = paste0(comma(count, accuracy = 1), 
+                   text = paste0(scales::comma(count, accuracy = 1), 
                                  " unique visits were made by people who live in ZIP codes<br>with high ",
                                  race, " populations. Typically these visitors traveled between<br>",
-                                 comma(quartile_lower, accuracy = 1), 
-                                 " and ", comma(quartile_upper, accuracy = 1), 
+                                 scales::comma(quartile_lower, accuracy = 1), 
+                                 " and ", 
+                                 scales::comma(quartile_upper, accuracy = 1), 
                                  " miles, with a median distance of ", 
-                                 comma(median_distance_traveled_mi, accuracy = 1), 
+                                 scales::comma(median_distance_traveled_mi, accuracy = 1), 
                                  " miles.")),
                size = 3.5, 
                shape = 21, stroke = 2) +

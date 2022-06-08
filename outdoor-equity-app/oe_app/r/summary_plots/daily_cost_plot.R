@@ -49,11 +49,14 @@ daily_cost_plot <- function(admin_unitInput, siteInput, ridb_df){
   # plot for shiny app
   daily_cost_plotly <- ggplot(data = daily_cost_rdf()) +
     geom_histogram(aes(x = daily_cost, 
-                       text = paste(percent(..count.. / nrow(daily_cost_rdf()), accuracy = 0.1), 
-                                    " of all reservations paid between ", dollar(xmin), " and ", dollar(xmax),
+                       text = paste(scales::percent(..count.. / nrow(daily_cost_rdf()), accuracy = 0.1), 
+                                    " of all reservations paid between ", 
+                                    scales::dollar(xmin), " and ", 
+                                    scales::dollar(xmax),
                                     "<br>",
                                     "(Total reservations to site: ",
-                                    comma(nrow(daily_cost_rdf()), accuracy = 1), ")")),
+                                    scales::comma(nrow(daily_cost_rdf()), accuracy = 1), 
+                                    ")")),
                    binwidth = center_bin * 2,
                    center = center_bin,
                    fill = hist_colors[[1]], 

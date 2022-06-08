@@ -61,7 +61,7 @@ language_site_type_plot <- function(admin_unitInput,
                  fill = language_y_lab,
                  text = paste0("Of visits to ", 
                                aggregated_site_type, 
-                               " overnight reservable sites, ", comma(count, accuracy = 1), 
+                               " overnight reservable sites, ", scales::comma(count, accuracy = 1), 
                                " reservations were made by <br>people who live in ZIP codes with high rates of people who ",
                                language, "."))) +
     geom_text(aes(x = max(count) / 4,

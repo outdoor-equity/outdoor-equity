@@ -41,14 +41,14 @@ median_income_length_of_stay_plot <- function(admin_unitInput,
                        y = median_income_binned)) +
     geom_segment(aes(xend = 0, yend = median_income_binned)) +
     geom_point(aes(color = median_income_binned, fill = median_income_binned,
-                   text = paste0(comma(count, accuracy = 1), 
+                   text = paste0(scales::comma(count, accuracy = 1), 
                                  " unique visits were made by people who live in ZIP codes with a<br>median household income between ",
                                  median_income_binned, 
                                  ". Typically these visitors<br>stay between ",
-                                 comma(quartile_lower, accuracy = 1), 
-                                 " and ", comma(quartile_upper, accuracy = 1), 
+                                 scales::comma(quartile_lower, accuracy = 1), 
+                                 " and ", scales::comma(quartile_upper, accuracy = 1), 
                                  " days, with a median stay of ", 
-                                 comma(median_length_of_stay, accuracy = 1), 
+                                 scales::comma(median_length_of_stay, accuracy = 1), 
                                  " days")),
                size = 3.5, 
                shape = 21, stroke = 2) +
