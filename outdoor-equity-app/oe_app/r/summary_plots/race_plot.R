@@ -99,9 +99,9 @@ race_plot <- function(admin_unitInput, siteInput, ridb_df){
     geom_col(aes(x = race_percent_average,
                  y = reorder(race, desc(race)),
                  fill = data_source,
-                 #text = paste0(tooltip_start, scales::percent(race_percent_average, accuracy = 0.1), 
-                               #tooltip_middle, race, tooltip_end)),
-             position = "dodge")) +
+                 text = paste0(tooltip_start, scales::percent(race_percent_average, accuracy = 0.1), 
+                               tooltip_middle, race, tooltip_end)),
+             position = "dodge") +
     scale_x_continuous(labels = percent, limits = c(0, x_max)) +
     scale_y_discrete(expand = c(0.3, 0)) +
     scale_fill_manual(values = groups_colors_ridb_ca) + 
