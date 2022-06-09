@@ -107,9 +107,9 @@ race_plot <- function(admin_unitInput, siteInput, ridb_df){
     scale_fill_manual(values = groups_colors_ridb_ca) + 
     geom_text(aes(x = race_percent_average,
                   y = reorder(race, desc(race)),
-                  label = percent(race_percent_average, accuracy = 0.1),
-                  col = data_source), 
-              position = position_dodge(width = 1), 
+                  label = scales::percent(race_percent_average, accuracy = 0.1),
+                  col = data_source),
+              position = position_dodge(width = 1),
               size = 3) +
     scale_color_manual(values = text_colors_ridb_ca) +
     labs(x = "Percentage (%)",
@@ -120,8 +120,9 @@ race_plot <- function(admin_unitInput, siteInput, ridb_df){
   
   ggplotly(race_plotly,
            tooltip = list("text")) %>%
-    style(hoverinfo = "none", traces = c(3, 4),
-          textposition = "right") %>% 
+    # style(hoverinfo = "none", 
+    #       traces = c(3, 4),
+    #       textposition = "right") %>% 
     layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                       '<br>',
                                       'Estimated Racial Percentages of California Residents vs. Visitors'),

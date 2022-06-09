@@ -75,11 +75,13 @@ education_plot <- function(admin_unitInput, siteInput, ridb_df){
              tooltip_start = case_when(data_source == "RIDB" ~ "Visitors to this site live in communities where an estimated ",
                                        data_source == "CA" ~ ""),
              tooltip_middle = case_when(data_source == "RIDB" ~ " of the population <br>have ",
-                                        data_source == "CA" ~ " of Californians have "),
+                                        data_source == "CA" ~ " of Californians have<br>"),
              tooltip_end = case_when(data_source == "RIDB" ~ " as their highest level of education.",
                                      data_source == "CA" ~ " as their highest level of education."))
     
   }) # EO RDF
+  
+  print(head(education_rdf(), 5))
   
   x_max <- max(education_rdf()$education_percent_average) + 0.1 # max x rounded to nearest 5
   
@@ -100,10 +102,9 @@ education_plot <- function(admin_unitInput, siteInput, ridb_df){
     scale_fill_manual(values = groups_colors_ridb_ca) + 
     geom_text(aes(x = education_percent_average,
                   y = education,
-                  label = percent(education_percent_average#, accuracy = 0.1
-                                  ),
-                  col = data_source), 
-              position = position_dodge(width = 1), 
+                  label = scales::percent(education_percent_average, accuracy = 0.1),
+                  col = data_source),
+              position = position_dodge(width = 1),
               size = 4) +
     scale_color_manual(values = text_colors_ridb_ca) +
     labs(x = "Percentage (%)",
@@ -115,16 +116,17 @@ education_plot <- function(admin_unitInput, siteInput, ridb_df){
   
   education_plotly <- ggplotly(education_plot,
            tooltip = list("text")) %>%
-    style(hoverinfo = "none", traces = c(3, 4),
-          textposition = "right") %>% 
-    layout(title = list(text = paste0('<b>', siteInput, '<br>', admin_unitInput, '</b>',
+    # style( hoverinfo = "none",
+    #        traces = c(3, 4),
+    #        textposition = "right"
+    #   ) %>%
+    layout(title = list(text = paste('<b>', siteInput, '<br>', admin_unitInput, '</b>',
                                       '<br>',
                                       'Estimated Highest Level of Education of California Residents vs. Visitors'),
                         font = list(size = 15)),
-           showlegend = FALSE) %>%
-    config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d", 
+    showlegend = FALSE) %>%
+    config(modeBarButtonsToRemove = list("pan", "select", "lasso2d", "autoScale2d",
                                          "hoverClosestCartesian", "hoverCompareCartesian"))
-  
-  print(paste("The education plot for your selection of", siteInput, "has been created"))
+
   return(education_plotly)
 } # EO function
