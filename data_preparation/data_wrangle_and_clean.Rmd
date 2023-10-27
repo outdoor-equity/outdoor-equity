@@ -62,8 +62,10 @@ source("functions/function_ridb_deciles_median_income.R")
 ```{r}
 ## 2018 CA
 # read in data subset for specific year and state 
-data_ridb_2018_subset <- RIDB_subset_pre2018(full_file_path = "../../data_raw/reservations2018.csv", 
-                                      state_abbrev = "CA", year = 2018)
+data_ridb_2018_subset <-
+  RIDB_subset_pre2018(full_file_path = "data/reservations2018.csv",
+                      state_abbrev = "CA",
+                      year = 2018)
 # clean and calculate variables
 data_ridb_2018_clean <- RIDB_calculate_pre2018(input_df_name = data_ridb_2018_subset)
 ```
@@ -233,6 +235,7 @@ state_geometries <- state_geometries_dataframe(year = 2018)
 # Create dataframe for CA city labels on visitorshed map
 
 ```{r}
+# Note HD (10/26/2023): Error: Opening layer failed.
 ca_city_labels <- 
   # get geometries for CA cities
   urban_areas(cb = TRUE) %>% 
@@ -273,12 +276,12 @@ data_joined_2018_metadata <-
 ```{r}
 # full dataset (RIDB and ACS joined)
 write.csv(x = data_combined_2018, 
-          file = "../../../data_clean/2018_joined_data.csv", 
+          file = here("outdoor-equity-app/oe_app/data/2018_joined_data.csv"), 
           row.names = FALSE)
 
 # all acs vars joined
 write.csv(x = data_acs_ca_all,
-          "../../../data_clean/2018_ca_acs_all.csv",
+          file = here("outdoor-equity-app/oe_app/data/2018_ca_acs_all.csv"),
           row.names = FALSE)
 
 # metadata
@@ -301,43 +304,43 @@ data_combined_2018_geometry <-
 
 # full dataset (RIDB and ACS joined) with geometries
 saveRDS(object = data_combined_2018_geometry,
-        file = "outdoor-equity-app/oe_app/data/2018_joined_data_geometries.rds")
+        file = here("outdoor-equity-app/oe_app/data/2018_joined_data_geometries.rds"))
 
 # full dataset (RIDB and ACS joined) without geometries
 saveRDS(object = data_combined_2018,
-        file = "outdoor-equity-app/oe_app/data/2018_joined_data.rds")
+        file = here("outdoor-equity-app/oe_app/data/2018_joined_data.rds"))
 
 # all acs variables joined
 saveRDS(object = data_acs_ca_all,
-        file = "outdoor-equity-app/oe_app/data/2018_ca_acs_all.rds")
+        file = here("outdoor-equity-app/oe_app/data/2018_ca_acs_all.rds"))
 
 # education data for relationship plots
 saveRDS(object = data_education_above_threshold,
-        file = "../shiny/outdoor-equity-app/oe_app/data/education_relationship_plots.rds")
+        file = here("outdoor-equity-app/oe_app/data/education_relationship_plots.rds"))
 
 # language data for relationship plots
 saveRDS(object = data_language_above_threshold,
-        file = "../shiny/outdoor-equity-app/oe_app/data/language_relationship_plots.rds")
+        file = here("outdoor-equity-app/oe_app/data/language_relationship_plots.rds"))
 
 # median-income data for relationship plots
 saveRDS(object = data_median_income_deciles,
-        file = "outdoor-equity-app/oe_app/data/median_income_relationship_plots.rds")
+        file = here("outdoor-equity-app/oe_app/data/median_income_relationship_plots.rds"))
 
 # race data for relationship plots
 saveRDS(object = data_race_above_threshold,
-        file = ".outdoor-equity-app/oe_app/data/race_relationship_plots.rds")
+        file = here("outdoor-equity-app/oe_app/data/race_relationship_plots.rds"))
 
 # CA zip code geometries
 saveRDS(object = ca_zip_geometries,
-        file = "../shiny/outdoor-equity-app/oe_app/data/ca_zip_codes_geometries.rds")
+        file = here("outdoor-equity-app/oe_app/data/ca_zip_codes_geometries.rds"))
 
 # state geometries
 saveRDS(object = state_geometries,
-        file = "../shiny/outdoor-equity-app/oe_app/data/states_geometries.rds")
+        file = here("outdoor-equity-app/oe_app/data/states_geometries.rds"))
 
 # CA city label geometries
-saveRDS(object = ca_city_labels,
-        file = "outdoor-equity-app/oe_app/data/ca_cities_geometries.rds")
+# saveRDS(object = ca_city_labels,
+#         file = here("outdoor-equity-app/oe_app/data/ca_cities_geometries.rds"))
 ```
 
 
