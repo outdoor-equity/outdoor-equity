@@ -39,6 +39,7 @@ library(rmapshaper) # ms_simplify to reduce maps
 library(tigris) # obtain state and ZIP code geometries
 library(formattable) # metdata table allow NAs to show up
 #library(tmaptools) # download devtools version if using `tmaptools`
+library(markdown)
 
 reactlog_enable()
 
@@ -57,7 +58,8 @@ data_race_relationship_plots <- readRDS("data/race_relationship_plots.rds")
 ## visitorsheds ----
 data_state_geometries <- readRDS("data/states_geometries.rds")
 data_ca_zip_code_geometries <- readRDS("data/ca_zip_codes_geometries.rds")
-data_ca_cities_geometries <- readRDS("data/ca_cities_geometries.rds")
+# data_ca_cities_geometries <- readRDS("data/ca_cities_geometries.rds")
+# Note HD: Error in tigris package Error: Opening layer failed.
 
 # SOURCE FUNCTIONS ----
 ## source about page plotly functions ----
